@@ -174,7 +174,7 @@
                     <span class="text-sm text-[#007185]">{{ number_format($product->rating, 1) }}</span>
                     <a href="#customer-reviews" class="inline-flex items-center gap-0.5 group">
                         @for($i = 1; $i <= 5; $i++)
-                            <svg class="w-[16px] h-[16px] {{ $i <= round($product->rating) ? 'text-[#FFA41C]' : 'text-[#E0E0E0]' }}" fill="currentColor" viewBox="0 0 20 20">
+                            <svg class="w-[16px] h-[16px] {{ $i <= round($product->rating) ? 'text-[#205258]' : 'text-[#E0E0E0]' }}" fill="currentColor" viewBox="0 0 20 20">
                                 <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
                             </svg>
                         @endfor
@@ -205,30 +205,42 @@
                     <p class="text-xs text-[#565959]">Inclusive of all taxes</p>
                 </div>
 
-                <!-- Offers Section -->
+                <!-- Available Coupons -->
+                @if(isset($availableCoupons) && $availableCoupons->count())
                 <div class="space-y-2">
                     <div class="flex items-center gap-2">
                         <svg class="w-5 h-5 text-[#CC0C39]" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5 5a3 3 0 015-2.236A3 3 0 0114.83 6H16a2 2 0 110 4h-5V9a1 1 0 10-2 0v1H4a2 2 0 110-4h1.17C5.06 5.687 5 5.35 5 5zm4 1V5a1 1 0 10-1 1h1zm2 0a1 1 0 10-1-1v1h1z" clip-rule="evenodd"/><path d="M9 11H3v5a2 2 0 002 2h4v-7zM11 18h4a2 2 0 002-2v-5h-6v7z"/></svg>
-                        <span class="text-sm font-bold text-[#0F1111]">Offers</span>
+                        <span class="text-sm font-bold text-[#0F1111]">Available Offers</span>
                     </div>
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                        <div class="border border-[#E3E6E6] rounded-lg p-3">
-                            <p class="text-xs font-bold text-[#0F1111] mb-0.5">Cashback</p>
-                            <p class="text-[11px] text-[#565959]">Upto ₹100 cashback on UPI payments</p>
-                            <a href="#" class="text-[11px] text-[#007185] hover:text-[#C7511F] hover:underline">1 offer ›</a>
+                    <div class="space-y-2">
+                        @foreach($availableCoupons as $coupon)
+                        <div class="flex items-start gap-3 border border-[#E3E6E6] rounded-lg p-3">
+                            <div class="shrink-0 bg-[#FFF3E0] border border-dashed border-[#F8931D] rounded px-2 py-1 text-center min-w-[70px]">
+                                <span class="text-xs font-bold text-[#C7511F] block">{{ $coupon->code }}</span>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-xs font-bold text-[#0F1111]">
+                                    @if($coupon->type === 'percentage')
+                                        {{ (int) $coupon->value }}% Off
+                                        @if($coupon->max_discount)
+                                            (upto ₹{{ number_format($coupon->max_discount) }})
+                                        @endif
+                                    @else
+                                        Flat ₹{{ number_format($coupon->value) }} Off
+                                    @endif
+                                </p>
+                                <p class="text-[11px] text-[#565959]">
+                                    {{ $coupon->description }}
+                                    @if($coupon->min_order_amount)
+                                        · Min. order ₹{{ number_format($coupon->min_order_amount) }}
+                                    @endif
+                                </p>
+                            </div>
                         </div>
-                        <div class="border border-[#E3E6E6] rounded-lg p-3">
-                            <p class="text-xs font-bold text-[#0F1111] mb-0.5">Bank Offer</p>
-                            <p class="text-[11px] text-[#565959]">10% off on HDFC, ICICI Cards</p>
-                            <a href="#" class="text-[11px] text-[#007185] hover:text-[#C7511F] hover:underline">5 offers ›</a>
-                        </div>
-                        <div class="border border-[#E3E6E6] rounded-lg p-3">
-                            <p class="text-xs font-bold text-[#0F1111] mb-0.5">No Cost EMI</p>
-                            <p class="text-[11px] text-[#565959]">EMI from ₹{{ number_format(ceil($product->price / 6)) }}/mo</p>
-                            <a href="#" class="text-[11px] text-[#007185] hover:text-[#C7511F] hover:underline">View Plans ›</a>
-                        </div>
+                        @endforeach
                     </div>
                 </div>
+                @endif
 
                 <!-- Trust Badges (Free Delivery, Pay on Delivery, etc.) -->
                 <div class="grid grid-cols-4 gap-2 py-3">
@@ -472,7 +484,7 @@
                                 <td class="p-3 text-center border-l border-[#E3E6E6]">
                                     <div class="flex items-center justify-center gap-1">
                                         <span class="text-sm">{{ number_format($product->rating, 1) }}</span>
-                                        <svg class="w-4 h-4 text-[#FFA41C]" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                                        <svg class="w-4 h-4 text-[#205258]" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
                                     </div>
                                     <p class="text-xs text-[#007185]">{{ $product->review_count }}</p>
                                 </td>
@@ -480,7 +492,7 @@
                                     <td class="p-3 text-center border-l border-[#E3E6E6]">
                                         <div class="flex items-center justify-center gap-1">
                                             <span class="text-sm">{{ number_format($cp->rating ?? 0, 1) }}</span>
-                                            <svg class="w-4 h-4 text-[#FFA41C]" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                                            <svg class="w-4 h-4 text-[#205258]" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
                                         </div>
                                         <p class="text-xs text-[#007185]">{{ $cp->review_count ?? 0 }}</p>
                                     </td>
@@ -531,7 +543,7 @@
                     <div class="flex items-center gap-2 mb-2">
                         <div class="flex items-center">
                             @for($i = 1; $i <= 5; $i++)
-                                <svg class="w-5 h-5 {{ $i <= round($product->rating) ? 'text-[#FFA41C]' : 'text-[#E0E0E0]' }}" fill="currentColor" viewBox="0 0 20 20">
+                                <svg class="w-5 h-5 {{ $i <= round($product->rating) ? 'text-[#205258]' : 'text-[#E0E0E0]' }}" fill="currentColor" viewBox="0 0 20 20">
                                     <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
                                 </svg>
                             @endfor
@@ -592,7 +604,7 @@
                                     <div x-data="{ rating: 0, hover: 0 }" class="flex gap-0.5">
                                         @for($i = 1; $i <= 5; $i++)
                                             <button type="button" @click="rating = {{ $i }}" @mouseenter="hover = {{ $i }}" @mouseleave="hover = 0">
-                                                <svg class="w-7 h-7 cursor-pointer transition-colors" :class="(hover || rating) >= {{ $i }} ? 'text-[#FFA41C]' : 'text-[#E0E0E0]'" fill="currentColor" viewBox="0 0 20 20">
+                                                <svg class="w-7 h-7 cursor-pointer transition-colors" :class="(hover || rating) >= {{ $i }} ? 'text-[#205258]' : 'text-[#E0E0E0]'" fill="currentColor" viewBox="0 0 20 20">
                                                     <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
                                                 </svg>
                                             </button>
@@ -639,7 +651,7 @@
                                     <div class="flex items-center gap-2 mb-1">
                                         <div class="flex">
                                             @for($i = 1; $i <= 5; $i++)
-                                                <svg class="w-4 h-4 {{ $i <= $review->rating ? 'text-[#FFA41C]' : 'text-[#E0E0E0]' }}" fill="currentColor" viewBox="0 0 20 20">
+                                                <svg class="w-4 h-4 {{ $i <= $review->rating ? 'text-[#205258]' : 'text-[#E0E0E0]' }}" fill="currentColor" viewBox="0 0 20 20">
                                                     <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
                                                 </svg>
                                             @endfor

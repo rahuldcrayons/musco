@@ -129,7 +129,7 @@
                                 </div>
                                 <div>
                                     <p class="text-sm font-medium text-neutral-900">Address</p>
-                                    <p class="text-[13px] text-neutral-600 leading-relaxed">Jikra HQ, Mumbai, MH 400001</p>
+                                    <p class="text-[13px] text-neutral-600 leading-relaxed">Jikra, G118 Deep Vihar,<br>Rohini Sector 24, Delhi 110084</p>
                                 </div>
                             </div>
 
@@ -177,7 +177,7 @@
                     <!-- Google Map -->
                     <div class="bg-white border border-neutral-100 rounded-xl overflow-hidden flex-1">
                         <iframe
-                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3773.861627878493!2d72.83259931490278!3d18.93219598716507!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be7d1c73a0d5cad%3A0xc70a25a7209c7f34!2sMumbai%2C+Maharashtra!5e0!3m2!1sen!2sin!4v1700000000000"
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3499.574!2d77.0567!3d28.7365!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390d0147e1c5b2c3%3A0x0!2sDeep+Vihar%2C+Rohini+Sector+24%2C+Delhi!5e0!3m2!1sen!2sin!4v1700000000000"
                             width="100%"
                             height="280"
                             style="border:0;"

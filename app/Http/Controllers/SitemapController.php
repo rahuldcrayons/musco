@@ -23,8 +23,12 @@ class SitemapController extends Controller
                 'sitemap-products.xml',
                 'sitemap-categories.xml',
                 'sitemap-brands.xml',
-                'sitemap-blog.xml',
             ];
+
+            // Only include blog sitemap if blog posts exist
+            if (class_exists(BlogPost::class) && BlogPost::published()->exists()) {
+                $sitemaps[] = 'sitemap-blog.xml';
+            }
 
             foreach ($sitemaps as $sitemap) {
                 $xml .= '  <sitemap><loc>' . url('/' . $sitemap) . '</loc></sitemap>' . "\n";
@@ -76,7 +80,7 @@ class SitemapController extends Controller
 
             // Dynamic CMS pages
             if (class_exists(Page::class)) {
-                Page::where('is_active', true)
+                Page::where('is_published', true)
                     ->select('slug', 'updated_at')
                     ->get()
                     ->each(function ($page) use ($urls) {
@@ -102,7 +106,7 @@ class SitemapController extends Controller
 
             Product::where('is_active', true)
                 ->select('id', 'slug', 'name', 'updated_at')
-                ->with(['images' => fn ($q) => $q->select('id', 'product_id', 'image_url')->limit(5)])
+                ->with(['images' => fn ($q) => $q->select('id', 'product_id', 'url')->limit(5)])
                 ->orderBy('updated_at', 'desc')
                 ->chunk(500, function ($products) use ($urls) {
                     foreach ($products as $product) {
@@ -116,7 +120,7 @@ class SitemapController extends Controller
                         // Add image entries for Google Image search
                         if ($product->images && $product->images->count()) {
                             $entry['images'] = $product->images->map(fn ($img) => [
-                                'loc' => $img->image_url,
+                                'loc' => url($img->url),
                                 'title' => $product->name,
                             ])->toArray();
                         }

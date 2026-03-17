@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Coupon;
 use App\Models\Product;
 use App\Models\Category;
 use App\Models\ProductQuestion;
@@ -166,11 +167,23 @@ class ProductController extends Controller
         $productSchema = $schemaService->getProductSchema($product);
         $faqSchema = $schemaService->getFaqSchema($product);
 
+        // Available coupons
+        $availableCoupons = Coupon::where('is_active', true)
+            ->where(function ($q) {
+                $q->whereNull('starts_at')->orWhere('starts_at', '<=', now());
+            })
+            ->where(function ($q) {
+                $q->whereNull('expires_at')->orWhere('expires_at', '>', now());
+            })
+            ->orderBy('value', 'desc')
+            ->take(4)
+            ->get();
+
         // Facebook CAPI: ViewContent
         $fbEventId = AnalyticsService::generateEventId('vc');
         app(AnalyticsService::class)->trackViewContent($product, request(), $fbEventId);
 
-        return view('products.show', compact('product', 'relatedProducts', 'compareProducts', 'breadcrumbs', 'productSchema', 'faqSchema', 'fbEventId', 'ratingDistribution', 'displayReviews'));
+        return view('products.show', compact('product', 'relatedProducts', 'compareProducts', 'breadcrumbs', 'productSchema', 'faqSchema', 'fbEventId', 'ratingDistribution', 'displayReviews', 'availableCoupons'));
     }
 
     public function quickView(Product $product): JsonResponse

@@ -27,6 +27,10 @@ Route::prefix('webhook')->middleware(VerifyMetaWebhookSignature::class)->group(f
     Route::post('meta', [WebhookController::class, 'handle'])->name('webhook.meta.handle');
 });
 
+// ─── Instagram Callbacks (required by Facebook App) ─────────────────────
+Route::match(['get', 'post'], 'instagram/deauthorize', [\App\Http\Controllers\Api\InstagramCallbackController::class, 'deauthorize'])->name('instagram.deauthorize');
+Route::match(['get', 'post'], 'instagram/delete', [\App\Http\Controllers\Api\InstagramCallbackController::class, 'delete'])->name('instagram.delete');
+
 // ─── Razorpay Webhooks (Payment Events) ─────────────────────────────────
 Route::post('webhook/razorpay', [RazorpayWebhookController::class, 'handle'])
     ->middleware(VerifyRazorpayWebhookSignature::class)

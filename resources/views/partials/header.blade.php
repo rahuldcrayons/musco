@@ -41,9 +41,9 @@
             <a href="{{ url('/') }}" class="flex items-center shrink-0">
                 @php $siteLogo = \App\Models\Setting::get('site_logo', ''); @endphp
                 @if($siteLogo)
-                    <img src="{{ asset('storage/' . $siteLogo) }}" alt="{{ config('app.name') }}" class="h-[29px] lg:h-9 w-auto">
+                    <img src="{{ asset('storage/' . $siteLogo) }}" alt="{{ config('app.name') }}" class="h-[29px] lg:h-[27px] w-auto">
                 @else
-                    <img src="{{ asset('images/jikra-logo.png') }}" alt="Jikra" class="h-[29px] lg:h-9 w-auto">
+                    <img src="{{ asset('images/jikra-logo.png') }}" alt="Jikra" class="h-[29px] lg:h-[27px] w-auto">
                 @endif
             </a>
 

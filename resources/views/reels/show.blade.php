@@ -1,0 +1,173 @@
+<x-layouts.app>
+    <x-slot name="title">{{ Str::limit($reel['caption'], 60) ?: 'Watch Reel' }} - {{ config('app.name') }}</x-slot>
+
+    @push('meta')
+        <meta name="description" content="{{ Str::limit($reel['caption'], 160) }}">
+        <meta property="og:title" content="{{ Str::limit($reel['caption'], 60) ?: 'Watch Reel' }} - {{ config('app.name') }}">
+        <meta property="og:description" content="{{ Str::limit($reel['caption'], 160) }}">
+        <meta property="og:type" content="video.other">
+        <meta property="og:url" content="{{ route('reels.show', $reel['shortcode']) }}">
+        @if($reel['thumbnail_url'])
+            <meta property="og:image" content="{{ $reel['thumbnail_url'] }}">
+        @endif
+        @if($reel['media_url'])
+            <meta property="og:video" content="{{ $reel['media_url'] }}">
+            <meta property="og:video:type" content="video/mp4">
+        @endif
+        <meta name="twitter:card" content="player">
+        <meta name="twitter:title" content="{{ Str::limit($reel['caption'], 60) }}">
+        <meta name="twitter:description" content="{{ Str::limit($reel['caption'], 160) }}">
+        @if($reel['thumbnail_url'])
+            <meta name="twitter:image" content="{{ $reel['thumbnail_url'] }}">
+        @endif
+        <link rel="canonical" href="{{ route('reels.show', $reel['shortcode']) }}">
+
+        {{-- JSON-LD VideoObject --}}
+        <script type="application/ld+json">
+        {!! json_encode([
+            '@context' => 'https://schema.org',
+            '@type' => 'VideoObject',
+            'name' => Str::limit($reel['caption'], 100) ?: config('app.name') . ' Reel',
+            'description' => $reel['caption'] ?: 'Watch this reel from ' . config('app.name'),
+            'thumbnailUrl' => $reel['thumbnail_url'] ?: '',
+            'uploadDate' => $reel['timestamp'] ?: now()->toIso8601String(),
+            'contentUrl' => $reel['media_url'] ?: $reel['permalink'],
+            'embedUrl' => route('reels.show', $reel['shortcode']),
+            'url' => route('reels.show', $reel['shortcode']),
+            'publisher' => [
+                '@type' => 'Organization',
+                'name' => config('app.name'),
+                'logo' => [
+                    '@type' => 'ImageObject',
+                    'url' => asset('images/jikra-logo.png'),
+                ],
+            ],
+            'potentialAction' => [
+                '@type' => 'WatchAction',
+                'target' => route('reels.show', $reel['shortcode']),
+            ],
+        ], JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) !!}
+        </script>
+    @endpush
+
+    <div class="bg-[#f8f6f3] min-h-screen">
+        {{-- Breadcrumb --}}
+        <div class="container mx-auto px-4 py-4">
+            <nav class="text-sm text-[#565959]">
+                <a href="{{ route('home') }}" class="hover:text-[#205258]">Home</a>
+                <span class="mx-1">/</span>
+                <a href="{{ route('reels.index') }}" class="hover:text-[#205258]">Reels</a>
+                <span class="mx-1">/</span>
+                <span class="text-[#0F1111]">{{ Str::limit($reel['caption'], 30) ?: $reel['shortcode'] }}</span>
+            </nav>
+        </div>
+
+        {{-- Main Content --}}
+        <div class="container mx-auto px-4 pb-12">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                {{-- Video Player --}}
+                <div class="lg:col-span-5">
+                    <div class="sticky top-24">
+                        <div class="relative bg-black rounded-2xl overflow-hidden" style="aspect-ratio: 9/16; max-height: 75vh;">
+                            @if($reel['media_url'])
+                                <video
+                                    id="reelPlayer"
+                                    class="w-full h-full object-contain"
+                                    poster="{{ $reel['thumbnail_url'] }}"
+                                    controls
+                                    playsinline
+                                    preload="metadata">
+                                    <source src="{{ $reel['media_url'] }}" type="video/mp4">
+                                    Your browser does not support the video tag.
+                                </video>
+                            @else
+                                {{-- Fallback: embed Instagram --}}
+                                <div class="w-full h-full flex items-center justify-center">
+                                    <a href="{{ $reel['permalink'] }}" target="_blank" rel="noopener"
+                                       class="text-white text-center p-6">
+                                        @if($reel['thumbnail_url'])
+                                            <img src="{{ $reel['thumbnail_url'] }}" alt="" class="w-full h-full object-cover absolute inset-0">
+                                            <div class="absolute inset-0 bg-black/40 flex items-center justify-center">
+                                                <div class="w-16 h-16 bg-white/20 backdrop-blur rounded-full flex items-center justify-center">
+                                                    <svg class="w-8 h-8 text-white ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                                                </div>
+                                            </div>
+                                        @endif
+                                        <p class="relative z-10 mt-4 text-sm">Watch on Instagram</p>
+                                    </a>
+                                </div>
+                            @endif
+                        </div>
+
+                        {{-- Share & Instagram link --}}
+                        <div class="flex items-center justify-between mt-4">
+                            <a href="{{ $reel['permalink'] }}" target="_blank" rel="noopener"
+                               class="inline-flex items-center gap-2 text-sm text-[#565959] hover:text-[#205258] transition-colors">
+                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C8.74 0 8.333.015 7.053.072 5.775.132 4.905.333 4.14.63c-.789.306-1.459.717-2.126 1.384S.935 3.35.63 4.14C.333 4.905.131 5.775.072 7.053.012 8.333 0 8.74 0 12s.015 3.667.072 4.947c.06 1.277.261 2.148.558 2.913.306.788.717 1.459 1.384 2.126.667.666 1.336 1.079 2.126 1.384.766.296 1.636.499 2.913.558C8.333 23.988 8.74 24 12 24s3.667-.015 4.947-.072c1.277-.06 2.148-.262 2.913-.558.788-.306 1.459-.718 2.126-1.384.666-.667 1.079-1.335 1.384-2.126.296-.765.499-1.636.558-2.913.06-1.28.072-1.687.072-4.947s-.015-3.667-.072-4.947c-.06-1.277-.262-2.149-.558-2.913-.306-.789-.718-1.459-1.384-2.126C21.319 1.347 20.651.935 19.86.63c-.765-.297-1.636-.499-2.913-.558C15.667.012 15.26 0 12 0zm0 2.16c3.203 0 3.585.016 4.85.071 1.17.055 1.805.249 2.227.415.562.217.96.477 1.382.896.419.42.679.819.896 1.381.164.422.36 1.057.413 2.227.057 1.266.07 1.646.07 4.85s-.015 3.585-.074 4.85c-.061 1.17-.256 1.805-.421 2.227-.224.562-.479.96-.899 1.382-.419.419-.824.679-1.38.896-.42.164-1.065.36-2.235.413-1.274.057-1.649.07-4.859.07-3.211 0-3.586-.015-4.859-.074-1.171-.061-1.816-.256-2.236-.421-.569-.224-.96-.479-1.379-.899-.421-.419-.69-.824-.9-1.38-.165-.42-.359-1.065-.42-2.235-.045-1.26-.061-1.649-.061-4.844 0-3.196.016-3.586.061-4.861.061-1.17.255-1.814.42-2.234.21-.57.479-.96.9-1.381.419-.419.81-.689 1.379-.898.42-.166 1.051-.361 2.221-.421 1.275-.045 1.65-.06 4.859-.06l.045.03zm0 3.678c-3.405 0-6.162 2.76-6.162 6.162 0 3.405 2.76 6.162 6.162 6.162 3.405 0 6.162-2.76 6.162-6.162 0-3.405-2.76-6.162-6.162-6.162zM12 16c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4zm7.846-10.405c0 .795-.646 1.44-1.44 1.44-.795 0-1.44-.646-1.44-1.44 0-.794.646-1.439 1.44-1.439.793-.001 1.44.645 1.44 1.439z"/></svg>
+                                View on Instagram
+                            </a>
+                            <button onclick="navigator.share ? navigator.share({title: '{{ Str::limit($reel['caption'], 50) }}', url: window.location.href}) : navigator.clipboard.writeText(window.location.href).then(() => alert('Link copied!'))"
+                                    class="inline-flex items-center gap-2 text-sm text-[#565959] hover:text-[#205258] transition-colors">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/></svg>
+                                Share
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Reel Info & Caption --}}
+                <div class="lg:col-span-7">
+                    <div class="bg-white rounded-2xl p-6 lg:p-8 shadow-sm">
+                        <div class="flex items-center gap-3 mb-4">
+                            <img src="{{ asset('images/jikra-logo.png') }}" alt="{{ config('app.name') }}" class="w-10 h-10 rounded-full object-contain bg-[#205258] p-1">
+                            <div>
+                                <p class="font-semibold text-[#0F1111] text-sm">{{ config('app.name') }}</p>
+                                <p class="text-xs text-[#565959]">{{ \Carbon\Carbon::parse($reel['timestamp'])->diffForHumans() }}</p>
+                            </div>
+                        </div>
+
+                        @if($reel['caption'])
+                            <p class="text-[#0F1111] text-sm leading-relaxed mb-6 whitespace-pre-line">{{ $reel['caption'] }}</p>
+                        @endif
+
+                        {{-- Shop Now CTA --}}
+                        <div class="border-t border-[#E3E6E6] pt-6 mt-6">
+                            <h3 class="text-lg font-semibold text-[#0F1111] mb-3">Shop Featured Products</h3>
+                            <p class="text-sm text-[#565959] mb-4">Love what you see? Browse our collection to find the products featured in this video.</p>
+                            <a href="{{ route('products.index') }}"
+                               class="inline-flex items-center gap-2 px-6 py-2.5 bg-[#205258] text-white rounded-full font-semibold text-sm hover:bg-[#1b454a] transition-colors">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
+                                Shop Now
+                            </a>
+                        </div>
+                    </div>
+
+                    {{-- More Reels --}}
+                    @if(count($moreReels))
+                        <div class="mt-8">
+                            <h3 class="text-lg font-semibold text-[#0F1111] mb-4">More Videos</h3>
+                            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                                @foreach($moreReels as $more)
+                                    <a href="{{ route('reels.show', $more['shortcode']) }}" class="group block">
+                                        <div class="relative rounded-xl overflow-hidden bg-[#f0f0f0]" style="aspect-ratio: 9/16;">
+                                            @if($more['thumbnail_url'])
+                                                <img src="{{ $more['thumbnail_url'] }}" alt="{{ Str::limit($more['caption'], 40) }}" loading="lazy"
+                                                     class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105">
+                                            @endif
+                                            <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
+                                                <div class="w-10 h-10 bg-black/50 backdrop-blur rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                                    <svg class="w-5 h-5 text-white ml-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <p class="mt-2 text-xs text-[#565959] line-clamp-2">{{ Str::limit($more['caption'], 50) }}</p>
+                                    </a>
+                                @endforeach
+                            </div>
+                        </div>
+                    @endif
+                </div>
+            </div>
+        </div>
+    </div>
+</x-layouts.app>

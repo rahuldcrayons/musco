@@ -64,4 +64,10 @@ return [
         'whatsapp_phone_number_id' => env('META_WHATSAPP_PHONE_NUMBER_ID'),
     ],
 
+    'instagram' => [
+        'handle' => env('INSTAGRAM_HANDLE', '@jikra.in'),
+        'user_id' => env('INSTAGRAM_USER_ID'),
+        'access_token' => env('INSTAGRAM_ACCESS_TOKEN'),
+    ],
+
 ];

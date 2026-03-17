@@ -44,6 +44,18 @@ class ReviewSchemaService
             $schema['mpn'] = $product->sku;
         }
 
+        // Video (if product has video URL)
+        if ($product->video_url) {
+            $schema['video'] = [
+                '@type' => 'VideoObject',
+                'name' => $product->name . ' - Product Video',
+                'description' => $description,
+                'thumbnailUrl' => $images[0] ?? $product->primary_image_url,
+                'contentUrl' => $product->video_url,
+                'uploadDate' => $product->created_at->format('Y-m-d'),
+            ];
+        }
+
         // Offers
         $offer = [
             '@type' => 'Offer',

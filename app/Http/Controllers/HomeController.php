@@ -58,6 +58,15 @@ class HomeController extends Controller
             ->take($dealsCount)
             ->get();
 
+        // Category carousel — all active categories with products (for horizontal scroll)
+        $carouselCategories = Category::query()
+            ->where('is_active', true)
+            ->withCount(['products' => fn($q) => $q->where('is_active', true)])
+            ->having('products_count', '>', 0)
+            ->orderBy('position')
+            ->take(15)
+            ->get();
+
         // Categories with product counts + fallback images from first product
         // Only show selected root categories on homepage
         $homepageCategorySlugs = [];
@@ -107,6 +116,7 @@ class HomeController extends Controller
             'bestsellers',
             'deals',
             'categories',
+            'carouselCategories',
             'banners',
             'sections',
             'testimonials',

@@ -279,26 +279,31 @@
                 background: var(--primary); padding: 50px 0; text-align: center;
             }
             .newsletter h2 {
-                color: #fff; font-size: 22px; font-weight: 600;
-                letter-spacing: 0.03em; margin: 0 0 20px;
+                color: #fff; font-family: 'Fredoka', 'Poppins', sans-serif;
+                font-size: 28px; font-weight: 700; font-style: italic;
+                margin: 0 0 10px; line-height: 1.3;
+            }
+            .newsletter p {
+                color: rgba(255,255,255,0.7); font-size: 13px; margin: 0 0 24px;
+                max-width: 500px; margin-left: auto; margin-right: auto;
             }
             .newsletter-form {
-                display: flex; gap: 10px; max-width: 460px; margin: 0 auto;
-                justify-content: center; align-items: center;
+                display: flex; max-width: 560px; margin: 0 auto;
+                border-radius: 6px; overflow: hidden;
+                box-shadow: 0 2px 12px rgba(0,0,0,0.1);
             }
             .newsletter-input {
-                flex: 1; padding: 14px 20px; border: 2px solid rgba(255,255,255,0.3);
-                border-radius: var(--btn-radius); background: transparent; color: #fff;
+                flex: 1; padding: 16px 20px; border: none;
+                background: #fff; color: var(--text-dark);
                 font-size: 14px; outline: none;
             }
-            .newsletter-input::placeholder { color: rgba(255,255,255,0.5); }
-            .newsletter-input:focus { border-color: #fff; }
+            .newsletter-input::placeholder { color: #999; }
             .newsletter-btn {
-                padding: 14px 28px; background: var(--accent); color: #fff;
-                border-radius: var(--btn-radius); font-weight: 600; font-size: 14px;
+                padding: 16px 32px; background: var(--text-dark); color: #fff;
+                font-weight: 600; font-size: 14px;
                 border: none; cursor: pointer; transition: background 0.2s; white-space: nowrap;
             }
-            .newsletter-btn:hover { background: var(--accent-dark); }
+            .newsletter-btn:hover { background: #333; }
 
             /* ===== RESPONSIVE ===== */
 
@@ -358,9 +363,10 @@
                 .testimonial-card { min-width: 240px; }
 
                 .newsletter { padding: 36px 0; }
-                .newsletter h2 { font-size: 18px; }
-                .newsletter-form { flex-direction: column; padding: 0 20px; }
-                .newsletter-input { max-width: none; }
+                .newsletter h2 { font-size: 20px; }
+                .newsletter-form { flex-direction: column; padding: 0 20px; border-radius: 0; box-shadow: none; }
+                .newsletter-input { border-radius: 6px; max-width: none; }
+                .newsletter-btn { border-radius: 6px; }
             }
 
             /* Small mobile */
@@ -511,17 +517,18 @@
                 </template>
             </div>
         </div>
-        <!-- Banner Curl SVG -->
-        <div class="relative -mt-1">
-            <svg viewBox="0 0 1440 40" preserveAspectRatio="none" class="w-full h-6 lg:h-10 block" xmlns="http://www.w3.org/2000/svg">
-                <defs>
-                    <linearGradient id="curlShadow" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stop-color="rgba(0,0,0,0.08)"/>
-                        <stop offset="100%" stop-color="rgba(0,0,0,0)"/>
-                    </linearGradient>
-                </defs>
-                <path d="M0,0 C360,40 1080,40 1440,0 L1440,40 L0,40 Z" fill="#ffffff"/>
-                <path d="M0,0 C360,40 1080,40 1440,0" fill="none" stroke="url(#curlShadow)" stroke-width="2"/>
+        <!-- Banner Waves — absolute at bottom of banner -->
+        <div class="absolute -bottom-[1px] left-0 right-0 z-10 pointer-events-none">
+            <svg viewBox="0 0 1440 120" preserveAspectRatio="none" class="w-full h-[50px] sm:h-[70px] lg:h-[90px] block" xmlns="http://www.w3.org/2000/svg">
+                {{-- Back wave (soft shadow) --}}
+                <path d="M0,80 C120,100 240,40 360,60 C480,80 600,100 720,80 C840,60 960,30 1080,50 C1200,70 1320,100 1440,80 L1440,120 L0,120 Z"
+                      fill="rgba(255,255,255,0.4)"/>
+                {{-- Middle wave --}}
+                <path d="M0,90 C160,110 320,50 480,70 C640,90 800,110 960,85 C1120,60 1280,40 1440,70 L1440,120 L0,120 Z"
+                      fill="rgba(255,255,255,0.6)"/>
+                {{-- Front wave (solid white) --}}
+                <path d="M0,95 C200,115 400,70 600,85 C800,100 1000,115 1200,90 C1320,78 1380,85 1440,95 L1440,120 L0,120 Z"
+                      fill="#ffffff"/>
             </svg>
         </div>
     </section>
@@ -680,6 +687,11 @@
     @endif
 
     <!-- ==========================================
+         SHOP OUR REELS - Shoppable Instagram Carousel
+         ========================================== -->
+    <x-instagram-reels />
+
+    <!-- ==========================================
          WHY CHOOSE US - Feature Grid
          ========================================== -->
     @if(isset($sections['benefits']) && $sections['benefits']->is_active && is_array($sections['benefits']->content))
@@ -812,20 +824,37 @@
                         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
                     </a>
                 </div>
-                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+                <div class="product-slider">
                     @foreach($newArrivals->take(10) as $product)
-                        <x-product-card :product="$product" />
+                        <div class="slide-item">
+                            <x-product-card :product="$product" :compact="true" />
+                        </div>
                     @endforeach
-                </div>
-                <div class="text-center mt-8">
-                    <a href="{{ route('new-arrivals') }}" class="inline-flex items-center gap-2 px-4 py-1.5 bg-white text-[#205258] rounded-full font-medium text-sm hover:bg-[#205258] hover:text-white transition-colors">
-                        View All New Arrivals
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                    </a>
                 </div>
             </div>
         </section>
     @endif
+
+    <!-- ==========================================
+         NEWSLETTER SIGNUP
+         ========================================== -->
+    @php
+        $nlSection = $sections['newsletter'] ?? null;
+        $nlTitle = $nlSection->title ?? \App\Models\Setting::get('newsletter_heading', 'Get 20% Off Your First Order!');
+        $nlSubtitle = $nlSection->subtitle ?? \App\Models\Setting::get('newsletter_subtitle', 'Sign up for our newsletter and receive exclusive deals, new arrivals, and shopping tips. Unsubscribe anytime.');
+        $nlBtnText = $nlSection->button_text ?? 'Sign Up';
+    @endphp
+    <section class="newsletter">
+        <div class="container mx-auto px-4">
+            <h2>{{ $nlTitle }}</h2>
+            <p>{{ $nlSubtitle }}</p>
+            <form class="newsletter-form" action="{{ route('newsletter.subscribe') }}" method="POST">
+                @csrf
+                <input type="email" name="email" class="newsletter-input" placeholder="Email" required>
+                <button type="submit" class="newsletter-btn">{{ $nlBtnText }}</button>
+            </form>
+        </div>
+    </section>
 
     <!-- ==========================================
          TRUST BADGES + FAQ

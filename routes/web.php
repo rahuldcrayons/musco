@@ -26,6 +26,7 @@ Route::get('/sitemap-blog.xml', [App\Http\Controllers\SitemapController::class, 
 
 // Facebook Catalog Feed
 Route::get('/feeds/facebook-catalog.xml', App\Http\Controllers\FacebookCatalogController::class)->name('facebook.catalog');
+Route::get('/feeds/google-merchant.xml', App\Http\Controllers\GoogleMerchantController::class)->name('google.merchant');
 
 // PWA Routes (served via Laravel when nginx doesn't serve static files through symlinks)
 Route::get('/offline', fn () => view('offline'))->name('offline');
@@ -43,6 +44,10 @@ Route::prefix('products')->name('products.')->group(function () {
 
 // Alias for product show
 Route::get('/product/{product:slug}', [App\Http\Controllers\ProductController::class, 'show'])->name('product.show');
+
+// Instagram Reels / Videos
+Route::get('/reels', [App\Http\Controllers\ReelController::class, 'index'])->name('reels.index')->middleware('cache.response:5');
+Route::get('/reels/{shortcode}', [App\Http\Controllers\ReelController::class, 'show'])->name('reels.show')->middleware('cache.response:5');
 
 // Quick View (AJAX)
 Route::get('/product/{product}/quick-view', [App\Http\Controllers\ProductController::class, 'quickView'])->name('product.quick-view');
@@ -227,6 +232,11 @@ Route::get('/cookie-policy', [App\Http\Controllers\PageController::class, 'cooki
 Route::get('/gdpr', [App\Http\Controllers\PageController::class, 'gdpr'])->name('gdpr');
 Route::get('/sitemap', [App\Http\Controllers\PageController::class, 'sitemap'])->name('sitemap.html');
 Route::get('/page/{page:slug}', [App\Http\Controllers\PageController::class, 'show'])->name('page.show');
+
+// Instagram Callbacks (Facebook App requirement)
+Route::match(['get', 'post'], '/auth/instagram/callback', [\App\Http\Controllers\Api\InstagramCallbackController::class, 'deauthorize'])->name('instagram.callback')->withoutMiddleware(\Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class);
+Route::match(['get', 'post'], '/auth/instagram/deauthorize', [\App\Http\Controllers\Api\InstagramCallbackController::class, 'deauthorize'])->name('instagram.deauthorize.web')->withoutMiddleware(\Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class);
+Route::match(['get', 'post'], '/auth/instagram/delete', [\App\Http\Controllers\Api\InstagramCallbackController::class, 'delete'])->name('instagram.delete.web')->withoutMiddleware(\Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class);
 
 // Load Admin Routes
 require __DIR__.'/admin.php';
