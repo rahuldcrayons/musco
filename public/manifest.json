@@ -1,0 +1,64 @@
+{
+    "name": "Jikra - Shop Smart, Live Better",
+    "short_name": "Jikra",
+    "description": "Shop gadgets, home essentials, and accessories online at Jikra.",
+    "start_url": "/",
+    "display": "standalone",
+    "orientation": "portrait",
+    "background_color": "#ffffff",
+    "theme_color": "#205258",
+    "categories": ["shopping", "lifestyle"],
+    "lang": "en-IN",
+    "dir": "ltr",
+    "scope": "/",
+    "prefer_related_applications": false,
+    "icons": [
+        {
+            "src": "/images/icons/icon-192x192.svg",
+            "sizes": "any",
+            "type": "image/svg+xml",
+            "purpose": "any"
+        },
+        {
+            "src": "/images/icons/icon-maskable.svg",
+            "sizes": "any",
+            "type": "image/svg+xml",
+            "purpose": "maskable"
+        },
+        {
+            "src": "/images/jikra-logo.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any"
+        }
+    ],
+    "screenshots": [
+        {
+            "src": "/images/screenshots/home-mobile.png",
+            "sizes": "390x844",
+            "type": "image/png",
+            "form_factor": "narrow",
+            "label": "Jikra Home"
+        }
+    ],
+    "shortcuts": [
+        {
+            "name": "Categories",
+            "short_name": "Categories",
+            "url": "/categories",
+            "icons": [{ "src": "/images/icons/icon-96x96.png", "sizes": "96x96" }]
+        },
+        {
+            "name": "My Orders",
+            "short_name": "Orders",
+            "url": "/account/orders",
+            "icons": [{ "src": "/images/icons/icon-96x96.png", "sizes": "96x96" }]
+        },
+        {
+            "name": "Cart",
+            "short_name": "Cart",
+            "url": "/cart",
+            "icons": [{ "src": "/images/icons/icon-96x96.png", "sizes": "96x96" }]
+        }
+    ]
+}
