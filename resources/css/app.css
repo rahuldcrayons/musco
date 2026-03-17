@@ -389,17 +389,17 @@ button:disabled, [disabled] {
 }
 
 /* ========================================
-   Global Focus Reset — remove focus rings/outlines everywhere
+   Global Focus — subtle 1px focus ring (WCAG 2.4.7)
    ======================================== */
 
-/* Remove ALL focus outlines/rings on click everywhere */
-*:focus,
-*:focus-visible,
-*:focus-within,
-*:active {
-    outline: none !important;
-    outline-width: 0 !important;
-    box-shadow: none !important;
+/* Hide focus on mouse click, show on keyboard */
+*:focus {
+    outline: none;
+}
+
+*:focus-visible {
+    outline: 1px solid var(--color-primary-500);
+    outline-offset: 1px;
 }
 
 /* Global: Remove all button borders */
@@ -445,13 +445,13 @@ a[class*="btn"] {
 }
 
 .form-input::placeholder {
-    color: var(--color-neutral-400);
+    color: var(--color-neutral-500);
 }
 
 .form-input:focus {
-    outline: none;
-    box-shadow: none;
-    border-color: var(--color-neutral-400);
+    outline: 1px solid var(--color-primary-500);
+    outline-offset: -1px;
+    border-color: var(--color-primary-500);
 }
 
 .form-input:disabled {
@@ -465,8 +465,8 @@ a[class*="btn"] {
 }
 
 .form-input-error:focus {
-    outline: none;
-    box-shadow: none;
+    outline: 1px solid var(--color-error-500);
+    outline-offset: -1px;
     border-color: var(--color-error-600);
 }
 
@@ -475,8 +475,8 @@ a[class*="btn"] {
 }
 
 .form-input-success:focus {
-    outline: none;
-    box-shadow: none;
+    outline: 1px solid var(--color-success-500);
+    outline-offset: -1px;
     border-color: var(--color-success-600);
 }
 
@@ -502,13 +502,13 @@ a[class*="btn"] {
 }
 
 .form-textarea::placeholder {
-    color: var(--color-neutral-400);
+    color: var(--color-neutral-500);
 }
 
 .form-textarea:focus {
-    outline: none;
-    box-shadow: none;
-    border-color: var(--color-neutral-400);
+    outline: 1px solid var(--color-primary-500);
+    outline-offset: -1px;
+    border-color: var(--color-primary-500);
 }
 
 .form-textarea:disabled {
@@ -536,9 +536,9 @@ a[class*="btn"] {
 }
 
 .form-select:focus {
-    outline: none;
-    box-shadow: none;
-    border-color: var(--color-neutral-400);
+    outline: 1px solid var(--color-primary-500);
+    outline-offset: -1px;
+    border-color: var(--color-primary-500);
 }
 
 .layout-admin .form-select {
@@ -556,9 +556,9 @@ a[class*="btn"] {
     border-radius: 0.25rem;
 }
 
-.form-checkbox:focus {
-    outline: none;
-    box-shadow: none;
+.form-checkbox:focus-visible {
+    outline: 1px solid var(--color-primary-500);
+    outline-offset: 1px;
 }
 
 /* Radio base styles */
@@ -569,9 +569,9 @@ a[class*="btn"] {
     border-color: var(--color-neutral-300);
 }
 
-.form-radio:focus {
-    outline: none;
-    box-shadow: none;
+.form-radio:focus-visible {
+    outline: 1px solid var(--color-primary-500);
+    outline-offset: 1px;
 }
 
 /* Label styles */
@@ -631,9 +631,9 @@ a[class*="btn"] {
     border-radius: 0.375rem;
 }
 
-.btn:focus {
-    outline: none;
-    box-shadow: none;
+.btn:focus-visible {
+    outline: 1px solid var(--color-primary-500);
+    outline-offset: 1px;
 }
 
 .btn:disabled {
@@ -686,9 +686,9 @@ a[class*="btn"] {
     background-color: var(--color-error-600);
 }
 
-.btn-danger:focus {
-    outline: none;
-    box-shadow: none;
+.btn-danger:focus-visible {
+    outline: 1px solid var(--color-error-500);
+    outline-offset: 1px;
 }
 
 .btn-success {
@@ -700,9 +700,9 @@ a[class*="btn"] {
     background-color: var(--color-success-600);
 }
 
-.btn-success:focus {
-    outline: none;
-    box-shadow: none;
+.btn-success:focus-visible {
+    outline: 1px solid var(--color-success-500);
+    outline-offset: 1px;
 }
 
 .btn-sm {

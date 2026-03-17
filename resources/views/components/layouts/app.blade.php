@@ -17,9 +17,8 @@
     <meta name="msapplication-TileColor" content="#205258">
     <meta name="format-detection" content="telephone=no">
     <link rel="manifest" href="/manifest.json">
-    <link rel="icon" type="image/svg+xml" href="/images/icons/favicon.svg">
-    <link rel="icon" type="image/png" sizes="32x32" href="/images/icons/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/images/icons/favicon-16x16.png">
+    <link rel="icon" type="image/png" href="/images/icons/favicon.png?v=2">
+    <link rel="shortcut icon" href="/favicon.ico?v=2">
     <link rel="apple-touch-icon" sizes="180x180" href="/images/icons/icon-192x192.svg">
 
     <!-- SEO Meta Tags -->
@@ -476,12 +475,12 @@
                         <div class="mt-auto space-y-2">
                             <template x-if="product?.in_stock">
                                 <button @click="$store.cart.add(product.id); close()"
-                                        class="w-full py-2 bg-[#F8931D] hover:bg-[#E07E0A] text-white font-semibold rounded-lg text-sm transition-colors">
+                                        class="w-full py-1.5 bg-[#F8931D] hover:bg-[#E07E0A] text-white font-semibold rounded-lg text-sm transition-colors">
                                     Add to Bag
                                 </button>
                             </template>
                             <a :href="product?.url"
-                               class="block w-full py-2 text-center text-sm font-medium text-[#205258] border border-[#205258]/30 rounded-lg hover:bg-[#205258]/5 transition-colors">
+                               class="block w-full py-1.5 text-center text-sm font-medium text-[#205258] rounded-lg hover:bg-[#205258]/5 transition-colors">
                                 View Full Details
                             </a>
                         </div>
@@ -805,7 +804,7 @@
                                 </div>
                             </a>
                             <button @click="$store.cart.add(rec.id)"
-                                    class="w-full mt-1.5 py-1.5 text-[10px] font-semibold text-[#205258] border border-[#205258]/30 rounded-md hover:bg-[#205258] hover:text-white transition-colors">
+                                    class="w-full mt-1.5 py-1 text-[10px] font-semibold text-[#205258] rounded-md hover:bg-[#205258] hover:text-white transition-colors">
                                 Add to Bag
                             </button>
                         </div>
@@ -822,11 +821,11 @@
                 <p class="text-[11px] text-neutral-400 mb-3">Shipping and taxes calculated at checkout</p>
                 <div class="flex flex-col gap-2">
                     <a href="{{ route('checkout.index') }}" @click="$store.cart.close()"
-                       class="w-full py-2 bg-[#F8931D] hover:bg-[#E07E0A] text-white font-semibold rounded-lg text-sm text-center transition-colors shadow-sm">
+                       class="w-full py-1.5 bg-[#F8931D] hover:bg-[#E07E0A] text-white font-semibold rounded-lg text-sm text-center transition-colors shadow-sm">
                         Checkout
                     </a>
                     <a href="{{ route('cart.index') }}" @click="$store.cart.close()"
-                       class="w-full py-2 text-center text-sm font-medium text-[#205258] border border-[#205258]/30 rounded-lg hover:bg-[#205258]/5 transition-colors">
+                       class="w-full py-1.5 text-center text-sm font-medium text-[#205258] rounded-lg hover:bg-[#205258]/5 transition-colors">
                         View Bag
                     </a>
                 </div>
@@ -834,7 +833,7 @@
         </div>
     </div>
 
-    <!-- PWA Install Prompt (Mobile) -->
+    <!-- PWA Install Prompt (compact, bottom-left) -->
     <div x-data="pwaInstall()" x-show="showPrompt" x-cloak
          x-transition:enter="transition ease-out duration-300"
          x-transition:enter-start="opacity-0 translate-y-full"
@@ -842,26 +841,25 @@
          x-transition:leave="transition ease-in duration-200"
          x-transition:leave-start="opacity-100 translate-y-0"
          x-transition:leave-end="opacity-0 translate-y-full"
-         class="fixed bottom-20 lg:bottom-4 left-4 right-4 z-50 bg-white rounded-2xl shadow-2xl border border-neutral-100 p-4 mx-auto max-w-sm">
-        <div class="flex items-start gap-3">
-            <div class="w-11 h-11 rounded-xl bg-[#205258] flex items-center justify-center shrink-0">
-                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+         class="fixed bottom-20 lg:bottom-4 left-3 z-50 bg-white rounded-lg shadow-lg border border-[#E3E6E6] px-3 py-2.5 w-56">
+        <div class="flex items-center gap-2">
+            <div class="w-7 h-7 rounded bg-[#205258] flex items-center justify-center shrink-0">
+                <svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
                 </svg>
             </div>
             <div class="flex-1 min-w-0">
-                <p class="text-sm font-semibold text-neutral-900">Add Jikra to Home Screen</p>
-                <p class="text-xs text-neutral-500 mt-0.5">Fast access, works offline</p>
+                <p class="text-[11px] font-semibold text-[#0F1111] leading-tight">Add Jikra to Home Screen</p>
             </div>
-            <button @click="dismiss()" class="shrink-0 p-1 text-neutral-400 hover:text-neutral-600" aria-label="Dismiss">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <button @click="dismiss()" class="shrink-0 text-[#565959] hover:text-[#0F1111]" aria-label="Dismiss">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                 </svg>
             </button>
         </div>
-        <div class="flex gap-2 mt-3">
-            <button @click="dismiss()" class="flex-1 py-2 text-xs font-medium text-neutral-600 bg-neutral-100 rounded-xl hover:bg-neutral-200 transition-colors">Later</button>
-            <button @click="install()" class="flex-1 py-2 text-xs font-medium text-white bg-[#205258] rounded-xl hover:bg-[#1b454a] transition-colors">Install App</button>
+        <div class="flex gap-1.5 mt-2">
+            <button @click="dismiss()" class="flex-1 py-1 text-[10px] font-medium text-[#565959] bg-[#F7F8FA] rounded hover:bg-[#E3E6E6] transition-colors">Later</button>
+            <button @click="install()" class="flex-1 py-1 text-[10px] font-medium text-white bg-[#205258] rounded hover:bg-[#1b454a] transition-colors">Install</button>
         </div>
     </div>
 

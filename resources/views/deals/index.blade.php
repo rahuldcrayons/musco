@@ -1,6 +1,17 @@
 <x-layouts.app>
     <x-slot name="title">Deals - {{ config('app.name') }}</x-slot>
 
+    @push('meta')
+        <meta name="description" content="Browse the latest deals and discounts at {{ config('app.name') }}. Save big on top products.">
+        <link rel="canonical" href="{{ url('/deals') }}">
+        <meta property="og:title" content="Deals & Discounts - {{ config('app.name') }}">
+        <meta property="og:description" content="Browse the latest deals and discounts at {{ config('app.name') }}. Save big on top products.">
+        <meta property="og:type" content="website">
+        <meta property="og:url" content="{{ url('/deals') }}">
+        <meta name="twitter:card" content="summary">
+        <meta name="twitter:title" content="Deals & Discounts - {{ config('app.name') }}">
+    @endpush
+
     <div class="bg-neutral-50 border-b border-neutral-100">
         <div class="container mx-auto px-4 py-3">
             <x-breadcrumb :items="[['label' => 'Deals', 'url' => null]]" />

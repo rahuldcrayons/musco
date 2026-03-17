@@ -42,6 +42,8 @@ return Application::configure(basePath: dirname(__DIR__))
             'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
             'pos.auth' => \App\Http\Middleware\PosAuthenticate::class,
             'pos.shift' => \App\Http\Middleware\PosShiftRequired::class,
+            'cache.response' => \App\Http\Middleware\CacheResponse::class,
+            'admin.audit' => \App\Http\Middleware\AdminAuditLog::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

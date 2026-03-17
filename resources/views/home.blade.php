@@ -119,11 +119,11 @@
             .product-slider {
                 display: flex; gap: 16px; overflow-x: auto; scroll-snap-type: x mandatory;
                 -ms-overflow-style: none; scrollbar-width: none;
-                padding: 0 0 4px;
+                padding: 0 0 4px; align-items: stretch;
             }
             .product-slider::-webkit-scrollbar { display: none; }
             .product-slider .slide-item {
-                flex-shrink: 0; scroll-snap-align: start;
+                flex-shrink: 0; scroll-snap-align: start; display: flex;
                 width: 190px;
             }
 
@@ -818,7 +818,7 @@
                     @endforeach
                 </div>
                 <div class="text-center mt-8">
-                    <a href="{{ route('new-arrivals') }}" class="inline-flex items-center gap-2 px-8 py-2 bg-white text-[#205258] border border-[#205258] rounded-full font-medium text-sm hover:bg-[#205258] hover:text-white transition-colors">
+                    <a href="{{ route('new-arrivals') }}" class="inline-flex items-center gap-2 px-4 py-1.5 bg-white text-[#205258] rounded-full font-medium text-sm hover:bg-[#205258] hover:text-white transition-colors">
                         View All New Arrivals
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                     </a>
@@ -828,42 +828,9 @@
     @endif
 
     <!-- ==========================================
-         NEWSLETTER
+         TRUST BADGES + FAQ
          ========================================== -->
-    @if(!isset($sections['newsletter']) || $sections['newsletter']->is_active)
-    <section class="newsletter">
-        <div class="container mx-auto px-4">
-            <div class="max-w-2xl mx-auto text-center">
-                <h2>{{ $sections['newsletter']->title ?? 'Join the Jikra Family' }}</h2>
-                @if(isset($sections['newsletter']) && $sections['newsletter']->subtitle)
-                    <p class="text-white/80 text-sm mb-4">{{ $sections['newsletter']->subtitle }}</p>
-                @endif
-                <form class="newsletter-form"
-                      x-data="{ email: '', loading: false, message: '', success: false }"
-                      @submit.prevent="
-                          loading = true; message = '';
-                          fetch('/newsletter/subscribe', {
-                              method: 'POST',
-                              headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
-                              body: JSON.stringify({ email, source: 'homepage' })
-                          }).then(r => r.json()).then(data => {
-                              success = data.success; message = data.message; loading = false;
-                              if (data.success) email = '';
-                          }).catch(() => { message = 'Something went wrong. Please try again.'; loading = false; })
-                      ">
-                    <template x-if="message">
-                        <p class="w-full text-sm text-center py-2 rounded" :class="success ? 'text-white' : 'text-red-200'" x-text="message"></p>
-                    </template>
-                    <template x-if="!message">
-                        <input type="email" x-model="email" required placeholder="Email Address" class="newsletter-input">
-                    </template>
-                    <button type="submit" :disabled="loading" x-show="!message" class="newsletter-btn">
-                        <span x-text="loading ? 'Subscribing...' : 'Subscribe'">Subscribe</span>
-                    </button>
-                </form>
-            </div>
-        </div>
-    </section>
-    @endif
+    <x-trust-badges />
+    <x-faq-section />
 
 </x-layouts.app>

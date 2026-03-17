@@ -101,8 +101,7 @@ class ProductController extends Controller
             'seller',
             'images',
             'variants.attributeValues.attribute',
-            'reviews' => fn ($q) => $q->where('is_approved', true)->latest()->take(10),
-            'reviews.user',
+            'approvedReviews.user',
             'questions' => fn ($q) => $q->where('is_answered', true)->latest()->take(5),
             'questions.answers',
         ]);
@@ -151,6 +150,17 @@ class ProductController extends Controller
         }
         $breadcrumbs[] = ['label' => $product->name, 'url' => null];
 
+        // Rating distribution from all approved reviews
+        $ratingDistribution = [5 => 0, 4 => 0, 3 => 0, 2 => 0, 1 => 0];
+        foreach ($product->approvedReviews as $r) {
+            if (isset($ratingDistribution[$r->rating])) {
+                $ratingDistribution[$r->rating]++;
+            }
+        }
+
+        // Latest 10 reviews for display (all loaded for schema)
+        $displayReviews = $product->approvedReviews->sortByDesc('created_at')->take(10);
+
         // JSON-LD structured data for SEO
         $schemaService = app(ReviewSchemaService::class);
         $productSchema = $schemaService->getProductSchema($product);
@@ -160,7 +170,7 @@ class ProductController extends Controller
         $fbEventId = AnalyticsService::generateEventId('vc');
         app(AnalyticsService::class)->trackViewContent($product, request(), $fbEventId);
 
-        return view('products.show', compact('product', 'relatedProducts', 'compareProducts', 'breadcrumbs', 'productSchema', 'faqSchema', 'fbEventId'));
+        return view('products.show', compact('product', 'relatedProducts', 'compareProducts', 'breadcrumbs', 'productSchema', 'faqSchema', 'fbEventId', 'ratingDistribution', 'displayReviews'));
     }
 
     public function quickView(Product $product): JsonResponse

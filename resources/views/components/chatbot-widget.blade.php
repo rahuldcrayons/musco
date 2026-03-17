@@ -98,7 +98,7 @@
                         <template x-for="chip in quickChips" :key="chip.label">
                             <button
                                 @click="sendQuickChip(chip.message)"
-                                class="text-[11px] px-3 py-1.5 rounded-full border border-[#205258]/40 text-[#205258] bg-white hover:bg-[#205258]/8 transition-colors font-medium whitespace-nowrap"
+                                class="text-[11px] px-3 py-1 rounded-full text-[#205258] bg-[#205258]/5 hover:bg-[#205258]/10 transition-colors font-medium whitespace-nowrap"
                                 x-text="chip.label"
                             ></button>
                         </template>
@@ -167,7 +167,7 @@
                                                     <template x-if="product.has_discount">
                                                         <p class="text-[9px] text-neutral-600 line-through" x-text="product.mrp"></p>
                                                     </template>
-                                                    <div class="mt-1.5 text-center text-[9px] font-semibold text-[#205258] border border-[#205258]/40 rounded-md py-0.5 hover:bg-[#205258] hover:text-white hover:border-[#205258] transition-colors">
+                                                    <div class="mt-1.5 text-center text-[9px] font-semibold text-[#205258] bg-[#205258]/5 rounded-md py-0.5 hover:bg-[#205258] hover:text-white transition-colors">
                                                         View →
                                                     </div>
                                                 </div>

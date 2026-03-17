@@ -35,8 +35,8 @@ Route::post('webhook/razorpay', [RazorpayWebhookController::class, 'handle'])
 // API Version 1
 Route::prefix('v1')->name('api.v1.')->group(function () {
 
-    // Public authentication routes
-    Route::prefix('auth')->name('auth.')->group(function () {
+    // Public authentication routes (rate-limited)
+    Route::prefix('auth')->name('auth.')->middleware('throttle:10,1')->group(function () {
         Route::post('register', RegisterController::class)->name('register');
         Route::post('login', LoginController::class)->name('login');
     });

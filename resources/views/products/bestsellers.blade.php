@@ -1,6 +1,17 @@
 <x-layouts.app>
     <x-slot name="title">Bestsellers - {{ config('app.name') }}</x-slot>
 
+    @push('meta')
+        <meta name="description" content="Shop our bestselling products at {{ config('app.name') }}. Top-rated items loved by customers.">
+        <link rel="canonical" href="{{ url('/products/bestsellers') }}">
+        <meta property="og:title" content="Bestsellers - {{ config('app.name') }}">
+        <meta property="og:description" content="Shop our bestselling products at {{ config('app.name') }}. Top-rated items loved by customers.">
+        <meta property="og:type" content="website">
+        <meta property="og:url" content="{{ url('/products/bestsellers') }}">
+        <meta name="twitter:card" content="summary">
+        <meta name="twitter:title" content="Bestsellers - {{ config('app.name') }}">
+    @endpush
+
     <div class="bg-neutral-50 border-b border-neutral-100">
         <div class="container mx-auto px-4 py-3">
             <x-breadcrumb :items="[['label' => 'Bestsellers', 'url' => null]]" />

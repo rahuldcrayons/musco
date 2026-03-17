@@ -72,6 +72,14 @@ class PageController extends Controller
         return view('pages.faq');
     }
 
+    public function sitemap(): View
+    {
+        $categories = \App\Models\Category::where('is_active', true)->orderBy('position')->select('name', 'slug')->get();
+        $brands = \App\Models\Brand::where('is_active', true)->orderBy('name')->select('name', 'slug')->get();
+
+        return view('pages.sitemap', compact('categories', 'brands'));
+    }
+
     public function blog(): View
     {
         $posts = BlogPost::published()

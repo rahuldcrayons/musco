@@ -202,4 +202,27 @@
             </div>
         </div>
     </div>
+
+    <x-trust-badges />
+    <x-faq-section />
+
+    {{-- GA4 view_item_list --}}
+    @if(config('services.ga4.measurement_id') && $products->count())
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            gtag('event', 'view_item_list', {
+                item_list_id: 'category_{{ $category->id }}',
+                item_list_name: @json($category->name),
+                items: @json($products->getCollection()->values()->map(fn ($p, $i) => [
+                    'item_id' => $p->sku ?? (string) $p->id,
+                    'item_name' => $p->name,
+                    'item_category' => $category->name,
+                    'item_brand' => $p->brand?->name ?? '',
+                    'price' => (float) $p->price,
+                    'index' => $i,
+                ]))
+            });
+        });
+    </script>
+    @endif
 </x-layouts.app>

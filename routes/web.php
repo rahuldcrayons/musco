@@ -32,13 +32,13 @@ Route::get('/offline', fn () => view('offline'))->name('offline');
 Route::get('/manifest.json', fn () => response()->file(public_path('manifest.json'), ['Content-Type' => 'application/manifest+json']));
 Route::get('/sw.js', fn () => response()->file(public_path('sw.js'), ['Content-Type' => 'application/javascript', 'Service-Worker-Allowed' => '/']));
 
-// Storefront Routes
-Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+// Storefront Routes (cached for guest users)
+Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home')->middleware('cache.response:5');
 
 // Products
 Route::prefix('products')->name('products.')->group(function () {
-    Route::get('/', [App\Http\Controllers\ProductController::class, 'index'])->name('index');
-    Route::get('/{product:slug}', [App\Http\Controllers\ProductController::class, 'show'])->name('show');
+    Route::get('/', [App\Http\Controllers\ProductController::class, 'index'])->name('index')->middleware('cache.response:5');
+    Route::get('/{product:slug}', [App\Http\Controllers\ProductController::class, 'show'])->name('show')->middleware('cache.response:5');
 });
 
 // Alias for product show
@@ -59,17 +59,17 @@ Route::post('/products/{product}/ask-question', [App\Http\Controllers\ProductCon
 
 // Categories
 Route::prefix('categories')->name('categories.')->group(function () {
-    Route::get('/', [App\Http\Controllers\CategoryController::class, 'index'])->name('index');
-    Route::get('/{category:slug}', [App\Http\Controllers\CategoryController::class, 'show'])->name('show');
+    Route::get('/', [App\Http\Controllers\CategoryController::class, 'index'])->name('index')->middleware('cache.response:5');
+    Route::get('/{category:slug}', [App\Http\Controllers\CategoryController::class, 'show'])->name('show')->middleware('cache.response:5');
 });
 
 // Alias for category show
-Route::get('/category/{category:slug}', [App\Http\Controllers\CategoryController::class, 'show'])->name('category.show');
+Route::get('/category/{category:slug}', [App\Http\Controllers\CategoryController::class, 'show'])->name('category.show')->middleware('cache.response:5');
 
 // Brands
 Route::prefix('brands')->name('brands.')->group(function () {
-    Route::get('/', [App\Http\Controllers\BrandController::class, 'index'])->name('index');
-    Route::get('/{brand:slug}', [App\Http\Controllers\BrandController::class, 'show'])->name('show');
+    Route::get('/', [App\Http\Controllers\BrandController::class, 'index'])->name('index')->middleware('cache.response:5');
+    Route::get('/{brand:slug}', [App\Http\Controllers\BrandController::class, 'show'])->name('show')->middleware('cache.response:5');
 });
 
 // Sellers
@@ -225,6 +225,7 @@ Route::get('/privacy-policy', [App\Http\Controllers\PageController::class, 'priv
 Route::get('/terms-of-service', [App\Http\Controllers\PageController::class, 'terms'])->name('terms');
 Route::get('/cookie-policy', [App\Http\Controllers\PageController::class, 'cookiePolicy'])->name('cookie-policy');
 Route::get('/gdpr', [App\Http\Controllers\PageController::class, 'gdpr'])->name('gdpr');
+Route::get('/sitemap', [App\Http\Controllers\PageController::class, 'sitemap'])->name('sitemap.html');
 Route::get('/page/{page:slug}', [App\Http\Controllers\PageController::class, 'show'])->name('page.show');
 
 // Load Admin Routes

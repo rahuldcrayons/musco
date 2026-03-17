@@ -343,22 +343,27 @@ class CheckoutController extends Controller
         $amountInPaise = (int) round($finalTotal * 100);
 
         // Create Razorpay order via REST API
-        $response = Http::withBasicAuth(
-            config('services.razorpay.key_id'),
-            config('services.razorpay.key_secret')
-        )->post('https://api.razorpay.com/v1/orders', [
-            'amount' => $amountInPaise,
-            'currency' => 'INR',
-            'receipt' => 'cart_' . $cart->id . '_' . time(),
-            'notes' => [
-                'cart_id' => $cart->id,
-                'user_id' => auth()->id() ?? 'guest',
-            ],
-        ]);
+        try {
+            $response = Http::timeout(15)->withBasicAuth(
+                config('services.razorpay.key_id'),
+                config('services.razorpay.key_secret')
+            )->post('https://api.razorpay.com/v1/orders', [
+                'amount' => $amountInPaise,
+                'currency' => 'INR',
+                'receipt' => 'cart_' . $cart->id . '_' . time(),
+                'notes' => [
+                    'cart_id' => $cart->id,
+                    'user_id' => auth()->id() ?? 'guest',
+                ],
+            ]);
 
-        if (!$response->successful()) {
-            Log::error('Razorpay order creation failed', ['response' => $response->json()]);
-            return response()->json(['error' => 'Failed to create payment order. Please try again.'], 500);
+            if (!$response->successful()) {
+                Log::error('Razorpay order creation failed', ['response' => $response->json()]);
+                return response()->json(['error' => 'Failed to create payment order. Please try again.'], 500);
+            }
+        } catch (\Exception $e) {
+            Log::error('Razorpay order creation exception', ['message' => $e->getMessage()]);
+            return response()->json(['error' => 'Payment service is temporarily unavailable. Please try again.'], 503);
         }
 
         $razorpayOrder = $response->json();

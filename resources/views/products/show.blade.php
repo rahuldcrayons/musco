@@ -9,8 +9,14 @@
         <meta property="og:image" content="{{ $product->primary_image_url }}">
         <meta property="og:type" content="product">
         <meta property="og:url" content="{{ route('products.show', $product->slug) }}">
-        <meta property="product:price:amount" content="{{ $product->current_price }}">
+        <meta property="product:price:amount" content="{{ $product->price }}">
         <meta property="product:price:currency" content="INR">
+        <meta property="product:availability" content="{{ $product->isInStock() ? 'in stock' : 'out of stock' }}">
+        <meta property="product:condition" content="new">
+        <meta property="product:retailer_item_id" content="{{ $product->id }}">
+        @if($product->brand)
+        <meta property="product:brand" content="{{ $product->brand->name }}">
+        @endif
         <meta name="twitter:card" content="summary_large_image">
         <meta name="twitter:title" content="{{ $product->name }}">
         <meta name="twitter:description" content="{{ Str::limit(strip_tags($product->description), 160) }}">
@@ -535,16 +541,10 @@
                     <p class="text-sm text-[#565959] mb-4">{{ number_format($product->review_count) }} global ratings</p>
 
                     <!-- Rating Bars -->
-                    @php
-                        $totalReviews = max($product->review_count, 1);
-                        $ratingCounts = [5 => 0, 4 => 0, 3 => 0, 2 => 0, 1 => 0];
-                        foreach($product->reviews as $r) {
-                            if(isset($ratingCounts[$r->rating])) $ratingCounts[$r->rating]++;
-                        }
-                    @endphp
+                    @php $totalReviews = max($product->review_count, 1); @endphp
                     <div class="space-y-1.5">
                         @for($star = 5; $star >= 1; $star--)
-                            @php $pct = $totalReviews > 0 ? round(($ratingCounts[$star] / $totalReviews) * 100) : 0; @endphp
+                            @php $pct = $totalReviews > 0 ? round(($ratingDistribution[$star] / $totalReviews) * 100) : 0; @endphp
                             <div class="flex items-center gap-2">
                                 <a href="#" class="text-sm text-[#007185] hover:underline whitespace-nowrap w-14">{{ $star }} star</a>
                                 <div class="flex-1 h-5 bg-[#F0F2F2] rounded-sm overflow-hidden">
@@ -623,9 +623,9 @@
                 <div class="lg:col-span-8">
                     <h3 class="text-base font-bold text-[#0F1111] mb-4">Top Reviews</h3>
 
-                    @if($product->reviews->count())
+                    @if($displayReviews->count())
                         <div class="space-y-6">
-                            @foreach($product->reviews as $review)
+                            @foreach($displayReviews as $review)
                                 <div class="border-b border-[#E3E6E6] pb-5">
                                     <!-- Reviewer -->
                                     <div class="flex items-center gap-2 mb-1.5">
@@ -691,6 +691,12 @@
                                 </div>
                             @endforeach
                         </div>
+
+                        @if($product->review_count > 10)
+                            <p class="mt-4 text-sm text-[#007185]">
+                                Showing {{ $displayReviews->count() }} of {{ number_format($product->review_count) }} reviews
+                            </p>
+                        @endif
                     @else
                         <div class="text-center py-8 bg-[#F7F8FA] rounded-lg border border-[#E3E6E6]">
                             <p class="text-sm text-[#565959] mb-2">No reviews yet.</p>
@@ -782,4 +788,7 @@
         });
     </script>
     @endif
+
+    <x-trust-badges />
+    <x-faq-section />
 </x-layouts.app>

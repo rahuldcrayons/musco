@@ -98,7 +98,7 @@
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
                                         </svg>
                                     </div>
-                                    <input type="email" name="email" id="login_email" value="{{ old('_register') ? '' : old('email') }}" required
+                                    <input type="email" name="email" id="login_email" value="{{ old('_register') ? '' : old('email') }}" required autocomplete="email"
                                            class="w-full pl-12 pr-4 py-2.5 bg-neutral-50 border border-neutral-400 rounded-xl text-sm text-neutral-900 placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-[#0f2a2e]/40 focus:border-[#0f2a2e] transition-all @error('email') border-red-300 bg-red-50 @enderror"
                                            placeholder="you@example.com">
                                 </div>
@@ -126,10 +126,10 @@
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
                                         </svg>
                                     </div>
-                                    <input :type="show ? 'text' : 'password'" name="password" id="login_password" required
+                                    <input :type="show ? 'text' : 'password'" name="password" id="login_password" required autocomplete="current-password"
                                            class="w-full pl-12 pr-12 py-2.5 bg-neutral-50 border border-neutral-400 rounded-xl text-sm text-neutral-900 placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-[#0f2a2e]/40 focus:border-[#0f2a2e] transition-all @error('password') border-red-300 bg-red-50 @enderror"
                                            placeholder="Enter your password">
-                                    <button type="button" @click="show = !show" class="absolute inset-y-0 right-0 pr-4 flex items-center text-neutral-600 hover:text-neutral-600 transition-colors">
+                                    <button type="button" @click="show = !show" aria-label="Toggle password visibility" class="absolute inset-y-0 right-0 pr-4 flex items-center text-neutral-600 hover:text-neutral-600 transition-colors">
                                         <svg x-show="!show" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
@@ -196,7 +196,7 @@
                             <!-- Full Name -->
                             <div>
                                 <label for="full_name" class="block text-sm font-medium text-neutral-700 mb-1.5">Full Name</label>
-                                <input type="text" name="full_name" id="full_name" value="{{ old('full_name') }}" required
+                                <input type="text" name="full_name" id="full_name" value="{{ old('full_name') }}" required autocomplete="name"
                                        class="w-full px-4 py-2.5 bg-neutral-50 border border-neutral-400 rounded-xl text-sm text-neutral-900 placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-[#0f2a2e]/40 focus:border-[#0f2a2e] transition-all @error('full_name') border-red-300 bg-red-50 @enderror"
                                        placeholder="Enter your full name">
                                 @error('full_name')
@@ -208,7 +208,7 @@
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div>
                                     <label for="reg_email" class="block text-sm font-medium text-neutral-700 mb-1.5">Email Address</label>
-                                    <input type="email" name="email" id="reg_email" value="{{ old('_register') ? old('email') : '' }}" required
+                                    <input type="email" name="email" id="reg_email" value="{{ old('_register') ? old('email') : '' }}" required autocomplete="email"
                                            class="w-full px-4 py-2.5 bg-neutral-50 border border-neutral-400 rounded-xl text-sm text-neutral-900 placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-[#0f2a2e]/40 focus:border-[#0f2a2e] transition-all @if(old('_register')) @error('email') border-red-300 bg-red-50 @enderror @endif"
                                            placeholder="you@example.com">
                                     @if(old('_register'))
@@ -221,7 +221,7 @@
                                     <label for="phone" class="block text-sm font-medium text-neutral-700 mb-1.5">
                                         Phone <span class="text-neutral-600 font-normal">(optional)</span>
                                     </label>
-                                    <input type="tel" name="phone" id="phone" value="{{ old('phone') }}"
+                                    <input type="tel" name="phone" id="phone" value="{{ old('phone') }}" autocomplete="tel"
                                            class="w-full px-4 py-2.5 bg-neutral-50 border border-neutral-400 rounded-xl text-sm text-neutral-900 placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-[#0f2a2e]/40 focus:border-[#0f2a2e] transition-all @error('phone') border-red-300 bg-red-50 @enderror"
                                            placeholder="+91 98765 43210">
                                     @error('phone')
@@ -235,7 +235,7 @@
                                 <div>
                                     <label for="reg_password" class="block text-sm font-medium text-neutral-700 mb-1.5">Password</label>
                                     <div class="relative" x-data="{ show: false }">
-                                        <input :type="show ? 'text' : 'password'" name="password" id="reg_password" required
+                                        <input :type="show ? 'text' : 'password'" name="password" id="reg_password" required autocomplete="new-password"
                                                class="w-full px-4 pr-11 py-2.5 bg-neutral-50 border border-neutral-400 rounded-xl text-sm text-neutral-900 placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-[#0f2a2e]/40 focus:border-[#0f2a2e] transition-all @if(old('_register')) @error('password') border-red-300 bg-red-50 @enderror @endif"
                                                placeholder="Min 8 characters">
                                         <button type="button" @click="show = !show" class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-neutral-600 hover:text-neutral-600 transition-colors">
@@ -256,7 +256,7 @@
                                 </div>
                                 <div>
                                     <label for="password_confirmation" class="block text-sm font-medium text-neutral-700 mb-1.5">Confirm Password</label>
-                                    <input type="password" name="password_confirmation" id="password_confirmation" required
+                                    <input type="password" name="password_confirmation" id="password_confirmation" required autocomplete="new-password"
                                            class="w-full px-4 py-2.5 bg-neutral-50 border border-neutral-400 rounded-xl text-sm text-neutral-900 placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-[#0f2a2e]/40 focus:border-[#0f2a2e] transition-all"
                                            placeholder="Repeat password">
                                 </div>

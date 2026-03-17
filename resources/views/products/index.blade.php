@@ -25,6 +25,17 @@
         @endif
     @endpush
 
+    @push('styles')
+    <style>
+        /* Custom page scrollbar for products */
+        html { scrollbar-width: thin; scrollbar-color: #205258 #F7F8FA; }
+        html::-webkit-scrollbar { width: 8px; }
+        html::-webkit-scrollbar-track { background: #F7F8FA; }
+        html::-webkit-scrollbar-thumb { background: #b0c4c7; border-radius: 4px; border: 2px solid #F7F8FA; }
+        html::-webkit-scrollbar-thumb:hover { background: #205258; }
+    </style>
+    @endpush
+
     <!-- Breadcrumb -->
     <div class="bg-white border-b border-neutral-100">
         <div class="container mx-auto px-4 py-2.5">
@@ -208,4 +219,27 @@
             </div>
         </div>
     </div>
+
+    <x-trust-badges />
+    <x-faq-section />
+
+    {{-- GA4 view_item_list --}}
+    @if(config('services.ga4.measurement_id') && $products->count())
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            gtag('event', 'view_item_list', {
+                item_list_id: 'all_products',
+                item_list_name: 'All Products',
+                items: @json($products->getCollection()->values()->map(fn ($p, $i) => [
+                    'item_id' => $p->sku ?? (string) $p->id,
+                    'item_name' => $p->name,
+                    'item_category' => $p->category?->name ?? '',
+                    'item_brand' => $p->brand?->name ?? '',
+                    'price' => (float) $p->price,
+                    'index' => $i,
+                ]))
+            });
+        });
+    </script>
+    @endif
 </x-layouts.app>

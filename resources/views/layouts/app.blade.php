@@ -17,9 +17,8 @@
     <meta name="msapplication-TileColor" content="#205258">
     <meta name="format-detection" content="telephone=no">
     <link rel="manifest" href="/manifest.json">
-    <link rel="icon" type="image/svg+xml" href="/images/icons/favicon.svg">
-    <link rel="icon" type="image/png" sizes="32x32" href="/images/icons/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/images/icons/favicon-16x16.png">
+    <link rel="icon" type="image/png" href="/images/icons/favicon.png?v=2">
+    <link rel="shortcut icon" href="/favicon.ico?v=2">
     <link rel="apple-touch-icon" sizes="180x180" href="/images/icons/icon-192x192.svg">
 
     <!-- SEO Meta Tags -->

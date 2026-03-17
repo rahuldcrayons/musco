@@ -1,5 +1,10 @@
 <x-layouts.app>
-    <x-slot name="title">{{ $query ? 'Search: ' . $query : 'Search' }}</x-slot>
+    <x-slot name="title">{{ $query ? 'Search: ' . $query : 'Search' }} - {{ config('app.name') }}</x-slot>
+
+    @push('meta')
+        <meta name="robots" content="noindex, follow">
+        <meta name="description" content="Search results for '{{ e($query ?? '') }}' at {{ config('app.name') }}.">
+    @endpush
 
     <div class="container mx-auto px-4 py-8">
         {{-- Search input with autocomplete dropdown --}}
@@ -265,6 +270,27 @@
                     content_type: 'product',
                 }, {eventID: '{{ $fbEventId }}'});
             }
+        });
+    </script>
+    @endif
+
+    {{-- GA4 view_item_list + search --}}
+    @if(config('services.ga4.measurement_id') && !empty($query) && $products->count())
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            gtag('event', 'search', { search_term: @json($query) });
+            gtag('event', 'view_item_list', {
+                item_list_id: 'search_results',
+                item_list_name: 'Search Results: ' + @json($query),
+                items: @json($products->getCollection()->values()->map(fn ($p, $i) => [
+                    'item_id' => $p->sku ?? (string) $p->id,
+                    'item_name' => $p->name,
+                    'item_category' => $p->category?->name ?? '',
+                    'item_brand' => $p->brand?->name ?? '',
+                    'price' => (float) $p->price,
+                    'index' => $i,
+                ]))
+            });
         });
     </script>
     @endif

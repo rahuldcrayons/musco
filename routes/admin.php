@@ -16,7 +16,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
     });
 
     // Authenticated admin routes
-    Route::middleware(['auth:admin', 'admin'])->group(function () {
+    Route::middleware(['auth:admin', 'admin', 'admin.audit'])->group(function () {
         Route::post('/logout', [App\Http\Controllers\Admin\Auth\LoginController::class, 'logout'])->name('logout');
 
         // Dashboard

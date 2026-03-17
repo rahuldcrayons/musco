@@ -63,7 +63,7 @@ class CartController extends Controller
             'quantity' => ['required', 'integer', 'min:1', 'max:99'],
         ]);
 
-        $product = Product::findOrFail($validated['product_id']);
+        $product = Product::with(['category', 'brand'])->findOrFail($validated['product_id']);
 
         // Check stock
         $variantId = $validated['variant_id'] ?? null;
@@ -136,6 +136,14 @@ class CartController extends Controller
                     'value' => (float) $product->price * $validated['quantity'],
                     'currency' => 'INR',
                 ],
+                'ga4_item' => [
+                    'item_id' => $product->sku ?? (string) $product->id,
+                    'item_name' => $product->name,
+                    'item_category' => $product->category?->name ?? '',
+                    'item_brand' => $product->brand?->name ?? '',
+                    'price' => (float) $product->price,
+                    'quantity' => (int) $validated['quantity'],
+                ],
             ]);
         }
 
@@ -196,6 +204,15 @@ class CartController extends Controller
     {
         $cart = $cartItem->cart;
         $hadCoupon = $cart->coupon_id;
+
+        // Capture product info for GA4 before deleting
+        $removedItem = [
+            'item_id' => $cartItem->product->sku ?? (string) $cartItem->product_id,
+            'item_name' => $cartItem->product->name,
+            'price' => (float) $cartItem->price,
+            'quantity' => $cartItem->quantity,
+        ];
+
         $cartItem->delete();
         $cart->recalculate();
         $cart->refresh();
@@ -216,6 +233,7 @@ class CartController extends Controller
                 'cart_discount' => (float) $cart->discount,
                 'cart_total' => (float) $cart->total,
                 'coupon' => $cart->coupon ? $this->formatCouponData($cart->coupon, $cart) : null,
+                'ga4_removed_item' => $removedItem,
             ]);
         }
 

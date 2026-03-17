@@ -590,4 +590,23 @@
             };
         }
     </script>
+
+    {{-- GA4 view_cart --}}
+    @if(config('services.ga4.measurement_id'))
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var cartItems = @json($cart->items->map(fn ($item) => [
+                'item_id' => $item->product->sku ?? (string) $item->product_id,
+                'item_name' => $item->product->name,
+                'price' => (float) $item->price,
+                'quantity' => $item->quantity,
+            ]));
+            gtag('event', 'view_cart', {
+                currency: 'INR',
+                value: {{ (float) $cart->total }},
+                items: cartItems
+            });
+        });
+    </script>
+    @endif
 </x-layouts.app>

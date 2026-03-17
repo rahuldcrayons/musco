@@ -1,6 +1,6 @@
-<footer class="bg-[#F7F8FA] text-[#0F1111] mt-auto border-t border-[#E3E6E6]">
+<footer class="bg-[#F7F8FA] text-[#0F1111] mt-auto">
     <!-- Main footer -->
-    <div class="py-10 lg:py-14">
+    <div class="py-10 lg:py-14 border-t border-[#E3E6E6]">
         <div class="container mx-auto px-4">
             <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 lg:gap-10">
                 <!-- About -->
@@ -100,13 +100,13 @@
     </div>
 
     <!-- Newsletter -->
-    <div class="bg-[#232F3E] py-8">
+    <div class="border-t border-[#E3E6E6] bg-[#EEF0F2] py-8">
         <div class="container mx-auto px-4">
             <div class="flex flex-col md:flex-row items-center justify-between gap-6" x-data="{ email: '', submitted: false, error: '' }">
                 <!-- Content - Left -->
                 <div class="md:text-left text-center shrink-0">
-                    <h4 class="text-base font-semibold text-white mb-1">Stay in the loop</h4>
-                    <p class="text-sm text-[#B0B0B0]">Get the latest deals, new arrivals & style tips straight to your inbox.</p>
+                    <h4 class="text-base font-semibold text-[#0F1111] mb-1">Stay in the loop</h4>
+                    <p class="text-sm text-[#565959]">Get the latest deals, new arrivals & style tips straight to your inbox.</p>
                 </div>
                 <!-- Form - Right -->
                 <div class="shrink-0">
@@ -122,20 +122,20 @@
                         }).catch(() => error = 'Something went wrong')
                     " class="flex items-stretch">
                         <input type="email" x-model="email" required placeholder="Your email address"
-                               class="min-w-0 w-64 text-sm px-4 py-2 bg-white text-[#0F1111] placeholder-[#565959] focus:outline-none">
-                        <button type="submit" class="shrink-0 text-sm font-semibold bg-[#FFD814] hover:bg-[#F7CA00] text-[#0F1111] px-3 py-1.5 transition-colors">
+                               class="min-w-0 w-64 text-sm px-4 py-2 bg-white border border-[#E3E6E6] text-[#0F1111] placeholder-[#565959] focus:outline-none focus:border-[#205258]">
+                        <button type="submit" class="shrink-0 text-sm font-semibold bg-[#205258] hover:bg-[#1b454a] text-white px-5 py-2 transition-colors">
                             Subscribe
                         </button>
                     </form>
-                    <p x-show="submitted" x-cloak class="text-sm text-[#FFD814] font-medium">Thanks for subscribing!</p>
-                    <p x-show="error" x-cloak class="text-xs text-red-400 mt-1" x-text="error"></p>
+                    <p x-show="submitted" x-cloak class="text-sm text-[#205258] font-medium">Thanks for subscribing!</p>
+                    <p x-show="error" x-cloak class="text-xs text-[#CC0C39] mt-1" x-text="error"></p>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Bottom bar -->
-    <div class="border-t border-[#E3E6E6] py-5">
+    <div class="border-t border-[#E3E6E6] bg-[#E3E6E6] py-5">
         <div class="container mx-auto px-4">
             <div class="flex flex-col md:flex-row justify-between items-center gap-3">
                 <p class="text-xs text-[#565959]">
@@ -143,9 +143,9 @@
                 </p>
                 <div class="flex items-center gap-3">
                     {{-- Visa --}}
-                    <svg class="h-6 w-auto opacity-50 hover:opacity-100 transition-opacity" viewBox="0 0 48 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="48" height="32" rx="4" fill="#fff" stroke="#E3E6E6"/><path d="M19.5 21h-2.7l1.7-10.5h2.7L19.5 21Zm11.2-10.2c-.5-.2-1.4-.4-2.4-.4-2.7 0-4.5 1.4-4.5 3.4 0 1.5 1.4 2.3 2.4 2.8 1 .5 1.4.8 1.4 1.3 0 .7-.8 1-1.6 1-1.1 0-1.6-.2-2.5-.5l-.3-.2-.4 2.2c.6.3 1.8.5 3 .5 2.8 0 4.7-1.4 4.7-3.5 0-1.2-.7-2.1-2.3-2.8-.9-.5-1.5-.8-1.5-1.3 0-.4.5-.9 1.5-.9.9 0 1.5.2 2 .4l.2.1.3-2.1ZM35 10.5h-2.1c-.7 0-1.1.2-1.4.8L27.8 21h2.8l.6-1.5h3.5l.3 1.5H37L35 10.5Zm-3.4 7 1.1-3 .3-.8.2.7.6 3.1h-2.2ZM16 10.5l-2.5 7.2-.3-1.3c-.5-1.6-2-3.4-3.7-4.3l2.4 9h2.9l4.3-10.5H16Z" fill="#1A1F71"/><path d="M12 10.5H7.8l-.1.3c3.4.9 5.7 3 6.6 5.5l-1-4.8c-.1-.7-.6-.9-1.3-1Z" fill="#F9A533"/></svg>
+                    <svg class="h-6 w-auto" viewBox="0 0 48 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="48" height="32" rx="4" fill="#fff" stroke="#E3E6E6"/><path d="M19.5 21h-2.7l1.7-10.5h2.7L19.5 21Zm11.2-10.2c-.5-.2-1.4-.4-2.4-.4-2.7 0-4.5 1.4-4.5 3.4 0 1.5 1.4 2.3 2.4 2.8 1 .5 1.4.8 1.4 1.3 0 .7-.8 1-1.6 1-1.1 0-1.6-.2-2.5-.5l-.3-.2-.4 2.2c.6.3 1.8.5 3 .5 2.8 0 4.7-1.4 4.7-3.5 0-1.2-.7-2.1-2.3-2.8-.9-.5-1.5-.8-1.5-1.3 0-.4.5-.9 1.5-.9.9 0 1.5.2 2 .4l.2.1.3-2.1ZM35 10.5h-2.1c-.7 0-1.1.2-1.4.8L27.8 21h2.8l.6-1.5h3.5l.3 1.5H37L35 10.5Zm-3.4 7 1.1-3 .3-.8.2.7.6 3.1h-2.2ZM16 10.5l-2.5 7.2-.3-1.3c-.5-1.6-2-3.4-3.7-4.3l2.4 9h2.9l4.3-10.5H16Z" fill="#1A1F71"/><path d="M12 10.5H7.8l-.1.3c3.4.9 5.7 3 6.6 5.5l-1-4.8c-.1-.7-.6-.9-1.3-1Z" fill="#F9A533"/></svg>
                     {{-- Mastercard --}}
-                    <svg class="h-6 w-auto opacity-50 hover:opacity-100 transition-opacity" viewBox="0 0 48 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="48" height="32" rx="4" fill="#fff" stroke="#E3E6E6"/><circle cx="20" cy="16" r="9" fill="#EB001B"/><circle cx="28" cy="16" r="9" fill="#F79E1B"/><path d="M24 9.3a9 9 0 0 1 3.3 6.7A9 9 0 0 1 24 22.7 9 9 0 0 1 20.7 16 9 9 0 0 1 24 9.3Z" fill="#FF5F00"/></svg>
+                    <svg class="h-6 w-auto" viewBox="0 0 48 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="48" height="32" rx="4" fill="#fff" stroke="#E3E6E6"/><circle cx="20" cy="16" r="9" fill="#EB001B"/><circle cx="28" cy="16" r="9" fill="#F79E1B"/><path d="M24 9.3a9 9 0 0 1 3.3 6.7A9 9 0 0 1 24 22.7 9 9 0 0 1 20.7 16 9 9 0 0 1 24 9.3Z" fill="#FF5F00"/></svg>
                     {{-- UPI --}}
                     <span class="text-[10px] font-bold text-[#565959] bg-white border border-[#E3E6E6] px-2 py-1 rounded">UPI</span>
                     {{-- COD --}}

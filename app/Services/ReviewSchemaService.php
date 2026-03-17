@@ -8,19 +8,27 @@ class ReviewSchemaService
 {
     public function getProductSchema(Product $product): array
     {
+        $description = strip_tags($product->short_description ?? $product->description ?? '');
+        if (empty($description)) {
+            $description = $product->name . ' - Available at ' . config('app.name', 'Jikra');
+        }
+
         $schema = [
             '@context' => 'https://schema.org',
             '@type' => 'Product',
             'name' => $product->name,
-            'description' => strip_tags($product->short_description ?? $product->description ?? ''),
-            'sku' => $product->sku,
+            'description' => $description,
+            'sku' => $product->sku ?? (string) $product->id,
             'url' => route('product.show', $product),
+            'productID' => (string) $product->id,
         ];
 
-        // Images
+        // Images (required by Google)
         $images = $product->images->pluck('url')->map(fn ($url) => url($url))->toArray();
         if (!empty($images)) {
             $schema['image'] = $images;
+        } elseif ($product->primary_image_url) {
+            $schema['image'] = [$product->primary_image_url];
         }
 
         // Brand
@@ -31,12 +39,18 @@ class ReviewSchemaService
             ];
         }
 
+        // MPN if SKU available
+        if ($product->sku) {
+            $schema['mpn'] = $product->sku;
+        }
+
         // Offers
-        $schema['offers'] = [
+        $offer = [
             '@type' => 'Offer',
             'url' => route('product.show', $product),
             'priceCurrency' => 'INR',
-            'price' => number_format((float) $product->price, 2, '.', ''),
+            'price' => (float) number_format((float) $product->price, 2, '.', ''),
+            'itemCondition' => 'https://schema.org/NewCondition',
             'availability' => $product->isInStock()
                 ? 'https://schema.org/InStock'
                 : 'https://schema.org/OutOfStock',
@@ -47,46 +61,54 @@ class ReviewSchemaService
         ];
 
         if ($product->mrp > $product->price) {
-            $schema['offers']['priceValidUntil'] = now()->addMonths(3)->format('Y-m-d');
+            $offer['priceValidUntil'] = now()->addMonths(3)->format('Y-m-d');
         }
 
-        // Aggregate Rating
+        $schema['offers'] = $offer;
+
+        // Aggregate Rating + Reviews
         $approvedReviews = $product->approvedReviews;
-        if ($approvedReviews->count() > 0) {
+        $reviewCount = $approvedReviews->count();
+
+        if ($reviewCount > 0) {
+            $avgRating = round($approvedReviews->avg('rating'), 1);
+
             $schema['aggregateRating'] = [
                 '@type' => 'AggregateRating',
-                'ratingValue' => number_format($approvedReviews->avg('rating'), 1),
-                'reviewCount' => (string) $approvedReviews->count(),
-                'bestRating' => '5',
-                'worstRating' => '1',
+                'ratingValue' => $avgRating,
+                'ratingCount' => $reviewCount,
+                'reviewCount' => $reviewCount,
+                'bestRating' => 5,
+                'worstRating' => 1,
             ];
 
             // Include up to 10 most recent reviews in structured data
             $schema['review'] = $approvedReviews->sortByDesc('created_at')->take(10)->map(function ($review) {
+                $authorName = $review->user
+                    ? $review->user->first_name . ' ' . strtoupper(substr($review->user->last_name ?? '', 0, 1)) . '.'
+                    : ($review->guest_name ?? 'A Customer');
+
                 $reviewSchema = [
                     '@type' => 'Review',
                     'datePublished' => $review->created_at->format('Y-m-d'),
                     'reviewRating' => [
                         '@type' => 'Rating',
-                        'ratingValue' => (string) $review->rating,
-                        'bestRating' => '5',
-                        'worstRating' => '1',
+                        'ratingValue' => (int) $review->rating,
+                        'bestRating' => 5,
+                        'worstRating' => 1,
                     ],
-                    'reviewBody' => $review->content,
-                ];
-
-                // Author
-                $authorName = $review->user
-                    ? $review->user->first_name . ' ' . strtoupper(substr($review->user->last_name, 0, 1)) . '.'
-                    : ($review->guest_name ?? 'Anonymous');
-
-                $reviewSchema['author'] = [
-                    '@type' => 'Person',
-                    'name' => $authorName,
+                    'author' => [
+                        '@type' => 'Person',
+                        'name' => $authorName,
+                    ],
                 ];
 
                 if ($review->title) {
                     $reviewSchema['name'] = $review->title;
+                }
+
+                if ($review->content) {
+                    $reviewSchema['reviewBody'] = $review->content;
                 }
 
                 return $reviewSchema;

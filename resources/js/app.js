@@ -155,6 +155,14 @@ Alpine.store('cart', {
             if (response.data.cart_count !== undefined) {
                 this.itemCount = response.data.cart_count;
             }
+            // GA4: add_to_cart
+            if (typeof gtag !== 'undefined' && response.data.ga4_item) {
+                gtag('event', 'add_to_cart', {
+                    currency: 'INR',
+                    value: response.data.ga4_item.price * response.data.ga4_item.quantity,
+                    items: [response.data.ga4_item]
+                });
+            }
             // Facebook Pixel: AddToCart
             if (typeof fbq !== 'undefined' && response.data.fb_event) {
                 fbq('track', 'AddToCart', {
@@ -197,7 +205,15 @@ Alpine.store('cart', {
     async remove(itemId) {
         this.isLoading = true;
         try {
-            await axios.delete(`/cart/${itemId}`);
+            const response = await axios.delete(`/cart/${itemId}`);
+            // GA4: remove_from_cart
+            if (typeof gtag !== 'undefined' && response.data.ga4_removed_item) {
+                gtag('event', 'remove_from_cart', {
+                    currency: 'INR',
+                    value: response.data.ga4_removed_item.price * response.data.ga4_removed_item.quantity,
+                    items: [response.data.ga4_removed_item]
+                });
+            }
             Alpine.store('toast').info('Item removed from cart');
             await this.fetch();
         } catch (error) {

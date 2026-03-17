@@ -14,7 +14,7 @@
                 </svg>
             </button>
             <div x-show="open" x-collapse>
-                <div class="space-y-1.5 max-h-52 overflow-y-auto pt-1 pb-2">
+                <div class="space-y-1.5 max-h-52 overflow-y-auto scrollbar-thin pt-1 pb-2">
                     @foreach($categories as $category)
                         <label class="flex items-center gap-2.5 cursor-pointer group py-0.5">
                             <input type="radio" name="category" value="{{ $category->slug }}"
@@ -40,7 +40,7 @@
                 </svg>
             </button>
             <div x-show="open" x-collapse>
-                <div class="space-y-1.5 max-h-52 overflow-y-auto pt-1 pb-2">
+                <div class="space-y-1.5 max-h-52 overflow-y-auto scrollbar-thin pt-1 pb-2">
                     @foreach($subcategories as $sub)
                         <label class="flex items-center gap-2.5 cursor-pointer group py-0.5">
                             <input type="checkbox" name="subcategory[]" value="{{ $sub->slug }}"

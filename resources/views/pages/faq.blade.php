@@ -11,6 +11,79 @@
         <meta name="twitter:card" content="summary">
         <meta name="twitter:title" content="FAQ - {{ config('app.name') }}">
         <meta name="twitter:description" content="Find answers about shipping, returns, sizing, orders, and more at {{ config('app.name') }}.">
+
+        <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            "mainEntity": [
+                {
+                    "@type": "Question",
+                    "name": "How do I place an order?",
+                    "acceptedAnswer": {
+                        "@type": "Answer",
+                        "text": "Simply browse our products, add items to your cart, and proceed to checkout. You'll need to create an account or sign in, enter your shipping details, and complete the payment. You'll receive an order confirmation email once your order is placed."
+                    }
+                },
+                {
+                    "@type": "Question",
+                    "name": "What payment methods do you accept?",
+                    "acceptedAnswer": {
+                        "@type": "Answer",
+                        "text": "We accept all major credit cards (Visa, MasterCard, American Express), PayPal, and bank transfers. All payments are processed securely through our payment partners."
+                    }
+                },
+                {
+                    "@type": "Question",
+                    "name": "How can I track my order?",
+                    "acceptedAnswer": {
+                        "@type": "Answer",
+                        "text": "Once your order ships, you'll receive an email with tracking information. You can also track your order by logging into your account and visiting the Orders section, or by using our order tracking page."
+                    }
+                },
+                {
+                    "@type": "Question",
+                    "name": "How long does shipping take?",
+                    "acceptedAnswer": {
+                        "@type": "Answer",
+                        "text": "Shipping times vary depending on your location and chosen shipping method. Standard shipping typically takes 5-7 business days, while express shipping takes 2-3 business days. International shipping may take 7-14 business days."
+                    }
+                },
+                {
+                    "@type": "Question",
+                    "name": "Do you ship internationally?",
+                    "acceptedAnswer": {
+                        "@type": "Answer",
+                        "text": "Yes, we ship to over 100 countries worldwide. Shipping costs and delivery times vary by destination. You can see the exact shipping costs at checkout."
+                    }
+                },
+                {
+                    "@type": "Question",
+                    "name": "What is your return policy?",
+                    "acceptedAnswer": {
+                        "@type": "Answer",
+                        "text": "We offer a 7-day return policy for most items. Products must be unused and in their original packaging."
+                    }
+                },
+                {
+                    "@type": "Question",
+                    "name": "How do I request a refund?",
+                    "acceptedAnswer": {
+                        "@type": "Answer",
+                        "text": "To request a refund, log into your account, go to your Orders, and select the order you wish to return. Click Request Return and follow the instructions. Once we receive and inspect the returned item, your refund will be processed within 5-7 business days."
+                    }
+                },
+                {
+                    "@type": "Question",
+                    "name": "How do I create an account?",
+                    "acceptedAnswer": {
+                        "@type": "Answer",
+                        "text": "Click the Sign Up button at the top of the page and fill in your details. You can also create an account during checkout. Having an account allows you to track orders, save addresses, and earn rewards."
+                    }
+                }
+            ]
+        }
+        </script>
     @endpush
 
     <!-- Breadcrumb -->

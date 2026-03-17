@@ -19,7 +19,7 @@
 
 @if($compact)
     {{-- Compact card for horizontal scrollable rows --}}
-    <div {{ $attributes->merge(['class' => 'group shrink-0 w-full']) }}>
+    <div {{ $attributes->merge(['class' => 'group shrink-0 w-full flex flex-col h-full']) }}>
         <a href="{{ route('product.show', $product) }}" class="block relative">
             <div class="aspect-square bg-[#F7F8FA] rounded-lg overflow-hidden mb-2 border border-[#E3E6E6]">
                 <img src="{{ $product->primary_image_url }}"
@@ -34,7 +34,7 @@
         </a>
 
         <a href="{{ route('product.show', $product) }}" class="block px-0.5">
-            <h3 class="text-[13px] text-[#0F1111] line-clamp-2 mb-1 leading-snug hover:text-[#C7511F] transition-colors">
+            <h3 class="text-[13px] text-[#0F1111] line-clamp-2 mb-1 leading-snug min-h-[2.5rem] hover:text-[#C7511F] transition-colors">
                 {{ $product->name }}
             </h3>
         </a>
@@ -56,21 +56,23 @@
             @endif
         </div>
 
-        @if($hasDiscount)
-            <p class="text-[11px] text-[#CC0C39] font-medium px-0.5 mb-1">Save {{ round($discount) }}%</p>
-        @endif
+        <div class="h-4 px-0.5 mb-1">
+            @if($hasDiscount)
+                <p class="text-[11px] text-[#CC0C39] font-medium">Save {{ round($discount) }}%</p>
+            @endif
+        </div>
 
         {{-- Add to Cart --}}
         @if($showAddToCart)
-            <div class="mt-1.5 px-0.5">
+            <div class="mt-auto px-0.5">
                 @unless($outOfStock)
                     <button @click="$store.cart.add({{ $product->id }})"
-                            class="w-full py-1.5 text-xs font-medium text-white bg-[#F8931D] hover:bg-[#E07E0A] rounded-full  transition-colors shadow-sm">
+                            class="w-full py-1.5 text-xs font-medium text-white bg-[#F8931D] hover:bg-[#E07E0A] rounded-full transition-colors shadow-sm">
                         Add to Cart
                     </button>
                 @else
                     <button @click="$dispatch('notify-stock', { productId: {{ $product->id }} })"
-                            class="w-full py-1.5 text-xs font-medium text-[#565959] bg-[#F0F2F2] rounded-full  transition-colors">
+                            class="w-full py-1.5 text-xs font-medium text-[#565959] bg-[#F0F2F2] rounded-full transition-colors">
                         Notify Me
                     </button>
                 @endunless

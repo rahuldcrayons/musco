@@ -10,8 +10,8 @@
         {{-- JSON-LD Order --}}
         <script type="application/ld+json">
         {
-            "@@context": "https://schema.org",
-            "@@type": "Order",
+            "@context": "https://schema.org",
+            "@type": "Order",
             "orderNumber": "{{ $order->order_number }}",
             "orderDate": "{{ $order->created_at->toIso8601String() }}",
             "orderStatus": "https://schema.org/OrderProcessing",
@@ -20,22 +20,22 @@
             "acceptedOffer": [
                 @foreach($order->items as $item)
                 {
-                    "@@type": "Offer",
+                    "@type": "Offer",
                     "itemOffered": {
-                        "@@type": "Product",
+                        "@type": "Product",
                         "name": "{{ e($item->product_name) }}"
                     },
                     "price": "{{ number_format($item->price, 2, '.', '') }}",
                     "priceCurrency": "INR",
                     "eligibleQuantity": {
-                        "@@type": "QuantitativeValue",
+                        "@type": "QuantitativeValue",
                         "value": {{ $item->quantity }}
                     }
                 }{{ !$loop->last ? ',' : '' }}
                 @endforeach
             ],
             "seller": {
-                "@@type": "Organization",
+                "@type": "Organization",
                 "name": "{{ config('app.name') }}"
             }
         }
