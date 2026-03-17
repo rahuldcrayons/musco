@@ -79,10 +79,10 @@
 
                         <div class="flex items-center gap-3 pt-1">
                             <button type="submit"
-                                    class="px-6 py-2.5 bg-gradient-to-r from-[#F8931D] to-[#E07E0A] hover:from-[#E07E0A] hover:to-[#D47200] text-white text-sm font-semibold rounded-xl shadow-lg shadow-[#F8931D]/25 transition-all">
+                                    class="px-4 py-2 bg-gradient-to-r from-[#F8931D] to-[#E07E0A] hover:from-[#E07E0A] hover:to-[#D47200] text-white text-sm font-semibold rounded-xl shadow-lg shadow-[#F8931D]/25 transition-all">
                                 Submit Ticket
                             </button>
-                            <a href="{{ route('account.tickets.index') }}" class="px-4 py-2.5 text-sm text-neutral-600 hover:text-neutral-900">Cancel</a>
+                            <a href="{{ route('account.tickets.index') }}" class="px-3 py-1.5 text-sm text-neutral-600 hover:text-neutral-900">Cancel</a>
                         </div>
                     </form>
                 </div>

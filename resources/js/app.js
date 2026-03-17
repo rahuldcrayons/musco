@@ -155,6 +155,16 @@ Alpine.store('cart', {
             if (response.data.cart_count !== undefined) {
                 this.itemCount = response.data.cart_count;
             }
+            // Facebook Pixel: AddToCart
+            if (typeof fbq !== 'undefined' && response.data.fb_event) {
+                fbq('track', 'AddToCart', {
+                    content_ids: response.data.fb_event.content_ids,
+                    content_name: response.data.fb_event.content_name,
+                    content_type: response.data.fb_event.content_type,
+                    value: response.data.fb_event.value,
+                    currency: response.data.fb_event.currency,
+                }, {eventID: response.data.fb_event.event_id});
+            }
             await this.fetch();
             this.open();
         } catch (error) {
@@ -254,9 +264,19 @@ Alpine.store('wishlist', {
                 this.items = this.items.filter(item => item.product_id !== productId);
                 Alpine.store('toast').info('Removed from wishlist');
             } else {
-                await axios.post(`/wishlist/${productId}`);
+                const response = await axios.post(`/wishlist/${productId}`);
                 this.items.push({ product_id: productId });
                 Alpine.store('toast').success('Added to wishlist');
+                // Facebook Pixel: AddToWishlist
+                if (typeof fbq !== 'undefined' && response.data.fb_event) {
+                    fbq('track', 'AddToWishlist', {
+                        content_ids: response.data.fb_event.content_ids,
+                        content_name: response.data.fb_event.content_name,
+                        content_type: response.data.fb_event.content_type,
+                        value: response.data.fb_event.value,
+                        currency: response.data.fb_event.currency,
+                    }, {eventID: response.data.fb_event.event_id});
+                }
             }
         } catch (error) {
             if (error.response && error.response.status === 401) {

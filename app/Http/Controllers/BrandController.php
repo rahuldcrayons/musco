@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Brand;
 use App\Models\Product;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -20,7 +21,7 @@ class BrandController extends Controller
         return view('brands.index', compact('brands'));
     }
 
-    public function show(Request $request, Brand $brand): View
+    public function show(Request $request, Brand $brand): View|JsonResponse
     {
         abort_unless($brand->is_active, 404);
 
@@ -40,6 +41,14 @@ class BrandController extends Controller
         };
 
         $products = $query->paginate(24)->withQueryString();
+
+        if ($request->ajax()) {
+            $html = '';
+            foreach ($products as $product) {
+                $html .= view('components.product-card', ['product' => $product])->render();
+            }
+            return response()->json(['html' => $html, 'hasMore' => $products->hasMorePages()]);
+        }
 
         return view('brands.show', compact('brand', 'products'));
     }

@@ -154,7 +154,7 @@
                                 </div>
 
                                 <div class="px-5 py-4 bg-neutral-50 border-t border-neutral-100 flex items-center justify-end">
-                                    <button type="submit" class="px-6 py-2.5 bg-[#F8931D] hover:bg-[#E07E0A] text-white font-semibold rounded-lg text-sm transition-colors inline-flex items-center gap-2">
+                                    <button type="submit" class="px-4 py-2 bg-[#F8931D] hover:bg-[#E07E0A] text-white font-semibold rounded-lg text-sm transition-colors inline-flex items-center gap-2">
                                         Next: Upload Documents
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
                                     </button>
@@ -293,11 +293,11 @@
                                 </div>
 
                                 <div class="px-5 py-4 bg-neutral-50 border-t border-neutral-100 flex items-center justify-between">
-                                    <button type="button" @click="currentStep = 1" class="px-4 py-2.5 text-neutral-600 hover:text-neutral-800 font-medium text-sm transition-colors inline-flex items-center gap-1.5">
+                                    <button type="button" @click="currentStep = 1" class="px-3 py-1.5 text-neutral-600 hover:text-neutral-800 font-medium text-sm transition-colors inline-flex items-center gap-1.5">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
                                         Back
                                     </button>
-                                    <button type="submit" class="px-6 py-2.5 bg-[#F8931D] hover:bg-[#E07E0A] text-white font-semibold rounded-lg text-sm transition-colors inline-flex items-center gap-2">
+                                    <button type="submit" class="px-4 py-2 bg-[#F8931D] hover:bg-[#E07E0A] text-white font-semibold rounded-lg text-sm transition-colors inline-flex items-center gap-2">
                                         Submit Documents
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
                                     </button>
@@ -326,7 +326,7 @@
                                     <h2 class="text-lg font-bold text-success-700 mb-1">You're Verified!</h2>
                                     <p class="text-sm text-neutral-600 mb-1">Partner ID: <strong>{{ $partner->partner_id }}</strong></p>
                                     <p class="text-sm text-neutral-600 mb-5">Your account is verified and active. You can now access the Delivery Panel to start accepting orders.</p>
-                                    <a href="{{ route('delivery.login') }}" class="inline-flex items-center gap-2 px-6 py-2.5 bg-[#F8931D] hover:bg-[#E07E0A] text-white font-semibold rounded-lg text-sm transition-colors">
+                                    <a href="{{ route('delivery.login') }}" class="inline-flex items-center gap-2 px-4 py-2 bg-[#F8931D] hover:bg-[#E07E0A] text-white font-semibold rounded-lg text-sm transition-colors">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
                                         Go to Delivery Panel
                                     </a>
@@ -344,7 +344,7 @@
                                         </div>
                                     @endif
                                     <p class="text-sm text-neutral-600 mb-5">Please re-upload your documents to try again.</p>
-                                    <button @click="currentStep = 2" class="inline-flex items-center gap-2 px-6 py-2.5 bg-[#F8931D] hover:bg-[#E07E0A] text-white font-semibold rounded-lg text-sm transition-colors">
+                                    <button @click="currentStep = 2" class="inline-flex items-center gap-2 px-4 py-2 bg-[#F8931D] hover:bg-[#E07E0A] text-white font-semibold rounded-lg text-sm transition-colors">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                                         Re-upload Documents
                                     </button>

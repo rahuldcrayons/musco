@@ -10,6 +10,7 @@ use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Setting;
 use App\Models\UserAddress;
+use App\Services\AnalyticsService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -54,9 +55,20 @@ class CheckoutController extends Controller
         // Record abandoned checkout
         $this->recordAbandonedCheckout($cart, 'checkout');
 
+        // Facebook CAPI: InitiateCheckout
+        $fbEventId = AnalyticsService::generateEventId('ic');
+        $contentIds = $cart->items->pluck('product_id')->map(fn ($id) => (string) $id)->toArray();
+        app(AnalyticsService::class)->trackInitiateCheckout(
+            (float) ($cart->subtotal - $cart->discount),
+            $cart->items->sum('quantity'),
+            $contentIds,
+            request(),
+            $fbEventId
+        );
+
         return view('checkout.index', compact(
             'cart', 'addresses', 'defaultAddress', 'paymentSettings',
-            'isGuest', 'availableCoupons', 'isWeekend'
+            'isGuest', 'availableCoupons', 'isWeekend', 'fbEventId'
         ));
     }
 
@@ -256,7 +268,13 @@ class CheckoutController extends Controller
 
         $order->load(['items.product']);
 
-        return view('checkout.success', compact('order'));
+        // Generate event_id for Purchase dedup (shared between client fbq and server CAPI)
+        $fbPurchaseEventId = AnalyticsService::generateEventId('pur');
+
+        // Facebook CAPI: Purchase (server-side)
+        app(AnalyticsService::class)->trackPurchase($order, request(), $fbPurchaseEventId);
+
+        return view('checkout.success', compact('order', 'fbPurchaseEventId'));
     }
 
     public function failed(): View
@@ -365,6 +383,10 @@ class CheckoutController extends Controller
             ? $validated['guest_phone']
             : (auth()->user()->phone ?? '');
 
+        // Facebook CAPI: AddPaymentInfo
+        $fbEventId = AnalyticsService::generateEventId('api');
+        app(AnalyticsService::class)->trackAddPaymentInfo($finalTotal, $paymentMethod, $request, $fbEventId);
+
         return response()->json([
             'order_id' => $razorpayOrder['id'],
             'amount' => $amountInPaise,
@@ -377,6 +399,7 @@ class CheckoutController extends Controller
                 'email' => $contactEmail,
                 'contact' => $contactPhone,
             ],
+            'fb_event_id' => $fbEventId,
         ]);
     }
 

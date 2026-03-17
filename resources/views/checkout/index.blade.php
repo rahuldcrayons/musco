@@ -35,6 +35,23 @@
         </script>
     @endpush
 
+    {{-- Facebook Pixel: InitiateCheckout --}}
+    @if(!empty($fbEventId) && config('services.facebook.pixel_id'))
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof fbq !== 'undefined') {
+                fbq('track', 'InitiateCheckout', {
+                    content_ids: @json($cart->items->pluck('product_id')->map(fn ($id) => (string) $id)->toArray()),
+                    content_type: 'product',
+                    value: {{ (float) ($cart->subtotal - $cart->discount) }},
+                    currency: 'INR',
+                    num_items: {{ $cart->items->sum('quantity') }}
+                }, {eventID: '{{ $fbEventId }}'});
+            }
+        });
+    </script>
+    @endif
+
     <div class="bg-neutral-50 min-h-screen">
         <div class="container mx-auto px-4 py-4">
             <x-breadcrumb :items="[['label' => 'Cart', 'url' => route('cart.index')], ['label' => 'Checkout', 'url' => null]]" />
@@ -268,14 +285,14 @@
                                                             }
                                                         }).catch(() => { savingAddress = false; errEl.textContent = 'Something went wrong.'; errEl.classList.remove('hidden'); });
                                                     "
-                                                    class="px-4 py-3 text-sm font-semibold text-white bg-primary-600 hover:bg-primary-700 rounded-lg transition-colors disabled:opacity-50">
+                                                    class="px-4 py-2 text-sm font-semibold text-white bg-primary-600 hover:bg-primary-700 rounded-lg transition-colors disabled:opacity-50">
                                                 <span x-show="!savingAddress">Save Address</span>
                                                 <span x-show="savingAddress" class="inline-flex items-center gap-1">
                                                     <svg class="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
                                                     Saving...
                                                 </span>
                                             </button>
-                                            <button type="button" @click="showAddressForm = false" class="px-4 py-3 text-sm font-medium text-neutral-600 border border-neutral-200 rounded-lg hover:bg-neutral-50 transition-colors">
+                                            <button type="button" @click="showAddressForm = false" class="px-4 py-2 text-sm font-medium text-neutral-600 border border-neutral-200 rounded-lg hover:bg-neutral-50 transition-colors">
                                                 Cancel
                                             </button>
                                         </div>
@@ -640,7 +657,7 @@
                             <!-- Place Order Button -->
                             <div class="p-4 pt-0">
                                 <button type="submit" :disabled="processing"
-                                        class="block w-full py-3 bg-primary-600 hover:bg-primary-700 text-white text-sm font-semibold text-center rounded-lg transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed">
+                                        class="block w-full py-2 bg-primary-600 hover:bg-primary-700 text-white text-sm font-semibold text-center rounded-lg transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed">
                                     <span x-show="!processing">
                                         <template x-if="paymentMethod === 'razorpay' || paymentMethod === 'upi'">
                                             <span>PAY NOW</span>

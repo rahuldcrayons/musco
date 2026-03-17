@@ -6,13 +6,14 @@ use App\Models\Product;
 use App\Models\Category;
 use App\Models\Brand;
 use App\Models\SearchLog;
+use App\Services\AnalyticsService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class SearchController extends Controller
 {
-    public function index(Request $request): View
+    public function index(Request $request): View|JsonResponse
     {
         $query = $request->get('q', '');
 
@@ -102,7 +103,22 @@ class SearchController extends Controller
             ->orderBy('name')
             ->get();
 
-        return view('search.index', compact('products', 'query', 'categories', 'brands'));
+        // Facebook CAPI: Search
+        $fbEventId = null;
+        if (!empty($query)) {
+            $fbEventId = AnalyticsService::generateEventId('srch');
+            app(AnalyticsService::class)->trackSearch($query, $products->total(), $request, $fbEventId);
+        }
+
+        if ($request->ajax()) {
+            $html = '';
+            foreach ($products as $product) {
+                $html .= view('components.product-card', ['product' => $product])->render();
+            }
+            return response()->json(['html' => $html, 'hasMore' => $products->hasMorePages()]);
+        }
+
+        return view('search.index', compact('products', 'query', 'categories', 'brands', 'fbEventId'));
     }
 
     public function suggestions(Request $request): JsonResponse

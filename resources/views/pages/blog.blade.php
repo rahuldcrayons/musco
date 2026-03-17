@@ -45,7 +45,7 @@
                            class="w-full pl-9 pr-4 py-2 border border-neutral-200 rounded-full text-[13px] focus:outline-none focus:border-primary-300 focus:ring-2 focus:ring-primary-100 bg-white">
                 </div>
                 @if(request('search'))
-                    <button type="submit" class="px-5 py-2 bg-primary-600 text-white text-[13px] font-medium rounded-full hover:bg-primary-700 transition-colors">
+                    <button type="submit" class="px-3 py-1.5 bg-primary-600 text-white text-[13px] font-medium rounded-full hover:bg-primary-700 transition-colors">
                         Search
                     </button>
                 @endif

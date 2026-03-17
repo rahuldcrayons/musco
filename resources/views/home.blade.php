@@ -437,7 +437,7 @@
                         <span class="font-semibold text-neutral-700">{{ $flashSale->products_count }} {{ Str::plural('product', $flashSale->products_count) }}</span> on sale
                     </p>
                     <a href="{{ route('products.index') }}?flash_sale={{ $flashSale->slug }}" @click="dismiss()"
-                       class="inline-flex items-center justify-center gap-2 w-full py-3 bg-[#F8931D] hover:bg-[#E07E0A] text-white text-sm font-bold rounded-xl shadow-lg transition-all hover:-translate-y-0.5">
+                       class="inline-flex items-center justify-center gap-2 w-full py-2 bg-[#F8931D] hover:bg-[#E07E0A] text-white text-sm font-bold rounded-xl shadow-lg transition-all hover:-translate-y-0.5">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
                         Shop the Sale Now
                     </a>
@@ -510,6 +510,19 @@
                     <button @click="goTo(index)" class="hero-dot" :class="current === index ? 'active' : ''"></button>
                 </template>
             </div>
+        </div>
+        <!-- Banner Curl SVG -->
+        <div class="relative -mt-1">
+            <svg viewBox="0 0 1440 40" preserveAspectRatio="none" class="w-full h-6 lg:h-10 block" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <linearGradient id="curlShadow" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="rgba(0,0,0,0.08)"/>
+                        <stop offset="100%" stop-color="rgba(0,0,0,0)"/>
+                    </linearGradient>
+                </defs>
+                <path d="M0,0 C360,40 1080,40 1440,0 L1440,40 L0,40 Z" fill="#ffffff"/>
+                <path d="M0,0 C360,40 1080,40 1440,0" fill="none" stroke="url(#curlShadow)" stroke-width="2"/>
+            </svg>
         </div>
     </section>
     @endif
@@ -737,7 +750,7 @@
                     <p class="text-base sm:text-lg mb-6 max-w-xl mx-auto" style="color: {{ $promo->text_color ?? '#ffffff' }}; opacity: 0.85;">{{ $promo->subtitle }}</p>
                 @endif
                 @if($promo->button_text)
-                    <a href="{{ $promo->button_link ?? route('products.index') }}" class="inline-flex items-center gap-2 px-8 py-3 bg-white text-[#205258] rounded-full font-semibold text-sm hover:bg-neutral-100 transition-colors shadow-lg">
+                    <a href="{{ $promo->button_link ?? route('products.index') }}" class="inline-flex items-center gap-2 px-8 py-2 bg-white text-[#205258] rounded-full font-semibold text-sm hover:bg-neutral-100 transition-colors shadow-lg">
                         {{ $promo->button_text }}
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                     </a>
@@ -805,7 +818,7 @@
                     @endforeach
                 </div>
                 <div class="text-center mt-8">
-                    <a href="{{ route('new-arrivals') }}" class="inline-flex items-center gap-2 px-8 py-3 bg-white text-[#205258] border border-[#205258] rounded-full font-medium text-sm hover:bg-[#205258] hover:text-white transition-colors">
+                    <a href="{{ route('new-arrivals') }}" class="inline-flex items-center gap-2 px-8 py-2 bg-white text-[#205258] border border-[#205258] rounded-full font-medium text-sm hover:bg-[#205258] hover:text-white transition-colors">
                         View All New Arrivals
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                     </a>

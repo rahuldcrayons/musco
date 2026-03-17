@@ -44,14 +44,14 @@
                 <!-- Actions -->
                 <div class="flex flex-col sm:flex-row gap-3">
                     <a href="{{ route('checkout.index') }}"
-                       class="flex-1 inline-flex items-center justify-center gap-2 py-3 px-6 bg-[#F8931D] hover:bg-[#E07E0A] text-white text-sm font-semibold rounded-xl transition-colors">
+                       class="flex-1 inline-flex items-center justify-center gap-2 py-2 px-4 bg-[#F8931D] hover:bg-[#E07E0A] text-white text-sm font-semibold rounded-xl transition-colors">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
                         </svg>
                         Try Again
                     </a>
                     <a href="{{ route('cart.index') }}"
-                       class="flex-1 inline-flex items-center justify-center gap-2 py-3 px-6 border border-neutral-200 text-neutral-700 text-sm font-semibold rounded-xl hover:bg-neutral-50 transition-colors">
+                       class="flex-1 inline-flex items-center justify-center gap-2 py-2 px-4 border border-neutral-200 text-neutral-700 text-sm font-semibold rounded-xl hover:bg-neutral-50 transition-colors">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
                         </svg>

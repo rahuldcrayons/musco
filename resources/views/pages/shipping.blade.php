@@ -227,7 +227,7 @@
                 <h3 class="text-[15px] font-bold text-neutral-900 mb-1">Need more help?</h3>
                 <p class="text-[13px] text-neutral-600 mb-4">Our support team is available to assist with any delivery questions.</p>
                 <a href="{{ route('contact') }}"
-                   class="inline-flex items-center px-6 py-2.5 bg-[#F8931D] hover:bg-[#E07E0A] text-white text-sm font-semibold rounded-xl transition-colors">
+                   class="inline-flex items-center px-4 py-2 bg-[#F8931D] hover:bg-[#E07E0A] text-white text-sm font-semibold rounded-xl transition-colors">
                     Contact Support
                 </a>
             </div>

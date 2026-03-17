@@ -17,10 +17,32 @@
     <meta name="msapplication-TileColor" content="#205258">
     <meta name="format-detection" content="telephone=no">
     <link rel="manifest" href="/manifest.json">
-    <link rel="apple-touch-icon" sizes="180x180" href="/images/icons/icon-192x192.png">
+    <link rel="icon" type="image/svg+xml" href="/images/icons/favicon.svg">
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/images/icons/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/icons/icon-192x192.svg">
 
     <!-- SEO Meta Tags -->
     @stack('meta')
+
+    <!-- Default OG fallbacks -->
+    @unless(View::hasSection('meta'))
+        <meta name="description" content="{{ config('app.name') }} - Shop gadgets, mobile accessories, earphones, chargers, and more online.">
+        <meta property="og:site_name" content="{{ config('app.name') }}">
+        <meta property="og:title" content="@yield('title', config('app.name'))">
+        <meta property="og:description" content="Shop gadgets, mobile accessories, earphones, chargers, and more at {{ config('app.name') }}.">
+        <meta property="og:type" content="website">
+        <meta property="og:url" content="{{ url()->current() }}">
+        <meta property="og:image" content="{{ asset('images/og-default.png') }}">
+        <meta property="og:image:width" content="1200">
+        <meta property="og:image:height" content="630">
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:title" content="@yield('title', config('app.name'))">
+        <meta name="twitter:description" content="Shop gadgets, mobile accessories, earphones, chargers, and more at {{ config('app.name') }}.">
+        <meta name="twitter:image" content="{{ asset('images/og-default.png') }}">
+    @endunless
+
+    <link rel="canonical" href="{{ url()->current() }}">
 
     <!-- Performance: DNS prefetch + preconnect -->
     <link rel="dns-prefetch" href="https://fonts.bunny.net">

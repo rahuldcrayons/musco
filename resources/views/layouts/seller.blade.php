@@ -6,6 +6,8 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>{{ $title ?? 'Seller Dashboard' }} - {{ config('app.name') }}</title>
+    <link rel="icon" type="image/svg+xml" href="/images/icons/favicon.svg">
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/icons/favicon-32x32.png">
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\NewsletterSubscriber;
+use App\Services\AnalyticsService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -48,6 +49,9 @@ class NewsletterController extends Controller
             'subscribed_at' => now(),
             'ip_address'    => $request->ip(),
         ]);
+
+        // Facebook CAPI: Subscribe
+        app(AnalyticsService::class)->trackSubscribe($validated['email'], $request);
 
         return response()->json([
             'success' => true,

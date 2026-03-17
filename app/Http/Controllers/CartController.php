@@ -6,6 +6,7 @@ use App\Models\Cart;
 use App\Models\CartItem;
 use App\Models\Coupon;
 use App\Models\Product;
+use App\Services\AnalyticsService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -117,12 +118,24 @@ class CartController extends Controller
 
         $cart->recalculate();
 
+        // Facebook CAPI: AddToCart
+        $eventId = AnalyticsService::generateEventId('atc');
+        app(AnalyticsService::class)->trackAddToCart($product, $validated['quantity'], $request, $eventId);
+
         if ($request->wantsJson()) {
             return response()->json([
                 'success' => true,
                 'message' => 'Product added to cart',
                 'cart_count' => $cart->items->sum('quantity'),
                 'cart_total' => $cart->total,
+                'fb_event' => [
+                    'event_id' => $eventId,
+                    'content_ids' => [(string) $product->id],
+                    'content_name' => $product->name,
+                    'content_type' => 'product',
+                    'value' => (float) $product->price * $validated['quantity'],
+                    'currency' => 'INR',
+                ],
             ]);
         }
 

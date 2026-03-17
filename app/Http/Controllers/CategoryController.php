@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Product;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -33,7 +34,7 @@ class CategoryController extends Controller
         return view('categories.index', compact('categories'));
     }
 
-    public function show(Request $request, Category $category): View
+    public function show(Request $request, Category $category): View|JsonResponse
     {
         abort_unless($category->is_active, 404);
 
@@ -102,6 +103,14 @@ class CategoryController extends Controller
         };
 
         $products = $query->paginate(24)->withQueryString();
+
+        if ($request->ajax()) {
+            $html = '';
+            foreach ($products as $product) {
+                $html .= view('components.product-card', ['product' => $product])->render();
+            }
+            return response()->json(['html' => $html, 'hasMore' => $products->hasMorePages()]);
+        }
 
         // Subcategories for filter sidebar
         $filterSubcategories = $category->children()->where('is_active', true)->withCount('products')->get();

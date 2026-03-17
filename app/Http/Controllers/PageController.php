@@ -8,6 +8,7 @@ use App\Models\Enquiry;
 use App\Models\Notification;
 use App\Models\Page;
 use App\Models\User;
+use App\Services\AnalyticsService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -41,6 +42,9 @@ class PageController extends Controller
         ]);
 
         $enquiry = Enquiry::create($validated);
+
+        // Facebook CAPI: Contact
+        app(AnalyticsService::class)->trackContact($request);
 
         // Notify all admin users
         $admins = User::where('role', 'admin')->get();

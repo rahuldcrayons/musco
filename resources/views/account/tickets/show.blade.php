@@ -112,7 +112,7 @@
                             @enderror
                             <div class="mt-3 flex justify-end">
                                 <button type="submit"
-                                        class="px-5 py-2 bg-[#F8931D] text-white text-sm font-semibold rounded-lg hover:bg-[#E07E0A] transition-colors">
+                                        class="px-3 py-1.5 bg-[#F8931D] text-white text-sm font-semibold rounded-lg hover:bg-[#E07E0A] transition-colors">
                                     Send Reply
                                 </button>
                             </div>

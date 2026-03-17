@@ -180,7 +180,7 @@
                 <h3 class="text-[15px] font-bold text-neutral-900 mb-1">Still have questions?</h3>
                 <p class="text-[13px] text-neutral-600 mb-4">Can't find what you're looking for? We're here to help.</p>
                 <a href="{{ route('contact') }}"
-                   class="inline-flex items-center px-6 py-2.5 bg-gradient-to-r from-[#F8931D] via-[#F8931D] to-[#E07E0A] hover:from-[#E07E0A] hover:via-[#E07E0A] hover:to-[#D47200] text-white text-sm font-semibold rounded-xl shadow-lg shadow-[#F8931D]/25 hover:shadow-[#F8931D]/40 transition-all duration-300 transform hover:-translate-y-0.5 active:translate-y-0">
+                   class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-[#F8931D] via-[#F8931D] to-[#E07E0A] hover:from-[#E07E0A] hover:via-[#E07E0A] hover:to-[#D47200] text-white text-sm font-semibold rounded-xl shadow-lg shadow-[#F8931D]/25 hover:shadow-[#F8931D]/40 transition-all duration-300 transform hover:-translate-y-0.5 active:translate-y-0">
                     Contact Us
                 </a>
             </div>

@@ -6,6 +6,7 @@ use App\Models\Product;
 use App\Models\Category;
 use App\Models\ProductQuestion;
 use App\Models\ProductView;
+use App\Services\AnalyticsService;
 use App\Services\ReviewSchemaService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -13,7 +14,7 @@ use Illuminate\View\View;
 
 class ProductController extends Controller
 {
-    public function index(Request $request): View
+    public function index(Request $request): View|JsonResponse
     {
         $query = Product::query()
             ->where('is_active', true)
@@ -71,6 +72,18 @@ class ProductController extends Controller
 
         $products = $query->paginate(24)->withQueryString();
 
+        // AJAX infinite scroll
+        if ($request->ajax()) {
+            $html = '';
+            foreach ($products as $product) {
+                $html .= view('components.product-card', ['product' => $product])->render();
+            }
+            return response()->json([
+                'html' => $html,
+                'hasMore' => $products->hasMorePages(),
+            ]);
+        }
+
         // Get categories and subcategories for filters
         $categories = Category::whereNull('parent_id')->where('is_active', true)->get();
         $subcategories = Category::whereNotNull('parent_id')->where('is_active', true)->orderBy('name')->get();
@@ -113,9 +126,22 @@ class ProductController extends Controller
                 $query->where('category_id', $product->category_id)
                       ->orWhere('brand_id', $product->brand_id);
             })
-            ->with(['category', 'primaryImage'])
+            ->with(['category', 'brand', 'primaryImage'])
             ->inRandomOrder()
             ->take(8)
+            ->get();
+
+        // Compare with similar items (same category or brand, limit 4)
+        $compareProducts = Product::query()
+            ->where('is_active', true)
+            ->where('id', '!=', $product->id)
+            ->where(function ($query) use ($product) {
+                $query->where('category_id', $product->category_id)
+                      ->orWhere('brand_id', $product->brand_id);
+            })
+            ->with(['brand', 'primaryImage'])
+            ->inRandomOrder()
+            ->take(3)
             ->get();
 
         // Breadcrumbs
@@ -130,7 +156,11 @@ class ProductController extends Controller
         $productSchema = $schemaService->getProductSchema($product);
         $faqSchema = $schemaService->getFaqSchema($product);
 
-        return view('products.show', compact('product', 'relatedProducts', 'breadcrumbs', 'productSchema', 'faqSchema'));
+        // Facebook CAPI: ViewContent
+        $fbEventId = AnalyticsService::generateEventId('vc');
+        app(AnalyticsService::class)->trackViewContent($product, request(), $fbEventId);
+
+        return view('products.show', compact('product', 'relatedProducts', 'compareProducts', 'breadcrumbs', 'productSchema', 'faqSchema', 'fbEventId'));
     }
 
     public function quickView(Product $product): JsonResponse
@@ -159,7 +189,7 @@ class ProductController extends Controller
         ]);
     }
 
-    public function newArrivals(): View
+    public function newArrivals(Request $request): View|JsonResponse
     {
         $products = Product::query()
             ->where('is_active', true)
@@ -167,16 +197,32 @@ class ProductController extends Controller
             ->orderBy('created_at', 'desc')
             ->paginate(24);
 
+        if ($request->ajax()) {
+            $html = '';
+            foreach ($products as $product) {
+                $html .= view('components.product-card', ['product' => $product])->render();
+            }
+            return response()->json(['html' => $html, 'hasMore' => $products->hasMorePages()]);
+        }
+
         return view('products.new-arrivals', compact('products'));
     }
 
-    public function bestsellers(): View
+    public function bestsellers(Request $request): View|JsonResponse
     {
         $products = Product::query()
             ->where('is_active', true)
             ->with(['category', 'primaryImage'])
             ->orderBy('sales_count', 'desc')
             ->paginate(24);
+
+        if ($request->ajax()) {
+            $html = '';
+            foreach ($products as $product) {
+                $html .= view('components.product-card', ['product' => $product])->render();
+            }
+            return response()->json(['html' => $html, 'hasMore' => $products->hasMorePages()]);
+        }
 
         return view('products.bestsellers', compact('products'));
     }

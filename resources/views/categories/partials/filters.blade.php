@@ -83,10 +83,10 @@
 
     {{-- Action Buttons --}}
     <div class="flex gap-2 pt-2">
-        <button type="submit" class="flex-1 py-2.5 bg-[#F8931D] hover:bg-[#E07E0A] text-white text-sm font-semibold rounded-lg transition-colors">
+        <button type="submit" class="flex-1 py-2 bg-[#F8931D] hover:bg-[#E07E0A] text-white text-sm font-semibold rounded-lg transition-colors">
             Apply
         </button>
-        <a href="{{ route('category.show', $category) }}" class="flex-1 py-2.5 text-center text-sm font-medium text-neutral-600 border border-neutral-200 rounded-lg hover:bg-neutral-50 transition-colors">
+        <a href="{{ route('category.show', $category) }}" class="flex-1 py-2 text-center text-sm font-medium text-neutral-600 rounded-lg hover:bg-neutral-50 transition-colors">
             Reset
         </a>
     </div>

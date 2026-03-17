@@ -23,7 +23,7 @@
                             </div>
                             <h3 class="text-base font-semibold text-neutral-900 mb-1">No eligible orders</h3>
                             <p class="text-sm text-neutral-600 mb-5">You don't have any eligible orders. Returns are available {{ $returnMinHours }} hours after delivery, within a {{ $returnWindowDays }}-day window. Items already returned are excluded.</p>
-                            <a href="{{ route('account.orders.index') }}" class="inline-flex items-center gap-2 bg-[#F8931D] hover:bg-[#E07E0A] text-white text-sm font-semibold px-5 py-2 rounded-lg transition-colors">
+                            <a href="{{ route('account.orders.index') }}" class="inline-flex items-center gap-2 bg-[#F8931D] hover:bg-[#E07E0A] text-white text-sm font-semibold px-3 py-1.5 rounded-lg transition-colors">
                                 View Orders
                             </a>
                         </div>
@@ -259,11 +259,11 @@
                                 <button type="submit"
                                         :disabled="selectedItems.length === 0"
                                         :class="selectedItems.length === 0 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-[#E07E0A]'"
-                                        class="inline-flex items-center gap-2 bg-[#F8931D] text-white text-sm font-semibold px-6 py-2.5 rounded-lg transition-colors">
+                                        class="inline-flex items-center gap-2 bg-[#F8931D] text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
                                     Submit Return Request
                                 </button>
-                                <a href="{{ route('account.returns.index') }}" class="text-sm font-medium text-neutral-600 hover:text-neutral-700 transition-colors px-4 py-2.5">
+                                <a href="{{ route('account.returns.index') }}" class="text-sm font-medium text-neutral-600 hover:text-neutral-700 transition-colors px-3 py-1.5">
                                     Cancel
                                 </a>
                             </div>

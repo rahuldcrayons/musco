@@ -21,80 +21,56 @@
     {{-- Compact card for horizontal scrollable rows --}}
     <div {{ $attributes->merge(['class' => 'group shrink-0 w-full']) }}>
         <a href="{{ route('product.show', $product) }}" class="block relative">
-            <div class="aspect-square bg-neutral-50 rounded-[20px] overflow-hidden mb-2">
+            <div class="aspect-square bg-[#F7F8FA] rounded-lg overflow-hidden mb-2 border border-[#E3E6E6]">
                 <img src="{{ $product->primary_image_url }}"
                      alt="{{ $product->name }}"
-                     class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                     class="w-full h-full object-contain p-2 group-hover:scale-105 transition-transform duration-300"
                      loading="lazy"
                      onerror="this.src='{{ $placeholderImage }}'">
             </div>
             @if($hasDiscount)
-                <span class="absolute top-2 left-2 bg-[#F8931D] text-white text-[10px] font-bold px-2 py-0.5 rounded-md">{{ round($discount) }}% Off</span>
+                <span class="absolute top-2 left-2 bg-[#CC0C39] text-white text-[10px] font-bold px-1.5 py-0.5 rounded-sm">{{ round($discount) }}% off</span>
             @endif
         </a>
 
-        <a href="{{ route('product.show', $product) }}" class="block px-1">
-            @if($product->brand)
-                <p class="text-[10px] text-neutral-600 uppercase tracking-wide mb-0.5">{{ $product->brand->name }}</p>
-            @endif
-            <h3 class="text-xs text-[#222] line-clamp-1 mb-1 group-hover:text-[#205258] leading-snug font-medium">
+        <a href="{{ route('product.show', $product) }}" class="block px-0.5">
+            <h3 class="text-[13px] text-[#0F1111] line-clamp-2 mb-1 leading-snug hover:text-[#C7511F] transition-colors">
                 {{ $product->name }}
             </h3>
         </a>
 
-        @if($rating > 0)
-            <div class="flex items-center gap-1 mb-1 px-1">
-                <span class="inline-flex items-center gap-0.5 bg-[#C1539C] text-white text-[10px] font-bold px-1 py-0.5 rounded-sm">
-                    {{ number_format($rating, 1) }}
-                    <svg class="w-2.5 h-2.5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                </span>
-                <span class="text-[10px] text-neutral-600">({{ $reviewCount }})</span>
+        {{-- Star Rating --}}
+        <div class="flex items-center gap-1 mb-1 px-0.5">
+            <div class="flex items-center">
+                @for($i = 1; $i <= 5; $i++)
+                    <svg class="w-3.5 h-3.5 {{ $i <= round($rating) ? 'text-[#FFA41C]' : 'text-[#E0E0E0]' }}" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                @endfor
             </div>
-        @endif
+            <span class="text-[11px] text-[#007185]">{{ $reviewCount }}</span>
+        </div>
 
-        <div class="flex items-baseline gap-1 flex-wrap px-1">
-            <span class="text-sm font-bold text-[#222]">@price($product->price)</span>
+        <div class="flex items-baseline gap-1 flex-wrap px-0.5 mb-1">
+            <span class="text-[15px] font-medium text-[#0F1111]">@price($product->price)</span>
             @if($hasDiscount)
-                <span class="text-[10px] text-neutral-600 line-through">@price($product->mrp)</span>
+                <span class="text-[11px] text-[#565959] line-through">@price($product->mrp)</span>
             @endif
         </div>
 
-        {{-- Quick Attributes --}}
-        @if(is_array($product->attributes) && count($product->attributes))
-            @php
-                $colorMap = cache()->remember('attr_color_map', 3600, function() {
-                    $map = [];
-                    foreach (\App\Models\Attribute::where('type', 'color')->with('values')->get() as $attr) {
-                        foreach ($attr->values as $val) {
-                            if ($val->color_code) $map[$attr->name][$val->value] = $val->color_code;
-                        }
-                    }
-                    return $map;
-                });
-            @endphp
-            <div class="flex flex-wrap gap-1 mt-1 px-1">
-                @foreach($product->attributes as $name => $value)
-                    <span class="text-[9px] text-neutral-600 bg-neutral-50 border border-neutral-100 rounded-full px-1.5 py-0.5 inline-flex items-center gap-0.5">
-                        @if(isset($colorMap[$name][$value]))
-                            <span class="w-2.5 h-2.5 rounded-full border border-neutral-200 shrink-0" style="background-color: {{ $colorMap[$name][$value] }}"></span>
-                        @endif
-                        {{ Str::limit($value, 12) }}
-                    </span>
-                @endforeach
-            </div>
+        @if($hasDiscount)
+            <p class="text-[11px] text-[#CC0C39] font-medium px-0.5 mb-1">Save {{ round($discount) }}%</p>
         @endif
 
         {{-- Add to Cart --}}
         @if($showAddToCart)
-            <div class="mt-2 px-1">
+            <div class="mt-1.5 px-0.5">
                 @unless($outOfStock)
                     <button @click="$store.cart.add({{ $product->id }})"
-                            class="w-full py-3 text-[12px] font-semibold text-white bg-[#205258] rounded-md hover:bg-[#1b454a] transition-colors duration-200">
-                        Add to Bag
+                            class="w-full py-1.5 text-xs font-medium text-white bg-[#F8931D] hover:bg-[#E07E0A] rounded-full  transition-colors shadow-sm">
+                        Add to Cart
                     </button>
                 @else
                     <button @click="$dispatch('notify-stock', { productId: {{ $product->id }} })"
-                            class="w-full py-3 text-[12px] font-medium text-neutral-600 border border-neutral-200 rounded-md hover:bg-neutral-50 transition-colors">
+                            class="w-full py-1.5 text-xs font-medium text-[#565959] bg-[#F0F2F2] rounded-full  transition-colors">
                         Notify Me
                     </button>
                 @endunless
@@ -102,32 +78,32 @@
         @endif
     </div>
 @else
-    {{-- Full product card - MudKid style --}}
-    <div {{ $attributes->merge(['class' => 'group card-product flex flex-col bg-white rounded-[20px] overflow-hidden']) }}>
+    {{-- Full product card — Amazon-inspired clean style --}}
+    <div {{ $attributes->merge(['class' => 'group card-product flex flex-col bg-white border border-[#E3E6E6] rounded-lg overflow-hidden hover:shadow-md transition-shadow duration-200']) }}>
         {{-- Image Section --}}
-        <div class="relative aspect-square overflow-hidden bg-neutral-50">
+        <div class="relative aspect-square overflow-hidden bg-[#F7F8FA]">
             <a href="{{ route('product.show', $product) }}">
                 <img src="{{ $product->primary_image_url }}"
                      alt="{{ $product->name }}"
-                     class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                     class="w-full h-full object-contain p-3 group-hover:scale-105 transition-transform duration-300"
                      loading="lazy"
                      onerror="this.src='{{ $placeholderImage }}'">
             </a>
 
             {{-- Top-left badges --}}
-            <div class="absolute top-3 left-3 flex flex-col gap-1">
-                @if($hasDiscount)
-                    <span class="bg-[#F8931D] text-white text-[10px] font-bold px-2 py-0.5 rounded-md">{{ round($discount) }}% Off</span>
-                @endif
-            </div>
+            @if($hasDiscount)
+                <div class="absolute top-2 left-2">
+                    <span class="bg-[#CC0C39] text-white text-[10px] font-bold px-1.5 py-0.5 rounded-sm">{{ round($discount) }}% off</span>
+                </div>
+            @endif
 
             {{-- Top-right hover actions (Wishlist + Quick View) --}}
             @if($hasHoverActions)
-                <div class="absolute top-3 right-3 flex flex-col gap-1.5 sm:opacity-0 sm:group-hover:opacity-100 focus-within:opacity-100 transition-opacity duration-200">
+                <div class="absolute top-2 right-2 flex flex-col gap-1.5 sm:opacity-0 sm:group-hover:opacity-100 focus-within:opacity-100 transition-opacity duration-200">
                     @if($showWishlist)
                         <button @click="$store.wishlist.toggle({{ $product->id }})"
-                                class="w-11 h-11 bg-white rounded-full shadow-sm flex items-center justify-center transition-colors focus:outline-none focus:ring-2 focus:ring-[#205258] focus:ring-offset-1"
-                                :style="$store.wishlist.has({{ $product->id }}) ? 'color: #ef4444;' : 'color: #737373;'"
+                                class="w-9 h-9 bg-white rounded-full shadow-sm flex items-center justify-center transition-colors focus:outline-none"
+                                :style="$store.wishlist.has({{ $product->id }}) ? 'color: #ef4444;' : 'color: #565959;'"
                                 aria-label="Toggle wishlist">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
@@ -136,7 +112,7 @@
                     @endif
                     @if($showQuickViewBtn)
                         <button @click="$dispatch('quick-view', { productId: {{ $product->id }} })"
-                                class="w-11 h-11 bg-white rounded-full shadow-sm flex items-center justify-center text-neutral-600 hover:text-[#205258] transition-colors focus:outline-none focus:ring-2 focus:ring-[#205258] focus:ring-offset-1"
+                                class="w-9 h-9 bg-white rounded-full shadow-sm flex items-center justify-center text-[#565959] hover:text-[#0F1111] transition-colors focus:outline-none"
                                 aria-label="Quick view">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
@@ -150,95 +126,63 @@
             {{-- Out of stock overlay --}}
             @if($outOfStock)
                 <div class="absolute inset-0 bg-white/70 flex items-center justify-center">
-                    <span class="text-xs font-semibold text-neutral-600 bg-white px-3 py-1 rounded-full shadow-sm">Out of Stock</span>
+                    <span class="text-xs font-semibold text-[#B12704] bg-white px-3 py-1 rounded-full shadow-sm border border-[#E3E6E6]">Out of Stock</span>
                 </div>
             @endif
         </div>
 
         {{-- Content Section --}}
         <div class="p-3 flex flex-col flex-1">
-            {{-- Brand --}}
-            @if($product->brand)
-                <p class="text-[10px] text-neutral-600 uppercase tracking-wider mb-0.5">{{ $product->brand->name }}</p>
-            @elseif($product->category)
-                <a href="{{ route('category.show', $product->category) }}" class="text-[10px] text-neutral-600 uppercase tracking-wider mb-0.5 block hover:text-[#205258]">
-                    {{ $product->category->name }}
-                </a>
-            @endif
-
             {{-- Product Name --}}
-            <h3 class="text-[13px] font-medium text-[#222] mb-1.5 leading-snug min-h-9">
-                <a href="{{ route('product.show', $product) }}" class="line-clamp-2 hover:text-[#205258] transition-colors">
+            <h3 class="text-[13px] text-[#0F1111] mb-1.5 leading-snug min-h-9">
+                <a href="{{ route('product.show', $product) }}" class="line-clamp-2 hover:text-[#C7511F] transition-colors">
                     {{ $product->name }}
                 </a>
             </h3>
 
-            {{-- Rating Badge --}}
-            @if($rating > 0)
-                <div class="flex items-center gap-1 mb-1.5">
-                    <span class="inline-flex items-center gap-0.5 bg-[#C1539C] text-white text-[10px] font-bold px-1.5 py-0.5 rounded-sm">
-                        {{ number_format($rating, 1) }}
-                        <svg class="w-2.5 h-2.5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                    </span>
-                    <span class="text-[10px] text-neutral-600">({{ $reviewCount }})</span>
+            {{-- Star Rating Row --}}
+            <div class="flex items-center gap-1 mb-1.5">
+                <div class="flex items-center">
+                    @for($i = 1; $i <= 5; $i++)
+                        <svg class="w-3.5 h-3.5 {{ $i <= round($rating) ? 'text-[#FFA41C]' : 'text-[#E0E0E0]' }}" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                        </svg>
+                    @endfor
                 </div>
-            @endif
+                <a href="{{ route('product.show', $product) }}#reviews" class="text-[11px] text-[#007185] hover:text-[#C7511F] hover:underline">{{ $reviewCount }}</a>
+            </div>
 
             {{-- Price Row --}}
-            <div class="flex items-baseline gap-1.5 mb-2.5">
-                <span class="text-sm font-bold text-[#222]">@price($product->price)</span>
+            <div class="mb-1.5">
+                <div class="flex items-baseline gap-1.5">
+                    <span class="text-[16px] font-medium text-[#0F1111]">@price($product->price)</span>
+                    @if($hasDiscount)
+                        <span class="text-[12px] text-[#565959] line-through">@price($product->mrp)</span>
+                    @endif
+                </div>
                 @if($hasDiscount)
-                    <span class="text-[11px] text-neutral-600 line-through">@price($product->mrp)</span>
-                    <span class="text-[11px] font-semibold text-[#B06D0F]">{{ round($discount) }}% off</span>
+                    <span class="text-[11px] text-[#CC0C39] font-medium">({{ round($discount) }}% off)</span>
                 @endif
             </div>
 
-            {{-- Quick Attributes (Size, Shade, etc.) --}}
-            @if(is_array($product->attributes) && count($product->attributes))
-                @php
-                    $colorMap = cache()->remember('attr_color_map', 3600, function() {
-                        $map = [];
-                        foreach (\App\Models\Attribute::where('type', 'color')->with('values')->get() as $attr) {
-                            foreach ($attr->values as $val) {
-                                if ($val->color_code) $map[$attr->name][$val->value] = $val->color_code;
-                            }
-                        }
-                        return $map;
-                    });
-                    $colorAttrs = [];
-                    $textAttrs = [];
-                    foreach ($product->attributes as $name => $value) {
-                        if (isset($colorMap[$name][$value])) {
-                            $colorAttrs[] = ['name' => $name, 'value' => $value, 'code' => $colorMap[$name][$value]];
-                        } else {
-                            $textAttrs[] = ['name' => $name, 'value' => $value];
-                        }
-                    }
-                @endphp
-                <div class="flex flex-wrap items-center gap-1.5 mb-2">
-                    @foreach($colorAttrs as $ca)
-                        <span class="inline-flex items-center gap-1 text-[10px] text-neutral-600 bg-neutral-50 border border-neutral-100 rounded-full px-1.5 py-0.5">
-                            <span class="w-3 h-3 rounded-full border border-neutral-200 shrink-0" style="background-color: {{ $ca['code'] }}"></span>
-                            {{ $ca['value'] }}
-                        </span>
-                    @endforeach
-                    @foreach(array_slice($textAttrs, 0, 3) as $ta)
-                        <span class="text-[10px] text-neutral-600 bg-neutral-50 border border-neutral-100 rounded-full px-1.5 py-0.5">{{ $ta['value'] }}</span>
-                    @endforeach
-                </div>
+            {{-- Free Delivery badge --}}
+            @if($product->price >= 499)
+                <p class="text-[11px] text-[#0F1111] mb-1.5">
+                    <span class="text-[#565959]">FREE Delivery by</span> <span class="font-medium">{{ config('app.name') }}</span>
+                </p>
             @endif
 
             {{-- Add to Cart / Notify --}}
             @if($showAddToCart)
-                <div class="mt-auto pt-1">
+                <div class="mt-auto pt-2">
                     @unless($outOfStock)
                         <button @click="$store.cart.add({{ $product->id }})"
-                                class="w-full py-3 text-[13px] font-semibold text-white bg-[#205258] rounded-md hover:bg-[#1b454a] transition-colors duration-200">
-                            Add to Bag
+                                class="w-full py-1.5 text-xs font-medium text-white bg-[#F8931D] hover:bg-[#E07E0A] rounded-full  transition-colors shadow-sm">
+                            Add to Cart
                         </button>
                     @else
                         <button @click="$dispatch('notify-stock', { productId: {{ $product->id }} })"
-                                class="w-full py-3 text-[13px] font-medium text-neutral-600 border border-neutral-200 rounded-md hover:bg-neutral-50 transition-colors">
+                                class="w-full py-1.5 text-xs font-medium text-[#565959] bg-[#F0F2F2] rounded-full  transition-colors">
                             Notify Me
                         </button>
                     @endunless

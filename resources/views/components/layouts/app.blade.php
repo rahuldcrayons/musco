@@ -17,7 +17,10 @@
     <meta name="msapplication-TileColor" content="#205258">
     <meta name="format-detection" content="telephone=no">
     <link rel="manifest" href="/manifest.json">
-    <link rel="apple-touch-icon" sizes="180x180" href="/images/icons/icon-192x192.png">
+    <link rel="icon" type="image/svg+xml" href="/images/icons/favicon.svg">
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/images/icons/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/icons/icon-192x192.svg">
 
     <!-- SEO Meta Tags -->
     @hasSection('meta')
@@ -26,6 +29,25 @@
         {{ $meta ?? '' }}
     @endif
     @stack('meta')
+
+    <!-- Default OG / Twitter fallbacks (overridden by page-specific tags via @push('meta')) -->
+    @if(!View::hasSection('meta') && !isset($meta))
+        <meta name="description" content="{{ config('app.name') }} - Shop gadgets, mobile accessories, earphones, chargers, and more online.">
+        <meta property="og:site_name" content="{{ config('app.name') }}">
+        <meta property="og:title" content="{{ $title ?? config('app.name') }}">
+        <meta property="og:description" content="Shop gadgets, mobile accessories, earphones, chargers, and more at {{ config('app.name') }}.">
+        <meta property="og:type" content="website">
+        <meta property="og:url" content="{{ url()->current() }}">
+        <meta property="og:image" content="{{ asset('images/og-default.png') }}">
+        <meta property="og:image:width" content="1200">
+        <meta property="og:image:height" content="630">
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:title" content="{{ $title ?? config('app.name') }}">
+        <meta name="twitter:description" content="Shop gadgets, mobile accessories, earphones, chargers, and more at {{ config('app.name') }}.">
+        <meta name="twitter:image" content="{{ asset('images/og-default.png') }}">
+    @endif
+
+    <link rel="canonical" href="{{ url()->current() }}">
 
     <!-- Performance: DNS prefetch + preconnect -->
     <link rel="dns-prefetch" href="https://fonts.bunny.net">
@@ -69,7 +91,8 @@
     </script>
     @endif
 
-    <!-- Meta Pixel Code -->
+    {{-- Meta Pixel Code --}}
+    @if(config('services.facebook.pixel_id'))
     <script>
     !function(f,b,e,v,n,t,s)
     {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
@@ -79,13 +102,14 @@
     t.src=v;s=b.getElementsByTagName(e)[0];
     s.parentNode.insertBefore(t,s)}(window, document,'script',
     'https://connect.facebook.net/en_US/fbevents.js');
-    fbq('init', '3311261889043941');
+    fbq('init', '{{ config('services.facebook.pixel_id') }}');
     fbq('track', 'PageView');
     </script>
     <noscript><img height="1" width="1" style="display:none"
-    src="https://www.facebook.com/tr?id=3311261889043941&ev=PageView&noscript=1"
+    src="https://www.facebook.com/tr?id={{ config('services.facebook.pixel_id') }}&ev=PageView&noscript=1"
     /></noscript>
-    <!-- End Meta Pixel Code -->
+    @endif
+    {{-- End Meta Pixel Code --}}
 </head>
 <body class="font-sans antialiased bg-white text-[#222222] overflow-x-hidden" style="font-family: 'Poppins', sans-serif;" x-data data-authenticated="{{ auth()->check() ? 'true' : 'false' }}">
     <!-- Toast Notifications -->
@@ -204,7 +228,7 @@
 
                     <button type="submit"
                             :disabled="$store.authModal.isLoading"
-                            class="w-full py-2.5 bg-[#F8931D] hover:bg-[#E07E0A] text-white font-semibold rounded-lg text-sm transition-colors disabled:opacity-50">
+                            class="w-full py-2 bg-[#F8931D] hover:bg-[#E07E0A] text-white font-semibold rounded-lg text-sm transition-colors disabled:opacity-50">
                         <span x-show="!$store.authModal.isLoading">CONTINUE</span>
                         <span x-show="$store.authModal.isLoading" x-cloak class="flex items-center justify-center gap-2">
                             <svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
@@ -263,7 +287,7 @@
 
                     <button type="submit"
                             :disabled="$store.authModal.isLoading"
-                            class="w-full py-2.5 bg-[#F8931D] hover:bg-[#E07E0A] text-white font-semibold rounded-lg text-sm transition-colors disabled:opacity-50">
+                            class="w-full py-2 bg-[#F8931D] hover:bg-[#E07E0A] text-white font-semibold rounded-lg text-sm transition-colors disabled:opacity-50">
                         <span x-show="!$store.authModal.isLoading">CREATE ACCOUNT</span>
                         <span x-show="$store.authModal.isLoading" x-cloak class="flex items-center justify-center gap-2">
                             <svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
@@ -290,8 +314,8 @@
     </div>
     @endguest
 
-    <!-- Skip to main content -->
-    <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-primary-500 text-white px-4 py-2 rounded-md z-50">
+    <!-- Skip to main content (AAA Accessibility) -->
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] focus:bg-[#205258] focus:text-white focus:px-4 focus:py-2 focus:rounded-lg focus:text-sm focus:font-medium focus:shadow-lg">
         Skip to main content
     </a>
 
@@ -452,12 +476,12 @@
                         <div class="mt-auto space-y-2">
                             <template x-if="product?.in_stock">
                                 <button @click="$store.cart.add(product.id); close()"
-                                        class="w-full py-2.5 bg-[#F8931D] hover:bg-[#E07E0A] text-white font-semibold rounded-lg text-sm transition-colors">
+                                        class="w-full py-2 bg-[#F8931D] hover:bg-[#E07E0A] text-white font-semibold rounded-lg text-sm transition-colors">
                                     Add to Bag
                                 </button>
                             </template>
                             <a :href="product?.url"
-                               class="block w-full py-2.5 text-center text-sm font-medium text-[#205258] border border-[#205258]/30 rounded-lg hover:bg-[#205258]/5 transition-colors">
+                               class="block w-full py-2 text-center text-sm font-medium text-[#205258] border border-[#205258]/30 rounded-lg hover:bg-[#205258]/5 transition-colors">
                                 View Full Details
                             </a>
                         </div>
@@ -764,7 +788,7 @@
             </div>
 
             {{-- You May Also Like (Cross-sell / Upsell) --}}
-            <div x-show="$store.cart.recommendations.length > 0 && $store.cart.items.length > 0" class="border-t border-neutral-100 px-5 py-3">
+            <div x-show="$store.cart.recommendations.length > 0 && $store.cart.items.length > 0" class="border-t border-neutral-100 px-5 py-3 shrink-0 max-h-[35vh] lg:max-h-[40vh] overflow-hidden">
                 <h3 class="text-sm font-bold text-neutral-900 mb-2">You May Also Like</h3>
                 <div class="flex gap-2.5 overflow-x-auto pb-2 -mx-1 px-1 snap-x" style="-webkit-overflow-scrolling: touch;">
                     <template x-for="rec in $store.cart.recommendations" :key="rec.id">
@@ -790,7 +814,7 @@
             </div>
 
             {{-- Footer --}}
-            <div x-show="$store.cart.items.length > 0" class="border-t border-neutral-200 px-5 py-4 bg-white">
+            <div x-show="$store.cart.items.length > 0" class="border-t border-neutral-200 px-5 py-4 bg-white shrink-0">
                 <div class="flex items-center justify-between mb-3">
                     <span class="text-sm text-neutral-600">Subtotal</span>
                     <span class="text-lg font-bold text-neutral-900" x-text="formatCurrency($store.cart.subtotal)"></span>
@@ -798,11 +822,11 @@
                 <p class="text-[11px] text-neutral-400 mb-3">Shipping and taxes calculated at checkout</p>
                 <div class="flex flex-col gap-2">
                     <a href="{{ route('checkout.index') }}" @click="$store.cart.close()"
-                       class="w-full py-3 bg-[#F8931D] hover:bg-[#E07E0A] text-white font-semibold rounded-lg text-sm text-center transition-colors shadow-sm">
+                       class="w-full py-2 bg-[#F8931D] hover:bg-[#E07E0A] text-white font-semibold rounded-lg text-sm text-center transition-colors shadow-sm">
                         Checkout
                     </a>
                     <a href="{{ route('cart.index') }}" @click="$store.cart.close()"
-                       class="w-full py-2.5 text-center text-sm font-medium text-[#205258] border border-[#205258]/30 rounded-lg hover:bg-[#205258]/5 transition-colors">
+                       class="w-full py-2 text-center text-sm font-medium text-[#205258] border border-[#205258]/30 rounded-lg hover:bg-[#205258]/5 transition-colors">
                         View Bag
                     </a>
                 </div>

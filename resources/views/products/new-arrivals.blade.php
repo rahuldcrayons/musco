@@ -14,14 +14,35 @@
         </div>
 
         @if($products->count())
-            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
-                @foreach($products as $product)
-                    <x-product-card :product="$product" />
-                @endforeach
-            </div>
-
-            <div class="mt-8">
-                {{ $products->links() }}
+            <div x-data="{
+                page: {{ $products->currentPage() }},
+                loading: false,
+                hasMore: {{ $products->hasMorePages() ? 'true' : 'false' }},
+                loadMore() {
+                    if (this.loading || !this.hasMore) return;
+                    this.loading = true;
+                    this.page++;
+                    const url = new URL(window.location.href);
+                    url.searchParams.set('page', this.page);
+                    fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+                        .then(r => r.json())
+                        .then(data => {
+                            this.$refs.grid.insertAdjacentHTML('beforeend', data.html);
+                            this.hasMore = data.hasMore;
+                            this.loading = false;
+                        })
+                        .catch(() => { this.loading = false; });
+                }
+            }" x-init="new IntersectionObserver((e) => { if (e[0].isIntersecting) loadMore(); }, { rootMargin: '200px' }).observe($refs.sentinel)">
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6" x-ref="grid">
+                    @foreach($products as $product)
+                        <x-product-card :product="$product" />
+                    @endforeach
+                </div>
+                <div x-ref="sentinel" class="h-4"></div>
+                <div x-show="loading" x-cloak class="flex justify-center py-8">
+                    <svg class="animate-spin h-6 w-6 text-[#205258]" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
+                </div>
             </div>
         @else
             <div class="text-center py-16">

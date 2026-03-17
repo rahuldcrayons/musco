@@ -21,7 +21,11 @@ Route::get('/sitemap.xml', [App\Http\Controllers\SitemapController::class, 'inde
 Route::get('/sitemap-pages.xml', [App\Http\Controllers\SitemapController::class, 'pages']);
 Route::get('/sitemap-products.xml', [App\Http\Controllers\SitemapController::class, 'products']);
 Route::get('/sitemap-categories.xml', [App\Http\Controllers\SitemapController::class, 'categories']);
+Route::get('/sitemap-brands.xml', [App\Http\Controllers\SitemapController::class, 'brands']);
 Route::get('/sitemap-blog.xml', [App\Http\Controllers\SitemapController::class, 'blog']);
+
+// Facebook Catalog Feed
+Route::get('/feeds/facebook-catalog.xml', App\Http\Controllers\FacebookCatalogController::class)->name('facebook.catalog');
 
 // PWA Routes (served via Laravel when nginx doesn't serve static files through symlinks)
 Route::get('/offline', fn () => view('offline'))->name('offline');

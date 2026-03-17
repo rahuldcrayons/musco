@@ -186,7 +186,7 @@
                                                 <input type="text" x-model="couponCode" placeholder="Enter coupon code"
                                                        class="flex-1 min-w-0 text-[13px] border border-neutral-200 border-r-0 rounded-l-lg px-3 py-2.5 focus:border-primary-400 focus:outline-none uppercase placeholder:normal-case placeholder:text-neutral-600" required>
                                                 <button type="submit"
-                                                        class="shrink-0 text-[13px] font-bold text-white bg-primary-600 hover:bg-primary-700 rounded-r-lg px-5 py-2.5 transition-colors disabled:opacity-50"
+                                                        class="shrink-0 text-[13px] font-bold text-white bg-primary-600 hover:bg-primary-700 rounded-r-lg px-3 py-1.5 transition-colors disabled:opacity-50"
                                                         :disabled="applyingCoupon">
                                                     <span x-show="!applyingCoupon">APPLY</span>
                                                     <span x-show="applyingCoupon" class="inline-flex items-center gap-1">
@@ -250,7 +250,7 @@
                                 <!-- Checkout Button -->
                                 <div class="p-4 pt-0">
                                     <a href="{{ route('checkout.index') }}"
-                                       class="block w-full py-3 bg-primary-600 hover:bg-primary-700 text-white text-sm font-semibold text-center rounded-lg transition-colors shadow-sm">
+                                       class="block w-full py-2 bg-primary-600 hover:bg-primary-700 text-white text-sm font-semibold text-center rounded-lg transition-colors shadow-sm">
                                         PROCEED TO CHECKOUT
                                     </a>
                                 </div>
@@ -341,7 +341,7 @@
                     <h2 class="text-xl font-bold text-neutral-800 mb-2">Your bag is empty</h2>
                     <p class="text-sm text-neutral-600 mb-8 max-w-sm text-center leading-relaxed">There is nothing in your bag. Let's add some items.</p>
                     <a href="{{ route('products.index') }}"
-                       class="inline-flex items-center gap-2 bg-[#F8931D] hover:bg-[#E07E0A] text-white text-sm font-semibold px-10 py-3 rounded-lg transition-colors shadow-md shadow-[#F8931D]/20">
+                       class="inline-flex items-center gap-2 bg-[#F8931D] hover:bg-[#E07E0A] text-white text-sm font-semibold px-10 py-2 rounded-lg transition-colors shadow-md shadow-[#F8931D]/20">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
                         Start Shopping
                     </a>

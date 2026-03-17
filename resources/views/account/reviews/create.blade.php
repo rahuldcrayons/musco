@@ -22,7 +22,7 @@
                             </div>
                             <h3 class="text-base font-semibold text-neutral-900 mb-1">Already reviewed</h3>
                             <p class="text-sm text-neutral-600 mb-4">You have already submitted a review for this product.</p>
-                            <a href="{{ route('account.reviews') }}" class="inline-flex items-center gap-2 bg-[#F8931D] hover:bg-[#E07E0A] text-white text-sm font-semibold px-5 py-2 rounded-lg transition-colors">
+                            <a href="{{ route('account.reviews') }}" class="inline-flex items-center gap-2 bg-[#F8931D] hover:bg-[#E07E0A] text-white text-sm font-semibold px-3 py-1.5 rounded-lg transition-colors">
                                 View My Reviews
                             </a>
                         </div>
@@ -156,11 +156,11 @@
                                 <button type="submit"
                                         :disabled="rating === 0"
                                         :class="rating === 0 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-[#E07E0A]'"
-                                        class="inline-flex items-center gap-2 bg-[#F8931D] text-white text-sm font-semibold px-6 py-2.5 rounded-lg transition-colors">
+                                        class="inline-flex items-center gap-2 bg-[#F8931D] text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
                                     Submit Review
                                 </button>
-                                <a href="{{ route('account.reviews') }}" class="text-sm font-medium text-neutral-600 hover:text-neutral-700 transition-colors px-4 py-2.5">
+                                <a href="{{ route('account.reviews') }}" class="text-sm font-medium text-neutral-600 hover:text-neutral-700 transition-colors px-3 py-1.5">
                                     Cancel
                                 </a>
                             </div>

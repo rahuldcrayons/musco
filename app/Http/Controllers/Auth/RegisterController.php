@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Services\AnalyticsService;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -46,6 +47,9 @@ class RegisterController extends Controller
         ]);
 
         event(new Registered($user));
+
+        // Facebook CAPI: CompleteRegistration
+        app(AnalyticsService::class)->trackCompleteRegistration($user, $request);
 
         if ($request->wantsJson()) {
             return response()->json(['success' => true]);

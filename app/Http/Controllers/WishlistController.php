@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use App\Models\Wishlist;
+use App\Services\AnalyticsService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -48,6 +49,10 @@ class WishlistController extends Controller
                 'user_id' => auth()->id(),
                 'product_id' => $product->id,
             ]);
+
+            // Facebook CAPI: AddToWishlist
+            $eventId = AnalyticsService::generateEventId('awl');
+            app(AnalyticsService::class)->trackAddToWishlist($product, $request, $eventId);
         }
 
         if ($request->wantsJson()) {
@@ -55,6 +60,14 @@ class WishlistController extends Controller
                 'success' => true,
                 'message' => 'Product added to wishlist',
                 'count' => Wishlist::where('user_id', auth()->id())->count(),
+                'fb_event' => !$exists ? [
+                    'event_id' => $eventId ?? null,
+                    'content_ids' => [(string) $product->id],
+                    'content_name' => $product->name,
+                    'content_type' => 'product',
+                    'value' => (float) $product->price,
+                    'currency' => 'INR',
+                ] : null,
             ]);
         }
 

@@ -285,7 +285,7 @@
                         </div>
 
                         <button type="submit"
-                                class="inline-flex items-center gap-2 bg-[#F8931D] hover:bg-[#E07E0A] text-white text-sm font-semibold px-5 py-2.5 rounded-lg transition-colors">
+                                class="inline-flex items-center gap-2 bg-[#F8931D] hover:bg-[#E07E0A] text-white text-sm font-semibold px-3 py-1.5 rounded-lg transition-colors">
                             Save Preferences
                         </button>
                     </form>

@@ -97,7 +97,7 @@
                             </div>
                             <h3 class="text-base font-semibold text-neutral-900 mb-1">No returns yet</h3>
                             <p class="text-sm text-neutral-600 mb-5">You haven't submitted any return requests.</p>
-                            <a href="{{ route('account.orders.index') }}" class="inline-flex items-center gap-2 bg-[#F8931D] hover:bg-[#E07E0A] text-white text-sm font-semibold px-5 py-2 rounded-lg transition-colors">
+                            <a href="{{ route('account.orders.index') }}" class="inline-flex items-center gap-2 bg-[#F8931D] hover:bg-[#E07E0A] text-white text-sm font-semibold px-3 py-1.5 rounded-lg transition-colors">
                                 View Orders
                             </a>
                         </div>
