@@ -53,25 +53,23 @@ class ReviewGeneratorService
     {
         $categorySlug = $product->category?->slug ?? '';
         $productType = $this->detectProductType($product->name, $categorySlug);
-        $childTerm = $this->randomChildTerm();
 
         $templates = $this->getTitleTemplates($rating);
         $template = $templates[array_rand($templates)];
 
-        return $this->fillPlaceholders($template, $product, $productType, $childTerm);
+        return $this->fillPlaceholders($template, $product, $productType);
     }
 
     public function generateContent(Product $product, int $rating): string
     {
         $categorySlug = $product->category?->slug ?? '';
         $productType = $this->detectProductType($product->name, $categorySlug);
-        $childTerm = $this->randomChildTerm();
         $timeframe = $this->randomTimeframe();
 
         $templates = $this->getContentTemplates($rating);
         $template = $templates[array_rand($templates)];
 
-        return $this->fillPlaceholders($template, $product, $productType, $childTerm, $timeframe);
+        return $this->fillPlaceholders($template, $product, $productType, $timeframe);
     }
 
     public function generatePros(Product $product, int $rating): array
@@ -116,12 +114,6 @@ class ReviewGeneratorService
         return now()->setTime($hour, $minute, $second);
     }
 
-    private function randomChildTerm(): string
-    {
-        $terms = ['son', 'daughter', 'kid', 'little one', 'child', 'toddler', 'baby', 'kiddo'];
-        return $terms[array_rand($terms)];
-    }
-
     private function randomTimeframe(): string
     {
         $frames = ['a few days', 'a week', 'about two weeks', 'a couple of weeks', 'some time now', 'a month'];
@@ -132,27 +124,29 @@ class ReviewGeneratorService
     {
         $name = strtolower($productName . ' ' . $categorySlug);
 
-        if (preg_match('/dress|frock|gown|lehenga/', $name)) return 'dress';
-        if (preg_match('/shirt|t-shirt|tee|top/', $name)) return 'top';
-        if (preg_match('/pant|jeans|trouser|legging|shorts/', $name)) return 'bottom';
-        if (preg_match('/shoe|sandal|slipper|boot/', $name)) return 'shoes';
-        if (preg_match('/toy|puzzle|game|block/', $name)) return 'toy';
-        if (preg_match('/bag|backpack/', $name)) return 'bag';
-        if (preg_match('/set|combo|outfit/', $name)) return 'set';
-        if (preg_match('/jacket|sweater|hoodie|coat/', $name)) return 'winter wear';
-        if (preg_match('/sock|underwear|innerwear/', $name)) return 'innerwear';
-        if (preg_match('/accessory|bow|clip|band|watch/', $name)) return 'accessory';
+        if (preg_match('/earphone|earbuds|earbud|tws|headphone|headset|neckband/', $name)) return 'earphones';
+        if (preg_match('/speaker|soundbar|sound bar/', $name)) return 'speaker';
+        if (preg_match('/charger|adapter|charging/', $name)) return 'charger';
+        if (preg_match('/cable|cord|wire|usb/', $name)) return 'cable';
+        if (preg_match('/power.?bank|portable.?charger/', $name)) return 'power bank';
+        if (preg_match('/case|cover|back.?cover|bumper|flip/', $name)) return 'phone case';
+        if (preg_match('/tempered|screen.?guard|screen.?protector|glass/', $name)) return 'screen protector';
+        if (preg_match('/smartwatch|smart.?watch|fitness.?band|watch/', $name)) return 'smartwatch';
+        if (preg_match('/mount|holder|stand|tripod|selfie/', $name)) return 'phone mount';
+        if (preg_match('/gaming|controller|trigger|cool/', $name)) return 'gaming accessory';
+        if (preg_match('/memory|sd.?card|otg|hub|adapter/', $name)) return 'adapter';
+        if (preg_match('/ring.?holder|pop.?socket|grip/', $name)) return 'phone grip';
 
         return 'product';
     }
 
-    private function fillPlaceholders(string $template, Product $product, string $productType, string $childTerm, string $timeframe = ''): string
+    private function fillPlaceholders(string $template, Product $product, string $productType, string $timeframe = ''): string
     {
         $shortName = strlen($product->name) > 40 ? substr($product->name, 0, 37) . '...' : $product->name;
 
         return str_replace(
-            ['{product_name}', '{product_type}', '{child_term}', '{timeframe}', '{brand}'],
-            [$shortName, $productType, $childTerm, $timeframe, $product->brand?->name ?? 'this brand'],
+            ['{product_name}', '{product_type}', '{timeframe}', '{brand}'],
+            [$shortName, $productType, $timeframe, $product->brand?->name ?? 'this brand'],
             $template
         );
     }
@@ -164,35 +158,33 @@ class ReviewGeneratorService
         return match (true) {
             $rating >= 5 => [
                 'Absolutely love this {product_type}!',
-                'Perfect for my {child_term}',
+                'Best {product_type} at this price',
                 'Exceeded all my expectations',
                 'Best purchase this month!',
-                'My {child_term} loves it!',
                 'Amazing quality {product_type}',
                 'Worth every rupee',
                 'Highly recommend this',
                 'Fantastic {product_type}!',
                 'So happy with this purchase',
-                'Great buy for my {child_term}',
+                'Great value for money',
                 'Beautiful {product_type}, very pleased',
-                'Wonderful quality and design',
-                'My {child_term} won\'t stop wearing this',
+                'Wonderful quality and build',
                 'Outstanding {product_type}!',
                 'Must buy! Really impressed',
                 'Exactly what I was looking for',
                 'Superb quality {product_type}',
                 'Delighted with this purchase',
-                'Perfect gift for my {child_term}',
                 'Simply the best {product_type}',
                 'Brilliant quality and finish',
                 '5 stars all the way!',
                 'Very happy customer!',
-                'Couldn\'t be happier with this',
-                'My {child_term} absolutely adores this',
-                'Great value for money',
-                'Just what we needed!',
                 'Top quality {product_type}',
                 'Impressed with the quality',
+                'Perfect for daily use',
+                'Works flawlessly!',
+                'Premium feel at budget price',
+                'Better than branded alternatives',
+                'Using it daily, no complaints',
             ],
             $rating >= 4 => [
                 'Good quality {product_type}',
@@ -200,32 +192,31 @@ class ReviewGeneratorService
                 'Nice {product_type}, minor things',
                 'Pretty good for the price',
                 'Solid {product_type}, would recommend',
-                'My {child_term} likes it a lot',
                 'Good value, decent quality',
                 'Satisfied with this {product_type}',
                 'Mostly impressed, small issue',
-                'Nice design and comfortable',
-                'Good {product_type}, fits well',
-                'My {child_term} enjoys this',
+                'Nice design and build',
+                'Good {product_type}, works well',
                 'Decent quality, looks great',
                 'Happy overall with this',
                 'Good product, quick delivery',
                 'Like it, but small improvements needed',
                 'A solid purchase overall',
-                'My {child_term} wears it often',
                 'Quite nice {product_type}',
                 'Pleased with the quality',
                 'Good for everyday use',
-                'Nice and comfortable',
                 'Reasonably good {product_type}',
                 'Better than expected',
                 'Would buy again',
+                'Good performance for the price',
+                'Reliable {product_type}',
+                'Does the job well',
             ],
             $rating >= 3 => [
                 'Decent but could be better',
                 'OK for the price',
                 'Average {product_type}',
-                'It\'s alright, nothing special',
+                'It does the job',
                 'Mixed feelings about this',
                 'Some pros and cons',
                 'Fair quality for the price',
@@ -234,9 +225,9 @@ class ReviewGeneratorService
                 'Meets basic expectations',
                 'Could use some improvements',
                 'Average quality {product_type}',
-                'It\'s okay for what it costs',
                 'Somewhat satisfied',
                 'Decent product overall',
+                'Works fine, nothing special',
             ],
             $rating >= 2 => [
                 'Disappointed with the quality',
@@ -268,68 +259,68 @@ class ReviewGeneratorService
     {
         return match (true) {
             $rating >= 5 => [
-                'Bought this {product_type} for my {child_term} and it turned out to be a great purchase. The quality is excellent and the material feels premium. Really happy with how it looks and fits.',
-                'I\'ve been looking for a good {product_type} for {timeframe} and finally found this one. My {child_term} absolutely loves it. The colors are vibrant and haven\'t faded after washing.',
-                'This {product_type} is amazing! My {child_term} has been using it for {timeframe} now and it still looks brand new. Definitely worth the money.',
-                'Ordered this for my {child_term}\'s birthday and it was a hit! The quality exceeded my expectations. Packaging was also very neat and presentable.',
-                'Excellent product! The {product_type} fits perfectly and my {child_term} is very comfortable wearing it. The stitching is neat and the fabric is soft. Will definitely order more from here.',
-                'Very impressed with this {product_type}. It\'s exactly as shown in the pictures. My {child_term} loves the design and I love the quality. Fast shipping too!',
-                'This is our third purchase from Jikra and every time the quality has been consistent. This {product_type} is no exception. Soft fabric, great fit, and my {child_term} is happy.',
-                'I was skeptical about ordering online for my {child_term} but this {product_type} changed my mind. The material is breathable and comfortable. Highly recommend to other parents.',
-                'My {child_term} picked this out and couldn\'t wait to use it. It\'s been {timeframe} and the quality is holding up great. We\'re very pleased with this purchase.',
-                'Just received this {product_type} and I\'m thoroughly impressed. The attention to detail is wonderful. My {child_term} loves it and I would definitely order from Jikra again.',
-                'Fantastic quality for the price! The {product_type} is well-made and my {child_term} is very comfortable. The design is cute and unique. Very happy with this find.',
-                'This {product_type} is honestly one of the best I\'ve bought for my {child_term}. The material is soft, the colors are beautiful, and it washes well. A definite winner!',
-                'Was looking for something special for my {child_term} and this {product_type} did not disappoint. Everyone compliments it when we go out. Great quality and great price.',
-                'Purchased this {product_type} after reading other reviews and I\'m glad I did. My {child_term} has been using it constantly. The quality is exceptional for what you pay.',
-                'Absolutely love this {product_type}! My {child_term} refuses to take it off. The material is soft against the skin and the design is adorable. Will be buying more!',
-                'I compared this with several other options and this {product_type} stood out for the quality. My {child_term} has been using it for {timeframe} and it still looks amazing.',
-                'Such a lovely {product_type}! My {child_term} looks adorable in it. The fabric quality is really good and it\'s very comfortable. Delivery was quick too.',
-                'Really pleased with this purchase. The {product_type} is well-stitched and the material is high quality. My {child_term} loves wearing it. Would recommend to friends.',
-                'This is exactly what I expected and more. The {product_type} fits perfectly and my {child_term} is very happy with it. Great experience shopping here.',
-                'Wonderful {product_type}! Got so many compliments on it. My {child_term} is comfortable and loves the design. Will definitely come back for more.',
+                'Bought this {product_type} and it turned out to be a great purchase. The build quality is excellent and it feels premium. Really happy with how it performs.',
+                'I have been looking for a good {product_type} for {timeframe} and finally found this one. Works perfectly and the quality is top notch for the price.',
+                'This {product_type} is amazing! I have been using it for {timeframe} now and it still works like new. Definitely worth the money.',
+                'Excellent product! The {product_type} works perfectly and feels very well built. Will definitely order more from Jikra.',
+                'Very impressed with this {product_type}. It is exactly as shown in the pictures. Fast shipping too! No complaints at all.',
+                'This is my third purchase from Jikra and every time the quality has been consistent. This {product_type} is no exception. Great build, great performance.',
+                'I was skeptical about ordering this online but this {product_type} changed my mind. The quality is outstanding for this price range. Highly recommend.',
+                'Just received this {product_type} and I am thoroughly impressed. The attention to detail is wonderful. Would definitely order from Jikra again.',
+                'Fantastic quality for the price! The {product_type} is well-made and performs great. Very happy with this find.',
+                'This {product_type} is honestly one of the best I have bought in this price range. Great build, works perfectly, and looks premium.',
+                'Was looking for something reliable and this {product_type} did not disappoint. Everyone I have shown it to is impressed. Great quality and great price.',
+                'Purchased this {product_type} after reading other reviews and I am glad I did. I have been using it constantly. The quality is exceptional for what you pay.',
+                'Absolutely love this {product_type}! I use it every day and it has not let me down once. The build quality feels premium.',
+                'I compared this with several other options and this {product_type} stood out for the quality. Been using it for {timeframe} and it still looks and works amazing.',
+                'Really pleased with this purchase. The {product_type} is well-built and performs flawlessly. Good experience shopping here.',
+                'Wonderful {product_type}! Got so many compliments on it. Works great and the quality is really impressive for this price.',
+                'Using this {product_type} for {timeframe} now. No issues whatsoever. Sound quality, build quality, everything is top notch. Best value for money.',
+                'Ordered this for myself and was so impressed that I bought another one as a gift. The {product_type} performs brilliantly. Jikra has earned a loyal customer.',
+                'The {product_type} arrived well packaged and works perfectly out of the box. Setup was easy and performance has been flawless for {timeframe} now.',
+                'Hands down the best {product_type} I have used at this price point. {brand} has really delivered on quality. Will recommend to everyone.',
             ],
             $rating >= 4 => [
-                'Good {product_type} overall. My {child_term} likes it and the quality is decent for the price. Only minor thing is the sizing runs a tiny bit small.',
-                'Bought this for my {child_term} and it\'s a solid purchase. Nice material and good stitching. Could be slightly better in terms of color accuracy from the photos.',
-                'Happy with this {product_type}. My {child_term} has been wearing it for {timeframe}. The quality is good though I wish the fabric was a bit thicker.',
-                'Pretty good {product_type} for the price point. My {child_term} is comfortable in it. Delivery was prompt. Would have given 5 stars if packaging was a bit better.',
-                'Nice {product_type}! My {child_term} likes wearing it. The quality is better than what I expected at this price range. Just a small loose thread that I trimmed off.',
-                'Got this for my {child_term} and it\'s mostly great. Good quality fabric and nice design. The color is slightly different from the picture but still looks good.',
-                'Decent purchase. My {child_term} enjoys using this {product_type}. It\'s well-made and comfortable. Minor issue with sizing but overall satisfied.',
-                'This {product_type} is quite nice. My {child_term} wears it regularly. Good quality and value for money. Shipping was fast. Would recommend with minor reservations.',
-                'I like this {product_type} a lot. My {child_term} is happy with it. The material feels good and it looks exactly like the pictures. Just wish it came in more colors.',
-                'Solid {product_type} from Jikra. My {child_term} has been using it for {timeframe}. Good quality but took a bit longer to deliver than expected.',
-                'My {child_term} looks great in this {product_type}. The quality is quite good and the price is fair. Small improvement needed in the stitching around the edges.',
-                'Good buy! The {product_type} fits my {child_term} well. Material is soft and comfortable. One small thing - the care instructions tag is a bit scratchy.',
-                'Purchased this for my {child_term} and I\'m satisfied with it. Nice design and good fabric quality. Would have preferred a zip instead of buttons though.',
-                'Overall a good {product_type}. My {child_term} likes it. Quality is good for the price. Just needs slightly better packaging for delivery.',
-                'Nice {product_type} from Jikra. My {child_term} is comfortable and likes the design. Value for money. Would buy again if they fix the slight color inconsistency.',
+                'Good {product_type} overall. It works well and the quality is decent for the price. Only minor thing is the build could be a tiny bit sturdier.',
+                'Bought this and it is a solid purchase. Nice build and good performance. Could be slightly better in terms of packaging.',
+                'Happy with this {product_type}. Been using it for {timeframe}. The quality is good though I wish the finish was a bit more premium.',
+                'Pretty good {product_type} for the price point. It works exactly as described. Delivery was prompt. Would have given 5 stars if packaging was better.',
+                'Nice {product_type}! Works well for daily use. The quality is better than what I expected at this price range.',
+                'Decent purchase. I use this {product_type} daily. It is well-made and performs reliably. Minor issue with the cable length but overall satisfied.',
+                'This {product_type} is quite nice. I use it regularly. Good quality and value for money. Shipping was fast. Would recommend with minor reservations.',
+                'I like this {product_type} a lot. The build feels good and it works exactly like the pictures show. Just wish it came in more colors.',
+                'Solid {product_type} from Jikra. I have been using it for {timeframe}. Good quality but took a bit longer to deliver than expected.',
+                'Good buy! The {product_type} works well and looks great. One small thing - it could have come with better accessories.',
+                'Overall a good {product_type}. Quality is good for the price. Just needs slightly better packaging for delivery to prevent scratches.',
+                'Nice {product_type} from Jikra. Performance is good and the design looks premium. Value for money. Would buy again.',
+                'The {product_type} from {brand} is really nice. Performs well for daily use. Only giving 4 stars because the charging speed could be faster.',
+                'Good product for the price. The {product_type} has been working great for {timeframe}. Build quality is solid. Recommended.',
+                'Satisfied with this {product_type}. It does what it promises. Minor improvements in build quality would make it perfect.',
             ],
             $rating >= 3 => [
-                'The {product_type} is okay. Not bad but not exceptional either. My {child_term} wears it but the fabric quality could be better for what I paid.',
-                'Average {product_type}. It serves its purpose and my {child_term} doesn\'t complain. The design is fine but the material feels a bit thin.',
-                'Mixed feelings about this one. The design looks nice but the quality doesn\'t feel premium. My {child_term} uses it occasionally. Fair for the price.',
-                'It\'s alright. My {child_term} doesn\'t mind it but the sizing was off and the fabric shrank a bit after washing. Okay product overall.',
-                'Decent {product_type} for casual use. My {child_term} has it for {timeframe} now. The stitching could be better but it\'s acceptable for the price.',
-                'Got this for my {child_term} and it\'s average quality. The design from the photos looks better than in person. Not bad but I expected more.',
-                'The {product_type} is fine for everyday use. My {child_term} wears it sometimes. Quality is standard, nothing to write home about.',
-                'OK product. My {child_term} uses it but it\'s not their favourite. The material is acceptable and the design is simple. Meets basic expectations.',
-                'Average purchase. The {product_type} looks decent but the fabric quality is just okay. My {child_term} finds it comfortable enough. Fair value.',
-                'Not great, not terrible. This {product_type} does the job. My {child_term} has it for {timeframe}. Some loose threads but still wearable.',
+                'The {product_type} is okay. Not bad but not exceptional either. It works but the build quality could be better for what I paid.',
+                'Average {product_type}. It serves its purpose. The design is fine but the materials feel a bit cheap.',
+                'Mixed feelings about this one. The design looks nice but the quality does not feel premium. Fair for the price I guess.',
+                'It is alright. The {product_type} works but the performance is inconsistent sometimes. Okay product overall.',
+                'Decent {product_type} for basic use. I have had it for {timeframe} now. The build could be better but it is acceptable for the price.',
+                'Got this and it is average quality. The product photos look better than reality. Not bad but I expected more.',
+                'The {product_type} is fine for everyday use. Quality is standard, nothing to write home about.',
+                'OK product. I use it but it is not my favourite. The build is acceptable and the performance is basic. Meets basic expectations.',
+                'Average purchase. The {product_type} looks decent but the quality is just okay. Fair value for what you pay.',
+                'Not great, not terrible. This {product_type} does the job. Been using it for {timeframe}. Some quality issues but still works.',
             ],
             $rating >= 2 => [
-                'Honestly expected better. The {product_type} quality is below what I thought I\'d get. My {child_term} doesn\'t find it comfortable. The material feels cheap.',
-                'The {product_type} looked much better in the photos. In person, the quality is disappointing. My {child_term} wore it once and the stitching started coming apart.',
-                'Not happy with this purchase. The sizing is way off and the fabric quality is poor. My {child_term} doesn\'t like wearing it. Would not recommend at this price.',
-                'Below average {product_type}. The material shrank after first wash and the colors faded. My {child_term} doesn\'t want to wear it anymore.',
-                'Disappointed with the quality of this {product_type}. For the price paid, I expected much better. The fabric is thin and the stitching is messy in places.',
-                'Not worth it. The {product_type} quality is poor and doesn\'t match the product images at all. My {child_term} found it uncomfortable. Returning this.',
+                'Honestly expected better. The {product_type} quality is below what I thought I would get. The materials feel cheap. Not worth the price.',
+                'The {product_type} looked much better in the photos. In person, the quality is disappointing. Started having issues within a week.',
+                'Not happy with this purchase. The build quality is poor. Would not recommend at this price.',
+                'Below average {product_type}. Started malfunctioning after a few days. Quality control seems lacking.',
+                'Disappointed with the quality of this {product_type}. For the price paid, I expected much better. The build is flimsy.',
+                'Not worth it. The {product_type} quality is poor and does not match the product images at all. Considering returning this.',
             ],
             default => [
-                'Very poor quality {product_type}. The material feels terrible and the stitching is falling apart. Completely different from what was shown online. Very disappointed.',
-                'Terrible purchase. The {product_type} arrived with defects and my {child_term} couldn\'t even use it. Complete waste of money. Would not recommend to anyone.',
-                'Worst {product_type} I\'ve bought. Cheap fabric, poor construction, and nothing like the pictures. Regret buying this. Stay away.',
+                'Very poor quality {product_type}. The build feels terrible and it stopped working within days. Completely different from what was shown online. Very disappointed.',
+                'Terrible purchase. The {product_type} arrived with defects and barely works. Complete waste of money. Would not recommend to anyone.',
+                'Worst {product_type} I have bought. Cheap materials, poor build, and nothing like the pictures. Regret buying this.',
             ],
         };
     }
@@ -339,71 +330,137 @@ class ReviewGeneratorService
     private function getProsPool(string $categorySlug): array
     {
         $general = [
-            'Good quality material',
+            'Good build quality',
             'Fast delivery',
             'Nice packaging',
             'Value for money',
             'True to description',
-            'Comfortable fit',
-            'Easy to maintain',
+            'Looks premium',
+            'Easy to use',
             'Good colour options',
             'Durable build',
-            'Looks great',
+            'Great for daily use',
         ];
 
         $category = strtolower($categorySlug);
 
-        if (str_contains($category, 'cloth') || str_contains($category, 'dress') || str_contains($category, 'wear') || str_contains($category, 'shirt') || str_contains($category, 'girl') || str_contains($category, 'boy')) {
+        if (str_contains($category, 'earphone') || str_contains($category, 'headphone') || str_contains($category, 'earbud') || str_contains($category, 'neckband') || str_contains($category, 'tws')) {
             return array_merge($general, [
-                'Soft fabric',
-                'True to size',
-                'Easy to wash',
-                'Vibrant colours',
-                'Breathable material',
-                'Neat stitching',
-                'No colour fading after wash',
-                'Comfortable for all-day wear',
-                'Skin-friendly fabric',
-                'Stretchy and flexible',
+                'Clear sound quality',
+                'Deep bass',
+                'Comfortable fit',
+                'Good noise cancellation',
+                'Long battery life',
+                'Fast charging',
+                'No connectivity drops',
+                'Good mic for calls',
+                'Lightweight and compact',
+                'Low latency gaming mode',
             ]);
         }
 
-        if (str_contains($category, 'toy') || str_contains($category, 'game') || str_contains($category, 'puzzle')) {
+        if (str_contains($category, 'speaker') || str_contains($category, 'bluetooth')) {
             return array_merge($general, [
-                'Safe materials',
-                'Keeps kids engaged',
-                'Sturdy build',
-                'Educational value',
-                'Non-toxic paint',
-                'Age-appropriate design',
-                'Bright and attractive',
-                'Smooth edges, child safe',
-                'Promotes creativity',
-                'Easy to assemble',
+                'Loud and clear sound',
+                'Punchy bass',
+                'Long battery life',
+                'Portable and lightweight',
+                'Water resistant',
+                'Pairs quickly via Bluetooth',
+                'Good range',
+                'Solid build quality',
+                'TWS pairing works well',
+                'Great for outdoor use',
             ]);
         }
 
-        if (str_contains($category, 'shoe') || str_contains($category, 'foot')) {
+        if (str_contains($category, 'charger') || str_contains($category, 'cable')) {
             return array_merge($general, [
-                'Comfortable sole',
-                'Good grip',
-                'Lightweight',
-                'True to size',
-                'Easy to put on',
-                'Durable material',
-                'Supports foot well',
-                'Breathable design',
+                'Charges fast',
+                'Sturdy cable build',
+                'No overheating',
+                'Compact design',
+                'Works with all devices',
+                'Braided cable lasts long',
+                'Multiple port support',
+                'USB-C compatibility',
+                'Good cable length',
+                'BIS certified',
             ]);
         }
 
-        if (str_contains($category, 'bag') || str_contains($category, 'backpack')) {
+        if (str_contains($category, 'power') || str_contains($category, 'bank')) {
             return array_merge($general, [
-                'Spacious compartments',
-                'Sturdy zippers',
-                'Lightweight yet strong',
-                'Water-resistant material',
-                'Comfortable straps',
-                'Attractive design',
+                'Fast charging output',
+                'Charges phone fully 2-3 times',
+                'Slim and portable',
+                'LED indicator is helpful',
+                'USB-C input charges quickly',
+                'Good capacity for travel',
+                'Charges multiple devices',
+                'Solid build, no flex',
+                'Safe with overcharge protection',
+                'Great for long trips',
+            ]);
+        }
+
+        if (str_contains($category, 'case') || str_contains($category, 'cover') || str_contains($category, 'screen') || str_contains($category, 'protector') || str_contains($category, 'tempered')) {
+            return array_merge($general, [
+                'Perfect fit for phone model',
+                'Good drop protection',
+                'Buttons are clickable through case',
+                'Camera cutout is precise',
+                'Does not add much bulk',
+                'No yellowing so far',
+                'Anti-fingerprint finish',
+                'Easy to install',
+                'Raised edges protect screen',
+                'Clear and transparent',
+            ]);
+        }
+
+        if (str_contains($category, 'smartwatch') || str_contains($category, 'watch') || str_contains($category, 'band') || str_contains($category, 'fitness')) {
+            return array_merge($general, [
+                'AMOLED display is bright',
+                'Bluetooth calling works well',
+                'Accurate heart rate tracking',
+                'Battery lasts 5-6 days',
+                'Comfortable to wear all day',
+                'Many watch face options',
+                'SpO2 monitoring is useful',
+                'Quick Bluetooth pairing',
+                'Water resistant for workouts',
+                'Sleep tracking is accurate',
+            ]);
+        }
+
+        if (str_contains($category, 'gaming') || str_contains($category, 'trigger') || str_contains($category, 'controller') || str_contains($category, 'cooling')) {
+            return array_merge($general, [
+                'Improved my gaming performance',
+                'Responsive trigger buttons',
+                'Phone stays cool during gaming',
+                'Low latency connection',
+                'Comfortable grip',
+                'Easy to attach and remove',
+                'Works great for BGMI',
+                'Compact and portable',
+                'Good build for the price',
+                'Noticeable difference in gameplay',
+            ]);
+        }
+
+        if (str_contains($category, 'mount') || str_contains($category, 'stand') || str_contains($category, 'holder') || str_contains($category, 'selfie') || str_contains($category, 'tripod')) {
+            return array_merge($general, [
+                'Strong grip, phone stays secure',
+                '360 degree rotation works smoothly',
+                'Easy to install in car',
+                'Sturdy on desk',
+                'Adjustable angle is useful',
+                'Does not block AC vent',
+                'Compact when folded',
+                'Works with all phone sizes',
+                'Good suction, stays in place',
+                'Perfect for video calls',
             ]);
         }
 
@@ -413,20 +470,20 @@ class ReviewGeneratorService
     private function getConsPool(): array
     {
         return [
-            'Sizing runs slightly small',
-            'Colour slightly different from photo',
             'Packaging could be better',
             'Delivery took a bit longer',
-            'Could use better buttons',
-            'Fabric is a bit thin',
-            'Care instructions not very clear',
+            'Colour slightly different from photo',
+            'Instructions not very clear',
             'Limited colour choices',
             'Price is a touch high',
-            'Wrinkled on arrival',
-            'Tags are a bit scratchy',
-            'Wish it came with a pouch',
-            'Zipper feels a little stiff',
-            'Print faded slightly after wash',
+            'Could include better accessories',
+            'Build feels slightly plasticky',
+            'Cable could be longer',
+            'Wish it came with a carry pouch',
+            'Gets warm with extended use',
+            'Button placement could be better',
+            'Slightly heavier than expected',
+            'Would prefer better packaging',
         ];
     }
 }
