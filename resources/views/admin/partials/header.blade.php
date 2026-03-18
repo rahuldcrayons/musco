@@ -7,12 +7,12 @@
     <!-- Center: Search bar (Shopify style) -->
     <div class="flex-1 max-w-xl mx-auto" x-data="adminSearch()" @keydown.ctrl.k.window.prevent="openSearch()">
         <button @click="openSearch()"
-                class="w-full flex items-center gap-2 px-4 py-2 rounded-lg text-sm text-neutral-400 transition-colors" style="background:#303030">
+                class="w-full flex items-center gap-2 px-4 py-2 rounded-lg text-sm transition-colors" style="background:#303030;color:#999">
             <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
             <span class="flex-1 text-left">Search</span>
             <span class="hidden sm:flex items-center gap-0.5 text-xs text-neutral-400">
-                <kbd class="px-1 py-0.5 rounded text-xs" style="background:#444;color:#999">Ctrl</kbd>
-                <kbd class="px-1 py-0.5 rounded text-xs" style="background:#444;color:#999">K</kbd>
+                <kbd class="px-1 py-0.5 rounded text-xs" style="background:#444;color:#888">Ctrl</kbd>
+                <kbd class="px-1 py-0.5 rounded text-xs" style="background:#444;color:#888">K</kbd>
             </span>
         </button>
 

@@ -70,8 +70,9 @@ class Setting extends Model
     public static function get(string $key, $default = null)
     {
         // Load ALL settings in one query, cache for 1 hour
+        // Uses ->get() instead of pluck() so accessors (decrypt, type-cast) run
         $all = Cache::remember('settings.all', 3600, function () {
-            return static::pluck('value', 'key')->toArray();
+            return static::all(['key', 'value', 'type'])->pluck('value', 'key')->toArray();
         });
 
         return $all[$key] ?? $default;

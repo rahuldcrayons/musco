@@ -31,3 +31,6 @@ Thumbs.db
 _nul
 cookies.txt
 /pos-desktop
+/temp
+*.sql
+*.py

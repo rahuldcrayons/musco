@@ -41,7 +41,7 @@
     <div class="flex overflow-x-auto scrollbar-thin">
         @foreach($tabs as $key => $tab)
             <a href="{{ route($tab['route']) }}"
-               class="flex items-center gap-1.5 px-4 py-3 text-sm font-medium whitespace-nowrap border-b-2 transition-colors {{ ($active ?? '') === $key ? 'text-primary-600 border-primary-600 bg-primary-50/50' : 'text-neutral-600 border-transparent hover:text-neutral-700 hover:border-neutral-300' }}">
+               class="flex items-center gap-1.5 px-4 py-3 text-sm font-medium whitespace-nowrap border-b-2 transition-colors {{ ($active ?? '') === $key ? 'text-neutral-900 border-neutral-900' : 'text-neutral-800 border-transparent hover:text-neutral-900 hover:border-neutral-400' }}">
                 <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">{!! $tab['icon'] !!}</svg>
                 {{ $tab['label'] }}
             </a>

@@ -22,12 +22,12 @@
         @include('admin.partials.sidebar')
 
         <!-- Content area -->
-        <div class="flex flex-col flex-1 overflow-hidden" style="background:#1a1a1a">
+        <div class="flex flex-col flex-1 overflow-hidden" style="background:#f1f1f1">
             <!-- Admin Header -->
             @include('admin.partials.header')
 
             <!-- Main content -->
-            <main class="flex-1 overflow-y-auto" style="scrollbar-width:thin;scrollbar-color:#ccc transparent;background:#f1f1f1;border-top-left-radius:12px;padding:20px">
+            <main class="flex-1 overflow-y-auto" style="scrollbar-width:thin;scrollbar-color:#ccc transparent;background:#f1f1f1;padding:16px 20px">
                 @isset($header)
                     <div class="mb-4">{{ $header }}</div>
                 @endisset
