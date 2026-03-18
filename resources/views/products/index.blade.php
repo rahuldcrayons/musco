@@ -225,19 +225,24 @@
 
     {{-- GA4 view_item_list --}}
     @if(config('services.ga4.measurement_id') && $products->count())
+    @php
+        $ga4Items = $products->getCollection()->values()->map(function ($p, $i) {
+            return [
+                'item_id' => $p->sku ?? (string) $p->id,
+                'item_name' => $p->name,
+                'item_category' => $p->category?->name ?? '',
+                'item_brand' => $p->brand?->name ?? '',
+                'price' => (float) $p->price,
+                'index' => $i,
+            ];
+        });
+    @endphp
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             gtag('event', 'view_item_list', {
                 item_list_id: 'all_products',
                 item_list_name: 'All Products',
-                items: @json($products->getCollection()->values()->map(fn ($p, $i) => [
-                    'item_id' => $p->sku ?? (string) $p->id,
-                    'item_name' => $p->name,
-                    'item_category' => $p->category?->name ?? '',
-                    'item_brand' => $p->brand?->name ?? '',
-                    'price' => (float) $p->price,
-                    'index' => $i,
-                ]))
+                items: {!! json_encode($ga4Items, JSON_UNESCAPED_UNICODE) !!}
             });
         });
     </script>

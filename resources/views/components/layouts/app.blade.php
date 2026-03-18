@@ -53,7 +53,7 @@
     <link rel="preconnect" href="https://fonts.bunny.net" crossorigin>
 
     <!-- Fonts (display=swap for fast first paint) -->
-    <link href="https://fonts.bunny.net/css?family=poppins:300,400,500,600,700|inter:400,500,600&display=swap" rel="stylesheet" />
+    <link href="https://fonts.bunny.net/css?family=poppins:400,500,600|inter:400,500&display=swap" rel="stylesheet" />
 
     <!-- Critical CSS first to prevent flash -->
     @vite(['resources/css/critical.css'])
@@ -901,5 +901,7 @@
             };
         }
     </script>
+
+    <x-whatsapp-button />
 </body>
 </html>

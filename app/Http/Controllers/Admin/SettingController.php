@@ -69,13 +69,18 @@ class SettingController extends Controller
             );
         }
 
-        // Credential / text fields
+        // Credential / text fields — skip blank secrets to keep existing value
         foreach ($validated as $key => $value) {
+            if ($key === 'razorpay_key_secret' && empty($value)) {
+                continue; // Keep existing secret
+            }
             Setting::updateOrCreate(
                 ['key' => $key],
                 ['value' => $value ?? '', 'group' => 'payment']
             );
         }
+
+        Cache::forget('settings.all');
 
         return back()->with('success', 'Payment settings updated successfully.');
     }
@@ -160,11 +165,16 @@ class SettingController extends Controller
         ]);
 
         foreach ($validated as $key => $value) {
+            if ($key === 'mail_password' && empty($value)) {
+                continue; // Keep existing password
+            }
             Setting::updateOrCreate(
                 ['key' => $key],
                 ['value' => $value ?? '', 'group' => 'email']
             );
         }
+
+        Cache::forget('settings.all');
 
         return back()->with('success', 'Email settings updated successfully.');
     }

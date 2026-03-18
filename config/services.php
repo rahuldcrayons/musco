@@ -58,8 +58,9 @@ return [
     ],
 
     'meta' => [
-        'page_access_token'        => env('META_PAGE_ACCESS_TOKEN'),
+        'app_id'                   => env('META_APP_ID'),
         'app_secret'               => env('META_APP_SECRET'),
+        'page_access_token'        => env('META_PAGE_ACCESS_TOKEN'),
         'verify_token'             => env('META_VERIFY_TOKEN'),
         'whatsapp_phone_number_id' => env('META_WHATSAPP_PHONE_NUMBER_ID'),
     ],

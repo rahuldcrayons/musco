@@ -3,11 +3,24 @@
 namespace App\Http\Controllers;
 
 use App\Services\InstagramReelsService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class ReelController extends Controller
 {
+    public function apiLatest(InstagramReelsService $service): JsonResponse
+    {
+        $reels = $service->getLatestReels(10);
+        $handle = config('services.instagram.handle');
+
+        return response()->json([
+            'reels' => $reels,
+            'handle' => $handle,
+            'reels_url' => route('reels.index'),
+        ]);
+    }
+
     public function index(InstagramReelsService $service): View
     {
         $reels = $service->getLatestReels(20);

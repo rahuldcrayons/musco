@@ -1,125 +1,130 @@
 <x-layouts.admin>
     <x-slot name="title">Sales Report</x-slot>
 
+    {{-- Header --}}
     <div class="flex items-center justify-between mb-6">
         <div>
-            <h1 class="text-2xl font-bold text-neutral-900">Sales Report</h1>
-            <p class="text-sm text-neutral-600">Overview of your sales performance</p>
+            <h1 class="text-xl font-semibold text-neutral-900">Sales Report</h1>
+            <p class="text-sm text-neutral-500 mt-0.5">Overview of your sales performance</p>
         </div>
-        <div class="flex items-center gap-3">
-            <form action="{{ route('admin.reports.sales') }}" method="GET" class="flex items-center gap-2">
-                <select name="period" onchange="this.form.submit()"
-                        class="form-input text-sm py-1.5">
-                    <option value="7" @selected($period == 7)>Last 7 days</option>
-                    <option value="30" @selected($period == 30)>Last 30 days</option>
-                    <option value="90" @selected($period == 90)>Last 90 days</option>
-                    <option value="365" @selected($period == 365)>Last year</option>
-                </select>
-            </form>
-            <a href="{{ route('admin.reports.export', ['type' => 'sales', 'period' => $period]) }}" class="btn btn-secondary text-sm h-9">
-                <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                </svg>
-                Export CSV
+        <a href="{{ route('admin.reports.export', ['type' => 'sales', 'period' => $period]) }}"
+           class="inline-flex items-center px-3.5 py-1.5 text-sm font-medium rounded-lg bg-white text-neutral-700 hover:bg-neutral-50 transition"
+           style="border:1px solid #e1e1e1">
+            <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+            </svg>
+            Export CSV
+        </a>
+    </div>
+
+    {{-- Date filter row --}}
+    <div class="flex items-center gap-2 mb-6">
+        @foreach([
+            7   => 'Last 7 days',
+            30  => 'Last 30 days',
+            90  => 'Last 90 days',
+            365 => 'Last year',
+        ] as $val => $label)
+            <a href="{{ route('admin.reports.sales', ['period' => $val]) }}"
+               class="px-3.5 py-1.5 text-sm rounded-lg font-medium transition
+                   {{ $period == $val
+                       ? 'bg-neutral-900 text-white'
+                       : 'bg-white text-neutral-600 hover:bg-neutral-100' }}"
+               style="border:1px solid {{ $period == $val ? '#171717' : '#e1e1e1' }}">
+                {{ $label }}
             </a>
-        </div>
+        @endforeach
     </div>
 
-    <!-- Stats -->
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-        <div class="card px-5 py-4">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 bg-success-100 rounded-lg flex items-center justify-center shrink-0">
-                    <svg class="w-5 h-5 text-success-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+    {{-- Stats bar --}}
+    <div class="bg-white rounded-xl mb-6 overflow-hidden" style="border:1px solid #e1e1e1">
+        <div class="grid grid-cols-2 lg:grid-cols-4">
+            {{-- Total Revenue --}}
+            <div class="px-5 py-4 lg:border-r" style="border-color:#e1e1e1">
+                <p class="text-xs text-neutral-500 font-medium mb-1">Total Revenue</p>
+                <div class="flex items-end justify-between gap-3">
+                    <div>
+                        <p class="text-2xl font-semibold text-neutral-900 leading-none">@price($stats['total_revenue'])</p>
+                        @if($stats['revenue_change'] != 0)
+                            <p class="text-xs mt-1 {{ $stats['revenue_change'] > 0 ? 'text-green-600' : 'text-red-600' }}">
+                                {{ $stats['revenue_change'] > 0 ? '+' : '' }}{{ number_format($stats['revenue_change'], 1) }}% vs prev
+                            </p>
+                        @endif
+                    </div>
+                    <svg class="w-16 h-8 shrink-0" viewBox="0 0 64 32" fill="none" stroke-width="2">
+                        <polyline points="2,28 12,22 22,24 32,14 42,16 52,8 62,12" stroke="#22c55e" fill="none" />
                     </svg>
-                </div>
-                <div class="min-w-0">
-                    <p class="text-xs text-neutral-600">Total Revenue</p>
-                    <p class="text-xl font-bold text-neutral-900">@price($stats['total_revenue'])</p>
-                    @if($stats['revenue_change'] != 0)
-                        <p class="text-xs {{ $stats['revenue_change'] > 0 ? 'text-success-600' : 'text-error-600' }}">
-                            {{ $stats['revenue_change'] > 0 ? '+' : '' }}{{ number_format($stats['revenue_change'], 1) }}% vs prev
-                        </p>
-                    @endif
                 </div>
             </div>
-        </div>
-
-        <div class="card px-5 py-4">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 bg-primary-100 rounded-lg flex items-center justify-center shrink-0">
-                    <svg class="w-5 h-5 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+            {{-- Total Orders --}}
+            <div class="px-5 py-4 border-t lg:border-t-0 lg:border-r" style="border-color:#e1e1e1">
+                <p class="text-xs text-neutral-500 font-medium mb-1">Total Orders</p>
+                <div class="flex items-end justify-between gap-3">
+                    <p class="text-2xl font-semibold text-neutral-900 leading-none">{{ number_format($stats['total_orders']) }}</p>
+                    <svg class="w-16 h-8 shrink-0" viewBox="0 0 64 32" fill="none" stroke-width="2">
+                        <polyline points="2,26 12,20 22,22 32,12 42,18 52,10 62,14" stroke="#a0a0a0" fill="none" />
                     </svg>
-                </div>
-                <div class="min-w-0">
-                    <p class="text-xs text-neutral-600">Total Orders</p>
-                    <p class="text-xl font-bold text-neutral-900">{{ number_format($stats['total_orders']) }}</p>
                 </div>
             </div>
-        </div>
-
-        <div class="card px-5 py-4">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 bg-warning-100 rounded-lg flex items-center justify-center shrink-0">
-                    <svg class="w-5 h-5 text-warning-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+            {{-- Average Order --}}
+            <div class="px-5 py-4 border-t lg:border-t-0 lg:border-r" style="border-color:#e1e1e1">
+                <p class="text-xs text-neutral-500 font-medium mb-1">Average Order</p>
+                <div class="flex items-end justify-between gap-3">
+                    <p class="text-2xl font-semibold text-neutral-900 leading-none">@price($stats['average_order'])</p>
+                    <svg class="w-16 h-8 shrink-0" viewBox="0 0 64 32" fill="none" stroke-width="2">
+                        <polyline points="2,20 12,22 22,18 32,16 42,20 52,14 62,16" stroke="#a0a0a0" fill="none" />
                     </svg>
-                </div>
-                <div class="min-w-0">
-                    <p class="text-xs text-neutral-600">Average Order</p>
-                    <p class="text-xl font-bold text-neutral-900">@price($stats['average_order'])</p>
                 </div>
             </div>
-        </div>
-
-        <div class="card px-5 py-4">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 bg-info-100 rounded-lg flex items-center justify-center shrink-0">
-                    <svg class="w-5 h-5 text-info-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+            {{-- Items Sold --}}
+            <div class="px-5 py-4 border-t lg:border-t-0" style="border-color:#e1e1e1">
+                <p class="text-xs text-neutral-500 font-medium mb-1">Items Sold</p>
+                <div class="flex items-end justify-between gap-3">
+                    <p class="text-2xl font-semibold text-neutral-900 leading-none">{{ number_format($stats['items_sold']) }}</p>
+                    <svg class="w-16 h-8 shrink-0" viewBox="0 0 64 32" fill="none" stroke-width="2">
+                        <polyline points="2,24 12,26 22,18 32,20 42,14 52,16 62,10" stroke="#a0a0a0" fill="none" />
                     </svg>
-                </div>
-                <div class="min-w-0">
-                    <p class="text-xs text-neutral-600">Items Sold</p>
-                    <p class="text-xl font-bold text-neutral-900">{{ number_format($stats['items_sold']) }}</p>
                 </div>
             </div>
         </div>
     </div>
 
+    {{-- Charts row --}}
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-        <!-- Sales Chart -->
-        <div class="lg:col-span-2 card">
-            <div class="px-5 py-3.5 border-b border-neutral-200 flex items-center justify-between">
-                <h2 class="font-semibold text-neutral-900 text-sm">Daily Sales</h2>
-                <span class="text-xs text-neutral-600">Last {{ $period }} days</span>
+        {{-- Sales Chart --}}
+        <div class="lg:col-span-2 bg-white rounded-xl" style="border:1px solid #e1e1e1">
+            <div class="px-5 py-4 flex items-center justify-between" style="border-bottom:1px solid #e1e1e1">
+                <h2 class="text-sm font-semibold text-neutral-900">Daily Sales</h2>
+                <span class="text-xs text-neutral-400">Last {{ $period }} days</span>
             </div>
-            <div class="p-4">
+            <div class="p-5">
                 @if($salesData->count() > 0)
-                    <canvas id="salesChart" height="260"></canvas>
+                    <div style="height:260px; position:relative;">
+                        <canvas id="salesChart"></canvas>
+                    </div>
                 @else
-                    <div class="flex flex-col items-center justify-center py-16 text-neutral-600">
+                    <div class="flex flex-col items-center justify-center py-16 text-neutral-400">
                         <svg class="w-12 h-12 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
                         </svg>
-                        <p class="text-sm">No sales data for this period</p>
+                        <p class="text-sm text-neutral-500">No sales data for this period</p>
                     </div>
                 @endif
             </div>
         </div>
 
-        <!-- Sales by Category -->
-        <div class="card">
-            <div class="px-5 py-3.5 border-b border-neutral-200">
-                <h2 class="font-semibold text-neutral-900 text-sm">Sales by Category</h2>
+        {{-- Sales by Category --}}
+        <div class="bg-white rounded-xl" style="border:1px solid #e1e1e1">
+            <div class="px-5 py-4" style="border-bottom:1px solid #e1e1e1">
+                <h2 class="text-sm font-semibold text-neutral-900">Sales by Category</h2>
             </div>
-            <div class="p-4">
+            <div class="p-5">
                 @if($salesByCategory->count() > 0)
-                    <canvas id="categoryChart" height="260"></canvas>
+                    <div style="height:260px; position:relative;">
+                        <canvas id="categoryChart"></canvas>
+                    </div>
                 @else
-                    <div class="flex items-center justify-center py-12 text-neutral-600 text-sm">
+                    <div class="flex items-center justify-center py-12 text-neutral-500 text-sm">
                         No category data available
                     </div>
                 @endif
@@ -127,39 +132,35 @@
         </div>
     </div>
 
-    <!-- Top Products -->
-    <div class="card">
-        <div class="px-5 py-3.5 border-b border-neutral-200">
-            <h2 class="font-semibold text-neutral-900 text-sm">Top Selling Products</h2>
+    {{-- Top Products --}}
+    <div class="bg-white rounded-xl mb-6" style="border:1px solid #e1e1e1">
+        <div class="px-5 py-4" style="border-bottom:1px solid #e1e1e1">
+            <h2 class="text-sm font-semibold text-neutral-900">Top Selling Products</h2>
         </div>
         <div class="overflow-x-auto">
             <table class="w-full">
-                <thead class="bg-neutral-50">
-                    <tr>
-                        <th class="px-4 py-2.5 text-left text-xs font-medium text-neutral-600 uppercase">Rank</th>
-                        <th class="px-4 py-2.5 text-left text-xs font-medium text-neutral-600 uppercase">Product</th>
-                        <th class="px-4 py-2.5 text-left text-xs font-medium text-neutral-600 uppercase">Price</th>
-                        <th class="px-4 py-2.5 text-right text-xs font-medium text-neutral-600 uppercase">Units Sold</th>
+                <thead>
+                    <tr style="border-bottom:1px solid #e1e1e1">
+                        <th class="px-5 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">Rank</th>
+                        <th class="px-5 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">Product</th>
+                        <th class="px-5 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">Price</th>
+                        <th class="px-5 py-3 text-right text-xs font-medium text-neutral-500 uppercase tracking-wider">Units Sold</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-neutral-100">
+                <tbody>
                     @forelse($topProducts as $index => $product)
-                        <tr class="hover:bg-neutral-50/50">
-                            <td class="px-4 py-2.5">
-                                <span class="inline-flex items-center justify-center w-7 h-7 rounded-full
-                                    {{ $index < 3 ? 'bg-primary-100 text-primary-600' : 'bg-neutral-100 text-neutral-600' }}
-                                    text-xs font-bold">
-                                    {{ $index + 1 }}
-                                </span>
+                        <tr class="hover:bg-neutral-50 transition-colors" style="border-bottom:1px solid #f3f3f3">
+                            <td class="px-5 py-3">
+                                <span class="text-sm font-semibold text-neutral-{{ $index < 3 ? '900' : '500' }}">{{ $index + 1 }}</span>
                             </td>
-                            <td class="px-4 py-2.5">
+                            <td class="px-5 py-3">
                                 <div class="flex items-center gap-3">
-                                    <div class="w-10 h-10 bg-neutral-100 rounded-lg shrink-0 overflow-hidden">
+                                    <div class="w-10 h-10 bg-neutral-100 rounded-lg shrink-0 overflow-hidden" style="border:1px solid #e1e1e1">
                                         @if($product->primary_image_url)
                                             <img src="{{ $product->primary_image_url }}" alt="{{ $product->name }}" class="w-full h-full object-cover">
                                         @else
                                             <div class="w-full h-full flex items-center justify-center">
-                                                <svg class="w-4 h-4 text-neutral-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <svg class="w-4 h-4 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                                                 </svg>
                                             </div>
@@ -167,18 +168,18 @@
                                     </div>
                                     <div class="min-w-0">
                                         <p class="font-medium text-neutral-900 text-sm truncate">{{ $product->name }}</p>
-                                        <p class="text-xs text-neutral-600">{{ $product->sku ?? 'N/A' }}</p>
+                                        <p class="text-xs text-neutral-400">{{ $product->sku ?? 'N/A' }}</p>
                                     </div>
                                 </div>
                             </td>
-                            <td class="px-4 py-2.5 text-sm text-neutral-600">@price($product->price)</td>
-                            <td class="px-4 py-2.5 text-right">
+                            <td class="px-5 py-3 text-sm text-neutral-600">@price($product->price)</td>
+                            <td class="px-5 py-3 text-right">
                                 <span class="text-sm font-semibold text-neutral-900">{{ number_format($product->sold ?? 0) }}</span>
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="4" class="px-4 py-8 text-center text-neutral-600 text-sm">No sales data for this period</td>
+                            <td colspan="4" class="px-5 py-10 text-center text-neutral-500 text-sm">No sales data for this period</td>
                         </tr>
                     @endforelse
                 </tbody>

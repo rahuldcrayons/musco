@@ -60,17 +60,23 @@ class InstagramReelsService
 
             $data = $response->json('data', []);
 
-            // Filter only reels (VIDEO type) and take the required count
-            $reels = collect($data)
-                ->filter(fn($item) => in_array($item['media_type'], ['VIDEO', 'REELS']))
-                ->take($limit)
+            // Include VIDEO/REELS first, then CAROUSEL_ALBUM/IMAGE as fallback
+            $allMedia = collect($data);
+            $videos = $allMedia->filter(fn($item) => in_array($item['media_type'], ['VIDEO', 'REELS']));
+            $others = $allMedia->filter(fn($item) => in_array($item['media_type'], ['CAROUSEL_ALBUM', 'IMAGE']));
+
+            // Prioritize videos, fill remaining slots with other media
+            $combined = $videos->concat($others)->take($limit);
+
+            $reels = $combined
                 ->map(fn($item) => [
                     'id' => $item['id'],
                     'shortcode' => $this->extractShortcode($item['permalink'] ?? ''),
                     'permalink' => $item['permalink'] ?? '',
                     'caption' => $item['caption'] ?? '',
-                    'thumbnail_url' => $item['thumbnail_url'] ?? '',
+                    'thumbnail_url' => $item['thumbnail_url'] ?? ($item['media_url'] ?? ''),
                     'media_url' => $item['media_url'] ?? '',
+                    'media_type' => $item['media_type'] ?? 'VIDEO',
                     'timestamp' => $item['timestamp'] ?? '',
                 ])
                 ->values()

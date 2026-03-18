@@ -1,110 +1,117 @@
 <x-layouts.admin>
     <x-slot name="title">Analytics</x-slot>
 
-    <x-slot name="header">
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-            <div>
-                <h1 class="text-2xl font-bold text-neutral-900">Analytics</h1>
-                <p class="text-sm text-neutral-600 mt-0.5">Traffic and conversion insights</p>
-            </div>
-            <form action="{{ route('admin.reports.analytics') }}" method="GET">
-                <select name="period" onchange="this.form.submit()" class="form-select text-sm py-1.5">
-                    <option value="7"  @selected($period == 7)>Last 7 days</option>
-                    <option value="30" @selected($period == 30)>Last 30 days</option>
-                    <option value="90" @selected($period == 90)>Last 90 days</option>
-                </select>
-            </form>
-        </div>
-    </x-slot>
+    @php
+        $rate = $funnel['visitors'] > 0 ? round(($funnel['completed'] / $funnel['visitors']) * 100, 2) : 0;
+        $cartRate = $funnel['visitors'] > 0 ? round(($funnel['add_to_cart'] / $funnel['visitors']) * 100, 1) : 0;
+        $checkoutRate = $funnel['add_to_cart'] > 0 ? round(($funnel['checkout'] / $funnel['add_to_cart']) * 100, 1) : 0;
+    @endphp
 
-    {{-- Summary Stats --}}
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        @php
-            $summaryCards = [
-                [
-                    'label'  => 'Unique Visitors',
-                    'value'  => number_format($funnel['visitors']),
-                    'icon'   => 'M15 12a3 3 0 11-6 0 3 3 0 016 0zM2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z',
-                    'color'  => 'bg-primary-50 text-primary-600',
-                ],
-                [
-                    'label'  => 'Product Views',
-                    'value'  => number_format($funnel['product_views']),
-                    'icon'   => 'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z',
-                    'color'  => 'bg-info-50 text-info-600',
-                ],
-                [
-                    'label'  => 'Add to Cart',
-                    'value'  => number_format($funnel['add_to_cart']),
-                    'icon'   => 'M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z',
-                    'color'  => 'bg-warning-50 text-warning-600',
-                ],
-                [
-                    'label'  => 'Completed Orders',
-                    'value'  => number_format($funnel['completed']),
-                    'icon'   => 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z',
-                    'color'  => 'bg-success-50 text-success-600',
-                ],
-            ];
-        @endphp
-        @foreach($summaryCards as $card)
-            <div class="card p-5">
-                <div class="flex items-start gap-4">
-                    <div class="w-10 h-10 rounded-xl {{ $card['color'] }} flex items-center justify-center shrink-0">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="{{ $card['icon'] }}"/>
-                        </svg>
-                    </div>
-                    <div>
-                        <p class="text-xs text-neutral-600 font-medium">{{ $card['label'] }}</p>
-                        <p class="text-2xl font-bold text-neutral-900 mt-0.5 leading-none">{{ $card['value'] }}</p>
-                    </div>
-                </div>
-            </div>
+    {{-- Header --}}
+    <div class="mb-6">
+        <h1 class="text-xl font-semibold text-neutral-900">Analytics</h1>
+        <p class="text-sm text-neutral-500 mt-0.5">Traffic and conversion insights</p>
+    </div>
+
+    {{-- Date filter row --}}
+    <div class="flex items-center gap-2 mb-6">
+        @foreach([
+            7   => 'Last 7 days',
+            30  => 'Last 30 days',
+            90  => 'Last 90 days',
+        ] as $val => $label)
+            <a href="{{ route('admin.reports.analytics', ['period' => $val]) }}"
+               class="px-3.5 py-1.5 text-sm rounded-lg font-medium transition
+                   {{ $period == $val
+                       ? 'bg-neutral-900 text-white'
+                       : 'bg-white text-neutral-600 hover:bg-neutral-100' }}"
+               style="border:1px solid {{ $period == $val ? '#171717' : '#e1e1e1' }}">
+                {{ $label }}
+            </a>
         @endforeach
     </div>
 
-    {{-- Conversion Rate Banner --}}
+    {{-- Stats bar --}}
+    <div class="bg-white rounded-xl mb-6 overflow-hidden" style="border:1px solid #e1e1e1">
+        <div class="grid grid-cols-2 lg:grid-cols-4">
+            {{-- Unique Visitors --}}
+            <div class="px-5 py-4 lg:border-r" style="border-color:#e1e1e1">
+                <p class="text-xs text-neutral-500 font-medium mb-1">Unique Visitors</p>
+                <div class="flex items-end justify-between gap-3">
+                    <p class="text-2xl font-semibold text-neutral-900 leading-none">{{ number_format($funnel['visitors']) }}</p>
+                    <svg class="w-16 h-8 text-neutral-300" viewBox="0 0 64 32" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="2,28 12,22 22,24 32,16 42,18 52,10 62,14" stroke="#a0a0a0" fill="none" />
+                    </svg>
+                </div>
+            </div>
+            {{-- Product Views --}}
+            <div class="px-5 py-4 lg:border-r" style="border-color:#e1e1e1">
+                <p class="text-xs text-neutral-500 font-medium mb-1">Product Views</p>
+                <div class="flex items-end justify-between gap-3">
+                    <p class="text-2xl font-semibold text-neutral-900 leading-none">{{ number_format($funnel['product_views']) }}</p>
+                    <svg class="w-16 h-8 text-neutral-300" viewBox="0 0 64 32" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="2,26 12,20 22,22 32,12 42,14 52,8 62,10" stroke="#a0a0a0" fill="none" />
+                    </svg>
+                </div>
+            </div>
+            {{-- Add to Cart --}}
+            <div class="px-5 py-4 border-t lg:border-t-0 lg:border-r" style="border-color:#e1e1e1">
+                <p class="text-xs text-neutral-500 font-medium mb-1">Add to Cart</p>
+                <div class="flex items-end justify-between gap-3">
+                    <p class="text-2xl font-semibold text-neutral-900 leading-none">{{ number_format($funnel['add_to_cart']) }}</p>
+                    <svg class="w-16 h-8 text-neutral-300" viewBox="0 0 64 32" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="2,24 12,26 22,18 32,20 42,14 52,16 62,12" stroke="#a0a0a0" fill="none" />
+                    </svg>
+                </div>
+            </div>
+            {{-- Completed Orders --}}
+            <div class="px-5 py-4 border-t lg:border-t-0" style="border-color:#e1e1e1">
+                <p class="text-xs text-neutral-500 font-medium mb-1">Completed Orders</p>
+                <div class="flex items-end justify-between gap-3">
+                    <p class="text-2xl font-semibold text-neutral-900 leading-none">{{ number_format($funnel['completed']) }}</p>
+                    <svg class="w-16 h-8 text-neutral-300" viewBox="0 0 64 32" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="2,28 12,24 22,26 32,18 42,20 52,12 62,8" stroke="#a0a0a0" fill="none" />
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- Conversion rates row --}}
     @if($funnel['visitors'] > 0)
-        @php
-            $rate = round(($funnel['completed'] / $funnel['visitors']) * 100, 2);
-            $cartRate = $funnel['visitors'] > 0 ? round(($funnel['add_to_cart'] / $funnel['visitors']) * 100, 1) : 0;
-            $checkoutRate = $funnel['add_to_cart'] > 0 ? round(($funnel['checkout'] / $funnel['add_to_cart']) * 100, 1) : 0;
-        @endphp
-        <div class="grid grid-cols-3 gap-4 mb-6">
-            <div class="card p-4 border-l-4 border-l-primary-500">
-                <p class="text-xs text-neutral-600">View → Cart Rate</p>
-                <p class="text-xl font-bold text-neutral-900 mt-0.5">{{ $cartRate }}%</p>
-                <p class="text-xs text-neutral-600 mt-1">{{ number_format($funnel['add_to_cart']) }} of {{ number_format($funnel['visitors']) }} visitors</p>
-            </div>
-            <div class="card p-4 border-l-4 border-l-warning-500">
-                <p class="text-xs text-neutral-600">Cart → Order Rate</p>
-                <p class="text-xl font-bold text-neutral-900 mt-0.5">{{ $checkoutRate }}%</p>
-                <p class="text-xs text-neutral-600 mt-1">{{ number_format($funnel['checkout']) }} of {{ number_format($funnel['add_to_cart']) }} carts</p>
-            </div>
-            <div class="card p-4 border-l-4 border-l-success-500">
-                <p class="text-xs text-neutral-600">Overall Conversion</p>
-                <p class="text-xl font-bold text-success-600 mt-0.5">{{ $rate }}%</p>
-                <p class="text-xs text-neutral-600 mt-1">{{ number_format($funnel['completed']) }} completed of {{ number_format($funnel['visitors']) }}</p>
+        <div class="bg-white rounded-xl mb-6 overflow-hidden" style="border:1px solid #e1e1e1">
+            <div class="grid grid-cols-3">
+                <div class="px-5 py-4" style="border-right:1px solid #e1e1e1">
+                    <p class="text-xs text-neutral-500 font-medium mb-1">View &rarr; Cart Rate</p>
+                    <p class="text-xl font-semibold text-neutral-900">{{ $cartRate }}%</p>
+                    <p class="text-xs text-neutral-400 mt-1">{{ number_format($funnel['add_to_cart']) }} of {{ number_format($funnel['visitors']) }} visitors</p>
+                </div>
+                <div class="px-5 py-4" style="border-right:1px solid #e1e1e1">
+                    <p class="text-xs text-neutral-500 font-medium mb-1">Cart &rarr; Order Rate</p>
+                    <p class="text-xl font-semibold text-neutral-900">{{ $checkoutRate }}%</p>
+                    <p class="text-xs text-neutral-400 mt-1">{{ number_format($funnel['checkout']) }} of {{ number_format($funnel['add_to_cart']) }} carts</p>
+                </div>
+                <div class="px-5 py-4">
+                    <p class="text-xs text-neutral-500 font-medium mb-1">Overall Conversion</p>
+                    <p class="text-xl font-semibold text-neutral-900">{{ $rate }}%</p>
+                    <p class="text-xs text-neutral-400 mt-1">{{ number_format($funnel['completed']) }} of {{ number_format($funnel['visitors']) }}</p>
+                </div>
             </div>
         </div>
     @endif
 
     {{-- Traffic Chart --}}
-    <div class="card mb-6">
-        <div class="px-5 py-3.5 border-b border-neutral-200 flex items-center justify-between">
-            <div>
-                <h2 class="font-semibold text-neutral-900 text-sm">Traffic Overview</h2>
-                <p class="text-xs text-neutral-600 mt-0.5">Product views & unique visitors — last {{ $period }} days</p>
-            </div>
+    <div class="bg-white rounded-xl mb-6" style="border:1px solid #e1e1e1">
+        <div class="px-5 py-4 flex items-center justify-between" style="border-bottom:1px solid #e1e1e1">
+            <h2 class="text-sm font-semibold text-neutral-900">Traffic Overview</h2>
             @if($trafficData->sum('pageviews') > 0)
-                <div class="flex items-center gap-4 text-xs text-neutral-600">
+                <div class="flex items-center gap-4 text-xs text-neutral-500">
                     <span class="flex items-center gap-1.5">
                         <span class="inline-block w-3 h-3 rounded-sm" style="background:rgba(156,0,173,0.4)"></span>
                         Page Views
                     </span>
                     <span class="flex items-center gap-1.5">
-                        <span class="inline-block w-3 h-0.5" style="background:#06b6d4"></span>
+                        <span class="inline-block w-3 h-0.5 rounded" style="background:#06b6d4"></span>
                         Visitors
                     </span>
                 </div>
@@ -116,12 +123,12 @@
                     <canvas id="trafficChart"></canvas>
                 </div>
             @else
-                <div class="flex flex-col items-center justify-center py-16 text-neutral-300">
-                    <svg class="w-14 h-14 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="flex flex-col items-center justify-center py-16 text-neutral-400">
+                    <svg class="w-12 h-12 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
                     </svg>
-                    <p class="text-sm font-medium text-neutral-600">No traffic data for this period</p>
-                    <p class="text-xs text-neutral-300 mt-1">Product view tracking will appear here once customers start browsing</p>
+                    <p class="text-sm font-medium text-neutral-500">No traffic data for this period</p>
+                    <p class="text-xs text-neutral-400 mt-1">Product view tracking will appear here once customers start browsing</p>
                 </div>
             @endif
         </div>
@@ -129,19 +136,19 @@
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
         {{-- Conversion Funnel --}}
-        <div class="card">
-            <div class="px-5 py-3.5 border-b border-neutral-200">
-                <h2 class="font-semibold text-neutral-900 text-sm">Conversion Funnel</h2>
-                <p class="text-xs text-neutral-600 mt-0.5">Drop-off at each stage</p>
+        <div class="bg-white rounded-xl" style="border:1px solid #e1e1e1">
+            <div class="px-5 py-4" style="border-bottom:1px solid #e1e1e1">
+                <h2 class="text-sm font-semibold text-neutral-900">Conversion Funnel</h2>
+                <p class="text-xs text-neutral-500 mt-0.5">Drop-off at each stage</p>
             </div>
             <div class="p-5 space-y-4">
                 @php
                     $funnelSteps = [
-                        ['label' => 'Unique Visitors',   'value' => $funnel['visitors'],      'color' => 'bg-primary-500'],
-                        ['label' => 'Product Views',     'value' => $funnel['product_views'], 'color' => 'bg-primary-400'],
-                        ['label' => 'Add to Cart',       'value' => $funnel['add_to_cart'],   'color' => 'bg-warning-500'],
-                        ['label' => 'Orders Placed',     'value' => $funnel['checkout'],      'color' => 'bg-info-500'],
-                        ['label' => 'Paid & Completed',  'value' => $funnel['completed'],     'color' => 'bg-success-500'],
+                        ['label' => 'Unique Visitors',   'value' => $funnel['visitors'],      'color' => '#6366f1'],
+                        ['label' => 'Product Views',     'value' => $funnel['product_views'], 'color' => '#8b5cf6'],
+                        ['label' => 'Add to Cart',       'value' => $funnel['add_to_cart'],   'color' => '#f59e0b'],
+                        ['label' => 'Orders Placed',     'value' => $funnel['checkout'],       'color' => '#06b6d4'],
+                        ['label' => 'Paid & Completed',  'value' => $funnel['completed'],      'color' => '#22c55e'],
                     ];
                     $maxFunnel = max($funnel['visitors'], $funnel['product_views'], 1);
                 @endphp
@@ -153,135 +160,104 @@
                         $dropoff = $prev > 0 ? round((1 - $step['value'] / $prev) * 100) : 0;
                     @endphp
                     <div>
-                        <div class="flex items-center justify-between text-sm mb-2">
+                        <div class="flex items-center justify-between text-sm mb-1.5">
                             <div class="flex items-center gap-2">
-                                <span class="w-2 h-2 rounded-full {{ $step['color'] }} shrink-0"></span>
+                                <span class="w-2 h-2 rounded-full shrink-0" style="background:{{ $step['color'] }}"></span>
                                 <span class="text-neutral-700 font-medium">{{ $step['label'] }}</span>
                             </div>
                             <div class="flex items-center gap-2">
-                                <span class="font-bold text-neutral-900">{{ number_format($step['value']) }}</span>
+                                <span class="font-semibold text-neutral-900">{{ number_format($step['value']) }}</span>
                                 @if($index > 0 && $dropoff > 0)
-                                    <span class="text-xs font-medium text-error-500 bg-error-50 px-1.5 py-0.5 rounded-full">-{{ $dropoff }}%</span>
+                                    <span class="text-xs font-medium text-red-600 bg-red-50 px-1.5 py-0.5 rounded">-{{ $dropoff }}%</span>
                                 @elseif($index > 0 && $dropoff === 0)
-                                    <span class="text-xs font-medium text-success-600 bg-success-50 px-1.5 py-0.5 rounded-full">0%</span>
+                                    <span class="text-xs font-medium text-green-600 bg-green-50 px-1.5 py-0.5 rounded">0%</span>
                                 @endif
                             </div>
                         </div>
-                        <div class="bg-neutral-100 rounded-full h-2.5 overflow-hidden">
-                            <div class="{{ $step['color'] }} h-full rounded-full transition-all duration-700" style="width: {{ max($width, 1) }}%"></div>
+                        <div class="bg-neutral-100 rounded h-2 overflow-hidden">
+                            <div class="h-full rounded transition-all duration-700" style="width: {{ max($width, 1) }}%; background:{{ $step['color'] }}"></div>
                         </div>
                     </div>
                 @endforeach
 
                 @if($funnel['visitors'] == 0)
-                    <p class="text-center text-sm text-neutral-600 py-4">No funnel data for this period</p>
+                    <p class="text-center text-sm text-neutral-500 py-4">No funnel data for this period</p>
                 @endif
             </div>
         </div>
 
-        {{-- Right column: Traffic Sources + Device Breakdown --}}
+        {{-- Right column --}}
         <div class="space-y-6">
             {{-- Traffic Sources --}}
-            <div class="card">
-                <div class="px-5 py-3.5 border-b border-neutral-200">
-                    <h2 class="font-semibold text-neutral-900 text-sm">Traffic Sources</h2>
-                    <p class="text-xs text-neutral-600 mt-0.5">By referrer origin</p>
+            <div class="bg-white rounded-xl" style="border:1px solid #e1e1e1">
+                <div class="px-5 py-4" style="border-bottom:1px solid #e1e1e1">
+                    <h2 class="text-sm font-semibold text-neutral-900">Traffic Sources</h2>
+                    <p class="text-xs text-neutral-500 mt-0.5">By referrer origin</p>
                 </div>
-                <div class="divide-y divide-neutral-50">
+                <div>
                     @php
-                        $sourceIcons = [
-                            'Organic Search' => ['icon' => 'M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z', 'color' => 'bg-blue-50 text-blue-500'],
-                            'Direct'         => ['icon' => 'M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1', 'color' => 'bg-neutral-100 text-neutral-600'],
-                            'Social Media'   => ['icon' => 'M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z', 'color' => 'bg-pink-50 text-pink-500'],
-                            'Email'          => ['icon' => 'M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z', 'color' => 'bg-orange-50 text-orange-500'],
-                            'Referral'       => ['icon' => 'M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064', 'color' => 'bg-purple-50 text-purple-500'],
-                        ];
                         $hasSourceData = $sources->where('visitors', '>', 0)->count() > 0;
                     @endphp
                     @if($hasSourceData)
                         @foreach($sources->filter(fn($s) => $s['visitors'] > 0) as $source)
-                            @php $si = $sourceIcons[$source['source']] ?? $sourceIcons['Referral']; @endphp
-                            <div class="px-5 py-3.5 flex items-center gap-3">
-                                <div class="w-8 h-8 rounded-lg {{ $si['color'] }} flex items-center justify-center shrink-0">
-                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $si['icon'] }}"/>
-                                    </svg>
-                                </div>
-                                <div class="flex-1 min-w-0">
-                                    <div class="flex items-center justify-between mb-1.5">
-                                        <span class="text-sm font-medium text-neutral-700">{{ $source['source'] }}</span>
-                                        <div class="flex items-center gap-2">
-                                            <span class="text-sm font-bold text-neutral-900">{{ number_format($source['visitors']) }}</span>
-                                            <span class="text-xs text-neutral-600 w-8 text-right">{{ $source['percentage'] }}%</span>
-                                        </div>
-                                    </div>
-                                    <div class="bg-neutral-100 rounded-full h-1.5 overflow-hidden">
-                                        <div class="bg-primary-400 h-full rounded-full transition-all" style="width: {{ $source['percentage'] }}%"></div>
-                                    </div>
+                            <div class="px-5 py-3.5 flex items-center justify-between" style="border-bottom:1px solid #f3f3f3">
+                                <span class="text-sm text-neutral-700 font-medium">{{ $source['source'] }}</span>
+                                <div class="flex items-center gap-3">
+                                    <span class="text-sm font-semibold text-neutral-900">{{ number_format($source['visitors']) }}</span>
+                                    <span class="text-xs text-neutral-400 w-10 text-right">{{ $source['percentage'] }}%</span>
                                 </div>
                             </div>
                         @endforeach
                     @else
-                        <div class="px-5 py-8 text-center text-neutral-300">
-                            <svg class="w-8 h-8 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945"/>
-                            </svg>
-                            <p class="text-sm text-neutral-600">No referrer data available</p>
+                        <div class="px-5 py-10 text-center">
+                            <p class="text-sm text-neutral-500">No referrer data available</p>
                         </div>
                     @endif
                 </div>
             </div>
 
             {{-- Device Breakdown --}}
-            <div class="card">
-                <div class="px-5 py-3.5 border-b border-neutral-200">
-                    <h2 class="font-semibold text-neutral-900 text-sm">Device Breakdown</h2>
-                    <p class="text-xs text-neutral-600 mt-0.5">Orders by device type</p>
+            <div class="bg-white rounded-xl" style="border:1px solid #e1e1e1">
+                <div class="px-5 py-4" style="border-bottom:1px solid #e1e1e1">
+                    <h2 class="text-sm font-semibold text-neutral-900">Device Breakdown</h2>
+                    <p class="text-xs text-neutral-500 mt-0.5">Orders by device type</p>
                 </div>
                 <div class="p-5">
                     @if($devices['mobile'] + $devices['desktop'] + $devices['tablet'] > 0)
-                        {{-- Stacked bar --}}
-                        <div class="flex h-3 rounded-full overflow-hidden mb-5 gap-0.5">
-                            @if($devices['mobile'] > 0)
-                                <div class="bg-primary-500 rounded-l-full" style="width: {{ $devices['mobile'] }}%" title="Mobile {{ $devices['mobile'] }}%"></div>
-                            @endif
-                            @if($devices['desktop'] > 0)
-                                <div class="bg-info-400 {{ $devices['mobile'] == 0 ? 'rounded-l-full' : '' }} {{ $devices['tablet'] == 0 ? 'rounded-r-full' : '' }}" style="width: {{ $devices['desktop'] }}%" title="Desktop {{ $devices['desktop'] }}%"></div>
-                            @endif
-                            @if($devices['tablet'] > 0)
-                                <div class="bg-warning-400 rounded-r-full" style="width: {{ $devices['tablet'] }}%" title="Tablet {{ $devices['tablet'] }}%"></div>
-                            @endif
-                        </div>
-
-                        <div class="grid grid-cols-3 gap-3">
-                            @php
-                                $deviceItems = [
-                                    ['label' => 'Mobile',  'pct' => $devices['mobile'],  'color' => 'bg-primary-500', 'icon' => 'M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z'],
-                                    ['label' => 'Desktop', 'pct' => $devices['desktop'], 'color' => 'bg-info-400',    'icon' => 'M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z'],
-                                    ['label' => 'Tablet',  'pct' => $devices['tablet'],  'color' => 'bg-warning-400', 'icon' => 'M12 18h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z'],
-                                ];
-                            @endphp
-                            @foreach($deviceItems as $d)
-                                <div class="bg-neutral-50 rounded-xl p-3 text-center">
-                                    <div class="w-8 h-8 rounded-lg {{ str_replace('bg-', 'bg-opacity-20 bg-', $d['color']) }} mx-auto flex items-center justify-center mb-2">
-                                        <svg class="w-4 h-4 {{ str_replace('bg-', 'text-', $d['color']) }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="{{ $d['icon'] }}"/>
-                                        </svg>
-                                    </div>
-                                    <p class="text-lg font-bold text-neutral-900">{{ $d['pct'] }}%</p>
-                                    <div class="flex items-center justify-center gap-1 mt-0.5">
-                                        <span class="w-2 h-2 rounded-full {{ $d['color'] }} shrink-0"></span>
-                                        <p class="text-xs text-neutral-600">{{ $d['label'] }}</p>
-                                    </div>
-                                </div>
-                            @endforeach
-                        </div>
+                        <table class="w-full text-sm">
+                            <thead>
+                                <tr>
+                                    <th class="text-left text-xs font-medium text-neutral-500 uppercase pb-3">Device</th>
+                                    <th class="text-right text-xs font-medium text-neutral-500 uppercase pb-3">Share</th>
+                                    <th class="text-right text-xs font-medium text-neutral-500 uppercase pb-3 w-1/2">Distribution</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @php
+                                    $deviceItems = [
+                                        ['label' => 'Mobile',  'pct' => $devices['mobile'],  'color' => '#6366f1'],
+                                        ['label' => 'Desktop', 'pct' => $devices['desktop'], 'color' => '#06b6d4'],
+                                        ['label' => 'Tablet',  'pct' => $devices['tablet'],  'color' => '#f59e0b'],
+                                    ];
+                                @endphp
+                                @foreach($deviceItems as $d)
+                                    <tr style="border-bottom:1px solid #f3f3f3">
+                                        <td class="py-2.5 text-neutral-700 font-medium">
+                                            <span class="inline-block w-2 h-2 rounded-full mr-2" style="background:{{ $d['color'] }}"></span>{{ $d['label'] }}
+                                        </td>
+                                        <td class="py-2.5 text-right font-semibold text-neutral-900">{{ $d['pct'] }}%</td>
+                                        <td class="py-2.5 pl-4">
+                                            <div class="bg-neutral-100 rounded h-1.5 overflow-hidden">
+                                                <div class="h-full rounded" style="width: {{ $d['pct'] }}%; background:{{ $d['color'] }}"></div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
                     @else
-                        <div class="py-8 text-center text-neutral-300">
-                            <svg class="w-8 h-8 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
-                            </svg>
-                            <p class="text-sm text-neutral-600">No device data available</p>
+                        <div class="py-8 text-center">
+                            <p class="text-sm text-neutral-500">No device data available</p>
                         </div>
                     @endif
                 </div>
@@ -290,8 +266,8 @@
     </div>
 
     {{-- Info note --}}
-    <div class="flex items-start gap-3 px-4 py-3.5 bg-neutral-50 border border-neutral-200 rounded-xl text-xs text-neutral-600">
-        <svg class="w-4 h-4 shrink-0 mt-0.5 text-neutral-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <div class="flex items-start gap-3 px-4 py-3 bg-neutral-50 rounded-lg text-xs text-neutral-500" style="border:1px solid #e1e1e1">
+        <svg class="w-4 h-4 shrink-0 mt-0.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
         </svg>
         Analytics data is collected from product views, cart activity, and order records. Traffic sources are derived from HTTP referrer headers. Device breakdown is based on user-agent strings from orders.

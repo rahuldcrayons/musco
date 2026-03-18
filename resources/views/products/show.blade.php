@@ -61,18 +61,32 @@
                  class="lg:col-span-5 space-y-3">
 
                 <div class="flex gap-3">
-                    <!-- Thumbnails (Desktop vertical) -->
+                    <!-- Thumbnails (Desktop vertical with scroll) -->
                     @if($product->images->count() > 1)
-                        <div class="hidden lg:flex flex-col gap-2 w-16 shrink-0">
-                            @foreach($product->images as $index => $image)
-                                <button @click="select({{ $index }})"
-                                        class="w-16 h-16 rounded border-2 overflow-hidden shrink-0 transition-all duration-200 cursor-pointer"
-                                        :class="activeIndex === {{ $index }}
-                                            ? 'border-[#C7511F] shadow-sm'
-                                            : 'border-[#E3E6E6] hover:border-[#C7511F]'">
-                                    <img src="{{ $image->url }}" alt="{{ $product->name }}" class="w-full h-full object-contain">
-                                </button>
-                            @endforeach
+                        <div class="hidden lg:block w-16 shrink-0 relative" x-data="{ thumbEl: null }" x-init="thumbEl = $refs.thumbStrip">
+                            {{-- Up arrow --}}
+                            <button @click="thumbEl.scrollBy({ top: -144, behavior: 'smooth' })"
+                                    class="absolute -top-1 left-0 right-0 z-10 flex justify-center py-0.5 bg-gradient-to-b from-white via-white/90 to-transparent hover:text-[#C7511F] text-neutral-400 transition-colors"
+                                    aria-label="Scroll up">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"/></svg>
+                            </button>
+                            <div x-ref="thumbStrip" class="flex flex-col gap-2 max-h-[480px] overflow-y-auto scrollbar-hide py-5">
+                                @foreach($product->images as $index => $image)
+                                    <button @click="select({{ $index }}); $el.scrollIntoView({ behavior: 'smooth', block: 'nearest' })"
+                                            class="w-16 h-16 rounded border-2 overflow-hidden shrink-0 transition-all duration-200 cursor-pointer"
+                                            :class="activeIndex === {{ $index }}
+                                                ? 'border-[#C7511F] shadow-sm'
+                                                : 'border-[#E3E6E6] hover:border-[#C7511F]'">
+                                        <img src="{{ $image->url }}" alt="{{ $product->name }}" class="w-full h-full object-contain">
+                                    </button>
+                                @endforeach
+                            </div>
+                            {{-- Down arrow --}}
+                            <button @click="thumbEl.scrollBy({ top: 144, behavior: 'smooth' })"
+                                    class="absolute -bottom-1 left-0 right-0 z-10 flex justify-center py-0.5 bg-gradient-to-t from-white via-white/90 to-transparent hover:text-[#C7511F] text-neutral-400 transition-colors"
+                                    aria-label="Scroll down">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                            </button>
                         </div>
                     @endif
 
@@ -212,9 +226,9 @@
                         <svg class="w-5 h-5 text-[#CC0C39]" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5 5a3 3 0 015-2.236A3 3 0 0114.83 6H16a2 2 0 110 4h-5V9a1 1 0 10-2 0v1H4a2 2 0 110-4h1.17C5.06 5.687 5 5.35 5 5zm4 1V5a1 1 0 10-1 1h1zm2 0a1 1 0 10-1-1v1h1z" clip-rule="evenodd"/><path d="M9 11H3v5a2 2 0 002 2h4v-7zM11 18h4a2 2 0 002-2v-5h-6v7z"/></svg>
                         <span class="text-sm font-bold text-[#0F1111]">Available Offers</span>
                     </div>
-                    <div class="space-y-2">
+                    <div class="flex gap-2 overflow-x-auto scrollbar-hide pb-1" style="-webkit-overflow-scrolling: touch;">
                         @foreach($availableCoupons as $coupon)
-                        <div class="flex items-start gap-3 border border-[#E3E6E6] rounded-lg p-3">
+                        <div class="flex items-start gap-3 border border-[#E3E6E6] rounded-lg p-3 shrink-0" style="min-width: 240px; max-width: 280px;">
                             <div class="shrink-0 bg-[#FFF3E0] border border-dashed border-[#F8931D] rounded px-2 py-1 text-center min-w-[70px]">
                                 <span class="text-xs font-bold text-[#C7511F] block">{{ $coupon->code }}</span>
                             </div>

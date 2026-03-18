@@ -49,7 +49,10 @@
                         </div>
                         <div>
                             <label class="form-label">Key Secret</label>
-                            <input type="password" name="razorpay_key_secret" value="{{ old('razorpay_key_secret', $settings['razorpay_key_secret'] ?? '') }}" placeholder="••••••••••••" class="form-input">
+                            <input type="password" name="razorpay_key_secret" value="" placeholder="{{ !empty($settings['razorpay_key_secret']) ? '••••••••••••' : 'Enter key secret' }}" class="form-input">
+                            @if(!empty($settings['razorpay_key_secret']))
+                                <p class="text-xs text-neutral-600 mt-1">Secret is saved. Leave blank to keep current value.</p>
+                            @endif
                         </div>
                     </div>
                     <div class="max-w-xs">

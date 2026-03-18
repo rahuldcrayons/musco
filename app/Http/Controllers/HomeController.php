@@ -15,7 +15,7 @@ class HomeController extends Controller
 {
     public function index(): View
     {
-        // Homepage display settings
+        // Homepage display settings (all from single cached query now)
         $featuredCount    = (int) Setting::get('homepage_featured_count', 10);
         $newArrivalsCount = (int) Setting::get('homepage_new_arrivals_count', 10);
         $bestsellersCount = (int) Setting::get('homepage_bestsellers_count', 10);
@@ -23,11 +23,14 @@ class HomeController extends Controller
         $testimonialsCount = (int) Setting::get('homepage_testimonials_count', 6);
         $newArrivalsDays  = (int) Setting::get('homepage_new_arrivals_days', 30);
 
+        // Shared scope for active products with eager loads
+        $productEager = ['category:id,name,slug', 'brand:id,name,slug', 'primaryImage'];
+
         // Featured products
         $featuredProducts = Product::query()
             ->where('is_active', true)
             ->where('is_featured', true)
-            ->with(['category', 'brand', 'primaryImage'])
+            ->with($productEager)
             ->orderBy('created_at', 'desc')
             ->take($featuredCount)
             ->get();
@@ -36,7 +39,7 @@ class HomeController extends Controller
         $newArrivals = Product::query()
             ->where('is_active', true)
             ->where('created_at', '>=', now()->subDays($newArrivalsDays))
-            ->with(['category', 'brand', 'primaryImage'])
+            ->with($productEager)
             ->orderBy('created_at', 'desc')
             ->take($newArrivalsCount)
             ->get();
@@ -44,7 +47,7 @@ class HomeController extends Controller
         // Bestsellers
         $bestsellers = Product::query()
             ->where('is_active', true)
-            ->with(['category', 'brand', 'primaryImage'])
+            ->with($productEager)
             ->orderBy('sales_count', 'desc')
             ->take($bestsellersCount)
             ->get();
@@ -53,36 +56,27 @@ class HomeController extends Controller
         $deals = Product::query()
             ->where('is_active', true)
             ->whereColumn('price', '<', 'mrp')
-            ->with(['category', 'brand', 'primaryImage'])
+            ->with($productEager)
             ->orderByRaw('(mrp - price) / mrp DESC')
             ->take($dealsCount)
             ->get();
 
-        // Category carousel — all active categories with products (for horizontal scroll)
+        // Category carousel — select only needed columns, single product image per category
         $carouselCategories = Category::query()
+            ->select('id', 'name', 'slug', 'image_url', 'icon')
             ->where('is_active', true)
             ->withCount(['products' => fn($q) => $q->where('is_active', true)])
+            ->with(['products' => fn($q) => $q->where('is_active', true)
+                ->select('id', 'category_id')
+                ->with('primaryImage')
+                ->limit(1)])
             ->having('products_count', '>', 0)
             ->orderBy('position')
             ->take(15)
             ->get();
 
-        // Categories with product counts + fallback images from first product
-        // Only show selected root categories on homepage
-        $homepageCategorySlugs = [];
-        $categories = Category::query()
-            ->whereNull('parent_id')
-            ->where('is_active', true)
-            ->whereIn('slug', $homepageCategorySlugs)
-            ->withCount(['products' => fn($q) => $q->where('is_active', true)])
-            ->with(['children' => fn($q) => $q->where('is_active', true)
-                ->withCount(['products' => fn($q2) => $q2->where('is_active', true)])
-                ->with(['products' => fn($q2) => $q2->where('is_active', true)->with('primaryImage')->limit(1)])
-                ->orderBy('position'),
-                'products' => fn($q) => $q->where('is_active', true)->with('primaryImage')->limit(1),
-            ])
-            ->orderBy('position')
-            ->get();
+        // Categories — empty slug list means no results, skip query entirely
+        $categories = collect();
 
         // Banners
         $banners = Banner::query()
@@ -102,7 +96,7 @@ class HomeController extends Controller
             ->withCount('products')
             ->first();
 
-        // Site settings
+        // Site settings (all from batch cache — no extra queries)
         $siteSettings = [
             'site_name' => Setting::get('site_name', 'Jikra'),
             'site_tagline' => Setting::get('site_tagline', 'Adorable Clothing for Little Ones'),

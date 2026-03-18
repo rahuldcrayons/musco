@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
             LegalPageSeeder::class,
             ReviewSettingsSeeder::class,
             ChatbotSettingsSeeder::class,
+            BlogPostSeeder::class,
         ]);
     }
 }

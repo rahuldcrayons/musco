@@ -16,20 +16,24 @@
     {{ $styles ?? '' }}
     @stack('styles')
 </head>
-<body class="font-sans antialiased bg-neutral-100 layout-admin" x-data="{ sidebarOpen: false }">
+<body class="antialiased layout-admin" x-data="{ sidebarOpen: false }" style="background:#f1f1f1;font-family:'Inter',system-ui,-apple-system,sans-serif">
     <div class="flex h-screen overflow-hidden">
         <!-- Sidebar -->
         @include('admin.partials.sidebar')
 
         <!-- Content area -->
-        <div class="flex flex-col flex-1 overflow-hidden">
+        <div class="flex flex-col flex-1 overflow-hidden" style="background:#1a1a1a">
             <!-- Admin Header -->
             @include('admin.partials.header')
 
             <!-- Main content -->
-            <main class="flex-1 overflow-y-auto p-6">
+            <main class="flex-1 overflow-y-auto" style="scrollbar-width:thin;scrollbar-color:#ccc transparent;background:#f1f1f1;border-top-left-radius:12px;padding:20px">
                 @isset($header)
-                    <div class="mb-6">{{ $header }}</div>
+                    <div class="mb-4">{{ $header }}</div>
+                @endisset
+
+                @isset($statsBar)
+                    {{ $statsBar }}
                 @endisset
 
                 {{ $slot }}

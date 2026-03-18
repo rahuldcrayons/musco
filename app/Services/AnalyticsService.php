@@ -181,14 +181,16 @@ class AnalyticsService
             $payload['test_event_code'] = $testCode;
         }
 
-        try {
-            Http::timeout(5)->post(
-                "https://graph.facebook.com/v21.0/{$pixelId}/events?access_token={$accessToken}",
-                $payload
-            );
-        } catch (\Throwable $e) {
-            Log::warning("Facebook CAPI '{$eventName}' failed", ['error' => $e->getMessage()]);
-        }
+        dispatch(function () use ($pixelId, $accessToken, $payload, $eventName) {
+            try {
+                Http::timeout(5)->post(
+                    "https://graph.facebook.com/v21.0/{$pixelId}/events?access_token={$accessToken}",
+                    $payload
+                );
+            } catch (\Throwable $e) {
+                Log::warning("Facebook CAPI '{$eventName}' failed", ['error' => $e->getMessage()]);
+            }
+        })->afterResponse();
     }
 
     private function sendFBPurchaseEvent(Order $order, ?Request $request = null, ?string $eventId = null): void
@@ -245,14 +247,16 @@ class AnalyticsService
             $payload['test_event_code'] = $testCode;
         }
 
-        try {
-            Http::timeout(5)->post(
-                "https://graph.facebook.com/v21.0/{$pixelId}/events?access_token={$accessToken}",
-                $payload
-            );
-        } catch (\Throwable $e) {
-            Log::warning('Facebook CAPI Purchase failed', ['error' => $e->getMessage()]);
-        }
+        dispatch(function () use ($pixelId, $accessToken, $payload) {
+            try {
+                Http::timeout(5)->post(
+                    "https://graph.facebook.com/v21.0/{$pixelId}/events?access_token={$accessToken}",
+                    $payload
+                );
+            } catch (\Throwable $e) {
+                Log::warning('Facebook CAPI Purchase failed', ['error' => $e->getMessage()]);
+            }
+        })->afterResponse();
     }
 
     /**
@@ -333,11 +337,13 @@ class AnalyticsService
             ]],
         ];
 
-        try {
-            Http::post("https://www.google-analytics.com/mp/collect?measurement_id={$measurementId}&api_secret={$apiSecret}", $payload);
-        } catch (\Throwable $e) {
-            Log::warning('GA4 Measurement Protocol failed', ['error' => $e->getMessage()]);
-        }
+        dispatch(function () use ($measurementId, $apiSecret, $payload) {
+            try {
+                Http::post("https://www.google-analytics.com/mp/collect?measurement_id={$measurementId}&api_secret={$apiSecret}", $payload);
+            } catch (\Throwable $e) {
+                Log::warning('GA4 Measurement Protocol failed', ['error' => $e->getMessage()]);
+            }
+        })->afterResponse();
     }
 
     private function sendGA4Event(string $eventName, array $params, ?User $user): void
@@ -359,10 +365,12 @@ class AnalyticsService
             ]],
         ];
 
-        try {
-            Http::post("https://www.google-analytics.com/mp/collect?measurement_id={$measurementId}&api_secret={$apiSecret}", $payload);
-        } catch (\Throwable $e) {
-            Log::warning("GA4 event '{$eventName}' failed", ['error' => $e->getMessage()]);
-        }
+        dispatch(function () use ($measurementId, $apiSecret, $payload, $eventName) {
+            try {
+                Http::post("https://www.google-analytics.com/mp/collect?measurement_id={$measurementId}&api_secret={$apiSecret}", $payload);
+            } catch (\Throwable $e) {
+                Log::warning("GA4 event '{$eventName}' failed", ['error' => $e->getMessage()]);
+            }
+        })->afterResponse();
     }
 }

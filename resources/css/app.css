@@ -624,11 +624,31 @@ a[class*="btn"] {
     border: none;
 }
 
-/* Admin-scoped button size reductions */
+/* Admin-scoped Shopify-like buttons */
 .layout-admin .btn {
     padding: 0.4375rem 0.875rem;
     font-size: 0.8125rem;
-    border-radius: 0.375rem;
+    border-radius: 0.5rem;
+    font-weight: 500;
+}
+
+.layout-admin .btn-primary {
+    background: #1a1a1a;
+    color: #fff;
+}
+
+.layout-admin .btn-primary:hover:not(:disabled) {
+    background: #333;
+}
+
+.layout-admin .btn-secondary {
+    background: #fff;
+    border: 1px solid #ccc;
+    color: #1a1a1a;
+}
+
+.layout-admin .btn-secondary:hover:not(:disabled) {
+    background: #f7f7f7;
 }
 
 .btn:focus-visible {
@@ -750,7 +770,6 @@ a[class*="btn"] {
 
 .card-product {
     background-color: white;
-    border: 1px solid var(--color-neutral-100);
     border-radius: 0.375rem;
     overflow: hidden;
 }
@@ -764,18 +783,342 @@ a[class*="btn"] {
     border-bottom: 1px solid var(--color-neutral-100);
 }
 
-/* Admin-scoped card size reductions */
+/* =====================================================
+   Admin Shopify-like Global Transform
+   Automatically transforms ALL old admin pages
+   ===================================================== */
+
+/* --- STAT CARD GRIDS: Transform to Shopify stats bar --- */
+
+/* Make stat grid a single row card */
+.layout-admin > .grid[class*="gap-4"][class*="mb-"] {
+    display: flex !important;
+    gap: 0 !important;
+    background: #fff !important;
+    border-radius: 12px !important;
+    border: 1px solid #e3e3e3 !important;
+    box-shadow: 0 1px 2px rgba(0,0,0,.04) !important;
+    overflow: hidden !important;
+    margin-bottom: 20px !important;
+}
+
+/* Each stat card becomes a flex cell */
+.layout-admin > .grid[class*="gap-4"][class*="mb-"] > .card {
+    flex: 1 !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    border-right: 1px solid #e3e3e3 !important;
+    padding: 16px 20px !important;
+}
+
+.layout-admin > .grid[class*="gap-4"][class*="mb-"] > .card:last-child {
+    border-right: none !important;
+}
+
+/* Hide icon circles inside stat cards */
+.layout-admin > .grid[class*="gap-4"][class*="mb-"] .card > .flex > div:first-child[class*="rounded"] {
+    display: none !important;
+}
+
+/* Stat card numbers */
+.layout-admin > .grid[class*="gap-4"][class*="mb-"] .card p[class*="font-bold"] {
+    color: #1a1a1a !important;
+    font-size: 20px !important;
+    font-weight: 600 !important;
+    line-height: 1.3 !important;
+}
+
+/* Stat card labels */
+.layout-admin > .grid[class*="gap-4"][class*="mb-"] .card p[class*="text-neutral-600"],
+.layout-admin > .grid[class*="gap-4"][class*="mb-"] .card p[class*="text-xs"],
+.layout-admin > .grid[class*="gap-4"][class*="mb-"] .card p[class*="text-sm"] {
+    color: #6d7175 !important;
+    font-size: 12px !important;
+    font-weight: 500 !important;
+}
+
+/* --- HEADER: Remove subtitles under h1 --- */
+.layout-admin main > div:first-child h1 + p,
+.layout-admin main > div:first-child h1 + p.text-sm {
+    display: none !important;
+}
+
+/* H1 style */
+.layout-admin main h1 {
+    font-size: 1.25rem !important;
+    font-weight: 600 !important;
+    color: #1a1a1a !important;
+}
+
+/* --- TABLES: Shopify clean style --- */
+.layout-admin table thead,
+.layout-admin table thead tr,
+.layout-admin thead.bg-neutral-50,
+.layout-admin thead[class*="bg-"] {
+    background: transparent !important;
+}
+
+.layout-admin table thead th {
+    text-transform: none !important;
+    letter-spacing: 0 !important;
+    font-weight: 500 !important;
+    font-size: 12px !important;
+    color: #6d7175 !important;
+    padding: 10px 16px !important;
+    border-bottom: 1px solid #e1e1e1 !important;
+    border-top: none !important;
+}
+
+.layout-admin table tbody td {
+    padding: 10px 16px !important;
+    font-size: 13px !important;
+    color: #1a1a1a !important;
+    vertical-align: middle !important;
+}
+
+.layout-admin table tbody tr {
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.layout-admin table tbody tr:hover {
+    background: #fafafa !important;
+}
+
+.layout-admin table tbody .divide-y > tr,
+.layout-admin table tbody.divide-y > tr {
+    border-color: #f0f0f0 !important;
+}
+
+/* --- CARDS: Shopify rounded style --- */
+.layout-admin .card {
+    border-radius: 12px !important;
+    border: 1px solid #e3e3e3 !important;
+    box-shadow: 0 1px 2px rgba(0,0,0,.04) !important;
+}
+
+/* Remove card header colored backgrounds */
+.layout-admin .card > div[class*="border-b"][class*="bg-neutral"],
+.layout-admin .card > div[class*="border-b"][class*="bg-"] {
+    background: transparent !important;
+}
+
+/* Card header text - remove icons, simplify */
+.layout-admin .card > div[class*="border-b"] svg[class*="text-primary"] {
+    display: none !important;
+}
+
+/* --- BADGES: Shopify-style with dots --- */
+.layout-admin .badge {
+    border-radius: 6px !important;
+    font-weight: 500 !important;
+    font-size: 11px !important;
+    padding: 2px 8px !important;
+}
+
+.layout-admin .badge-success { background: #c8f9d4 !important; color: #1a7f37 !important; }
+.layout-admin .badge-warning { background: #fef3c7 !important; color: #92400e !important; }
+.layout-admin .badge-info { background: #dbeafe !important; color: #1e40af !important; }
+.layout-admin .badge-error { background: #fde8e8 !important; color: #c53030 !important; }
+.layout-admin .badge-primary { background: #e0e7ff !important; color: #3730a3 !important; }
+.layout-admin .badge-neutral { background: #e4e4e4 !important; color: #616161 !important; }
+
+/* --- BUTTONS: Shopify dark primary --- */
+.layout-admin .btn-primary {
+    background: #1a1a1a !important;
+    color: #fff !important;
+    border-radius: 8px !important;
+}
+.layout-admin .btn-primary:hover:not(:disabled) {
+    background: #333 !important;
+}
+
+.layout-admin .btn-secondary {
+    background: #fff !important;
+    border: 1px solid #8a8a8a !important;
+    color: #323232 !important;
+    border-radius: 8px !important;
+}
+.layout-admin .btn-secondary:hover:not(:disabled) {
+    background: #f7f7f7 !important;
+}
+
+.layout-admin .btn-danger {
+    background: #fff !important;
+    border: 1px solid #e53e3e !important;
+    color: #c53030 !important;
+    border-radius: 8px !important;
+}
+
+/* --- ICON BUTTONS (view/edit/delete) --- */
+.layout-admin .btn-icon {
+    border-radius: 6px !important;
+    padding: 6px !important;
+}
+.layout-admin .btn-icon:hover {
+    background: #f0f0f0 !important;
+}
+
+/* --- FORMS: Clean Shopify inputs with proper padding --- */
+.layout-admin .form-input,
+.layout-admin .form-select,
+.layout-admin .form-textarea,
+.layout-admin input[type="text"],
+.layout-admin input[type="email"],
+.layout-admin input[type="number"],
+.layout-admin input[type="password"],
+.layout-admin input[type="date"],
+.layout-admin input[type="search"],
+.layout-admin input[type="url"],
+.layout-admin input[type="tel"],
+.layout-admin select,
+.layout-admin textarea {
+    border-radius: 8px !important;
+    border: 1px solid #c9cccf !important;
+    font-size: 13px !important;
+    padding: 8px 12px !important;
+    min-height: 36px !important;
+    line-height: 1.4 !important;
+    background: #fff !important;
+}
+.layout-admin .form-input:focus,
+.layout-admin .form-select:focus,
+.layout-admin .form-textarea:focus,
+.layout-admin input:focus,
+.layout-admin select:focus,
+.layout-admin textarea:focus {
+    border-color: #1a1a1a !important;
+    outline: none !important;
+    box-shadow: 0 0 0 1px #1a1a1a !important;
+}
+
+/* Search inputs with icon - extra left padding */
+.layout-admin input[class*="pl-9"] {
+    padding-left: 36px !important;
+}
+
+/* Table cells should NOT get input padding */
+.layout-admin table td,
+.layout-admin table th {
+    padding: 10px 16px !important;
+    min-height: auto !important;
+    border-radius: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+}
+
+/* Form labels */
+.layout-admin .form-label {
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    color: #1a1a1a !important;
+}
+
+/* --- FILTER/ACCORDION: Clean up old filter sections --- */
+.layout-admin .card > div[class*="cursor-pointer"] .flex.items-center.gap-2 svg {
+    display: none !important;
+}
+
+/* --- PAGINATION: Shopify minimal style --- */
+.layout-admin nav[role="navigation"] {
+    font-size: 13px !important;
+}
+
+/* --- INFO BAR: Clean up "Showing 1 to X" bars --- */
+.layout-admin .card > div[class*="border-b"][class*="px-5"][class*="py-3"] {
+    font-size: 13px !important;
+    color: #6d7175 !important;
+    padding: 8px 16px !important;
+}
+
+/* --- AVATAR CIRCLES in tables --- */
+.layout-admin table .rounded-full[class*="bg-"] {
+    width: 32px !important;
+    height: 32px !important;
+    font-size: 12px !important;
+}
+.layout-admin .card {
+    border-radius: 0.75rem;
+    border-color: #e1e1e1;
+    box-shadow: 0 1px 3px rgba(0,0,0,.04), 0 0 0 1px rgba(0,0,0,.03);
+}
+
+.layout-admin .card .card-header,
+.layout-admin .card > div:first-child.bg-neutral-50\/50 {
+    background: transparent !important;
+    border-radius: 0.75rem 0.75rem 0 0;
+}
+
+.layout-admin .form-input,
+.layout-admin .form-select,
+.layout-admin .form-textarea {
+    border-radius: 0.5rem;
+    border-color: #c9cccf;
+}
+
+.layout-admin .form-input:focus,
+.layout-admin .form-select:focus,
+.layout-admin .form-textarea:focus {
+    border-color: #1a1a1a;
+    outline: none;
+    box-shadow: 0 0 0 1px #1a1a1a;
+}
+
+.layout-admin .badge {
+    border-radius: 0.375rem;
+    font-weight: 500;
+}
+
+.layout-admin .badge-success {
+    background: #d4edda;
+    color: #1a7431;
+}
+
+.layout-admin .badge-neutral {
+    background: #e9ecef;
+    color: #495057;
+}
+
 .layout-admin .card-header {
-    padding: 0.625rem 1rem;
-    font-size: 0.8125rem;
+    padding: 1rem 1.25rem;
+    font-size: 0.875rem;
+    background: transparent;
+    border-color: #e3e3e3;
 }
 
 .layout-admin .card-header h2 {
-    font-size: 0.9375rem;
+    font-size: 1rem;
+    font-weight: 600;
 }
 
 .layout-admin .card span {
     font-size: 0.8125rem;
+}
+
+.layout-admin h1 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+}
+
+.layout-admin table th {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: #6d7175;
+    text-transform: none;
+    letter-spacing: 0;
+    background: #fafafa;
+    border-bottom: 1px solid #e3e3e3;
+}
+
+.layout-admin table td {
+    font-size: 0.8125rem;
+    color: #1a1a1a;
+}
+
+.layout-admin table tbody tr:hover {
+    background: #fafafa;
 }
 
 .card-footer {

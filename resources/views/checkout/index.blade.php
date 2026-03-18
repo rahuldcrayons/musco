@@ -110,22 +110,22 @@
 
                                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 mb-2">
                                     <div>
+                                        <label class="block text-[10px] font-semibold text-[#565959] mb-0.5">Phone *</label>
+                                        <input type="tel" name="guest_phone" id="guest_phone" value="{{ old('guest_phone') }}" required autocomplete="tel" autofocus
+                                               class="w-full text-sm border border-[#E3E6E6] rounded px-2.5 py-2" style="outline:none" onfocus="this.style.border='1px solid #007185'" onblur="this.style.border='1px solid #E3E6E6'" placeholder="+91 98765 43210">
+                                        @error('guest_phone') <p class="text-[10px] text-[#CC0C39] mt-0.5">{{ $message }}</p> @enderror
+                                    </div>
+                                    <div>
                                         <label class="block text-[10px] font-semibold text-[#565959] mb-0.5">Name *</label>
                                         <input type="text" name="guest_name" value="{{ old('guest_name') }}" required autocomplete="name"
-                                               class="w-full text-sm border border-[#E3E6E6] rounded px-2.5 py-2 focus:border-[#007185] focus:ring-1 focus:ring-[#007185]" placeholder="Full name">
+                                               class="w-full text-sm border border-[#E3E6E6] rounded px-2.5 py-2" style="outline:none" onfocus="this.style.border='1px solid #007185'" onblur="this.style.border='1px solid #E3E6E6'" placeholder="Full name">
                                         @error('guest_name') <p class="text-[10px] text-[#CC0C39] mt-0.5">{{ $message }}</p> @enderror
                                     </div>
                                     <div>
                                         <label class="block text-[10px] font-semibold text-[#565959] mb-0.5">Email *</label>
                                         <input type="email" name="guest_email" value="{{ old('guest_email') }}" required autocomplete="email"
-                                               class="w-full text-sm border border-[#E3E6E6] rounded px-2.5 py-2 focus:border-[#007185] focus:ring-1 focus:ring-[#007185]" placeholder="email@example.com">
+                                               class="w-full text-sm border border-[#E3E6E6] rounded px-2.5 py-2" style="outline:none" onfocus="this.style.border='1px solid #007185'" onblur="this.style.border='1px solid #E3E6E6'" placeholder="email@example.com">
                                         @error('guest_email') <p class="text-[10px] text-[#CC0C39] mt-0.5">{{ $message }}</p> @enderror
-                                    </div>
-                                    <div>
-                                        <label class="block text-[10px] font-semibold text-[#565959] mb-0.5">Phone *</label>
-                                        <input type="tel" name="guest_phone" value="{{ old('guest_phone') }}" required autocomplete="tel"
-                                               class="w-full text-sm border border-[#E3E6E6] rounded px-2.5 py-2 focus:border-[#007185] focus:ring-1 focus:ring-[#007185]" placeholder="+91 98765 43210">
-                                        @error('guest_phone') <p class="text-[10px] text-[#CC0C39] mt-0.5">{{ $message }}</p> @enderror
                                     </div>
                                 </div>
 
@@ -137,26 +137,26 @@
                                         <div>
                                             <label class="block text-[10px] font-semibold text-[#565959] mb-0.5">PIN Code *</label>
                                             <input type="text" name="shipping_postal_code" x-model="pin" @input="fetchPinData()" value="{{ old('shipping_postal_code') }}" required maxlength="6" autocomplete="postal-code"
-                                                   class="w-full text-sm border border-[#E3E6E6] rounded px-2.5 py-2 focus:border-[#007185] focus:ring-1 focus:ring-[#007185]" placeholder="400001">
+                                                   class="w-full text-sm border border-[#E3E6E6] rounded px-2.5 py-2 focus:border-[#007185] focus:outline-none" placeholder="400001">
                                             <p x-show="pinError" x-text="pinError" class="text-[10px] text-[#CC0C39] mt-0.5" x-cloak></p>
                                             @error('shipping_postal_code') <p class="text-[10px] text-[#CC0C39] mt-0.5">{{ $message }}</p> @enderror
                                         </div>
                                         <div>
                                             <label class="block text-[10px] font-semibold text-[#565959] mb-0.5">City *</label>
                                             <input type="text" name="shipping_city" x-model="city" value="{{ old('shipping_city') }}" required autocomplete="address-level2"
-                                                   class="w-full text-sm border border-[#E3E6E6] rounded px-2.5 py-2 focus:border-[#007185] focus:ring-1 focus:ring-[#007185]" placeholder="City">
+                                                   class="w-full text-sm border border-[#E3E6E6] rounded px-2.5 py-2 focus:border-[#007185] focus:outline-none" placeholder="City">
                                             @error('shipping_city') <p class="text-[10px] text-[#CC0C39] mt-0.5">{{ $message }}</p> @enderror
                                         </div>
                                         <div>
                                             <label class="block text-[10px] font-semibold text-[#565959] mb-0.5">State *</label>
                                             <input type="text" name="shipping_state" x-model="state" value="{{ old('shipping_state') }}" required autocomplete="address-level1"
-                                                   class="w-full text-sm border border-[#E3E6E6] rounded px-2.5 py-2 focus:border-[#007185] focus:ring-1 focus:ring-[#007185]" placeholder="State">
+                                                   class="w-full text-sm border border-[#E3E6E6] rounded px-2.5 py-2 focus:border-[#007185] focus:outline-none" placeholder="State">
                                             @error('shipping_state') <p class="text-[10px] text-[#CC0C39] mt-0.5">{{ $message }}</p> @enderror
                                         </div>
                                         <div>
                                             <label class="block text-[10px] font-semibold text-[#565959] mb-0.5">Recipient Name *</label>
                                             <input type="text" name="shipping_name" value="{{ old('shipping_name') }}" required autocomplete="shipping name"
-                                                   class="w-full text-sm border border-[#E3E6E6] rounded px-2.5 py-2 focus:border-[#007185] focus:ring-1 focus:ring-[#007185]" placeholder="Recipient name">
+                                                   class="w-full text-sm border border-[#E3E6E6] rounded px-2.5 py-2 focus:border-[#007185] focus:outline-none" placeholder="Recipient name">
                                             @error('shipping_name') <p class="text-[10px] text-[#CC0C39] mt-0.5">{{ $message }}</p> @enderror
                                         </div>
                                     </div>
@@ -164,19 +164,19 @@
                                         <div>
                                             <label class="block text-[10px] font-semibold text-[#565959] mb-0.5">Phone *</label>
                                             <input type="tel" name="shipping_phone" value="{{ old('shipping_phone') }}" required autocomplete="tel"
-                                                   class="w-full text-sm border border-[#E3E6E6] rounded px-2.5 py-2 focus:border-[#007185] focus:ring-1 focus:ring-[#007185]" placeholder="+91 98765 43210">
+                                                   class="w-full text-sm border border-[#E3E6E6] rounded px-2.5 py-2 focus:border-[#007185] focus:outline-none" placeholder="+91 98765 43210">
                                             @error('shipping_phone') <p class="text-[10px] text-[#CC0C39] mt-0.5">{{ $message }}</p> @enderror
                                         </div>
                                         <div>
                                             <label class="block text-[10px] font-semibold text-[#565959] mb-0.5">Address Line 2</label>
                                             <input type="text" name="shipping_address_line_2" value="{{ old('shipping_address_line_2') }}" autocomplete="address-line2"
-                                                   class="w-full text-sm border border-[#E3E6E6] rounded px-2.5 py-2 focus:border-[#007185] focus:ring-1 focus:ring-[#007185]" placeholder="Area, Landmark (optional)">
+                                                   class="w-full text-sm border border-[#E3E6E6] rounded px-2.5 py-2 focus:border-[#007185] focus:outline-none" placeholder="Area, Landmark (optional)">
                                         </div>
                                     </div>
                                     <div>
                                         <label class="block text-[10px] font-semibold text-[#565959] mb-0.5">Address *</label>
                                         <input type="text" name="shipping_address_line_1" value="{{ old('shipping_address_line_1') }}" required autocomplete="address-line1"
-                                               class="w-full text-sm border border-[#E3E6E6] rounded px-2.5 py-2 focus:border-[#007185] focus:ring-1 focus:ring-[#007185]" placeholder="House no., Building, Street">
+                                               class="w-full text-sm border border-[#E3E6E6] rounded px-2.5 py-2 focus:border-[#007185] focus:outline-none" placeholder="House no., Building, Street">
                                         @error('shipping_address_line_1') <p class="text-[10px] text-[#CC0C39] mt-0.5">{{ $message }}</p> @enderror
                                     </div>
                                 </div>
@@ -228,37 +228,37 @@
                                     <div class="grid grid-cols-2 gap-2">
                                         <div>
                                             <label class="block text-[10px] font-semibold text-[#565959] mb-0.5">Full Name *</label>
-                                            <input type="text" id="new_addr_name" class="w-full text-xs border border-[#E3E6E6] rounded px-2.5 py-2 focus:border-[#007185] focus:ring-1 focus:ring-[#007185]" placeholder="Full name">
+                                            <input type="text" id="new_addr_name" class="w-full text-xs border border-[#E3E6E6] rounded px-2.5 py-2 focus:border-[#007185] focus:outline-none" placeholder="Full name">
                                         </div>
                                         <div>
                                             <label class="block text-[10px] font-semibold text-[#565959] mb-0.5">Phone *</label>
-                                            <input type="tel" id="new_addr_phone" class="w-full text-xs border border-[#E3E6E6] rounded px-2.5 py-2 focus:border-[#007185] focus:ring-1 focus:ring-[#007185]" placeholder="+91 98765 43210">
+                                            <input type="tel" id="new_addr_phone" class="w-full text-xs border border-[#E3E6E6] rounded px-2.5 py-2 focus:border-[#007185] focus:outline-none" placeholder="+91 98765 43210">
                                         </div>
                                     </div>
                                     <div>
                                         <label class="block text-[10px] font-semibold text-[#565959] mb-0.5">Address *</label>
-                                        <input type="text" id="new_addr_line1" class="w-full text-xs border border-[#E3E6E6] rounded px-2.5 py-2 focus:border-[#007185] focus:ring-1 focus:ring-[#007185]" placeholder="House no., Building, Street">
+                                        <input type="text" id="new_addr_line1" class="w-full text-xs border border-[#E3E6E6] rounded px-2.5 py-2 focus:border-[#007185] focus:outline-none" placeholder="House no., Building, Street">
                                     </div>
                                     <div>
                                         <label class="block text-[10px] font-semibold text-[#565959] mb-0.5">Area / Landmark</label>
-                                        <input type="text" id="new_addr_line2" class="w-full text-xs border border-[#E3E6E6] rounded px-2.5 py-2 focus:border-[#007185] focus:ring-1 focus:ring-[#007185]" placeholder="Optional">
+                                        <input type="text" id="new_addr_line2" class="w-full text-xs border border-[#E3E6E6] rounded px-2.5 py-2 focus:border-[#007185] focus:outline-none" placeholder="Optional">
                                     </div>
                                     <div class="grid grid-cols-3 gap-2">
                                         <div>
                                             <label class="block text-[10px] font-semibold text-[#565959] mb-0.5">PIN Code *</label>
                                             <input type="text" id="new_addr_pincode" x-model="pin" @input="fetchPinData()" maxlength="6"
-                                                   class="w-full text-xs border border-[#E3E6E6] rounded px-2.5 py-2 focus:border-[#007185] focus:ring-1 focus:ring-[#007185]" placeholder="400001">
+                                                   class="w-full text-xs border border-[#E3E6E6] rounded px-2.5 py-2 focus:border-[#007185] focus:outline-none" placeholder="400001">
                                             <p x-show="pinError" x-text="pinError" class="text-[10px] text-[#CC0C39] mt-0.5" x-cloak></p>
                                         </div>
                                         <div>
                                             <label class="block text-[10px] font-semibold text-[#565959] mb-0.5">City *</label>
                                             <input type="text" id="new_addr_city" x-model="city"
-                                                   class="w-full text-xs border border-[#E3E6E6] rounded px-2.5 py-2 focus:border-[#007185] focus:ring-1 focus:ring-[#007185]" placeholder="City">
+                                                   class="w-full text-xs border border-[#E3E6E6] rounded px-2.5 py-2 focus:border-[#007185] focus:outline-none" placeholder="City">
                                         </div>
                                         <div>
                                             <label class="block text-[10px] font-semibold text-[#565959] mb-0.5">State *</label>
                                             <input type="text" id="new_addr_state" x-model="state"
-                                                   class="w-full text-xs border border-[#E3E6E6] rounded px-2.5 py-2 focus:border-[#007185] focus:ring-1 focus:ring-[#007185]" placeholder="State">
+                                                   class="w-full text-xs border border-[#E3E6E6] rounded px-2.5 py-2 focus:border-[#007185] focus:outline-none" placeholder="State">
                                         </div>
                                     </div>
                                     <div id="new_addr_error" class="hidden text-[10px] text-[#CC0C39]"></div>
@@ -357,13 +357,7 @@
                                                class="text-[#205258] focus:ring-[#205258]">
                                         <div class="flex items-center gap-2 flex-1">
                                             {{-- Razorpay Logo --}}
-                                            <svg class="h-5 w-auto shrink-0" viewBox="0 0 122 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                <path d="M16.092 2L2.776 28h6.852l2.408-4.648h9.752L16.092 2zm.672 17.028h-6.2L16.764 7.8l-.016.084.016.028v11.116z" fill="#072654"/>
-                                                <path d="M34.736 8.036h-4.508l-5.452 19.96h4.064l1.456-5.332h4.508l1.456 5.332h4.064L34.736 8.036zm-3.5 10.804l1.316-4.816.94-3.444h.028l.94 3.444 1.316 4.816h-4.54zM48.244 28l8.46-19.964h-4.228l-4.232 9.996-4.232-9.996h-4.228L48.244 28zM79.68 8.036h-4.508l-5.452 19.96h4.064l1.456-5.332h4.508l1.456 5.332h4.064L79.68 8.036zm-3.5 10.804l1.316-4.816.94-3.444h.028l.94 3.444 1.316 4.816h-4.54zM93.188 28l8.46-19.964h-4.228l-4.232 9.996-4.232-9.996h-4.228L93.188 28z" fill="#072654"/>
-                                                <path d="M57.192 8.036h4.064v19.96h-4.064zM110.948 8.036h-4.508L100.988 28h4.064l1.456-5.332h4.508L112.472 28h4.064l-5.588-19.964zm-3.5 10.804l1.316-4.816.94-3.444h.028l.94 3.444 1.316 4.816h-4.54z" fill="#072654"/>
-                                                <path d="M121.036 8.036h-4.064l2.08 7.616 1.984-7.616z" fill="#072654"/>
-                                                <path d="M63.92 8.036l-3.612 13.244L56.696 8.036h-4.064L58.22 28h4.064l5.7-19.964H63.92z" fill="#3395FF"/>
-                                            </svg>
+                                            <img src="{{ asset('images/razorpay.png') }}" alt="Razorpay" class="h-5 w-auto shrink-0">
                                             <div>
                                                 <p class="text-[10px] text-[#565959]">Cards, UPI, Net Banking & more</p>
                                             </div>
@@ -424,7 +418,7 @@
                         <div class="bg-white rounded border border-[#E3E6E6]">
                             <div class="p-3">
                                 <label class="block text-[10px] font-semibold text-[#565959] mb-1">Order Notes (optional)</label>
-                                <textarea name="notes" rows="2" class="w-full text-xs border border-[#E3E6E6] rounded px-2.5 py-2 focus:border-[#007185] focus:ring-1 focus:ring-[#007185] resize-none"
+                                <textarea name="notes" rows="2" class="w-full text-xs border border-[#E3E6E6] rounded px-2.5 py-2 focus:border-[#007185] focus:outline-none resize-none"
                                           placeholder="Special delivery instructions...">{{ old('notes') }}</textarea>
                             </div>
                         </div>
@@ -779,12 +773,17 @@
         @if(config('services.ga4.measurement_id'))
         <script>
             document.addEventListener('DOMContentLoaded', function() {
-                var checkoutItems = @json($cart->items->map(fn ($item) => [
-                    'item_id' => $item->product->sku ?? (string) $item->product_id,
-                    'item_name' => $item->product->name,
-                    'price' => (float) $item->price,
-                    'quantity' => $item->quantity,
-                ]));
+                @php
+                    $ga4CheckoutItems = $cart->items->map(function ($item) {
+                        return [
+                            'item_id' => $item->product->sku ?? (string) $item->product_id,
+                            'item_name' => $item->product->name,
+                            'price' => (float) $item->price,
+                            'quantity' => $item->quantity,
+                        ];
+                    });
+                @endphp
+                var checkoutItems = {!! json_encode($ga4CheckoutItems, JSON_UNESCAPED_UNICODE) !!};
                 gtag('event', 'begin_checkout', {
                     currency: 'INR',
                     value: {{ (float) $cart->total }},

@@ -593,14 +593,19 @@
 
     {{-- GA4 view_cart --}}
     @if(config('services.ga4.measurement_id'))
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            var cartItems = @json($cart->items->map(fn ($item) => [
+    @php
+        $ga4CartItems = $cart->items->map(function ($item) {
+            return [
                 'item_id' => $item->product->sku ?? (string) $item->product_id,
                 'item_name' => $item->product->name,
                 'price' => (float) $item->price,
                 'quantity' => $item->quantity,
-            ]));
+            ];
+        });
+    @endphp
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var cartItems = {!! json_encode($ga4CartItems, JSON_UNESCAPED_UNICODE) !!};
             gtag('event', 'view_cart', {
                 currency: 'INR',
                 value: {{ (float) $cart->total }},

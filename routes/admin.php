@@ -131,6 +131,14 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         // Marketing
         Route::middleware('admin.section:marketing')->group(function () {
+            // Marketing Hub & Meta OAuth
+            Route::prefix('marketing')->name('marketing.')->group(function () {
+                Route::get('/hub', [App\Http\Controllers\Admin\MetaConnectController::class, 'index'])->name('hub');
+                Route::get('/meta/redirect', [App\Http\Controllers\Admin\MetaConnectController::class, 'redirect'])->name('meta.redirect');
+                Route::get('/meta/callback', [App\Http\Controllers\Admin\MetaConnectController::class, 'callback'])->name('meta.callback');
+                Route::delete('/meta/disconnect', [App\Http\Controllers\Admin\MetaConnectController::class, 'disconnect'])->name('meta.disconnect');
+            });
+
             Route::resource('coupons', App\Http\Controllers\Admin\CouponController::class);
             Route::resource('flash-sales', App\Http\Controllers\Admin\FlashSaleController::class);
             Route::resource('banners', App\Http\Controllers\Admin\BannerController::class);

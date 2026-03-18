@@ -276,20 +276,25 @@
 
     {{-- GA4 view_item_list + search --}}
     @if(config('services.ga4.measurement_id') && !empty($query) && $products->count())
+    @php
+        $ga4Items = $products->getCollection()->values()->map(function ($p, $i) {
+            return [
+                'item_id' => $p->sku ?? (string) $p->id,
+                'item_name' => $p->name,
+                'item_category' => $p->category?->name ?? '',
+                'item_brand' => $p->brand?->name ?? '',
+                'price' => (float) $p->price,
+                'index' => $i,
+            ];
+        });
+    @endphp
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            gtag('event', 'search', { search_term: @json($query) });
+            gtag('event', 'search', { search_term: {!! json_encode($query, JSON_UNESCAPED_UNICODE) !!} });
             gtag('event', 'view_item_list', {
                 item_list_id: 'search_results',
-                item_list_name: 'Search Results: ' + @json($query),
-                items: @json($products->getCollection()->values()->map(fn ($p, $i) => [
-                    'item_id' => $p->sku ?? (string) $p->id,
-                    'item_name' => $p->name,
-                    'item_category' => $p->category?->name ?? '',
-                    'item_brand' => $p->brand?->name ?? '',
-                    'price' => (float) $p->price,
-                    'index' => $i,
-                ]))
+                item_list_name: 'Search Results: ' + {!! json_encode($query, JSON_UNESCAPED_UNICODE) !!},
+                items: {!! json_encode($ga4Items, JSON_UNESCAPED_UNICODE) !!}
             });
         });
     </script>

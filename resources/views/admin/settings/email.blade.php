@@ -58,7 +58,10 @@
 
                     <div>
                         <label class="form-label">Password</label>
-                        <input type="password" name="mail_password" value="{{ old('mail_password', $settings['mail_password'] ?? '') }}" class="form-input">
+                        <input type="password" name="mail_password" value="" placeholder="{{ !empty($settings['mail_password']) ? '••••••••••••' : 'Enter password' }}" class="form-input">
+                        @if(!empty($settings['mail_password']))
+                            <p class="text-xs text-neutral-600 mt-1">Password is saved. Leave blank to keep current value.</p>
+                        @endif
                     </div>
                 </div>
             </div>

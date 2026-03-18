@@ -48,6 +48,7 @@ Route::get('/product/{product:slug}', [App\Http\Controllers\ProductController::c
 // Instagram Reels / Videos
 Route::get('/reels', [App\Http\Controllers\ReelController::class, 'index'])->name('reels.index')->middleware('cache.response:5');
 Route::get('/reels/{shortcode}', [App\Http\Controllers\ReelController::class, 'show'])->name('reels.show')->middleware('cache.response:5');
+Route::get('/api/reels', [App\Http\Controllers\ReelController::class, 'apiLatest'])->name('reels.api')->middleware('cache.response:5');
 
 // Quick View (AJAX)
 Route::get('/product/{product}/quick-view', [App\Http\Controllers\ProductController::class, 'quickView'])->name('product.quick-view');

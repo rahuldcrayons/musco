@@ -3,445 +3,451 @@
 
     <x-slot name="header">
         <div class="flex items-center justify-between">
-            <div>
-                <div class="flex items-center gap-2 text-sm text-neutral-600 mb-1">
-                    <a href="{{ route('admin.products.index') }}" class="hover:text-primary-600 transition-colors">Products</a>
-                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                    <span class="text-neutral-700">Add Product</span>
+            <div class="flex items-center gap-3">
+                <div class="flex items-center gap-2 text-sm">
+                    <a href="{{ route('admin.products.index') }}" class="text-neutral-500 hover:text-neutral-800 transition-colors">Products</a>
+                    <svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                    <span class="text-neutral-900 font-semibold">Add product</span>
                 </div>
-                <h1 class="text-2xl font-bold text-neutral-900">Add New Product</h1>
             </div>
-            <a href="{{ route('admin.products.index') }}" class="btn btn-secondary">
-                <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
-                Back
-            </a>
+            <div class="flex items-center gap-2">
+                <a href="{{ route('admin.products.index') }}" class="btn btn-secondary text-sm">
+                    <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+                    Back
+                </a>
+            </div>
         </div>
     </x-slot>
 
-    <div class="max-w-4xl" x-data="productForm()">
-        <form action="{{ route('admin.products.store') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
+    <div x-data="productForm()" x-ref="productFormRoot">
+        <form action="{{ route('admin.products.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
 
-            <!-- Basic Information -->
-            <div class="card overflow-hidden">
-                <div class="px-6 py-4 border-b border-neutral-100 bg-neutral-50/50">
-                    <div class="flex items-center gap-2">
-                        <svg class="w-5 h-5 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
-                        </svg>
-                        <h2 class="font-semibold text-neutral-900">Basic Information</h2>
-                    </div>
-                </div>
-                <div class="p-6 space-y-5">
-                    <div>
-                        <label for="name" class="form-label form-label-required">Product Name</label>
-                        <input type="text" name="name" id="name" value="{{ old('name') }}" required
-                               class="form-input w-full @error('name') form-input-error @enderror"
-                               placeholder="e.g. Cotton Floral Dress"
-                               @input="if(!slugManual) slug = toSlug($event.target.value)">
-                        @error('name')
-                            <p class="form-error">{{ $message }}</p>
-                        @enderror
-                    </div>
+            <div class="flex gap-5" style="align-items: flex-start;">
+                {{-- ============================================
+                     LEFT COLUMN (~65%)
+                     ============================================ --}}
+                <div class="flex-1 space-y-5" style="min-width: 0;">
 
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
-                        <div>
-                            <label for="sku" class="form-label form-label-required">SKU</label>
-                            <input type="text" name="sku" id="sku" value="{{ old('sku') }}" required
-                                   class="form-input w-full @error('sku') form-input-error @enderror"
-                                   placeholder="e.g. FK-DRESS-001">
-                            @error('sku')
-                                <p class="form-error">{{ $message }}</p>
-                            @enderror
+                    {{-- Title & Description Card --}}
+                    <div class="card overflow-hidden">
+                        <div class="px-5 py-4">
+                            <h2 class="text-sm font-semibold text-neutral-900">Title</h2>
                         </div>
-                        <div>
-                            <label for="slug" class="form-label">Slug</label>
-                            <input type="text" name="slug" id="slug" x-model="slug"
-                                   class="form-input w-full @error('slug') form-input-error @enderror"
-                                   placeholder="auto-generated-from-name"
-                                   @input="slugManual = ($event.target.value.trim() !== '')">
-                            <p class="form-help">Leave blank to auto-generate</p>
-                            @error('slug')
-                                <p class="form-error">{{ $message }}</p>
-                            @enderror
-                        </div>
-                        <div>
-                            <label for="category_id" class="form-label form-label-required">Category</label>
-                            <select name="category_id" id="category_id" required
-                                    class="form-input w-full @error('category_id') form-input-error @enderror">
-                                <option value="">Select category</option>
-                                @foreach($categories as $category)
-                                    <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>
-                                        {{ $category->name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            @error('category_id')
-                                <p class="form-error">{{ $message }}</p>
-                            @enderror
-                        </div>
-                    </div>
-
-                    <div>
-                        <label for="seller_id" class="form-label">Seller</label>
-                        <select name="seller_id" id="seller_id"
-                                class="form-input w-full @error('seller_id') form-input-error @enderror">
-                            <option value="">Select seller</option>
-                            @foreach($sellers as $seller)
-                                <option value="{{ $seller->id }}" {{ old('seller_id') == $seller->id ? 'selected' : '' }}>
-                                    {{ $seller->store_name }}
-                                </option>
-                            @endforeach
-                        </select>
-                        @error('seller_id')
-                            <p class="form-error">{{ $message }}</p>
-                        @enderror
-                    </div>
-
-                    <div>
-                        <label for="brand_id" class="form-label">Brand</label>
-                        <select name="brand_id" id="brand_id"
-                                class="form-input w-full @error('brand_id') form-input-error @enderror">
-                            <option value="">Select brand</option>
-                            @foreach($brands as $brand)
-                                <option value="{{ $brand->id }}" {{ old('brand_id') == $brand->id ? 'selected' : '' }}>
-                                    {{ $brand->name }}
-                                </option>
-                            @endforeach
-                        </select>
-                        @error('brand_id')
-                            <p class="form-error">{{ $message }}</p>
-                        @enderror
-                    </div>
-
-                    <div>
-                        <label for="short_description" class="form-label">Short Description</label>
-                        <textarea name="short_description" id="short_description" rows="2"
-                                  class="form-input w-full @error('short_description') form-input-error @enderror"
-                                  placeholder="Brief product summary...">{{ old('short_description') }}</textarea>
-                        @error('short_description')
-                            <p class="form-error">{{ $message }}</p>
-                        @enderror
-                    </div>
-
-                    <div>
-                        <label for="description" class="form-label form-label-required">Description</label>
-                        <textarea name="description" id="description" rows="6" required
-                                  class="form-input w-full @error('description') form-input-error @enderror">{{ old('description') }}</textarea>
-                        @error('description')
-                            <p class="form-error">{{ $message }}</p>
-                        @enderror
-                    </div>
-                </div>
-            </div>
-
-            <!-- Product Images -->
-            <div class="card overflow-hidden" x-data="imageUploader()">
-                <div class="px-6 py-4 border-b border-neutral-100 bg-neutral-50/50">
-                    <div class="flex items-center gap-2">
-                        <svg class="w-5 h-5 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                        </svg>
-                        <h2 class="font-semibold text-neutral-900">Product Images</h2>
-                    </div>
-                </div>
-                <div class="p-6 space-y-6">
-                    <!-- Main Image -->
-                    <div>
-                        <label class="form-label form-label-required">Main Image (Thumbnail)</label>
-                        <p class="text-sm text-neutral-600 mb-3">This will be the primary display image for the product.</p>
-                        <div class="flex items-start gap-4">
-                            <!-- Preview -->
-                            <div x-show="mainPreview" x-transition
-                                 class="relative w-32 h-32 rounded-lg overflow-hidden ring-2 ring-primary-500 shrink-0">
-                                <img :src="mainPreview" class="w-full h-full object-cover">
-                                <button type="button" @click="removeMainImage()"
-                                        class="absolute top-1.5 right-1.5 w-6 h-6 bg-white/90 hover:bg-error-50 rounded-full flex items-center justify-center">
-                                    <svg class="w-3.5 h-3.5 text-error-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                                    </svg>
-                                </button>
-                                <span class="absolute bottom-0 left-0 right-0 px-2 py-1 bg-primary-600 text-white text-[10px] font-semibold text-center">
-                                    Main Image
-                                </span>
+                        <div class="px-5 pb-5 space-y-4">
+                            <div>
+                                <label for="name" class="form-label form-label-required">Product name</label>
+                                <input type="text" name="name" id="name" value="{{ old('name') }}" required
+                                       class="form-input w-full @error('name') form-input-error @enderror"
+                                       x-ref="productName"
+                                       placeholder="e.g. Cotton Floral Dress"
+                                       @input="if(!slugManual) slug = toSlug($event.target.value); autoGenerateSeo($event.target.value)">
+                                @error('name')
+                                    <p class="form-error">{{ $message }}</p>
+                                @enderror
                             </div>
-                            <!-- Upload zone -->
-                            <div class="flex-1 border-2 border-dashed border-neutral-300 rounded-lg p-4 text-center hover:border-primary-400 transition-colors cursor-pointer"
-                                 @click="$refs.mainFileInput.click()"
-                                 :class="{ 'border-primary-400 bg-primary-50/50': mainDragOver }"
-                                 @dragover.prevent="mainDragOver = true"
-                                 @dragleave.prevent="mainDragOver = false"
-                                 @drop.prevent="mainDragOver = false; handleMainImage($event.dataTransfer.files[0])">
-                                <input type="file" name="main_image" accept="image/jpeg,image/jpg,image/png,image/webp,image/gif"
-                                       x-ref="mainFileInput" class="hidden" @change="handleMainImage($event.target.files[0])">
-                                <div class="flex flex-col items-center py-2">
-                                    <svg class="w-8 h-8 text-neutral-300 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                                    </svg>
-                                    <p class="text-sm font-medium text-neutral-700" x-text="mainPreview ? 'Click to change image' : 'Click to upload main image'"></p>
-                                    <p class="text-xs text-neutral-600 mt-1">JPEG, PNG, WebP, GIF up to 2MB</p>
-                                </div>
+
+                            <div>
+                                <label for="slug" class="form-label">Slug</label>
+                                <input type="text" name="slug" id="slug" x-model="slug"
+                                       class="form-input w-full @error('slug') form-input-error @enderror"
+                                       placeholder="auto-generated-from-name"
+                                       @input="slugManual = ($event.target.value.trim() !== '')">
+                                @error('slug')
+                                    <p class="form-error">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <div>
+                                <label for="short_description" class="form-label">Short description</label>
+                                <textarea name="short_description" id="short_description" rows="2"
+                                          class="form-input w-full @error('short_description') form-input-error @enderror"
+                                          placeholder="Brief product summary...">{{ old('short_description') }}</textarea>
+                                @error('short_description')
+                                    <p class="form-error">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <div>
+                                <label for="description" class="form-label form-label-required">Description</label>
+                                <textarea name="description" id="description" rows="6" required
+                                          class="form-input w-full @error('description') form-input-error @enderror">{{ old('description') }}</textarea>
+                                @error('description')
+                                    <p class="form-error">{{ $message }}</p>
+                                @enderror
                             </div>
                         </div>
-                        @error('main_image')
-                            <p class="form-error mt-2">{{ $message }}</p>
-                        @enderror
                     </div>
 
-                    <!-- Divider -->
-                    <div class="border-t border-neutral-100"></div>
-
-                    <!-- Gallery Images -->
-                    <div>
-                        <label class="form-label">Gallery Images (Optional)</label>
-                        <p class="text-sm text-neutral-600 mb-3">Upload additional product images. Max 10 images, 2MB each.</p>
-
-                        <div class="border-2 border-dashed border-neutral-300 rounded-lg p-5 text-center hover:border-primary-400 transition-colors cursor-pointer"
-                             @click="$refs.galleryInput.click()"
-                             @dragover.prevent="galleryDragOver = true"
-                             @dragleave.prevent="galleryDragOver = false"
-                             @drop.prevent="galleryDragOver = false; handleGalleryFiles($event.dataTransfer.files)"
-                             :class="{ 'border-primary-400 bg-primary-50/50': galleryDragOver }">
-                            <input type="file" name="images[]" multiple accept="image/jpeg,image/jpg,image/png,image/webp,image/gif"
-                                   x-ref="galleryInput" class="hidden" @change="handleGalleryFiles($event.target.files)">
-                            <div class="flex flex-col items-center py-1">
-                                <svg class="w-7 h-7 text-neutral-300 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4v16m8-8H4"/>
-                                </svg>
-                                <p class="text-sm font-medium text-neutral-700">Click to upload or drag and drop</p>
-                                <p class="text-xs text-neutral-600 mt-1">JPEG, PNG, WebP, GIF up to 2MB</p>
-                            </div>
+                    {{-- Media Card --}}
+                    <div class="card overflow-hidden" x-data="imageManager()">
+                        <div class="px-5 py-4">
+                            <h2 class="text-sm font-semibold text-neutral-900">Media</h2>
                         </div>
-
-                        <!-- Gallery preview grid -->
-                        <div x-show="galleryPreviews.length > 0" x-transition class="mt-4">
-                            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
-                                <template x-for="(preview, index) in galleryPreviews" :key="index">
-                                    <div class="relative group rounded-lg overflow-hidden ring-1 ring-neutral-200">
-                                        <img :src="preview.url" class="w-full aspect-square object-cover">
-                                        <div class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors"></div>
-                                        <button type="button" @click="removeGalleryImage(index)"
-                                                class="absolute top-1.5 right-1.5 w-6 h-6 bg-white/90 hover:bg-error-50 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                                            <svg class="w-3.5 h-3.5 text-error-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div class="px-5 pb-5 space-y-5">
+                            {{-- Main Image --}}
+                            <div>
+                                <label class="form-label">Main image (thumbnail)</label>
+                                <p class="text-xs text-neutral-500 mb-3">This is the primary display image for the product.</p>
+                                <div class="flex items-start gap-4">
+                                    {{-- New main image preview --}}
+                                    <div x-show="mainPreview" x-transition
+                                         class="relative w-32 h-32 rounded-lg overflow-hidden ring-2 ring-neutral-300 shrink-0">
+                                        <img :src="mainPreview" class="w-full h-full object-cover">
+                                        <button type="button" @click="removeMainImage()"
+                                                class="absolute top-1.5 right-1.5 w-6 h-6 bg-white/90 hover:bg-red-50 rounded-full flex items-center justify-center">
+                                            <svg class="w-3.5 h-3.5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                                             </svg>
                                         </button>
-                                        <div class="absolute bottom-0 left-0 right-0 px-2 py-1 bg-black/50 text-white text-[10px] truncate">
-                                            <span x-text="preview.name"></span>
+                                        <span class="absolute bottom-0 left-0 right-0 px-2 py-1 bg-neutral-800 text-white text-center" style="font-size: 10px; font-weight: 600;">Main Image</span>
+                                    </div>
+                                    {{-- Upload zone --}}
+                                    <div class="flex-1 border-2 border-dashed border-neutral-300 rounded-lg p-4 text-center hover:border-neutral-400 transition-colors cursor-pointer"
+                                         @click="$refs.mainFileInput.click()"
+                                         :class="{ 'border-blue-400 bg-blue-50/50': mainDragOver }"
+                                         @dragover.prevent="mainDragOver = true"
+                                         @dragleave.prevent="mainDragOver = false"
+                                         @drop.prevent="mainDragOver = false; handleMainImage($event.dataTransfer.files[0])">
+                                        <input type="file" name="main_image" accept="image/jpeg,image/jpg,image/png,image/webp,image/gif"
+                                               x-ref="mainFileInput" class="hidden" @change="handleMainImage($event.target.files[0])">
+                                        <div class="flex flex-col items-center py-2">
+                                            <svg class="w-8 h-8 text-neutral-300 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                            </svg>
+                                            <p class="text-sm font-medium text-neutral-700" x-text="mainPreview ? 'Click to change image' : 'Click to upload main image'"></p>
+                                            <p class="text-xs text-neutral-500 mt-1">JPEG, PNG, WebP, GIF up to 2MB</p>
                                         </div>
                                     </div>
-                                </template>
+                                </div>
+                                @error('main_image')
+                                    <p class="form-error mt-2">{{ $message }}</p>
+                                @enderror
                             </div>
-                            <p class="text-xs text-neutral-600 mt-2">
-                                <span x-text="galleryPreviews.length"></span> gallery image(s) selected
-                            </p>
-                        </div>
 
-                        @error('images')
-                            <p class="form-error mt-2">{{ $message }}</p>
-                        @enderror
-                        @error('images.*')
-                            <p class="form-error mt-2">{{ $message }}</p>
-                        @enderror
-                    </div>
-                </div>
-            </div>
+                            <div class="border-t border-neutral-100"></div>
 
-            <!-- Pricing & Inventory -->
-            <div class="card overflow-hidden">
-                <div class="px-6 py-4 border-b border-neutral-100 bg-neutral-50/50">
-                    <div class="flex items-center gap-2">
-                        <svg class="w-5 h-5 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                        </svg>
-                        <h2 class="font-semibold text-neutral-900">Pricing & Inventory</h2>
-                    </div>
-                </div>
-                <div class="p-6 space-y-5">
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-                        <div>
-                            <label for="price" class="form-label form-label-required">Price</label>
-                            <div class="relative">
-                                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-600 text-sm">$</span>
-                                <input type="number" name="price" id="price" value="{{ old('price') }}" required
-                                       step="0.01" min="0"
-                                       class="form-input w-full pl-7 @error('price') form-input-error @enderror">
-                            </div>
-                            @error('price')
-                                <p class="form-error">{{ $message }}</p>
-                            @enderror
-                        </div>
-                        <div>
-                            <label for="sale_price" class="form-label">Sale Price</label>
-                            <div class="relative">
-                                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-600 text-sm">$</span>
-                                <input type="number" name="sale_price" id="sale_price" value="{{ old('sale_price') }}"
-                                       step="0.01" min="0"
-                                       class="form-input w-full pl-7 @error('sale_price') form-input-error @enderror">
-                            </div>
-                            @error('sale_price')
-                                <p class="form-error">{{ $message }}</p>
-                            @enderror
-                        </div>
-                        <div>
-                            <label for="cost_price" class="form-label">Cost Price</label>
-                            <div class="relative">
-                                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-600 text-sm">$</span>
-                                <input type="number" name="cost_price" id="cost_price" value="{{ old('cost_price') }}"
-                                       step="0.01" min="0"
-                                       class="form-input w-full pl-7 @error('cost_price') form-input-error @enderror">
-                            </div>
-                            @error('cost_price')
-                                <p class="form-error">{{ $message }}</p>
-                            @enderror
-                        </div>
-                        <div>
-                            <label for="stock_quantity" class="form-label form-label-required">Stock Qty</label>
-                            <input type="number" name="stock_quantity" id="stock_quantity" value="{{ old('stock_quantity', 0) }}" required
-                                   min="0"
-                                   class="form-input w-full @error('stock_quantity') form-input-error @enderror">
-                            @error('stock_quantity')
-                                <p class="form-error">{{ $message }}</p>
-                            @enderror
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Status & Visibility -->
-            <div class="card overflow-hidden">
-                <div class="px-6 py-4 border-b border-neutral-100 bg-neutral-50/50">
-                    <div class="flex items-center gap-2">
-                        <svg class="w-5 h-5 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-                        </svg>
-                        <h2 class="font-semibold text-neutral-900">Status & Visibility</h2>
-                    </div>
-                </div>
-                <div class="p-6">
-                    <div class="flex flex-wrap gap-6">
-                        <label class="flex items-center gap-2.5 cursor-pointer">
-                            <input type="checkbox" name="is_active" value="1" {{ old('is_active', true) ? 'checked' : '' }}
-                                   class="form-checkbox">
-                            <span class="text-sm text-neutral-700">Active</span>
-                            <span class="text-xs text-neutral-600">Visible on the storefront</span>
-                        </label>
-                        <label class="flex items-center gap-2.5 cursor-pointer">
-                            <input type="checkbox" name="is_featured" value="1" {{ old('is_featured') ? 'checked' : '' }}
-                                   class="form-checkbox">
-                            <span class="text-sm text-neutral-700">Featured</span>
-                            <span class="text-xs text-neutral-600">Show in featured sections</span>
-                        </label>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Attributes / Specifications -->
-            @if($attributes->count())
-            <div class="card overflow-hidden">
-                <div class="px-6 py-4 border-b border-neutral-100 bg-neutral-50/50">
-                    <div class="flex items-center gap-2">
-                        <svg class="w-5 h-5 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/>
-                        </svg>
-                        <h2 class="font-semibold text-neutral-900">Attributes / Specifications</h2>
-                    </div>
-                    <p class="text-xs text-neutral-600 mt-1">Select applicable attributes for this product. Leave blank to skip.</p>
-                </div>
-                <div class="p-6">
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-                        @foreach($attributes as $attribute)
+                            {{-- Gallery Images --}}
                             <div>
-                                <label class="form-label flex items-center gap-2">
-                                    @if($attribute->type === 'color')
-                                        <svg class="w-3.5 h-3.5 text-warning-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"/>
+                                <label class="form-label">Gallery images</label>
+                                <p class="text-xs text-neutral-500 mb-3">Upload additional product images. Max 10 images, 2MB each.</p>
+
+                                <div class="border-2 border-dashed border-neutral-300 rounded-lg p-5 text-center hover:border-neutral-400 transition-colors cursor-pointer"
+                                     @click="$refs.galleryInput.click()"
+                                     @dragover.prevent="galleryDragOver = true"
+                                     @dragleave.prevent="galleryDragOver = false"
+                                     @drop.prevent="galleryDragOver = false; handleGalleryFiles($event.dataTransfer.files)"
+                                     :class="{ 'border-blue-400 bg-blue-50/50': galleryDragOver }">
+                                    <input type="file" name="images[]" multiple accept="image/jpeg,image/jpg,image/png,image/webp,image/gif"
+                                           x-ref="galleryInput" class="hidden" @change="handleGalleryFiles($event.target.files)">
+                                    <div class="flex flex-col items-center py-1">
+                                        <svg class="w-7 h-7 text-neutral-300 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4v16m8-8H4"/>
                                         </svg>
-                                    @elseif($attribute->type === 'select')
-                                        <svg class="w-3.5 h-3.5 text-info-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l4-4 4 4m0 6l-4 4-4-4"/>
-                                        </svg>
-                                    @else
-                                        <svg class="w-3.5 h-3.5 text-success-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"/>
-                                        </svg>
-                                    @endif
-                                    {{ $attribute->name }}
-                                </label>
-                                @if($attribute->type === 'text')
-                                    <input type="text" name="product_attributes[{{ $attribute->name }}]"
-                                           value="{{ old('product_attributes.' . $attribute->name) }}"
-                                           class="form-input w-full text-sm"
-                                           placeholder="Enter {{ strtolower($attribute->name) }}">
-                                @else
-                                    <select name="product_attributes[{{ $attribute->name }}]" class="form-input w-full text-sm">
-                                        <option value="">-- Select --</option>
-                                        @foreach($attribute->values as $value)
-                                            <option value="{{ $value->value }}"
-                                                    {{ old('product_attributes.' . $attribute->name) === $value->value ? 'selected' : '' }}>
-                                                {{ $value->value }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                    @if($attribute->type === 'color' && $attribute->values->count())
-                                        <div class="flex flex-wrap gap-1 mt-2">
-                                            @foreach($attribute->values->take(10) as $value)
-                                                @if($value->color_code)
-                                                    <div class="w-5 h-5 rounded-full border border-neutral-200 cursor-default" style="background-color: {{ $value->color_code }}" title="{{ $value->value }}"></div>
-                                                @endif
-                                            @endforeach
-                                        </div>
-                                    @endif
-                                @endif
+                                        <p class="text-sm font-medium text-neutral-700">Click to upload or drag and drop</p>
+                                        <p class="text-xs text-neutral-500 mt-1">JPEG, PNG, WebP, GIF up to 2MB</p>
+                                    </div>
+                                </div>
+
+                                <div x-show="galleryPreviews.length > 0" x-transition class="mt-4">
+                                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+                                        <template x-for="(preview, index) in galleryPreviews" :key="index">
+                                            <div class="relative group rounded-lg overflow-hidden ring-1 ring-neutral-200">
+                                                <img :src="preview.url" class="w-full aspect-square object-cover">
+                                                <div class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors"></div>
+                                                <button type="button" @click="removeGalleryImage(index)"
+                                                        class="absolute top-1.5 right-1.5 w-6 h-6 bg-white/90 hover:bg-red-50 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                                    <svg class="w-3.5 h-3.5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                                    </svg>
+                                                </button>
+                                                <div class="absolute bottom-0 left-0 right-0 px-2 py-1 bg-black/50 text-white truncate" style="font-size: 10px;">
+                                                    <span x-text="preview.name"></span>
+                                                </div>
+                                            </div>
+                                        </template>
+                                    </div>
+                                    <p class="text-xs text-neutral-500 mt-2">
+                                        <span x-text="galleryPreviews.length"></span> gallery image(s) selected
+                                    </p>
+                                </div>
+
+                                @error('images')
+                                    <p class="form-error mt-2">{{ $message }}</p>
+                                @enderror
+                                @error('images.*')
+                                    <p class="form-error mt-2">{{ $message }}</p>
+                                @enderror
                             </div>
-                        @endforeach
+                        </div>
                     </div>
+
+                    {{-- Pricing Card --}}
+                    <div class="card overflow-hidden">
+                        <div class="px-5 py-4">
+                            <h2 class="text-sm font-semibold text-neutral-900">Pricing</h2>
+                        </div>
+                        <div class="px-5 pb-5">
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                                <div>
+                                    <label for="price" class="form-label form-label-required">Price</label>
+                                    <div class="relative">
+                                        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-500 text-sm">$</span>
+                                        <input type="number" name="price" id="price" value="{{ old('price') }}" required
+                                               step="0.01" min="0"
+                                               class="form-input w-full pl-7 @error('price') form-input-error @enderror">
+                                    </div>
+                                    @error('price')
+                                        <p class="form-error">{{ $message }}</p>
+                                    @enderror
+                                </div>
+                                <div>
+                                    <label for="sale_price" class="form-label">Compare at price / MRP</label>
+                                    <div class="relative">
+                                        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-500 text-sm">$</span>
+                                        <input type="number" name="sale_price" id="sale_price" value="{{ old('sale_price') }}"
+                                               step="0.01" min="0"
+                                               class="form-input w-full pl-7 @error('sale_price') form-input-error @enderror">
+                                    </div>
+                                    @error('sale_price')
+                                        <p class="form-error">{{ $message }}</p>
+                                    @enderror
+                                </div>
+                                <div>
+                                    <label for="cost_price" class="form-label">Cost price</label>
+                                    <div class="relative">
+                                        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-500 text-sm">$</span>
+                                        <input type="number" name="cost_price" id="cost_price" value="{{ old('cost_price') }}"
+                                               step="0.01" min="0"
+                                               class="form-input w-full pl-7 @error('cost_price') form-input-error @enderror">
+                                    </div>
+                                    @error('cost_price')
+                                        <p class="form-error">{{ $message }}</p>
+                                    @enderror
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Inventory Card --}}
+                    <div class="card overflow-hidden">
+                        <div class="px-5 py-4">
+                            <h2 class="text-sm font-semibold text-neutral-900">Inventory</h2>
+                        </div>
+                        <div class="px-5 pb-5">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label for="sku" class="form-label form-label-required">SKU (Stock Keeping Unit)</label>
+                                    <input type="text" name="sku" id="sku" value="{{ old('sku') }}" required
+                                           class="form-input w-full @error('sku') form-input-error @enderror"
+                                           placeholder="e.g. FK-DRESS-001">
+                                    @error('sku')
+                                        <p class="form-error">{{ $message }}</p>
+                                    @enderror
+                                </div>
+                                <div>
+                                    <label for="stock_quantity" class="form-label form-label-required">Stock quantity</label>
+                                    <input type="number" name="stock_quantity" id="stock_quantity" value="{{ old('stock_quantity', 0) }}" required
+                                           min="0"
+                                           class="form-input w-full @error('stock_quantity') form-input-error @enderror">
+                                    @error('stock_quantity')
+                                        <p class="form-error">{{ $message }}</p>
+                                    @enderror
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Attributes / Specifications Card --}}
+                    @if($attributes->count())
+                    <div class="card overflow-hidden">
+                        <div class="px-5 py-4">
+                            <h2 class="text-sm font-semibold text-neutral-900">Attributes</h2>
+                            <p class="text-xs text-neutral-500 mt-0.5">Select applicable attributes for this product. Leave blank to skip.</p>
+                        </div>
+                        <div class="px-5 pb-5">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                                @foreach($attributes as $attribute)
+                                    <div>
+                                        <label class="form-label">
+                                            {{ $attribute->name }}
+                                        </label>
+                                        @if($attribute->type === 'text')
+                                            <input type="text" name="product_attributes[{{ $attribute->name }}]"
+                                                   value="{{ old('product_attributes.' . $attribute->name) }}"
+                                                   class="form-input w-full text-sm"
+                                                   placeholder="Enter {{ strtolower($attribute->name) }}">
+                                        @else
+                                            <select name="product_attributes[{{ $attribute->name }}]" class="form-input w-full text-sm">
+                                                <option value="">-- Select --</option>
+                                                @foreach($attribute->values as $value)
+                                                    <option value="{{ $value->value }}"
+                                                            {{ old('product_attributes.' . $attribute->name) === $value->value ? 'selected' : '' }}>
+                                                        {{ $value->value }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                            @if($attribute->type === 'color' && $attribute->values->count())
+                                                <div class="flex flex-wrap gap-1 mt-2">
+                                                    @foreach($attribute->values->take(10) as $value)
+                                                        @if($value->color_code)
+                                                            <div class="w-5 h-5 rounded-full border border-neutral-200 cursor-default" style="background-color: {{ $value->color_code }}" title="{{ $value->value }}"></div>
+                                                        @endif
+                                                    @endforeach
+                                                </div>
+                                            @endif
+                                        @endif
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    </div>
+                    @endif
+
+                    {{-- SEO Card --}}
+                    <div class="card overflow-hidden">
+                        <div class="px-5 py-4 flex items-center justify-between">
+                            <h2 class="text-sm font-semibold text-neutral-900">Search engine listing</h2>
+                            <button type="button" @click="autoFillSeo()" class="text-xs font-medium text-blue-600 hover:text-blue-800 transition-colors">
+                                Auto-generate
+                            </button>
+                        </div>
+                        <div class="px-5 pb-5 space-y-4">
+                            {{-- Google Preview Snippet --}}
+                            <div class="border border-neutral-200 rounded-lg p-4 bg-neutral-50">
+                                <p class="text-xs text-neutral-500 mb-2 font-medium">Search engine preview</p>
+                                <div>
+                                    <p class="text-blue-700 text-base font-medium truncate" style="font-family: Arial, sans-serif;" x-text="seoTitle || 'Page title'"></p>
+                                    <p class="text-green-700 text-xs truncate mt-0.5" style="font-family: Arial, sans-serif;">{{ url('/') }}/product/<span x-text="slug || 'product-slug'"></span></p>
+                                    <p class="text-neutral-600 text-xs mt-1 line-clamp-2" style="font-family: Arial, sans-serif;" x-text="seoDescription || 'Page description'"></p>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label for="meta_title" class="form-label">Meta title</label>
+                                <input type="text" name="meta_title" id="meta_title" value="{{ old('meta_title') }}"
+                                       class="form-input w-full @error('meta_title') form-input-error @enderror"
+                                       x-model="seoTitle"
+                                       maxlength="70">
+                                <p class="text-xs text-neutral-400 mt-1"><span x-text="seoTitle ? seoTitle.length : 0"></span> / 70 characters</p>
+                                @error('meta_title')
+                                    <p class="form-error">{{ $message }}</p>
+                                @enderror
+                            </div>
+                            <div>
+                                <label for="meta_description" class="form-label">Meta description</label>
+                                <textarea name="meta_description" id="meta_description" rows="2"
+                                          class="form-input w-full @error('meta_description') form-input-error @enderror"
+                                          x-model="seoDescription"
+                                          maxlength="160">{{ old('meta_description') }}</textarea>
+                                <p class="text-xs text-neutral-400 mt-1"><span x-text="seoDescription ? seoDescription.length : 0"></span> / 160 characters</p>
+                                @error('meta_description')
+                                    <p class="form-error">{{ $message }}</p>
+                                @enderror
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                {{-- ============================================
+                     RIGHT COLUMN (~35%)
+                     ============================================ --}}
+                <div class="space-y-5" style="width: 340px; flex-shrink: 0;">
+
+                    {{-- Status Card --}}
+                    <div class="card overflow-hidden">
+                        <div class="px-5 py-4">
+                            <h2 class="text-sm font-semibold text-neutral-900">Status</h2>
+                        </div>
+                        <div class="px-5 pb-5">
+                            <select name="is_active" class="form-input w-full">
+                                <option value="1" {{ old('is_active', true) ? 'selected' : '' }}>Active</option>
+                                <option value="0" {{ !old('is_active', true) ? 'selected' : '' }}>Draft</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    {{-- Product Organization Card --}}
+                    <div class="card overflow-hidden">
+                        <div class="px-5 py-4">
+                            <h2 class="text-sm font-semibold text-neutral-900">Product organization</h2>
+                        </div>
+                        <div class="px-5 pb-5 space-y-4">
+                            <div>
+                                <label for="category_id" class="form-label form-label-required">Category</label>
+                                <select name="category_id" id="category_id" required
+                                        class="form-input w-full @error('category_id') form-input-error @enderror">
+                                    <option value="">Select category</option>
+                                    @foreach($categories as $category)
+                                        <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>
+                                            {{ $category->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('category_id')
+                                    <p class="form-error">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <div>
+                                <label for="brand_id" class="form-label">Brand</label>
+                                <select name="brand_id" id="brand_id"
+                                        class="form-input w-full @error('brand_id') form-input-error @enderror">
+                                    <option value="">Select brand</option>
+                                    @foreach($brands as $brand)
+                                        <option value="{{ $brand->id }}" {{ old('brand_id') == $brand->id ? 'selected' : '' }}>
+                                            {{ $brand->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('brand_id')
+                                    <p class="form-error">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <div>
+                                <label for="seller_id" class="form-label">Seller</label>
+                                <select name="seller_id" id="seller_id"
+                                        class="form-input w-full @error('seller_id') form-input-error @enderror">
+                                    <option value="">Select seller</option>
+                                    @foreach($sellers as $seller)
+                                        <option value="{{ $seller->id }}" {{ old('seller_id') == $seller->id ? 'selected' : '' }}>
+                                            {{ $seller->store_name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('seller_id')
+                                    <p class="form-error">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <div class="border-t border-neutral-100 pt-4">
+                                <label class="form-label">Tags</label>
+                                <p class="text-xs text-neutral-500">Coming soon</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Featured Card --}}
+                    <div class="card overflow-hidden">
+                        <div class="px-5 py-4">
+                            <label class="flex items-center gap-2.5 cursor-pointer">
+                                <input type="checkbox" name="is_featured" value="1" {{ old('is_featured') ? 'checked' : '' }}
+                                       class="form-checkbox">
+                                <span class="text-sm font-semibold text-neutral-900">Featured product</span>
+                            </label>
+                            <p class="text-xs text-neutral-500 mt-1 ml-6">Show this product in featured sections on the storefront.</p>
+                        </div>
+                    </div>
+
                 </div>
             </div>
-            @endif
 
-            <!-- SEO -->
-            <div class="card overflow-hidden">
-                <div class="px-6 py-4 border-b border-neutral-100 bg-neutral-50/50">
-                    <div class="flex items-center gap-2">
-                        <svg class="w-5 h-5 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-                        </svg>
-                        <h2 class="font-semibold text-neutral-900">SEO</h2>
-                    </div>
-                </div>
-                <div class="p-6 space-y-5">
-                    <div>
-                        <label for="meta_title" class="form-label">Meta Title</label>
-                        <input type="text" name="meta_title" id="meta_title" value="{{ old('meta_title') }}"
-                               class="form-input w-full @error('meta_title') form-input-error @enderror"
-                               placeholder="Defaults to product name">
-                        @error('meta_title')
-                            <p class="form-error">{{ $message }}</p>
-                        @enderror
-                    </div>
-                    <div>
-                        <label for="meta_description" class="form-label">Meta Description</label>
-                        <textarea name="meta_description" id="meta_description" rows="2"
-                                  class="form-input w-full @error('meta_description') form-input-error @enderror"
-                                  placeholder="SEO description for search engines...">{{ old('meta_description') }}</textarea>
-                        @error('meta_description')
-                            <p class="form-error">{{ $message }}</p>
-                        @enderror
-                    </div>
-                </div>
-            </div>
-
-            <!-- Actions -->
-            <div class="flex items-center gap-3">
-                <button type="submit" class="btn btn-primary">
-                    <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-                    </svg>
-                    Create Product
-                </button>
-                <a href="{{ route('admin.products.index') }}" class="btn btn-secondary">Cancel</a>
+            {{-- Sticky Save Bar --}}
+            <div class="sticky bottom-0 z-40 mt-5 -mx-6 px-6 py-3 bg-white border-t border-neutral-200 flex items-center justify-end gap-3" style="margin-left: -1.5rem; margin-right: -1.5rem; padding-left: 1.5rem; padding-right: 1.5rem;">
+                <a href="{{ route('admin.products.index') }}" class="btn btn-secondary">Discard</a>
+                <button type="submit" class="btn btn-primary">Save</button>
             </div>
         </form>
     </div>
@@ -461,6 +467,10 @@
             return {
                 slug: '{{ old("slug", "") }}',
                 slugManual: {{ old('slug') ? 'true' : 'false' }},
+                seoTitle: '{{ addslashes(old("meta_title", "")) }}',
+                seoDescription: '{{ addslashes(old("meta_description", "")) }}',
+                seoManualTitle: {{ old('meta_title') ? 'true' : 'false' }},
+                seoManualDescription: {{ old('meta_description') ? 'true' : 'false' }},
                 toSlug(text) {
                     return text
                         .toLowerCase()
@@ -469,11 +479,33 @@
                         .replace(/[\s_]+/g, '-')
                         .replace(/-+/g, '-')
                         .replace(/^-+|-+$/g, '');
+                },
+                autoGenerateSeo(title) {
+                    if (!this.seoManualTitle || this.seoTitle === '') {
+                        this.seoTitle = title ? (title + ' - {{ addslashes(config("app.name")) }}').substring(0, 70) : '';
+                        this.seoManualTitle = false;
+                    }
+                    if (!this.seoManualDescription || this.seoDescription === '') {
+                        this.seoDescription = title ? ('Shop ' + title + ' at {{ addslashes(config("app.name")) }}. Great prices, fast shipping, and quality guaranteed.').substring(0, 160) : '';
+                        this.seoManualDescription = false;
+                    }
+                },
+                autoFillSeo() {
+                    var titleEl = document.getElementById('name');
+                    var title = titleEl ? titleEl.value : '';
+                    if (!title) {
+                        if (typeof toastr !== 'undefined') toastr.warning('Enter a product name first.');
+                        return;
+                    }
+                    this.seoTitle = (title + ' - {{ addslashes(config("app.name")) }}').substring(0, 70);
+                    this.seoDescription = ('Shop ' + title + ' at {{ addslashes(config("app.name")) }}. Great prices, fast shipping, and quality guaranteed.').substring(0, 160);
+                    this.seoManualTitle = false;
+                    this.seoManualDescription = false;
                 }
             };
         }
 
-        function imageUploader() {
+        function imageManager() {
             return {
                 mainPreview: null,
                 mainDragOver: false,

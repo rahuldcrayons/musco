@@ -13,6 +13,7 @@
         <meta name="twitter:description" content="Find answers about shipping, returns, sizing, orders, and more at {{ config('app.name') }}.">
 
         <script type="application/ld+json">
+        @verbatim
         {
             "@context": "https://schema.org",
             "@type": "FAQPage",
@@ -83,6 +84,7 @@
                 }
             ]
         }
+        @endverbatim
         </script>
     @endpush
 

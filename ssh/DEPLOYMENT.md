@@ -7,7 +7,7 @@
 | **Provider** | AWS EC2 |
 | **Host** | 13.205.162.30 |
 | **User** | ubuntu |
-| **SSH Key** | `d:/projects/Jikra/Dcrayons.pem` |
+| **SSH Key** | `~/.ssh/Dcrayons.pem` |
 | **Domain** | jikra.in |
 | **App Path** | `/var/www/jikra` |
 | **PHP Version** | 8.3 |
@@ -18,7 +18,7 @@
 ## Quick Connect
 
 ```bash
-ssh -i d:/projects/Jikra/Dcrayons.pem ubuntu@13.205.162.30
+ssh -i ~/.ssh/Dcrayons.pem ubuntu@13.205.162.30
 ```
 
 ## Full Deployment (All Files)
@@ -42,14 +42,14 @@ tar -czf /tmp/jikra-full-deploy.tar.gz \
 
 ### Step 2: Upload to server
 ```bash
-scp -i d:/projects/Jikra/Dcrayons.pem \
+scp -i ~/.ssh/Dcrayons.pem \
   /tmp/jikra-full-deploy.tar.gz \
   ubuntu@13.205.162.30:/tmp/jikra-full-deploy.tar.gz
 ```
 
 ### Step 3: Extract and rebuild caches
 ```bash
-ssh -i d:/projects/Jikra/Dcrayons.pem ubuntu@13.205.162.30 \
+ssh -i ~/.ssh/Dcrayons.pem ubuntu@13.205.162.30 \
   "cd /var/www/jikra && \
    sudo tar -xzf /tmp/jikra-full-deploy.tar.gz && \
    sudo chown -R www-data:www-data . && \
@@ -76,11 +76,11 @@ tar -czf /tmp/jikra-deploy.tar.gz \
 
 ### Step 2: Upload and extract
 ```bash
-scp -i d:/projects/Jikra/Dcrayons.pem \
+scp -i ~/.ssh/Dcrayons.pem \
   /tmp/jikra-deploy.tar.gz \
   ubuntu@13.205.162.30:/tmp/jikra-deploy.tar.gz
 
-ssh -i d:/projects/Jikra/Dcrayons.pem ubuntu@13.205.162.30 \
+ssh -i ~/.ssh/Dcrayons.pem ubuntu@13.205.162.30 \
   "cd /var/www/jikra && \
    sudo tar -xzf /tmp/jikra-deploy.tar.gz && \
    sudo chown -R www-data:www-data . && \
@@ -94,7 +94,7 @@ ssh -i d:/projects/Jikra/Dcrayons.pem ubuntu@13.205.162.30 \
 
 ### Clear all caches
 ```bash
-ssh -i d:/projects/Jikra/Dcrayons.pem ubuntu@13.205.162.30 \
+ssh -i ~/.ssh/Dcrayons.pem ubuntu@13.205.162.30 \
   "cd /var/www/jikra && \
    sudo php artisan config:clear && \
    sudo php artisan route:clear && \
@@ -104,37 +104,37 @@ ssh -i d:/projects/Jikra/Dcrayons.pem ubuntu@13.205.162.30 \
 
 ### Run migrations
 ```bash
-ssh -i d:/projects/Jikra/Dcrayons.pem ubuntu@13.205.162.30 \
+ssh -i ~/.ssh/Dcrayons.pem ubuntu@13.205.162.30 \
   "cd /var/www/jikra && sudo php artisan migrate --force"
 ```
 
 ### Run seeders
 ```bash
-ssh -i d:/projects/Jikra/Dcrayons.pem ubuntu@13.205.162.30 \
+ssh -i ~/.ssh/Dcrayons.pem ubuntu@13.205.162.30 \
   "cd /var/www/jikra && sudo php artisan db:seed --class=SomeSeeder --force"
 ```
 
 ### Check Laravel logs
 ```bash
-ssh -i d:/projects/Jikra/Dcrayons.pem ubuntu@13.205.162.30 \
+ssh -i ~/.ssh/Dcrayons.pem ubuntu@13.205.162.30 \
   "tail -50 /var/www/jikra/storage/logs/laravel.log"
 ```
 
 ### Restart services
 ```bash
-ssh -i d:/projects/Jikra/Dcrayons.pem ubuntu@13.205.162.30 \
+ssh -i ~/.ssh/Dcrayons.pem ubuntu@13.205.162.30 \
   "sudo systemctl restart nginx && sudo systemctl restart php8.3-fpm"
 ```
 
 ### Check Nginx error log
 ```bash
-ssh -i d:/projects/Jikra/Dcrayons.pem ubuntu@13.205.162.30 \
+ssh -i ~/.ssh/Dcrayons.pem ubuntu@13.205.162.30 \
   "sudo tail -50 /var/log/nginx/error.log"
 ```
 
 ### Storage link (one-time setup)
 ```bash
-ssh -i d:/projects/Jikra/Dcrayons.pem ubuntu@13.205.162.30 \
+ssh -i ~/.ssh/Dcrayons.pem ubuntu@13.205.162.30 \
   "cd /var/www/jikra && sudo php artisan storage:link"
 ```
 

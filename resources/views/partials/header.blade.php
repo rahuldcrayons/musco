@@ -38,12 +38,12 @@
             </div>
 
             <!-- Center: Logo -->
-            <a href="{{ url('/') }}" class="flex items-center shrink-0">
+            <a href="{{ url('/') }}" class="flex items-center shrink-0 mx-4">
                 @php $siteLogo = \App\Models\Setting::get('site_logo', ''); @endphp
                 @if($siteLogo)
-                    <img src="{{ asset('storage/' . $siteLogo) }}" alt="{{ config('app.name') }}" class="h-[29px] lg:h-[27px] w-auto">
+                    <img src="{{ asset('storage/' . $siteLogo) }}" alt="{{ config('app.name') }}" class="h-auto w-32 lg:w-40">
                 @else
-                    <img src="{{ asset('images/jikra-logo.png') }}" alt="Jikra" class="h-[29px] lg:h-[27px] w-auto">
+                    <img src="{{ asset('images/jikra-logo.png') }}" alt="Jikra" class="h-auto w-32 lg:w-40">
                 @endif
             </a>
 
