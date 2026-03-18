@@ -35,37 +35,48 @@ class InstagramReelsService
     }
 
     /**
-     * Fetch reels from Instagram Graph API.
+     * Fetch reels from Instagram Graph API + manual collab reels.
      */
     private function fetchReelsFromApi(int $limit): array
     {
         try {
-            // Fetch media from Instagram Graph API — filter for REELS/VIDEO
-            $response = Http::timeout(15)->get(
+            $fields = 'id,caption,media_type,media_url,thumbnail_url,permalink,timestamp,like_count,comments_count';
+
+            // 1. Fetch own media
+            $ownResponse = Http::timeout(15)->get(
                 "https://graph.instagram.com/{$this->apiVersion}/{$this->igUserId}/media",
                 [
-                    'fields' => 'id,caption,media_type,media_url,thumbnail_url,permalink,timestamp',
-                    'limit' => 50, // Fetch more to filter reels
+                    'fields' => $fields,
+                    'limit' => 50,
                     'access_token' => $this->accessToken,
                 ]
             );
 
-            if ($response->failed()) {
-                Log::warning('Instagram API failed', [
-                    'status' => $response->status(),
-                    'body' => $response->body(),
+            $ownData = [];
+            if ($ownResponse->successful()) {
+                $ownData = $ownResponse->json('data', []);
+            } else {
+                Log::warning('Instagram own media API failed', [
+                    'status' => $ownResponse->status(),
+                    'body' => $ownResponse->body(),
                 ]);
-                return [];
             }
 
-            $data = $response->json('data', []);
+            // 2. Fetch manual collab reels by shortcode (stored in settings)
+            $collabData = $this->fetchCollabReels($fields);
 
-            // Include VIDEO/REELS first, then CAROUSEL_ALBUM/IMAGE as fallback
-            $allMedia = collect($data);
-            $videos = $allMedia->filter(fn($item) => in_array($item['media_type'], ['VIDEO', 'REELS']));
-            $others = $allMedia->filter(fn($item) => in_array($item['media_type'], ['CAROUSEL_ALBUM', 'IMAGE']));
+            // 3. Merge own + collab, deduplicate by ID
+            $allMedia = collect(array_merge($ownData, $collabData))
+                ->unique('id');
 
-            // Prioritize videos, fill remaining slots with other media
+            // 4. Separate videos from other media
+            $videos = $allMedia->filter(fn($item) => in_array($item['media_type'] ?? '', ['VIDEO', 'REELS']));
+            $others = $allMedia->filter(fn($item) => in_array($item['media_type'] ?? '', ['CAROUSEL_ALBUM', 'IMAGE']));
+
+            // 5. Sort videos by engagement (likes + comments) — best performing first
+            $videos = $videos->sortByDesc(fn($item) => ($item['like_count'] ?? 0) + ($item['comments_count'] ?? 0));
+
+            // 6. Prioritize videos sorted by engagement, fill remaining with other media
             $combined = $videos->concat($others)->take($limit);
 
             $reels = $combined
@@ -78,6 +89,8 @@ class InstagramReelsService
                     'media_url' => $item['media_url'] ?? '',
                     'media_type' => $item['media_type'] ?? 'VIDEO',
                     'timestamp' => $item['timestamp'] ?? '',
+                    'like_count' => $item['like_count'] ?? 0,
+                    'comments_count' => $item['comments_count'] ?? 0,
                 ])
                 ->values()
                 ->toArray();
@@ -87,6 +100,60 @@ class InstagramReelsService
             Log::error('Instagram Reels fetch failed: ' . $e->getMessage());
             return [];
         }
+    }
+
+    /**
+     * Fetch collab reels using Instagram oEmbed API from stored shortcodes.
+     */
+    private function fetchCollabReels(string $fields): array
+    {
+        $collabSetting = Setting::get('instagram_collab_reels', '');
+        if (empty($collabSetting)) {
+            return [];
+        }
+
+        // Shortcodes stored as comma-separated: DTwtZK2iFDy,ABC123,XYZ789
+        $shortcodes = array_filter(array_map('trim', explode(',', $collabSetting)));
+        $results = [];
+
+        foreach ($shortcodes as $shortcode) {
+            try {
+                // Use oEmbed to get thumbnail
+                $oembedResponse = Http::timeout(10)->get(
+                    'https://graph.facebook.com/v21.0/instagram_oembed',
+                    [
+                        'url' => "https://www.instagram.com/reel/{$shortcode}/",
+                        'access_token' => $this->accessToken,
+                    ]
+                );
+
+                $permalink = "https://www.instagram.com/reel/{$shortcode}/";
+                $thumbnail = '';
+                $caption = '';
+
+                if ($oembedResponse->successful()) {
+                    $oembed = $oembedResponse->json();
+                    $thumbnail = $oembed['thumbnail_url'] ?? '';
+                    $caption = $oembed['title'] ?? '';
+                }
+
+                $results[] = [
+                    'id' => 'collab_' . $shortcode,
+                    'caption' => $caption,
+                    'media_type' => 'VIDEO',
+                    'media_url' => '',
+                    'thumbnail_url' => $thumbnail,
+                    'permalink' => $permalink,
+                    'timestamp' => now()->toIso8601String(),
+                    'like_count' => 999, // High priority to show collab reels first
+                    'comments_count' => 0,
+                ];
+            } catch (\Exception $e) {
+                Log::warning("Failed to fetch collab reel {$shortcode}: " . $e->getMessage());
+            }
+        }
+
+        return $results;
     }
 
     /**

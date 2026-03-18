@@ -96,6 +96,19 @@ class HomeController extends Controller
             ->withCount('products')
             ->first();
 
+        // Coffee Lovers collection
+        $coffeeProducts = Product::query()
+            ->where('is_active', true)
+            ->where('status', 'approved')
+            ->where(function ($q) {
+                $q->where('name', 'like', '%coffee%')
+                  ->orWhere('name', 'like', '%frother%');
+            })
+            ->with($productEager)
+            ->orderBy('sales_count', 'desc')
+            ->take(12)
+            ->get();
+
         // Site settings (all from batch cache — no extra queries)
         $siteSettings = [
             'site_name' => Setting::get('site_name', 'Jikra'),
@@ -115,7 +128,8 @@ class HomeController extends Controller
             'sections',
             'testimonials',
             'siteSettings',
-            'flashSale'
+            'flashSale',
+            'coffeeProducts'
         ));
     }
 }

@@ -146,13 +146,13 @@
     <!-- ==========================================
          HERO BANNER SLIDER
          ========================================== -->
-    @if($banners->count())
+    @if(true)
     <section class="hero-banner"
              x-data="{
                 current: 0,
                 slides: [
                     @foreach($banners as $banner)
-                    { img: '{{ $banner->image }}', link: '{{ $banner->link ?? route('products.index') }}' }{{ $loop->last ? '' : ',' }}
+                    { img: '{{ asset('storage/' . $banner->image_url) }}', link: '{{ $banner->link ?? route('products.index') }}' },
                     @endforeach
                 ],
                 timer: null,
@@ -184,20 +184,7 @@
                 </template>
             </div>
         </div>
-        <!-- Banner Waves — absolute at bottom of banner -->
-        <div class="absolute -bottom-[1px] left-0 right-0 z-10 pointer-events-none">
-            <svg viewBox="0 0 1440 120" preserveAspectRatio="none" class="w-full h-[50px] sm:h-[70px] lg:h-[90px] block" xmlns="http://www.w3.org/2000/svg">
-                {{-- Back wave (soft shadow) --}}
-                <path d="M0,80 C120,100 240,40 360,60 C480,80 600,100 720,80 C840,60 960,30 1080,50 C1200,70 1320,100 1440,80 L1440,120 L0,120 Z"
-                      fill="rgba(255,255,255,0.4)"/>
-                {{-- Middle wave --}}
-                <path d="M0,90 C160,110 320,50 480,70 C640,90 800,110 960,85 C1120,60 1280,40 1440,70 L1440,120 L0,120 Z"
-                      fill="rgba(255,255,255,0.6)"/>
-                {{-- Front wave (solid white) --}}
-                <path d="M0,95 C200,115 400,70 600,85 C800,100 1000,115 1200,90 C1320,78 1380,85 1440,95 L1440,120 L0,120 Z"
-                      fill="#ffffff"/>
-            </svg>
-        </div>
+        {{-- Waves removed - clean edge --}}
     </section>
     @endif
 
@@ -205,7 +192,7 @@
          CATEGORY CAROUSEL
          ========================================== -->
     @if(isset($carouselCategories) && $carouselCategories->count())
-        <section class="py-5 lg:py-6 bg-white border-b border-neutral-100">
+        <section class="py-5 lg:py-6 bg-white">
             <div class="container mx-auto px-4">
                 <div class="flex gap-3 overflow-x-auto scrollbar-hide pb-1" style="-ms-overflow-style:none;scrollbar-width:none;">
                     @foreach($carouselCategories as $cat)
@@ -259,6 +246,35 @@
                 </div>
                 <div class="product-slider">
                     @foreach($featuredProducts->take(10) as $product)
+                        <div class="slide-item">
+                            <x-product-card :product="$product" :compact="true" />
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        </section>
+    @endif
+
+    <!-- ==========================================
+         SHOP OUR REELS - Shoppable Instagram Carousel
+         ========================================== -->
+    <x-instagram-reels />
+
+    <!-- ==========================================
+         COFFEE LOVERS COLLECTION
+         ========================================== -->
+    @if(isset($coffeeProducts) && $coffeeProducts->count())
+        <section class="py-8 lg:py-12 bg-white">
+            <div class="container mx-auto px-4">
+                <div class="section-header">
+                    <h2 class="section-title">Love Over Coffee</h2>
+                    <a href="{{ route('products.index') }}?search=coffee" class="view-all-link">
+                        View All
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
+                    </a>
+                </div>
+                <div class="product-slider">
+                    @foreach($coffeeProducts as $product)
                         <div class="slide-item">
                             <x-product-card :product="$product" :compact="true" />
                         </div>
@@ -376,7 +392,7 @@
          BESTSELLERS - Horizontal Slider
          ========================================== -->
     @if($bestsellers->count() && (!isset($sections['bestsellers']) || $sections['bestsellers']->is_active))
-        <section class="py-8 lg:py-12 bg-[#f8f6f3]">
+        <section class="py-8 lg:py-12 bg-white" style="background-color:#fefae0">
             <div class="container mx-auto px-4">
                 <div class="section-header">
                     <h2 class="section-title">{{ $sections['bestsellers']->title ?? 'Bestsellers' }}</h2>
@@ -397,9 +413,15 @@
     @endif
 
     <!-- ==========================================
-         SHOP OUR REELS - Shoppable Instagram Carousel
+         PRODUCT BANNER 1 (Configurable)
          ========================================== -->
-    <x-instagram-reels />
+    @if(isset($sections['product_banner_1']) && $sections['product_banner_1']->is_active && $sections['product_banner_1']->image_url)
+        <section class="bg-white">
+            <a href="{{ $sections['product_banner_1']->button_link ?? route('products.index') }}" class="block">
+                <img src="{{ asset('storage/' . $sections['product_banner_1']->image_url) }}" alt="{{ $sections['product_banner_1']->title }}" class="w-full h-auto object-cover" loading="lazy">
+            </a>
+        </section>
+    @endif
 
     <!-- ==========================================
          WHY CHOOSE US - Feature Grid
@@ -436,7 +458,7 @@
          TODAY'S DEALS
          ========================================== -->
     @if($deals->count() && (!isset($sections['deals']) || $sections['deals']->is_active))
-        <section class="deals-section bg-[#f8f6f3]">
+        <section class="deals-section bg-white" style="background-color:#fefae0">
             <div class="container mx-auto px-4">
                 <div class="section-header">
                     <h2 class="section-title">{{ $sections['deals']->title ?? "Steal Deals" }}</h2>
@@ -453,6 +475,17 @@
                     @endforeach
                 </div>
             </div>
+        </section>
+    @endif
+
+    <!-- ==========================================
+         PRODUCT BANNER 2 (Configurable)
+         ========================================== -->
+    @if(isset($sections['product_banner_2']) && $sections['product_banner_2']->is_active && $sections['product_banner_2']->image_url)
+        <section class="bg-white">
+            <a href="{{ $sections['product_banner_2']->button_link ?? route('products.index') }}" class="block">
+                <img src="{{ asset('storage/' . $sections['product_banner_2']->image_url) }}" alt="{{ $sections['product_banner_2']->title }}" class="w-full h-auto object-cover" loading="lazy">
+            </a>
         </section>
     @endif
 
@@ -525,7 +558,7 @@
          NEW ARRIVALS GRID
          ========================================== -->
     @if($newArrivals->count() && (!isset($sections['new_arrivals']) || $sections['new_arrivals']->is_active))
-        <section class="py-8 lg:py-12 bg-[#f8f6f3]">
+        <section class="py-8 lg:py-12 bg-white" style="background-color:#fefae0">
             <div class="container mx-auto px-4">
                 <div class="section-header">
                     <h2 class="section-title">{{ $sections['new_arrivals']->title ?? 'New Arrivals' }}</h2>

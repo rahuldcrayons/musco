@@ -46,6 +46,9 @@
                                     @case('categories')
                                         Category collections grid
                                         @break
+                                    @case('product_banner')
+                                        Full-width product banner image
+                                        @break
                                     @default
                                         {{ ucfirst($section->type) }} content
                                 @endswitch

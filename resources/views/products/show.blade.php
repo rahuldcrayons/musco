@@ -420,6 +420,203 @@
             </section>
         @endif
 
+        <!-- A+ Content Section (Product-specific rich media) -->
+        @php
+            $aplusPath = 'images/aplus/' . $product->slug;
+            $hasAplus = file_exists(public_path($aplusPath . '/hero.jpg'));
+        @endphp
+        @if($hasAplus)
+            <section class="mt-8 border-t border-[#E3E6E6] pt-6">
+                {{-- A+ Hero Banner --}}
+                <div class="rounded-xl overflow-hidden mb-6">
+                    <img src="{{ asset($aplusPath . '/hero.jpg') }}" alt="{{ $product->name }} - Premium Quality" class="w-full h-auto" loading="lazy">
+                </div>
+
+                {{-- A+ Features Grid --}}
+                @if(file_exists(public_path($aplusPath . '/features.jpg')))
+                <div class="rounded-xl overflow-hidden mb-6">
+                    <img src="{{ asset($aplusPath . '/features.jpg') }}" alt="{{ $product->name }} - Key Features" class="w-full h-auto" loading="lazy">
+                </div>
+                @endif
+
+                {{-- A+ Content: Key Highlights --}}
+                @if($product->slug === 'temprature-coffee-mug')
+                <div class="bg-gradient-to-br from-[#fdf6ec] to-[#f9eed8] rounded-xl p-6 lg:p-10 mb-6">
+                    <h3 class="text-xl lg:text-2xl font-bold text-[#3a2a0a] mb-2 text-center">Why Choose JIKRA Temperature Coffee Mug?</h3>
+                    <p class="text-sm text-[#5a4520] text-center mb-8 max-w-2xl mx-auto">Engineered with double-wall vacuum insulation and a smart LED temperature display — your perfect companion for office, gym, travel & everyday life.</p>
+                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
+                        <div class="bg-white/80 backdrop-blur rounded-xl p-4 text-center shadow-sm">
+                            <div class="text-3xl mb-2">🌡️</div>
+                            <h4 class="font-semibold text-[#3a2a0a] text-sm mb-1">LED Temperature Display</h4>
+                            <p class="text-xs text-[#5a4520]">Real-time digital temperature readout on the smart lid</p>
+                        </div>
+                        <div class="bg-white/80 backdrop-blur rounded-xl p-4 text-center shadow-sm">
+                            <div class="text-3xl mb-2">🔥</div>
+                            <h4 class="font-semibold text-[#3a2a0a] text-sm mb-1">4 Hours Hot</h4>
+                            <p class="text-xs text-[#5a4520]">Double-wall vacuum insulation keeps beverages hot for hours</p>
+                        </div>
+                        <div class="bg-white/80 backdrop-blur rounded-xl p-4 text-center shadow-sm">
+                            <div class="text-3xl mb-2">❄️</div>
+                            <h4 class="font-semibold text-[#3a2a0a] text-sm mb-1">12 Hours Cold</h4>
+                            <p class="text-xs text-[#5a4520]">Keeps cold drinks chilled all day — iced coffee to smoothies</p>
+                        </div>
+                        <div class="bg-white/80 backdrop-blur rounded-xl p-4 text-center shadow-sm">
+                            <div class="text-3xl mb-2">🛡️</div>
+                            <h4 class="font-semibold text-[#3a2a0a] text-sm mb-1">BPA-Free & Leak-Proof</h4>
+                            <p class="text-xs text-[#5a4520]">Food-grade 304 stainless steel, safe for daily use</p>
+                        </div>
+                    </div>
+                </div>
+                @endif
+
+                {{-- A+ Content: Bird Lunch Box Highlights --}}
+                @if($product->slug === 'super-birdy-lunch-box')
+                <div class="bg-gradient-to-br from-[#f0f7e6] to-[#e6f0d6] rounded-xl p-6 lg:p-10 mb-6">
+                    <h3 class="text-xl lg:text-2xl font-bold text-[#3a5a0a] mb-2 text-center">Why Kids Love Super Birdy!</h3>
+                    <p class="text-sm text-[#5a6a30] text-center mb-8 max-w-2xl mx-auto">A fun, functional lunch box that makes mealtime exciting — designed for kids who deserve the best.</p>
+                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
+                        <div class="bg-white/80 backdrop-blur rounded-xl p-4 text-center shadow-sm">
+                            <div class="text-3xl mb-2">🍱</div>
+                            <h4 class="font-semibold text-[#3a5a0a] text-sm mb-1">3 Compartments</h4>
+                            <p class="text-xs text-[#5a6a30]">Keeps roti, rice, sabzi & snacks neatly separated</p>
+                        </div>
+                        <div class="bg-white/80 backdrop-blur rounded-xl p-4 text-center shadow-sm">
+                            <div class="text-3xl mb-2">💧</div>
+                            <h4 class="font-semibold text-[#3a5a0a] text-sm mb-1">Leak-Proof</h4>
+                            <p class="text-xs text-[#5a6a30]">Secure clip-lock lid with silicone seal — zero spills</p>
+                        </div>
+                        <div class="bg-white/80 backdrop-blur rounded-xl p-4 text-center shadow-sm">
+                            <div class="text-3xl mb-2">🌿</div>
+                            <h4 class="font-semibold text-[#3a5a0a] text-sm mb-1">BPA-Free</h4>
+                            <p class="text-xs text-[#5a6a30]">Food-grade PP plastic, 100% safe for children</p>
+                        </div>
+                        <div class="bg-white/80 backdrop-blur rounded-xl p-4 text-center shadow-sm">
+                            <div class="text-3xl mb-2">🥄</div>
+                            <h4 class="font-semibold text-[#3a5a0a] text-sm mb-1">Spoon & Fork Included</h4>
+                            <p class="text-xs text-[#5a6a30]">Built-in cutlery tray — everything your child needs</p>
+                        </div>
+                    </div>
+                </div>
+                @endif
+
+                {{-- A+ Content: Diamond Coffee Mug Set Highlights --}}
+                @if($product->slug === 'diamond-coffee-mug-set')
+                <div class="bg-gradient-to-br from-[#fce4ec] to-[#f8bbd0] rounded-xl p-6 lg:p-10 mb-6">
+                    <h3 class="text-xl lg:text-2xl font-bold text-[#880e4f] mb-2 text-center">The Perfect Sip, Every Time</h3>
+                    <p class="text-sm text-[#ad1457] text-center mb-8 max-w-2xl mx-auto">Premium stainless steel mugs with diamond-textured grip and double-wall insulation — crafted for coffee lovers who value style and function.</p>
+                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
+                        <div class="bg-white/80 backdrop-blur rounded-xl p-4 text-center shadow-sm">
+                            <div class="text-3xl mb-2">☕</div>
+                            <h4 class="font-semibold text-[#880e4f] text-sm mb-1">Pack of 2</h4>
+                            <p class="text-xs text-[#ad1457]">Two matching mugs in a premium gift-ready box</p>
+                        </div>
+                        <div class="bg-white/80 backdrop-blur rounded-xl p-4 text-center shadow-sm">
+                            <div class="text-3xl mb-2">🔥</div>
+                            <h4 class="font-semibold text-[#880e4f] text-sm mb-1">Double Wall</h4>
+                            <p class="text-xs text-[#ad1457]">Keeps hot drinks hot & cold drinks cold longer</p>
+                        </div>
+                        <div class="bg-white/80 backdrop-blur rounded-xl p-4 text-center shadow-sm">
+                            <div class="text-3xl mb-2">💎</div>
+                            <h4 class="font-semibold text-[#880e4f] text-sm mb-1">Diamond Grip</h4>
+                            <p class="text-xs text-[#ad1457]">Textured exterior for premium grip & cool-touch body</p>
+                        </div>
+                        <div class="bg-white/80 backdrop-blur rounded-xl p-4 text-center shadow-sm">
+                            <div class="text-3xl mb-2">🎁</div>
+                            <h4 class="font-semibold text-[#880e4f] text-sm mb-1">Gift Ready</h4>
+                            <p class="text-xs text-[#ad1457]">Beautifully packaged — perfect for any occasion</p>
+                        </div>
+                    </div>
+                </div>
+                @endif
+
+                {{-- A+ Brand Story --}}
+                @if(file_exists(public_path($aplusPath . '/brand-story.jpg')))
+                <div class="rounded-xl overflow-hidden mb-6">
+                    <img src="{{ asset($aplusPath . '/brand-story.jpg') }}" alt="{{ $product->name }} - Brand Story" class="w-full h-auto" loading="lazy">
+                </div>
+                @endif
+
+                {{-- A+ Lifestyle --}}
+                @if(file_exists(public_path($aplusPath . '/lifestyle.jpg')))
+                <div class="rounded-xl overflow-hidden mb-6">
+                    <img src="{{ asset($aplusPath . '/lifestyle.jpg') }}" alt="{{ $product->name }} - Perfect for Office, Yoga & Gym" class="w-full h-auto" loading="lazy">
+                </div>
+                @endif
+
+                {{-- A+ Content: Specifications Highlights --}}
+                @if($product->slug === 'temprature-coffee-mug')
+                <div class="bg-[#1a1a1a] rounded-xl p-6 lg:p-10 mb-6 text-white">
+                    <h3 class="text-xl lg:text-2xl font-bold mb-6 text-center">Built to Last. Designed to Impress.</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="text-center">
+                            <div class="w-16 h-16 mx-auto mb-3 rounded-full bg-white/10 flex items-center justify-center">
+                                <svg class="w-8 h-8 text-[#F8931D]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                            </div>
+                            <h4 class="font-semibold text-sm mb-1">304 Stainless Steel</h4>
+                            <p class="text-xs text-white/60">Premium food-grade material, rust-resistant & durable</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="w-16 h-16 mx-auto mb-3 rounded-full bg-white/10 flex items-center justify-center">
+                                <svg class="w-8 h-8 text-[#F8931D]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                            </div>
+                            <h4 class="font-semibold text-sm mb-1">Reusable & Eco-Friendly</h4>
+                            <p class="text-xs text-white/60">Reduce single-use cups — better for you & the planet</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="w-16 h-16 mx-auto mb-3 rounded-full bg-white/10 flex items-center justify-center">
+                                <svg class="w-8 h-8 text-[#F8931D]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                            </div>
+                            <h4 class="font-semibold text-sm mb-1">Anti-Slip Base</h4>
+                            <p class="text-xs text-white/60">Fits all standard car cup holders, stable on any surface</p>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- A+ FAQ/Use Cases --}}
+                <div class="bg-white border border-[#E3E6E6] rounded-xl p-6 lg:p-10 mb-6">
+                    <h3 class="text-lg font-bold text-[#0F1111] mb-4 text-center">Frequently Asked Questions</h3>
+                    <div class="max-w-2xl mx-auto divide-y divide-[#E3E6E6]" x-data="{ open: null }">
+                        <div class="py-3">
+                            <button @click="open = open === 1 ? null : 1" class="flex items-center justify-between w-full text-left">
+                                <span class="text-sm font-medium text-[#0F1111]">How does the temperature display work?</span>
+                                <svg class="w-4 h-4 text-[#565959] transition-transform" :class="open === 1 && 'rotate-180'" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                            </button>
+                            <div x-show="open === 1" x-collapse class="text-sm text-[#565959] mt-2">The smart lid has a built-in LED sensor that activates when you touch the top. It displays the current liquid temperature in real-time, so you know exactly when your coffee or tea is at the perfect drinking temperature.</div>
+                        </div>
+                        <div class="py-3">
+                            <button @click="open = open === 2 ? null : 2" class="flex items-center justify-between w-full text-left">
+                                <span class="text-sm font-medium text-[#0F1111]">Is this mug dishwasher safe?</span>
+                                <svg class="w-4 h-4 text-[#565959] transition-transform" :class="open === 2 && 'rotate-180'" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                            </button>
+                            <div x-show="open === 2" x-collapse class="text-sm text-[#565959] mt-2">We recommend hand washing the mug to preserve the vacuum seal and LED display. Simply rinse with warm soapy water. The lid can be disassembled for thorough cleaning.</div>
+                        </div>
+                        <div class="py-3">
+                            <button @click="open = open === 3 ? null : 3" class="flex items-center justify-between w-full text-left">
+                                <span class="text-sm font-medium text-[#0F1111]">What is the capacity?</span>
+                                <svg class="w-4 h-4 text-[#565959] transition-transform" :class="open === 3 && 'rotate-180'" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                            </button>
+                            <div x-show="open === 3" x-collapse class="text-sm text-[#565959] mt-2">The JIKRA Temperature Coffee Mug holds approximately 510ml (17oz) — the perfect size for your morning coffee, evening tea, or cold beverages throughout the day.</div>
+                        </div>
+                        <div class="py-3">
+                            <button @click="open = open === 4 ? null : 4" class="flex items-center justify-between w-full text-left">
+                                <span class="text-sm font-medium text-[#0F1111]">Can I use it for cold drinks?</span>
+                                <svg class="w-4 h-4 text-[#565959] transition-transform" :class="open === 4 && 'rotate-180'" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                            </button>
+                            <div x-show="open === 4" x-collapse class="text-sm text-[#565959] mt-2">Absolutely! The double-wall vacuum insulation works both ways — keeps hot drinks hot for 4+ hours and cold drinks chilled for 12+ hours. Perfect for iced coffee, smoothies, juices, and cold water.</div>
+                        </div>
+                        <div class="py-3">
+                            <button @click="open = open === 5 ? null : 5" class="flex items-center justify-between w-full text-left">
+                                <span class="text-sm font-medium text-[#0F1111]">Does it fit in a car cup holder?</span>
+                                <svg class="w-4 h-4 text-[#565959] transition-transform" :class="open === 5 && 'rotate-180'" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                            </button>
+                            <div x-show="open === 5" x-collapse class="text-sm text-[#565959] mt-2">Yes! The slim, ergonomic design fits perfectly in all standard car cup holders. The anti-slip base ensures it stays stable while driving.</div>
+                        </div>
+                    </div>
+                </div>
+                @endif
+            </section>
+        @endif
+
         <!-- Specifications -->
         @if($product->sku || $product->weight || $product->dimensions || $product->brand || ($product->attributes && count($product->attributes)))
             <section class="mt-6 border-t border-[#E3E6E6] pt-6">

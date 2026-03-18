@@ -35,6 +35,9 @@
                     @case('categories')
                         <strong>Categories Section</strong> &mdash; Controls visibility of the category collection grids on the homepage. Category names and images are managed from <a href="{{ route('admin.categories.index') }}" class="underline font-medium">Categories Management</a>.
                         @break
+                    @case('product_banner')
+                        <strong>Product Banner</strong> &mdash; A full-width clickable banner image linking to a product page. Upload a banner image and set the product link URL.
+                        @break
                     @default
                         <strong>Content Section</strong> &mdash; Controls the display of this content block on the homepage.
                 @endswitch
@@ -58,7 +61,7 @@
                         <label class="form-label">Subtitle</label>
                         <textarea name="subtitle" rows="2" class="form-input">{{ $section->subtitle }}</textarea>
                     </div>
-                    @if($section->image_url !== null || in_array($section->type, ['cta', 'promo']))
+                    @if($section->image_url !== null || in_array($section->type, ['cta', 'promo', 'product_banner']))
                         <div>
                             <label class="form-label">Background Image</label>
                             @if($section->image_url)
@@ -75,7 +78,7 @@
             <div class="card p-6">
                 <h2 class="text-lg font-semibold text-neutral-900 mb-4">Display Options</h2>
                 <div class="space-y-4">
-                    @if(in_array($section->type, ['products', 'benefits', 'cta']))
+                    @if(in_array($section->type, ['products', 'benefits', 'cta', 'product_banner']))
                         <div>
                             <label class="form-label">Button Text</label>
                             <input type="text" name="button_text" value="{{ $section->button_text }}" class="form-input" placeholder="e.g. View All, Shop Now">
