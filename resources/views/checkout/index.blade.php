@@ -77,6 +77,30 @@
                 @endauth
             </div>
 
+            {{-- Express Checkout Banner (for returning users with saved preferences) --}}
+            @if(!empty($oneClickReady) && $defaultAddress)
+            <div class="bg-gradient-to-r from-[#205258] to-[#1b454a] rounded-lg p-3 mb-3 text-white" x-data="{ expressLoading: false }">
+                <div class="flex items-center justify-between">
+                    <div class="flex-1 min-w-0">
+                        <p class="text-xs font-bold">Express Checkout</p>
+                        <p class="text-[10px] opacity-80 mt-0.5">Ship to {{ $defaultAddress->name }} — {{ $defaultAddress->city }}, {{ $defaultAddress->postal_code }}</p>
+                    </div>
+                    <form action="{{ route('checkout.process') }}" method="POST" @submit="expressLoading = true">
+                        @csrf
+                        <input type="hidden" name="shipping_address_id" value="{{ $defaultAddress->id }}">
+                        <input type="hidden" name="same_billing_address" value="1">
+                        <input type="hidden" name="payment_method" value="{{ $checkoutPreference->default_payment_method ?? 'cod' }}">
+                        <input type="hidden" name="express_checkout" value="1">
+                        <button type="submit" :disabled="expressLoading"
+                                class="px-4 py-2 bg-[#F8931D] hover:bg-[#E07E0A] text-white text-xs font-bold rounded-lg transition-colors whitespace-nowrap disabled:opacity-50">
+                            <span x-show="!expressLoading">Place Order</span>
+                            <span x-show="expressLoading">Processing...</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+            @endif
+
             @php
                 $methodOrder = ['razorpay' => 'razorpay_enabled', 'cod' => 'cod_enabled'];
                 $firstMethod = 'cod';

@@ -204,6 +204,10 @@ Route::post('/sell/register', [App\Http\Controllers\Seller\RegistrationControlle
 // Newsletter
 Route::post('/newsletter/subscribe', [App\Http\Controllers\NewsletterController::class, 'subscribe'])->middleware('throttle:5,1')->name('newsletter.subscribe');
 
+// Push Notifications
+Route::post('/push/subscribe', [App\Http\Controllers\PushSubscriptionController::class, 'subscribe'])->middleware('throttle:10,1')->name('push.subscribe');
+Route::post('/push/unsubscribe', [App\Http\Controllers\PushSubscriptionController::class, 'unsubscribe'])->middleware('throttle:10,1')->name('push.unsubscribe');
+
 // Recommendations (AJAX)
 Route::prefix('recommendations')->name('recommendations.')->group(function () {
     Route::get('/recently-viewed', [App\Http\Controllers\Web\RecommendationController::class, 'recentlyViewed'])->name('recently-viewed');

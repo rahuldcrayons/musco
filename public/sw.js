@@ -193,3 +193,50 @@ function trimCache(cacheName, maxItems) {
         })
     );
 }
+
+// ─── Push Notifications ─────────────────────────────────────────
+
+self.addEventListener('push', event => {
+    if (!event.data) return;
+
+    let data;
+    try {
+        data = event.data.json();
+    } catch (e) {
+        data = { title: 'Jikra', body: event.data.text() };
+    }
+
+    const options = {
+        body: data.body || '',
+        icon: data.icon || '/images/jikra-logo.png',
+        badge: '/images/jikra-logo.png',
+        image: data.image || undefined,
+        data: { url: data.url || '/' },
+        actions: data.actions || [],
+        vibrate: [100, 50, 100],
+        tag: data.tag || 'jikra-notification',
+        renotify: true,
+    };
+
+    event.waitUntil(
+        self.registration.showNotification(data.title || 'Jikra', options)
+    );
+});
+
+self.addEventListener('notificationclick', event => {
+    event.notification.close();
+
+    const url = event.notification.data?.url || '/';
+
+    event.waitUntil(
+        clients.matchAll({ type: 'window', includeUncontrolled: true })
+            .then(windowClients => {
+                for (const client of windowClients) {
+                    if (client.url === url && 'focus' in client) {
+                        return client.focus();
+                    }
+                }
+                return clients.openWindow(url);
+            })
+    );
+});

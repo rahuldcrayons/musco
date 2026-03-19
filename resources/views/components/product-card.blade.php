@@ -197,6 +197,13 @@
                 </p>
             @endif
 
+            {{-- Scarcity badge --}}
+            @if(!$outOfStock && $product->stock_quantity > 0 && $product->stock_quantity <= 10)
+                <p class="text-[11px] text-[#CC0C39] font-medium mb-1">
+                    Only {{ $product->stock_quantity }} left in stock - order soon
+                </p>
+            @endif
+
             {{-- Add to Cart / Notify --}}
             @if($showAddToCart)
                 <div class="mt-auto pt-2">

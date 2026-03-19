@@ -22,8 +22,30 @@ use Illuminate\View\View;
 
 class CheckoutController extends Controller
 {
+    private function logActivity(string $event, array $details = [], ?Request $request = null): void
+    {
+        try {
+            $r = $request ?? request();
+            DB::table('customer_activity_logs')->insert([
+                'session_id' => session()->getId(),
+                'user_id' => auth()->id(),
+                'guest_email' => $r->input('guest_email'),
+                'guest_phone' => $r->input('guest_phone'),
+                'event' => $event,
+                'details' => json_encode($details),
+                'ip_address' => $r->ip(),
+                'user_agent' => $r->userAgent(),
+                'page_url' => $r->fullUrl(),
+                'created_at' => now(),
+            ]);
+        } catch (\Exception $e) {
+            Log::warning('Activity log failed', ['event' => $event, 'error' => $e->getMessage()]);
+        }
+    }
+
     public function index(): View|RedirectResponse
     {
+        $this->logActivity('checkout_viewed');
         $cart = $this->getCart();
 
         if (!$cart || $cart->items->isEmpty()) {
@@ -76,9 +98,21 @@ class CheckoutController extends Controller
             $fbEventId
         );
 
+        // One-click checkout: check if user has preferences saved
+        $oneClickReady = false;
+        $checkoutPreference = null;
+        if (!$isGuest) {
+            $checkoutPreference = \App\Models\UserCheckoutPreference::where('user_id', auth()->id())->first();
+            $oneClickReady = $checkoutPreference
+                && $checkoutPreference->enable_one_click
+                && $checkoutPreference->default_shipping_address_id
+                && $defaultAddress;
+        }
+
         return view('checkout.index', compact(
             'cart', 'addresses', 'defaultAddress', 'paymentSettings',
-            'isGuest', 'availableCoupons', 'navratriActive', 'fbEventId'
+            'isGuest', 'availableCoupons', 'navratriActive', 'fbEventId',
+            'oneClickReady', 'checkoutPreference'
         ));
     }
 
@@ -289,6 +323,17 @@ class CheckoutController extends Controller
 
         if ($isGuest) {
             session()->put('guest_order_id', $order->id);
+        } else {
+            // Save checkout preferences for one-click checkout next time
+            \App\Models\UserCheckoutPreference::updateOrCreate(
+                ['user_id' => auth()->id()],
+                [
+                    'default_shipping_address_id' => $order->shipping_address_id ?? ($request->input('shipping_address_id')),
+                    'default_payment_method' => $request->input('payment_method', 'cod'),
+                    'same_as_shipping' => $request->boolean('same_billing_address', true),
+                    'enable_one_click' => true,
+                ]
+            );
         }
 
         OrderPlaced::dispatch($order, 'web');
@@ -325,6 +370,7 @@ class CheckoutController extends Controller
      */
     public function createRazorpayOrder(Request $request): JsonResponse
     {
+        $this->logActivity('payment_initiated', ['method' => $request->input('payment_method')], $request);
         $isGuest = !auth()->check();
 
         $rules = [
@@ -397,6 +443,7 @@ class CheckoutController extends Controller
 
             if (!$response->successful()) {
                 Log::error('Razorpay order creation failed', ['response' => $response->json()]);
+                $this->logActivity('payment_error', ['stage' => 'razorpay_order_create', 'error' => $response->json()], $request);
                 return response()->json(['error' => 'Failed to create payment order. Please try again.'], 500);
             }
         } catch (\Exception $e) {
@@ -473,6 +520,7 @@ class CheckoutController extends Controller
             Log::warning('Razorpay signature verification failed', [
                 'order_id' => $request->razorpay_order_id,
             ]);
+            $this->logActivity('payment_verification_failed', ['razorpay_order_id' => $request->razorpay_order_id], $request);
             return response()->json(['error' => 'Payment verification failed.'], 422);
         }
 
@@ -626,6 +674,14 @@ class CheckoutController extends Controller
         if ($isGuest) {
             session()->put('guest_order_id', $order->id);
         }
+
+        $this->logActivity('order_placed', [
+            'order_id' => $order->id,
+            'order_number' => $order->order_number,
+            'total' => $order->total,
+            'payment_method' => $paymentMethod,
+            'razorpay_payment_id' => $request->razorpay_payment_id,
+        ], $request);
 
         OrderPlaced::dispatch($order, 'web');
 

@@ -20,6 +20,9 @@ Schedule::command('reviews:drip-daily --min=1 --max=3')->hourly()->when(function
 // Publish scheduled social media posts every minute
 Schedule::command('social:publish-scheduled')->everyMinute();
 
+// Send abandoned cart reminders every 10 minutes
+Schedule::command('cart:remind-abandoned')->everyTenMinutes();
+
 // Refresh Instagram reels cache every 2 hours
 Schedule::command('instagram:refresh-reels')->everyTwoHours();
 

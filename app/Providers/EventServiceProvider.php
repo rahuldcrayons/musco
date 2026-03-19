@@ -9,6 +9,7 @@ use App\Events\OrderStatusChanged;
 use App\Events\PosSaleCompleted;
 use App\Events\RefundProcessed;
 use App\Events\ReturnRequested;
+use App\Listeners\AwardLoyaltyPoints;
 use App\Listeners\CheckOrderFraud;
 use App\Listeners\ProcessAffiliateCommission;
 use App\Listeners\SendOrderNotification;
@@ -37,6 +38,7 @@ class EventServiceProvider extends ServiceProvider
             TrackOrderAnalytics::class,
             SendReviewInvitationAfterDelivery::class,
             [ProcessAffiliateCommission::class, 'handleOrderDelivered'],
+            AwardLoyaltyPoints::class,
         ],
         ReturnRequested::class => [
             [SendOrderNotification::class, 'handleReturnRequested'],

@@ -1076,6 +1076,9 @@
             </div>
         </section>
 
+        <!-- Recently Viewed -->
+        <x-recently-viewed :limit="8" />
+
         <!-- Related Products -->
         @if($relatedProducts->count())
             <section class="mt-8 border-t border-[#E3E6E6] pt-6">
