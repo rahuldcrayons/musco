@@ -167,7 +167,8 @@ class ProductController extends Controller
         $productSchema = $schemaService->getProductSchema($product);
         $faqSchema = $schemaService->getFaqSchema($product);
 
-        // Available coupons
+        // Available coupons — only show offers the product price qualifies for
+        $productPrice = $product->price;
         $availableCoupons = Coupon::where('is_active', true)
             ->where(function ($q) {
                 $q->whereNull('starts_at')->orWhere('starts_at', '<=', now());
@@ -175,15 +176,32 @@ class ProductController extends Controller
             ->where(function ($q) {
                 $q->whereNull('expires_at')->orWhere('expires_at', '>', now());
             })
+            ->where(function ($q) use ($productPrice) {
+                $q->where('min_order_amount', '<=', $productPrice)
+                  ->orWhere('min_order_amount', 0);
+            })
+            ->where(function ($q) {
+                $q->whereNull('usage_limit')->orWhereColumn('times_used', '<', 'usage_limit');
+            })
             ->orderBy('value', 'desc')
             ->take(4)
+            ->get();
+
+        // Frequently bought together - products from same category
+        $frequentlyBought = Product::where('category_id', $product->category_id)
+            ->where('id', '!=', $product->id)
+            ->where('is_active', true)
+            ->where('stock_quantity', '>', 0)
+            ->orderByDesc('sales_count')
+            ->limit(3)
+            ->with(['primaryImage', 'brand'])
             ->get();
 
         // Facebook CAPI: ViewContent
         $fbEventId = AnalyticsService::generateEventId('vc');
         app(AnalyticsService::class)->trackViewContent($product, request(), $fbEventId);
 
-        return view('products.show', compact('product', 'relatedProducts', 'compareProducts', 'breadcrumbs', 'productSchema', 'faqSchema', 'fbEventId', 'ratingDistribution', 'displayReviews', 'availableCoupons'));
+        return view('products.show', compact('product', 'relatedProducts', 'compareProducts', 'breadcrumbs', 'productSchema', 'faqSchema', 'fbEventId', 'ratingDistribution', 'displayReviews', 'availableCoupons', 'frequentlyBought'));
     }
 
     public function quickView(Product $product): JsonResponse

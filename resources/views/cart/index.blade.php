@@ -152,6 +152,30 @@
 
                         <!-- Right: Order Summary -->
                         <div class="lg:w-85 shrink-0 self-stretch">
+                            {{-- Free Shipping Nudge --}}
+                            @php $freeShipThreshold = (float) \App\Models\Setting::get('free_shipping_threshold', 399); @endphp
+                            <div x-data="{ get remaining() { return Math.max(0, {{ $freeShipThreshold }} - this.$root.querySelector('[x-data=cartPage]') ? 0 : 0); } }">
+                            </div>
+                            <template x-if="true">
+                                <div>
+                                    <template x-if="subtotal < {{ $freeShipThreshold }}">
+                                        <div style="background:#FFF3E0;border:1px solid #FFB74D;border-radius:6px;padding:10px 14px;margin-bottom:12px;">
+                                            <p style="font-size:12px;color:#E65100;font-weight:600;margin:0 0 6px;">
+                                                Add <span x-text="fp({{ $freeShipThreshold }} - subtotal)"></span> more for FREE shipping!
+                                            </p>
+                                            <div style="background:#FFE0B2;border-radius:4px;height:6px;overflow:hidden;">
+                                                <div style="background:#F8931D;height:100%;border-radius:4px;transition:width 0.3s;" :style="'width:' + Math.min(100, (subtotal / {{ $freeShipThreshold }}) * 100) + '%'"></div>
+                                            </div>
+                                        </div>
+                                    </template>
+                                    <template x-if="subtotal >= {{ $freeShipThreshold }}">
+                                        <div style="background:#E8F5E9;border-radius:6px;padding:8px 14px;margin-bottom:12px;">
+                                            <p style="font-size:12px;color:#2E7D32;font-weight:600;margin:0;">&#10003; You qualify for FREE shipping!</p>
+                                        </div>
+                                    </template>
+                                </div>
+                            </template>
+
                             <div class="bg-white rounded-lg border border-neutral-100 sticky top-20 flex flex-col">
                                 <!-- Coupon Section -->
                                 <div class="p-4 border-b border-neutral-100">

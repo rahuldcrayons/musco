@@ -420,6 +420,25 @@
 
                     {{-- ═══ RIGHT COLUMN - Order Summary ═══ --}}
                     <div class="lg:w-80 shrink-0 self-stretch">
+                        {{-- Free Shipping Nudge --}}
+                        @php
+                            $freeShipThreshold = (float) \App\Models\Setting::get('free_shipping_threshold', 399);
+                            $cartSubtotal = (float) $cart->subtotal;
+                            $shippingRemaining = max(0, $freeShipThreshold - $cartSubtotal);
+                        @endphp
+                        @if($shippingRemaining > 0)
+                            <div style="background:#FFF3E0;border:1px solid #FFB74D;border-radius:6px;padding:10px 14px;margin-bottom:12px;">
+                                <p style="font-size:12px;color:#E65100;font-weight:600;margin:0 0 6px;">Add @price($shippingRemaining) more for FREE shipping!</p>
+                                <div style="background:#FFE0B2;border-radius:4px;height:6px;overflow:hidden;">
+                                    <div style="background:#F8931D;height:100%;width:{{ min(100, ($cartSubtotal / $freeShipThreshold) * 100) }}%;border-radius:4px;"></div>
+                                </div>
+                            </div>
+                        @else
+                            <div style="background:#E8F5E9;border-radius:6px;padding:8px 14px;margin-bottom:12px;">
+                                <p style="font-size:12px;color:#2E7D32;font-weight:600;margin:0;">&#10003; You qualify for FREE shipping!</p>
+                            </div>
+                        @endif
+
                         <div class="bg-white rounded border border-[#E3E6E6] lg:sticky lg:top-20">
 
                             {{-- Coupons Carousel (horizontal scroll) --}}
@@ -541,7 +560,6 @@
                                     @endif
 
                                     @php
-                                        $freeShipThreshold = (float) \App\Models\\App\Models\Setting::get('free_shipping_threshold', 499);
                                         $afterCoupon = $cart->subtotal - $cart->discount;
                                         $shipFee = $afterCoupon >= $freeShipThreshold ? 0 : 50;
                                     @endphp

@@ -252,6 +252,17 @@
                     <p class="text-xs text-[#565959]">Inclusive of all taxes</p>
                 </div>
 
+                <!-- Stock Urgency -->
+                @if($product->stock_quantity > 0 && $product->stock_quantity <= 10)
+                <div style="display:flex;align-items:center;gap:6px;margin:8px 0;padding:6px 10px;background:#FFF3E0;border-radius:4px;">
+                    <span style="display:inline-block;width:8px;height:8px;background:#FF6B35;border-radius:50%;animation:pulse-dot 1.5s infinite;"></span>
+                    <span style="font-size:12px;color:#E65100;font-weight:600;">Only {{ $product->stock_quantity }} left in stock - order soon!</span>
+                </div>
+                <style>@keyframes pulse-dot{0%,100%{opacity:1}50%{opacity:0.4}}</style>
+                @elseif($product->stock_quantity > 10)
+                <p style="font-size:12px;color:#067D62;font-weight:600;margin:6px 0;">&#10003; In Stock</p>
+                @endif
+
                 <!-- Available Coupons -->
                 @if(isset($availableCoupons) && $availableCoupons->count())
                 <div class="space-y-2">
@@ -696,6 +707,107 @@
                     @endif
                 </div>
             </section>
+        @endif
+
+        <!-- Frequently Bought Together -->
+        @if(isset($frequentlyBought) && $frequentlyBought->count())
+            <section class="mt-8 border-t border-[#E3E6E6] pt-6" x-data="frequentlyBought()">
+                <h2 class="text-lg font-bold text-[#0F1111] mb-4">Frequently Bought Together</h2>
+                <div class="flex flex-col lg:flex-row gap-6">
+                    {{-- Products with checkboxes --}}
+                    <div class="flex items-center gap-2 flex-wrap">
+                        {{-- Current product (always selected) --}}
+                        <div class="flex flex-col items-center w-[130px] shrink-0">
+                            <div class="relative">
+                                <img src="{{ $product->primary_image_url }}" alt="{{ $product->name }}" class="w-[100px] h-[100px] object-contain rounded border border-[#E3E6E6] bg-white p-1">
+                                <span class="absolute -top-1 -left-1 w-5 h-5 bg-[#205258] rounded flex items-center justify-center">
+                                    <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
+                                </span>
+                            </div>
+                            <p class="text-[10px] text-[#0F1111] text-center mt-1.5 line-clamp-2 leading-tight">{{ Str::limit($product->name, 40) }}</p>
+                            <p class="text-xs font-bold text-[#0F1111] mt-0.5">@price($product->price)</p>
+                        </div>
+
+                        @foreach($frequentlyBought as $idx => $fbProduct)
+                            <span class="text-xl text-[#565959] font-light mx-1">+</span>
+                            <div class="flex flex-col items-center w-[130px] shrink-0">
+                                <label class="relative cursor-pointer">
+                                    <input type="checkbox" class="sr-only peer" checked
+                                           x-model="selected" value="{{ $fbProduct->id }}"
+                                           @change="recalculate()">
+                                    <img src="{{ $fbProduct->primary_image_url }}" alt="{{ $fbProduct->name }}"
+                                         class="w-[100px] h-[100px] object-contain rounded border-2 bg-white p-1 transition-all peer-checked:border-[#205258] border-[#E3E6E6] opacity-60 peer-checked:opacity-100">
+                                    <span class="absolute -top-1 -left-1 w-5 h-5 rounded flex items-center justify-center transition-colors peer-checked:bg-[#205258] bg-[#D5D9D9]">
+                                        <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
+                                    </span>
+                                </label>
+                                <a href="{{ route('product.show', $fbProduct) }}" class="text-[10px] text-[#007185] hover:text-[#C7511F] text-center mt-1.5 line-clamp-2 leading-tight hover:underline">{{ Str::limit($fbProduct->name, 40) }}</a>
+                                <p class="text-xs font-bold text-[#0F1111] mt-0.5">@price($fbProduct->price)</p>
+                            </div>
+                        @endforeach
+                    </div>
+
+                    {{-- Total + Add All button --}}
+                    <div class="flex flex-col justify-center items-start lg:items-center gap-3 lg:min-w-[200px] lg:border-l lg:border-[#E3E6E6] lg:pl-6">
+                        <div>
+                            <p class="text-sm text-[#565959]">Total price for selected items:</p>
+                            <p class="text-xl font-bold text-[#0F1111]" x-text="'₹' + totalPrice.toFixed(2)"></p>
+                            @php
+                                $fbtTotalMrp = $product->mrp + $frequentlyBought->sum('mrp');
+                                $fbtTotalPrice = $product->price + $frequentlyBought->sum('price');
+                            @endphp
+                            <template x-if="totalSaving > 0">
+                                <p class="text-xs text-green-700 font-semibold" x-text="'You save ₹' + totalSaving.toFixed(2)"></p>
+                            </template>
+                        </div>
+                        <button @click="addAllToCart()" :disabled="adding"
+                                class="bg-[#F8931D] hover:bg-[#E07E0A] text-white font-medium py-2.5 px-6 rounded-full text-sm transition-colors shadow-sm disabled:opacity-60">
+                            <span x-text="adding ? 'Adding...' : 'Add all to Cart'"></span>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <script>
+                function frequentlyBought() {
+                    const products = @json($frequentlyBought->map(fn($p) => ['id' => $p->id, 'price' => (float)$p->price, 'mrp' => (float)$p->mrp]));
+                    const mainPrice = {{ (float) $product->price }};
+                    const mainMrp = {{ (float) $product->mrp }};
+                    return {
+                        selected: products.map(p => String(p.id)),
+                        adding: false,
+                        get totalPrice() {
+                            let total = mainPrice;
+                            for (const p of products) {
+                                if (this.selected.includes(String(p.id))) total += p.price;
+                            }
+                            return total;
+                        },
+                        get totalSaving() {
+                            let mrpTotal = mainMrp;
+                            let priceTotal = mainPrice;
+                            for (const p of products) {
+                                if (this.selected.includes(String(p.id))) {
+                                    mrpTotal += p.mrp;
+                                    priceTotal += p.price;
+                                }
+                            }
+                            return mrpTotal - priceTotal;
+                        },
+                        recalculate() { /* reactivity handled by Alpine getters */ },
+                        async addAllToCart() {
+                            this.adding = true;
+                            try {
+                                await Alpine.store('cart').add({{ $product->id }});
+                                for (const id of this.selected) {
+                                    await Alpine.store('cart').add(parseInt(id));
+                                }
+                            } catch (e) { console.error(e); }
+                            this.adding = false;
+                        }
+                    };
+                }
+            </script>
         @endif
 
         <!-- Compare with similar items -->
