@@ -29,22 +29,8 @@
     @endif
     @stack('meta')
 
-    <!-- Default OG / Twitter fallbacks (overridden by page-specific tags via @push('meta')) -->
-    @if(!View::hasSection('meta') && !isset($meta))
-        <meta name="description" content="{{ config('app.name') }} - Shop gadgets, mobile accessories, earphones, chargers, and more online.">
-        <meta property="og:site_name" content="{{ config('app.name') }}">
-        <meta property="og:title" content="{{ $title ?? config('app.name') }}">
-        <meta property="og:description" content="Shop gadgets, mobile accessories, earphones, chargers, and more at {{ config('app.name') }}.">
-        <meta property="og:type" content="website">
-        <meta property="og:url" content="{{ url()->current() }}">
-        <meta property="og:image" content="{{ asset('images/og-default.png') }}">
-        <meta property="og:image:width" content="1200">
-        <meta property="og:image:height" content="630">
-        <meta name="twitter:card" content="summary_large_image">
-        <meta name="twitter:title" content="{{ $title ?? config('app.name') }}">
-        <meta name="twitter:description" content="Shop gadgets, mobile accessories, earphones, chargers, and more at {{ config('app.name') }}.">
-        <meta name="twitter:image" content="{{ asset('images/og-default.png') }}">
-    @endif
+    <!-- Default OG fallbacks (only if no page-specific meta pushed) -->
+    <meta property="og:site_name" content="{{ config('app.name') }}">
 
     <link rel="canonical" href="{{ url()->current() }}">
 

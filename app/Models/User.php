@@ -118,6 +118,11 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasOne(DeliveryPartner::class);
     }
 
+    public function affiliate(): HasOne
+    {
+        return $this->hasOne(Affiliate::class);
+    }
+
     public function orders(): HasMany
     {
         return $this->hasMany(Order::class);
@@ -187,6 +192,11 @@ class User extends Authenticatable implements MustVerifyEmail
     public function isDeliveryPartner(): bool
     {
         return $this->role === 'delivery_partner' || $this->deliveryPartner()->exists();
+    }
+
+    public function isAffiliate(): bool
+    {
+        return $this->role === 'affiliate' || $this->affiliate()->exists();
     }
 
     public function hasWishlisted(int $productId): bool

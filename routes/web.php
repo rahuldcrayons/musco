@@ -16,6 +16,10 @@ use Illuminate\Support\Facades\Route;
 // CSRF Token Refresh (for long-lived POS sessions)
 Route::get('/csrf-token', fn () => response()->json(['token' => csrf_token()]))->name('csrf-token');
 
+// WhatsApp Webhook
+Route::get('/webhook/whatsapp', [App\Http\Controllers\WhatsAppWebhookController::class, 'verify']);
+Route::post('/webhook/whatsapp', [App\Http\Controllers\WhatsAppWebhookController::class, 'handle']);
+
 // XML Sitemap
 Route::get('/sitemap.xml', [App\Http\Controllers\SitemapController::class, 'index'])->name('sitemap');
 Route::get('/sitemap-pages.xml', [App\Http\Controllers\SitemapController::class, 'pages']);
@@ -220,6 +224,7 @@ Route::get('/about', [App\Http\Controllers\PageController::class, 'about'])->nam
 Route::get('/contact', [App\Http\Controllers\PageController::class, 'contact'])->name('contact');
 Route::post('/contact', [App\Http\Controllers\PageController::class, 'sendContact'])->middleware('throttle:5,1')->name('contact.send');
 Route::get('/faq', [App\Http\Controllers\PageController::class, 'faq'])->name('faq');
+Route::get('/offers', fn () => view('pages.offers'))->name('offers');
 Route::get('/blog', [App\Http\Controllers\PageController::class, 'blog'])->name('blog');
 Route::get('/blog/{slug}', [App\Http\Controllers\PageController::class, 'blogShow'])->name('blog.show');
 Route::get('/careers', [App\Http\Controllers\PageController::class, 'careers'])->name('careers');
@@ -250,3 +255,6 @@ require __DIR__.'/delivery.php';
 
 // Load POS Routes
 require __DIR__.'/pos.php';
+
+// Load Affiliate Routes
+require __DIR__.'/affiliate.php';

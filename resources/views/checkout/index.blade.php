@@ -162,12 +162,6 @@
                                     </div>
                                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
                                         <div>
-                                            <label class="block text-[10px] font-semibold text-[#565959] mb-0.5">Phone *</label>
-                                            <input type="tel" name="shipping_phone" value="{{ old('shipping_phone') }}" required autocomplete="tel"
-                                                   class="w-full text-sm border border-[#E3E6E6] rounded px-2.5 py-2 focus:border-[#007185] focus:outline-none" placeholder="+91 98765 43210">
-                                            @error('shipping_phone') <p class="text-[10px] text-[#CC0C39] mt-0.5">{{ $message }}</p> @enderror
-                                        </div>
-                                        <div>
                                             <label class="block text-[10px] font-semibold text-[#565959] mb-0.5">Address Line 2</label>
                                             <input type="text" name="shipping_address_line_2" value="{{ old('shipping_address_line_2') }}" autocomplete="address-line2"
                                                    class="w-full text-sm border border-[#E3E6E6] rounded px-2.5 py-2 focus:border-[#007185] focus:outline-none" placeholder="Area, Landmark (optional)">
@@ -366,8 +360,8 @@
                                 </div>
                                 @endif
 
-                                {{-- Partial Pay (₹100 advance + rest COD) --}}
-                                @if(($paymentSettings['cod_enabled'] ?? '1') === '1')
+                                {{-- Partial Pay (₹100 advance + rest COD) - only for orders >= ₹199 --}}
+                                @if(($paymentSettings['cod_enabled'] ?? '1') === '1' && $cart->subtotal >= 199)
                                 <div @click="paymentMethod = 'cod'"
                                      :class="paymentMethod === 'cod' ? 'border-[#205258] bg-[#205258]/5 ring-1 ring-[#205258]/20' : 'border-[#E3E6E6] hover:border-[#007185]'"
                                      class="border rounded cursor-pointer transition-all">
@@ -404,12 +398,12 @@
                             </div>
                         </div>
 
-                        {{-- Weekend Prepaid Bonus --}}
-                        @if($isWeekend)
-                        <div class="bg-emerald-50 border border-emerald-200 rounded p-2.5 flex items-center gap-2" x-show="paymentMethod !== 'cod'">
-                            <svg class="w-4 h-4 text-emerald-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        {{-- Navratri Offer Banner --}}
+                        @if(isset($navratriActive) && $navratriActive)
+                        <div class="rounded p-2.5 flex items-center gap-2" style="background: linear-gradient(135deg, #FFF3E0, #FFE0B2); border: 1px solid #FFB74D;">
+                            <span class="text-lg">🎉</span>
                             <div>
-                                <p class="text-[11px] font-bold text-emerald-800">Weekend: Extra 5% Off on Online Payment!</p>
+                                <p class="text-[11px] font-bold" style="color: #E65100;">Navratri Special: Extra 5% Off Applied Automatically!</p>
                             </div>
                         </div>
                         @endif
@@ -447,18 +441,24 @@
                                             <p class="text-[10px] text-[#565959] leading-snug mb-1.5 line-clamp-2">{{ $coupon->name }}</p>
                                             @if($cart->coupon_id !== $coupon->id)
                                                 <button type="button" :disabled="applying"
-                                                        @click="applying = true; fetch('{{ route('cart.apply-coupon') }}', {
-                                                            method: 'POST',
-                                                            headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}', 'Accept': 'application/json' },
-                                                            body: JSON.stringify({ code: '{{ $coupon->code }}' })
-                                                        }).then(r => r.json()).then(d => { applying = false; location.reload(); }).catch(() => { applying = false; })"
+                                                        @click="
+                                                            applying = true;
+                                                            fetch('{{ route('cart.apply-coupon') }}', {
+                                                                method: 'POST',
+                                                                headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}', 'Accept': 'application/json' },
+                                                                body: JSON.stringify({ code: '{{ $coupon->code }}' })
+                                                            }).then(r => {
+                                                                if (r.ok) { location.reload(); }
+                                                                else { return r.json().then(d => { alert(d.error || 'Could not apply coupon'); applying = false; }); }
+                                                            }).catch(() => { alert('Something went wrong'); applying = false; })
+                                                        "
                                                         class="w-full text-[10px] font-semibold text-[#007185] hover:text-white border border-[#007185] hover:bg-[#007185] rounded py-1 transition-colors">
                                                     Apply
                                                 </button>
                                             @else
                                                 <button type="button"
                                                         @click="fetch('{{ route('cart.remove-coupon') }}', {
-                                                            method: 'POST',
+                                                            method: 'DELETE',
                                                             headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}', 'Accept': 'application/json' }
                                                         }).then(() => location.reload())"
                                                         class="w-full text-[10px] font-medium text-[#CC0C39] border border-[#CC0C39]/30 rounded py-1 hover:bg-[#CC0C39]/5 transition-colors">
@@ -527,15 +527,35 @@
 
                                     @if($cart->discount > 0)
                                         <div class="flex items-center justify-between text-[11px]">
-                                            <span class="text-[#565959]">Discount</span>
+                                            <span class="text-[#565959]">Coupon Discount</span>
                                             <span class="text-green-600 font-medium">-@price($cart->discount)</span>
                                         </div>
                                     @endif
 
+                                    @if(isset($navratriActive) && $navratriActive)
+                                        @php $navratriSaving = round(($cart->subtotal - $cart->discount) * 0.05, 2); @endphp
+                                        <div class="flex items-center justify-between text-[11px]">
+                                            <span class="text-[#CC0C39] font-semibold">Navratri 5% Extra Off</span>
+                                            <span class="text-[#CC0C39] font-semibold">-@price($navratriSaving)</span>
+                                        </div>
+                                    @endif
+
+                                    @php
+                                        $freeShipThreshold = (float) \App\Models\Setting::get('free_shipping_threshold', 499);
+                                        $afterCoupon = $cart->subtotal - $cart->discount;
+                                        $shipFee = $afterCoupon >= $freeShipThreshold ? 0 : 50;
+                                    @endphp
                                     <div class="flex items-center justify-between text-[11px]">
                                         <span class="text-[#565959]">Shipping</span>
-                                        <span class="text-green-600 font-semibold">FREE</span>
+                                        @if($shipFee > 0)
+                                            <span class="text-[#0F1111] font-medium">@price($shipFee)</span>
+                                        @else
+                                            <span class="text-green-600 font-semibold">FREE</span>
+                                        @endif
                                     </div>
+                                    @if($shipFee > 0)
+                                        <p class="text-[9px] text-[#565959]">Free shipping on orders above @price($freeShipThreshold)</p>
+                                    @endif
 
                                     @if($cart->tax > 0)
                                         <div class="flex items-center justify-between text-[11px]">
@@ -547,15 +567,33 @@
 
                                 <div class="border-t border-dashed border-[#E3E6E6] my-2"></div>
 
+                                @php
+                                    $displayTotal = $cart->total + $shipFee;
+                                    $totalSavings = $cart->discount;
+                                    if (isset($navratriActive) && $navratriActive) {
+                                        $navSave = round(($cart->subtotal - $cart->discount) * 0.05, 2);
+                                        $displayTotal = max(0, $displayTotal - $navSave);
+                                        $totalSavings += $navSave;
+                                    }
+                                    $codMinOrder = 199;
+                                    $showCod = $displayTotal >= $codMinOrder;
+                                @endphp
+
                                 <div class="flex items-center justify-between">
                                     <span class="text-sm font-bold text-[#0F1111]">Total</span>
-                                    <span class="text-sm font-bold text-[#CC0C39]">@price($cart->total)</span>
+                                    <span class="text-sm font-bold text-[#CC0C39]">@price($displayTotal)</span>
                                 </div>
 
-                                @if($cart->discount > 0)
+                                @if($totalSavings > 0)
                                     <p class="text-[10px] font-medium text-green-700 text-center mt-1.5 bg-green-50 rounded py-1">
-                                        You save @price($cart->discount) on this order
+                                        You save @price($totalSavings) on this order
                                     </p>
+                                @endif
+
+                                @if(isset($navratriActive) && $navratriActive)
+                                    <div class="mt-2 p-2 rounded-lg text-center" style="background: linear-gradient(135deg, #FF6B35, #FF9F1C);">
+                                        <p class="text-[10px] font-bold text-white">Navratri Special - Extra 5% Off Applied!</p>
+                                    </div>
                                 @endif
                             </div>
 

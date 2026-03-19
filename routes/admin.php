@@ -144,6 +144,19 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::resource('banners', App\Http\Controllers\Admin\BannerController::class);
             Route::post('/banners/reorder', [App\Http\Controllers\Admin\BannerController::class, 'reorder'])->name('banners.reorder');
 
+            // Affiliates
+            Route::prefix('affiliates')->name('affiliates.')->group(function () {
+                Route::get('/', [App\Http\Controllers\Admin\AffiliateController::class, 'index'])->name('index');
+                Route::get('/redemptions', [App\Http\Controllers\Admin\AffiliateController::class, 'redemptions'])->name('redemptions');
+                Route::get('/{affiliate}', [App\Http\Controllers\Admin\AffiliateController::class, 'show'])->name('show');
+                Route::post('/{affiliate}/approve', [App\Http\Controllers\Admin\AffiliateController::class, 'approve'])->name('approve');
+                Route::post('/{affiliate}/reject', [App\Http\Controllers\Admin\AffiliateController::class, 'reject'])->name('reject');
+                Route::post('/{affiliate}/suspend', [App\Http\Controllers\Admin\AffiliateController::class, 'suspend'])->name('suspend');
+                Route::post('/redemptions/{redemption}/process', [App\Http\Controllers\Admin\AffiliateController::class, 'processRedemption'])->name('redemptions.process');
+                Route::post('/redemptions/{redemption}/complete', [App\Http\Controllers\Admin\AffiliateController::class, 'completeRedemption'])->name('redemptions.complete');
+                Route::post('/redemptions/{redemption}/fail', [App\Http\Controllers\Admin\AffiliateController::class, 'failRedemption'])->name('redemptions.fail');
+            });
+
             // Newsletter
             Route::prefix('newsletter')->name('newsletter.')->group(function () {
                 Route::get('/', [App\Http\Controllers\Admin\NewsletterController::class, 'index'])->name('index');

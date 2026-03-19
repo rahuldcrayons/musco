@@ -51,6 +51,7 @@ class Product extends Model
         'seo_data',
         'attributes',
         'specifications',
+        'video_url',
         'status',
         'rejection_reason',
         'published_at',
@@ -165,7 +166,9 @@ class Product extends Model
 
     public function approvedReviews(): HasMany
     {
-        return $this->hasMany(Review::class)->where('is_approved', true);
+        return $this->hasMany(Review::class)
+            ->where('is_approved', true)
+            ->where('created_at', '<=', now());
     }
 
     public function questions(): HasMany

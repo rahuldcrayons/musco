@@ -40,8 +40,8 @@
 </section>
 
 {{-- FAQPage Schema (JSON-LD) --}}
-<script type="application/ld+json">
-{!! json_encode([
+<?php
+$faqSchema = [
     '@context' => 'https://schema.org',
     '@type' => 'FAQPage',
     'mainEntity' => collect($items)->map(fn($faq) => [
@@ -52,5 +52,8 @@
             'text' => $faq['a'],
         ],
     ])->toArray(),
-], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}
+];
+?>
+<script type="application/ld+json">
+{!! json_encode($faqSchema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}
 </script>

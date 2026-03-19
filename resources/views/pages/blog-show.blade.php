@@ -29,8 +29,7 @@
         @endif
 
         {{-- BlogPosting JSON-LD --}}
-        <script type="application/ld+json">
-        {!! json_encode([
+        <?php $blogSchema = [
             '@context' => 'https://schema.org',
             '@type' => 'BlogPosting',
             'headline' => $post->title,
@@ -59,8 +58,8 @@
             'articleSection' => $post->category,
             'keywords' => $post->tags ? implode(', ', $post->tags) : null,
             'wordCount' => str_word_count(strip_tags($post->content ?? '')),
-        ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}
-        </script>
+        ]; ?>
+        <script type="application/ld+json">{!! json_encode($blogSchema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}</script>
     @endpush
 
     {{-- Breadcrumb --}}

@@ -22,10 +22,10 @@
         @endif
         <link rel="canonical" href="{{ route('reels.show', $reel['shortcode']) }}">
 
-        @php
+        <?php
             $isVideo = in_array($reel['media_type'] ?? 'VIDEO', ['VIDEO', 'REELS']);
             $schemaType = $isVideo ? 'VideoObject' : 'ImageObject';
-            $schema = [
+            $reelShowSchema = [
                 '@context' => 'https://schema.org',
                 '@type' => $schemaType,
                 'name' => Str::limit($reel['caption'], 100) ?: config('app.name') . ' Post',
@@ -43,13 +43,11 @@
                 ],
             ];
             if ($isVideo) {
-                $schema['contentUrl'] = $reel['media_url'] ?: $reel['permalink'];
-                $schema['embedUrl'] = route('reels.show', $reel['shortcode']);
+                $reelShowSchema['contentUrl'] = $reel['media_url'] ?: $reel['permalink'];
+                $reelShowSchema['embedUrl'] = route('reels.show', $reel['shortcode']);
             }
-        @endphp
-        <script type="application/ld+json">
-        {!! json_encode($schema, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) !!}
-        </script>
+        ?>
+        <script type="application/ld+json">{!! json_encode($reelShowSchema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}</script>
     @endpush
 
     <div class="bg-[#f8f6f3] min-h-screen">

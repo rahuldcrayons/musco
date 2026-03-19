@@ -101,7 +101,7 @@ class ProductController extends Controller
             'brand',
             'seller',
             'images',
-            'variants.attributeValues.attribute',
+            'variants',
             'approvedReviews.user',
             'questions' => fn ($q) => $q->where('is_answered', true)->latest()->take(5),
             'questions.answers',

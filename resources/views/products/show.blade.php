@@ -38,19 +38,23 @@
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-6">
             <!-- Image Gallery — Col 1 -->
             <div x-data="{
-                    images: @js($product->images->pluck('url')->values()),
+                    images: @js($product->images->pluck('url')->map(fn($u) => str_starts_with($u, 'http') ? $u : asset('storage/' . $u))->values()),
+                    videoUrl: '{{ $product->video_url ?? '' }}',
+                    showingVideo: false,
                     activeIndex: 0,
                     touchStartX: 0,
                     touchEndX: 0,
                     showZoom: false,
                     get activeImage() { return this.images[this.activeIndex] || '{{ $product->primary_image_url }}'; },
                     select(index) {
+                        this.showingVideo = false;
                         if (index !== this.activeIndex) {
                             this.activeIndex = index;
                         }
                     },
-                    next() { this.activeIndex = (this.activeIndex + 1) % this.images.length; },
-                    prev() { this.activeIndex = (this.activeIndex - 1 + this.images.length) % this.images.length; },
+                    showVideo() { this.showingVideo = true; },
+                    next() { this.showingVideo = false; this.activeIndex = (this.activeIndex + 1) % this.images.length; },
+                    prev() { this.showingVideo = false; this.activeIndex = (this.activeIndex - 1 + this.images.length) % this.images.length; },
                     handleSwipe() {
                         const diff = this.touchStartX - this.touchEndX;
                         if (Math.abs(diff) > 50) {
@@ -74,12 +78,21 @@
                                 @foreach($product->images as $index => $image)
                                     <button @click="select({{ $index }}); $el.scrollIntoView({ behavior: 'smooth', block: 'nearest' })"
                                             class="w-16 h-16 rounded border-2 overflow-hidden shrink-0 transition-all duration-200 cursor-pointer"
-                                            :class="activeIndex === {{ $index }}
+                                            :class="activeIndex === {{ $index }} && !showingVideo
                                                 ? 'border-[#C7511F] shadow-sm'
                                                 : 'border-[#E3E6E6] hover:border-[#C7511F]'">
-                                        <img src="{{ $image->url }}" alt="{{ $product->name }}" class="w-full h-full object-contain">
+                                        <img src="{{ str_starts_with($image->url, 'http') ? $image->url : asset('storage/' . $image->url) }}" alt="{{ $product->name }}" class="w-full h-full object-contain">
                                     </button>
                                 @endforeach
+                                @if($product->video_url)
+                                    <button @click="showVideo(); $el.scrollIntoView({ behavior: 'smooth', block: 'nearest' })"
+                                            class="w-16 h-16 rounded border-2 overflow-hidden shrink-0 transition-all duration-200 cursor-pointer relative"
+                                            :class="showingVideo ? 'border-[#C7511F] shadow-sm' : 'border-[#E3E6E6] hover:border-[#C7511F]'">
+                                        <div class="w-full h-full bg-neutral-900 flex items-center justify-center">
+                                            <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                                        </div>
+                                    </button>
+                                @endif
                             </div>
                             {{-- Down arrow --}}
                             <button @click="thumbEl.scrollBy({ top: 144, behavior: 'smooth' })"
@@ -90,11 +103,22 @@
                         </div>
                     @endif
 
-                    <!-- Main Image -->
-                    <div class="relative bg-white rounded-lg overflow-hidden border border-[#E3E6E6] group flex-1"
+                    <!-- Main Image / Video -->
+                    <div class="relative bg-white rounded-lg overflow-hidden group flex-1"
                          @touchstart="touchStartX = $event.changedTouches[0].screenX"
                          @touchend="touchEndX = $event.changedTouches[0].screenX; handleSwipe()">
-                        <div x-show="images.length > 0"
+                        {{-- Video Player --}}
+                        @if($product->video_url)
+                        <div x-show="showingVideo" x-cloak class="aspect-[9/16] max-h-[520px] mx-auto bg-black flex items-center justify-center">
+                            <video x-show="showingVideo"
+                                   class="w-full h-full object-contain"
+                                   controls playsinline
+                                   :src="showingVideo ? '{{ str_starts_with($product->video_url, 'http') ? $product->video_url : asset($product->video_url) }}' : ''">
+                            </video>
+                        </div>
+                        @endif
+
+                        <div x-show="!showingVideo && images.length > 0"
                              class="relative overflow-hidden cursor-zoom-in aspect-square"
                              x-data="{ zooming: false, zoomX: 50, zoomY: 50 }"
                              @mouseenter="zooming = true"
@@ -103,11 +127,11 @@
                              @click="showZoom = true">
                             <img :src="activeImage"
                                  alt="{{ $product->name }}"
-                                 class="w-full h-full object-contain p-4 transition-transform duration-200"
+                                 class="w-full h-full object-contain transition-transform duration-200"
                                  :style="zooming ? 'transform: scale(2); transform-origin: ' + zoomX + '% ' + zoomY + '%' : ''">
                         </div>
 
-                        <div x-show="images.length === 0" class="flex items-center justify-center py-20">
+                        <div x-show="!showingVideo && images.length === 0" class="flex items-center justify-center py-20">
                             <svg class="w-20 h-20 text-neutral-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                             </svg>
@@ -135,15 +159,24 @@
                 </div>
 
                 <!-- Mobile Thumbnails -->
-                @if($product->images->count() > 1)
+                @if($product->images->count() > 1 || $product->video_url)
                     <div class="flex lg:hidden gap-2 overflow-x-auto pb-1 scrollbar-thin">
                         @foreach($product->images as $index => $image)
                             <button @click="select({{ $index }})"
                                     class="w-14 h-14 rounded border-2 overflow-hidden shrink-0"
-                                    :class="activeIndex === {{ $index }} ? 'border-[#C7511F]' : 'border-[#E3E6E6]'">
-                                <img src="{{ $image->url }}" alt="{{ $product->name }}" class="w-full h-full object-contain">
+                                    :class="activeIndex === {{ $index }} && !showingVideo ? 'border-[#C7511F]' : 'border-[#E3E6E6]'">
+                                <img src="{{ str_starts_with($image->url, 'http') ? $image->url : asset('storage/' . $image->url) }}" alt="{{ $product->name }}" class="w-full h-full object-contain">
                             </button>
                         @endforeach
+                        @if($product->video_url)
+                            <button @click="showVideo()"
+                                    class="w-14 h-14 rounded border-2 overflow-hidden shrink-0 relative"
+                                    :class="showingVideo ? 'border-[#C7511F]' : 'border-[#E3E6E6]'">
+                                <div class="w-full h-full bg-neutral-900 flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                                </div>
+                            </button>
+                        @endif
                     </div>
                 @endif
 
@@ -228,9 +261,10 @@
                     </div>
                     <div class="flex gap-2 overflow-x-auto scrollbar-hide pb-1" style="-webkit-overflow-scrolling: touch;">
                         @foreach($availableCoupons as $coupon)
-                        <div class="flex items-start gap-3 border border-[#E3E6E6] rounded-lg p-3 shrink-0" style="min-width: 240px; max-width: 280px;">
-                            <div class="shrink-0 bg-[#FFF3E0] border border-dashed border-[#F8931D] rounded px-2 py-1 text-center min-w-[70px]">
+                        <div class="flex items-start gap-3 border border-[#E3E6E6] rounded-lg p-3 shrink-0 cursor-pointer hover:border-[#F8931D] transition-colors" style="min-width: 240px; max-width: 280px;" onclick="navigator.clipboard.writeText('{{ $coupon->code }}'); let t=this.querySelector('.copy-msg'); t.style.display='block'; setTimeout(()=>t.style.display='none',1500);">
+                            <div class="shrink-0 bg-[#FFF3E0] border border-dashed border-[#F8931D] rounded px-2 py-1 text-center min-w-[70px] relative">
                                 <span class="text-xs font-bold text-[#C7511F] block">{{ $coupon->code }}</span>
+                                <span class="copy-msg" style="display:none; position:absolute; top:-24px; left:50%; transform:translateX(-50%); background:#0F1111; color:#fff; font-size:10px; padding:2px 8px; border-radius:4px; white-space:nowrap;">Copied!</span>
                             </div>
                             <div class="flex-1 min-w-0">
                                 <p class="text-xs font-bold text-[#0F1111]">

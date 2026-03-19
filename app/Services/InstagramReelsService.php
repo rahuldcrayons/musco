@@ -65,19 +65,18 @@ class InstagramReelsService
             // 2. Fetch manual collab reels by shortcode (stored in settings)
             $collabData = $this->fetchCollabReels($fields);
 
-            // 3. Merge own + collab, deduplicate by ID
-            $allMedia = collect(array_merge($ownData, $collabData))
-                ->unique('id');
+            // 3. Separate own videos (have media_url, can autoplay) from collab (thumbnail only)
+            $ownVideos = collect($ownData)->filter(fn($item) => in_array($item['media_type'] ?? '', ['VIDEO', 'REELS']) && !empty($item['media_url']));
+            $ownOthers = collect($ownData)->filter(fn($item) => !in_array($item['media_type'] ?? '', ['VIDEO', 'REELS']) || empty($item['media_url']));
+            $collabItems = collect($collabData);
 
-            // 4. Separate videos from other media
-            $videos = $allMedia->filter(fn($item) => in_array($item['media_type'] ?? '', ['VIDEO', 'REELS']));
-            $others = $allMedia->filter(fn($item) => in_array($item['media_type'] ?? '', ['CAROUSEL_ALBUM', 'IMAGE']));
-
-            // 5. Sort videos by engagement (likes + comments) — best performing first
-            $videos = $videos->sortByDesc(fn($item) => ($item['like_count'] ?? 0) + ($item['comments_count'] ?? 0));
-
-            // 6. Prioritize videos sorted by engagement, fill remaining with other media
-            $combined = $videos->concat($others)->take($limit);
+            // 4. Own autoplay videos first, then collab reels by order, then other own media
+            $combined = $ownVideos
+                ->sortByDesc(fn($item) => ($item['like_count'] ?? 0) + ($item['comments_count'] ?? 0))
+                ->concat($collabItems)
+                ->concat($ownOthers)
+                ->unique('id')
+                ->take($limit);
 
             $reels = $combined
                 ->map(fn($item) => [
@@ -103,7 +102,8 @@ class InstagramReelsService
     }
 
     /**
-     * Fetch collab reels using Instagram oEmbed API from stored shortcodes.
+     * Fetch collab reels from stored shortcodes.
+     * Downloads and caches thumbnails locally via Instagram's GraphQL.
      */
     private function fetchCollabReels(string $fields): array
     {
@@ -112,48 +112,87 @@ class InstagramReelsService
             return [];
         }
 
-        // Shortcodes stored as comma-separated: DTwtZK2iFDy,ABC123,XYZ789
         $shortcodes = array_filter(array_map('trim', explode(',', $collabSetting)));
         $results = [];
 
-        foreach ($shortcodes as $shortcode) {
+        foreach ($shortcodes as $index => $shortcode) {
             try {
-                // Use oEmbed to get thumbnail
-                $oembedResponse = Http::timeout(10)->get(
-                    'https://graph.facebook.com/v21.0/instagram_oembed',
-                    [
-                        'url' => "https://www.instagram.com/reel/{$shortcode}/",
-                        'access_token' => $this->accessToken,
-                    ]
-                );
-
                 $permalink = "https://www.instagram.com/reel/{$shortcode}/";
-                $thumbnail = '';
-                $caption = '';
-
-                if ($oembedResponse->successful()) {
-                    $oembed = $oembedResponse->json();
-                    $thumbnail = $oembed['thumbnail_url'] ?? '';
-                    $caption = $oembed['title'] ?? '';
-                }
+                $thumbnail = $this->getCollabThumbnail($shortcode);
 
                 $results[] = [
                     'id' => 'collab_' . $shortcode,
-                    'caption' => $caption,
+                    'caption' => '',
                     'media_type' => 'VIDEO',
                     'media_url' => '',
                     'thumbnail_url' => $thumbnail,
                     'permalink' => $permalink,
-                    'timestamp' => now()->toIso8601String(),
-                    'like_count' => 999, // High priority to show collab reels first
+                    'timestamp' => now()->subMinutes($index)->toIso8601String(),
+                    'like_count' => 999 - $index,
                     'comments_count' => 0,
                 ];
             } catch (\Exception $e) {
-                Log::warning("Failed to fetch collab reel {$shortcode}: " . $e->getMessage());
+                Log::warning("Failed to add collab reel {$shortcode}: " . $e->getMessage());
             }
         }
 
         return $results;
+    }
+
+    /**
+     * Get collab reel thumbnail — download from Instagram and cache locally.
+     */
+    private function getCollabThumbnail(string $shortcode): string
+    {
+        $dir = public_path('images/reels');
+        $localPath = "{$dir}/{$shortcode}.jpg";
+        $publicUrl = asset("images/reels/{$shortcode}.jpg");
+
+        // Return cached file if it exists and is less than 7 days old
+        if (file_exists($localPath) && (time() - filemtime($localPath)) < 604800) {
+            return $publicUrl;
+        }
+
+        // Ensure directory exists
+        if (!is_dir($dir)) {
+            mkdir($dir, 0755, true);
+        }
+
+        // Try fetching the page HTML and extracting og:image
+        try {
+            $response = Http::timeout(10)
+                ->withHeaders([
+                    'User-Agent' => 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)',
+                    'Accept' => 'text/html',
+                ])
+                ->get("https://www.instagram.com/p/{$shortcode}/");
+
+            if ($response->successful()) {
+                $html = $response->body();
+                // Extract og:image from meta tags
+                if (preg_match('/<meta\s+(?:property|name)=["\']og:image["\']\s+content=["\']([^"\']+)["\']/i', $html, $m)) {
+                    $imageUrl = html_entity_decode($m[1]);
+                    $imgData = Http::timeout(10)->get($imageUrl)->body();
+                    if ($imgData && strlen($imgData) > 1000) {
+                        file_put_contents($localPath, $imgData);
+                        return $publicUrl;
+                    }
+                }
+                // Also try content="" before property="" order
+                if (preg_match('/<meta\s+content=["\']([^"\']+)["\']\s+(?:property|name)=["\']og:image["\']/i', $html, $m)) {
+                    $imageUrl = html_entity_decode($m[1]);
+                    $imgData = Http::timeout(10)->get($imageUrl)->body();
+                    if ($imgData && strlen($imgData) > 1000) {
+                        file_put_contents($localPath, $imgData);
+                        return $publicUrl;
+                    }
+                }
+            }
+        } catch (\Exception $e) {
+            Log::warning("Failed to fetch thumbnail for {$shortcode}: " . $e->getMessage());
+        }
+
+        return ''; // No thumbnail available
     }
 
     /**

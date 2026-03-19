@@ -11,7 +11,7 @@ class ReelController extends Controller
 {
     public function apiLatest(InstagramReelsService $service): JsonResponse
     {
-        $reels = $service->getLatestReels(10);
+        $reels = $service->getLatestReels(20);
         $handle = config('services.instagram.handle');
 
         return response()->json([

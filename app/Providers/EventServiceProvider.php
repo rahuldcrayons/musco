@@ -10,6 +10,7 @@ use App\Events\PosSaleCompleted;
 use App\Events\RefundProcessed;
 use App\Events\ReturnRequested;
 use App\Listeners\CheckOrderFraud;
+use App\Listeners\ProcessAffiliateCommission;
 use App\Listeners\SendOrderNotification;
 use App\Listeners\SendReviewInvitationAfterDelivery;
 use App\Listeners\TrackOrderAnalytics;
@@ -23,6 +24,7 @@ class EventServiceProvider extends ServiceProvider
             [CheckOrderFraud::class, 'handle'],
             [SendOrderNotification::class, 'handleOrderPlaced'],
             [UpdateRecommendationData::class, 'handleOrderPlaced'],
+            [ProcessAffiliateCommission::class, 'handleOrderPlaced'],
         ],
         OrderStatusChanged::class => [
             [SendOrderNotification::class, 'handleOrderStatusChanged'],
@@ -34,6 +36,7 @@ class EventServiceProvider extends ServiceProvider
             [SendOrderNotification::class, 'handleOrderDelivered'],
             TrackOrderAnalytics::class,
             SendReviewInvitationAfterDelivery::class,
+            [ProcessAffiliateCommission::class, 'handleOrderDelivered'],
         ],
         ReturnRequested::class => [
             [SendOrderNotification::class, 'handleReturnRequested'],

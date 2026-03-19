@@ -94,37 +94,42 @@ class ReviewSchemaService
                 'worstRating' => 1,
             ];
 
-            // Include up to 10 most recent reviews in structured data
-            $schema['review'] = $approvedReviews->sortByDesc('created_at')->take(10)->map(function ($review) {
-                $authorName = $review->user
-                    ? $review->user->first_name . ' ' . strtoupper(substr($review->user->last_name ?? '', 0, 1)) . '.'
-                    : ($review->guest_name ?? 'A Customer');
+            // Include up to 10 most recent reviews with content in structured data
+            // Google requires reviewBody or name to be present for valid review markup
+            $schema['review'] = $approvedReviews
+                ->filter(fn ($r) => !empty($r->content) || !empty($r->title))
+                ->sortByDesc('created_at')
+                ->take(10)
+                ->map(function ($review) {
+                    $authorName = $review->user
+                        ? $review->user->first_name . ' ' . strtoupper(substr($review->user->last_name ?? '', 0, 1)) . '.'
+                        : ($review->guest_name ?? 'A Customer');
 
-                $reviewSchema = [
-                    '@type' => 'Review',
-                    'datePublished' => $review->created_at->format('Y-m-d'),
-                    'reviewRating' => [
-                        '@type' => 'Rating',
-                        'ratingValue' => (int) $review->rating,
-                        'bestRating' => 5,
-                        'worstRating' => 1,
-                    ],
-                    'author' => [
-                        '@type' => 'Person',
-                        'name' => $authorName,
-                    ],
-                ];
+                    $reviewSchema = [
+                        '@type' => 'Review',
+                        'datePublished' => $review->created_at->format('Y-m-d'),
+                        'reviewRating' => [
+                            '@type' => 'Rating',
+                            'ratingValue' => (int) $review->rating,
+                            'bestRating' => 5,
+                            'worstRating' => 1,
+                        ],
+                        'author' => [
+                            '@type' => 'Person',
+                            'name' => $authorName,
+                        ],
+                    ];
 
-                if ($review->title) {
-                    $reviewSchema['name'] = $review->title;
-                }
+                    if (!empty($review->title)) {
+                        $reviewSchema['name'] = $review->title;
+                    }
 
-                if ($review->content) {
-                    $reviewSchema['reviewBody'] = $review->content;
-                }
+                    if (!empty($review->content)) {
+                        $reviewSchema['reviewBody'] = $review->content;
+                    }
 
-                return $reviewSchema;
-            })->values()->toArray();
+                    return $reviewSchema;
+                })->values()->toArray();
         }
 
         return $schema;

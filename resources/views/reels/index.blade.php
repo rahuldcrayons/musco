@@ -10,8 +10,7 @@
         <link rel="canonical" href="{{ route('reels.index') }}">
 
         {{-- JSON-LD ItemList for video gallery --}}
-        <script type="application/ld+json">
-        {!! json_encode([
+        <?php $reelsSchema = [
             '@context' => 'https://schema.org',
             '@type' => 'CollectionPage',
             'name' => 'Reels & Videos - ' . config('app.name'),
@@ -34,8 +33,8 @@
                     ],
                 ])->toArray(),
             ],
-        ], JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) !!}
-        </script>
+        ]; ?>
+        <script type="application/ld+json">{!! json_encode($reelsSchema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}</script>
     @endpush
 
     <div class="bg-[#f8f6f3] min-h-screen">

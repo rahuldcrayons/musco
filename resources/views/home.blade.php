@@ -16,8 +16,8 @@
         <meta name="twitter:description" content="Shop gadgets, home essentials, and accessories online at {{ $siteSettings['site_name'] }}.">
 
         {{-- Organization + WebSite JSON-LD --}}
-        <script type="application/ld+json">
-        {!! json_encode([
+        <?php
+        $homeSchema = [
             '@context' => 'https://schema.org',
             '@graph' => [
                 [
@@ -25,16 +25,9 @@
                     '@id' => url('/') . '#organization',
                     'name' => $siteSettings['site_name'],
                     'url' => url('/'),
-                    'logo' => [
-                        '@type' => 'ImageObject',
-                        'url' => asset('images/jikra-logo.png'),
-                    ],
+                    'logo' => ['@type' => 'ImageObject', 'url' => asset('images/jikra-logo.png')],
                     'description' => $siteSettings['site_tagline'] . ' - Shop gadgets, home essentials, and accessories online.',
-                    'contactPoint' => [
-                        '@type' => 'ContactPoint',
-                        'contactType' => 'customer service',
-                        'url' => url('/contact'),
-                    ],
+                    'contactPoint' => ['@type' => 'ContactPoint', 'contactType' => 'customer service', 'url' => url('/contact')],
                 ],
                 [
                     '@type' => 'WebSite',
@@ -44,16 +37,14 @@
                     'publisher' => ['@id' => url('/') . '#organization'],
                     'potentialAction' => [
                         '@type' => 'SearchAction',
-                        'target' => [
-                            '@type' => 'EntryPoint',
-                            'urlTemplate' => url('/products') . '?search={search_term_string}',
-                        ],
+                        'target' => ['@type' => 'EntryPoint', 'urlTemplate' => url('/products') . '?search={search_term_string}'],
                         'query-input' => 'required name=search_term_string',
                     ],
                 ],
             ],
-        ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}
-        </script>
+        ];
+        ?>
+        <script type="application/ld+json">{!! json_encode($homeSchema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}</script>
     @endpush
 
     <x-slot name="styles">
@@ -146,6 +137,13 @@
     <!-- ==========================================
          HERO BANNER SLIDER
          ========================================== -->
+    <style>
+        .hero-slides { height: auto !important; aspect-ratio: 2.74 / 1; }
+        .hero-banner img { height: 100% !important; width: 100%; object-fit: cover; display: block; }
+        .hero-slide { position: absolute; inset: 0; }
+        .hero-banner::after, .hero-banner::before { display: none !important; }
+        .hero-banner { border-bottom: none !important; margin-bottom: 0 !important; }
+    </style>
     @if(true)
     <section class="hero-banner"
              x-data="{
@@ -518,7 +516,7 @@
          HAPPY CUSTOMERS / TESTIMONIALS
          ========================================== -->
     @if($testimonials->count() && (!isset($sections['testimonials']) || $sections['testimonials']->is_active))
-        <section class="testimonial-section bg-white">
+        <section class="testimonial-section" style="background-color:#fefae0;">
             <div class="container mx-auto px-4">
                 <div class="testimonial-layout">
                     {{-- Static Title Card --}}
@@ -577,6 +575,22 @@
             </div>
         </section>
     @endif
+
+    <!-- ==========================================
+         VIEW JIKRA ON AMAZON
+         ========================================== -->
+    <section style="background:#232f3e;">
+        <a href="https://www.amazon.in/stores/JIKRA/page/5EC79DB1-60CB-4876-86A5-2314EC52E625?ref_=ast_bln" target="_blank" rel="noopener" class="block">
+            <div class="container mx-auto px-4" style="display:flex;align-items:center;justify-content:center;gap:24px;padding:28px 16px;">
+                <img src="{{ asset('images/amazon-logo.jpg') }}" alt="Amazon" style="height:48px;width:auto;border-radius:8px;" loading="lazy">
+                <div style="color:#fff;">
+                    <p style="font-size:18px;font-weight:700;margin:0;">Also Available on Amazon</p>
+                    <p style="font-size:12px;color:rgba(255,255,255,0.6);margin:4px 0 0;">Shop Jikra with Prime delivery & easy returns</p>
+                </div>
+                <span style="background:#FF9900;color:#0F1111;padding:10px 24px;border-radius:50px;font-size:13px;font-weight:700;white-space:nowrap;">Shop on Amazon</span>
+            </div>
+        </a>
+    </section>
 
     <!-- ==========================================
          NEWSLETTER SIGNUP

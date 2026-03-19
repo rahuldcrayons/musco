@@ -265,12 +265,17 @@
     @if(config('services.ga4.measurement_id') || config('services.facebook.pixel_id'))
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            var orderItems = @json($order->items->map(fn ($item) => [
-                'item_id' => $item->sku ?? (string) $item->product_id,
-                'item_name' => $item->product_name,
-                'price' => (float) $item->price,
-                'quantity' => $item->quantity,
-            ]));
+            <?php
+            $orderItemsArr = $order->items->map(function($item) {
+                return [
+                    'item_id' => $item->sku ?? (string) $item->product_id,
+                    'item_name' => $item->product_name,
+                    'price' => (float) $item->price,
+                    'quantity' => $item->quantity,
+                ];
+            })->values()->toArray();
+            ?>
+            var orderItems = {!! json_encode($orderItemsArr) !!};
 
             @if(config('services.ga4.measurement_id'))
             gtag('event', 'purchase', {
@@ -285,7 +290,7 @@
 
             @if(config('services.facebook.pixel_id'))
             fbq('track', 'Purchase', {
-                content_ids: @json($order->items->pluck('product_id')->map(fn ($id) => (string) $id)->toArray()),
+                content_ids: {!! json_encode($order->items->pluck('product_id')->map('strval')->values()->toArray()) !!},
                 content_type: 'product',
                 value: {{ (float) $order->total }},
                 currency: 'INR',

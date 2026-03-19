@@ -14,6 +14,11 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->append(\App\Http\Middleware\SecurityHeaders::class);
+        $middleware->append(\App\Http\Middleware\TrackAffiliateReferral::class);
+
+        $middleware->validateCsrfTokens(except: [
+            'webhook/*',
+        ]);
 
         $middleware->api(prepend: [
             \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
@@ -22,6 +27,9 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->redirectGuestsTo(function (\Illuminate\Http\Request $request) {
             if ($request->is('delivery/*') || $request->is('delivery')) {
                 return route('delivery.login');
+            }
+            if ($request->is('affiliate/*') || $request->is('affiliate')) {
+                return route('affiliate.login');
             }
             if ($request->is('admin/*') || $request->is('admin')) {
                 return route('admin.login');
@@ -39,6 +47,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'admin' => \App\Http\Middleware\EnsureUserIsAdmin::class,
             'admin.section' => \App\Http\Middleware\CheckAdminSection::class,
             'delivery' => \App\Http\Middleware\EnsureUserIsDeliveryPartner::class,
+            'affiliate' => \App\Http\Middleware\EnsureUserIsAffiliate::class,
             'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
             'pos.auth' => \App\Http\Middleware\PosAuthenticate::class,
             'pos.shift' => \App\Http\Middleware\PosShiftRequired::class,

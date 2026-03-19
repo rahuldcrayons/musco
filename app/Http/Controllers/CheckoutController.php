@@ -6,6 +6,7 @@ use App\Events\OrderPlaced;
 use App\Models\AbandonedCheckout;
 use App\Models\Cart;
 use App\Models\Coupon;
+use App\Models\Affiliate;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Setting;
@@ -35,7 +36,8 @@ class CheckoutController extends Controller
 
         $paymentSettings = Setting::where('group', 'payment')->pluck('value', 'key');
 
-        // Fetch available coupons for display
+        // Fetch only coupons that are valid for this cart's subtotal
+        $cartSubtotal = $cart->subtotal;
         $availableCoupons = Coupon::where('is_active', true)
             ->where(function ($q) {
                 $q->whereNull('starts_at')->orWhere('starts_at', '<=', now());
@@ -46,11 +48,19 @@ class CheckoutController extends Controller
             ->where(function ($q) {
                 $q->whereNull('usage_limit')->orWhereColumn('times_used', '<', 'usage_limit');
             })
+            ->where(function ($q) use ($cartSubtotal) {
+                $q->where('min_order_amount', '<=', $cartSubtotal)
+                  ->orWhere('min_order_amount', 0);
+            })
             ->orderByDesc('value')
             ->get();
 
-        // Check if weekend for prepaid bonus
-        $isWeekend = now()->isWeekend();
+        // Navratri offer active check
+        $navratriActive = Setting::get('navratri_offer_active', '1') === '1';
+
+        // Shipping fee calculation for display
+        $freeShipThreshold = (float) Setting::get('free_shipping_threshold', 499);
+        $shippingFee = ($cart->subtotal - $cart->discount) >= $freeShipThreshold ? 0 : 50;
 
         // Record abandoned checkout
         $this->recordAbandonedCheckout($cart, 'checkout');
@@ -68,7 +78,7 @@ class CheckoutController extends Controller
 
         return view('checkout.index', compact(
             'cart', 'addresses', 'defaultAddress', 'paymentSettings',
-            'isGuest', 'availableCoupons', 'isWeekend', 'fbEventId'
+            'isGuest', 'availableCoupons', 'navratriActive', 'fbEventId'
         ));
     }
 
@@ -162,30 +172,56 @@ class CheckoutController extends Controller
             $billingAddressId = $billingAddress->id;
         }
 
-        // Weekend prepaid discount: 5% extra on weekends for non-COD
+        // Navratri offer: 5% extra off on all orders (after coupon discounts)
         $paymentMethod = $validated['payment_method'];
-        $weekendDiscount = 0;
-        if (now()->isWeekend() && $paymentMethod !== 'cod') {
-            $weekendDiscount = round(($cart->subtotal - $cart->discount) * 0.05, 2);
+        $navratriDiscount = 0;
+        $navratriActive = Setting::get('navratri_offer_active', '1') === '1';
+        if ($navratriActive) {
+            $navratriDiscount = round(($cart->subtotal - $cart->discount) * 0.05, 2);
         }
 
-        $totalDiscount = $cart->discount + $weekendDiscount;
-        $finalTotal = max(0, $cart->subtotal - $totalDiscount);
+        $totalDiscount = $cart->discount + $navratriDiscount;
 
-        // COD partial payment: Rs100 upfront, rest on delivery
+        // Shipping fee: free above threshold, else Rs50
+        $freeShipThreshold = (float) Setting::get('free_shipping_threshold', 499);
+        $shippingFee = ($cart->subtotal - $cart->discount) >= $freeShipThreshold ? 0 : 50;
+
+        $finalTotal = max(0, $cart->subtotal - $totalDiscount + $shippingFee);
+
+        // COD: only available for orders above Rs199, no partial pay for orders below Rs200
         $codAdvance = 0;
+        $codAvailable = $finalTotal >= 199;
         if ($paymentMethod === 'cod') {
+            if (!$codAvailable) {
+                return redirect()->route('checkout.index')
+                    ->with('error', 'COD is not available for orders below ₹199. Please choose online payment.');
+            }
             $codAdvance = min(100, $finalTotal);
         }
 
-        $order = DB::transaction(function () use ($cart, $shippingSnapshot, $billingSnapshot, $shippingAddressId, $billingAddressId, $validated, $isGuest, $finalTotal, $totalDiscount, $paymentMethod, $weekendDiscount, $codAdvance) {
+        // Resolve affiliate from cookie/session
+        $affiliateId = null;
+        $affiliateRefCode = null;
+        $refCode = session('affiliate_ref') ?? request()->cookie(config('affiliate.cookie_name', 'jikra_ref'));
+        if ($refCode) {
+            $affiliate = Affiliate::where('referral_code', $refCode)->where('status', 'approved')->first();
+            if ($affiliate) {
+                $affiliateId = $affiliate->id;
+                $affiliateRefCode = $refCode;
+            }
+        }
+
+        $order = DB::transaction(function () use ($cart, $shippingSnapshot, $billingSnapshot, $shippingAddressId, $billingAddressId, $validated, $isGuest, $finalTotal, $totalDiscount, $paymentMethod, $navratriDiscount, $codAdvance, $affiliateId, $affiliateRefCode, $shippingFee) {
             $metadata = ['payment_method' => $paymentMethod];
-            if ($weekendDiscount > 0) {
-                $metadata['weekend_discount'] = $weekendDiscount;
+            if ($navratriDiscount > 0) {
+                $metadata['navratri_discount'] = $navratriDiscount;
             }
             if ($codAdvance > 0) {
                 $metadata['cod_advance'] = $codAdvance;
                 $metadata['cod_balance'] = $finalTotal - $codAdvance;
+            }
+            if ($affiliateRefCode) {
+                $metadata['affiliate_referral_code'] = $affiliateRefCode;
             }
 
             $order = Order::create([
@@ -197,11 +233,13 @@ class CheckoutController extends Controller
                 'payment_status' => 'pending',
                 'subtotal' => $cart->subtotal,
                 'discount' => $totalDiscount,
-                'shipping_cost' => 0,
+                'shipping_cost' => $shippingFee,
                 'tax' => 0,
                 'total' => $finalTotal,
                 'paid_amount' => $codAdvance,
                 'coupon_id' => $cart->coupon_id,
+                'affiliate_id' => $affiliateId,
+                'affiliate_referral_code' => $affiliateRefCode,
                 'shipping_address_id' => $shippingAddressId,
                 'billing_address_id' => $billingAddressId,
                 'shipping_address_snapshot' => $shippingSnapshot,
@@ -334,11 +372,11 @@ class CheckoutController extends Controller
 
         // Calculate total
         $paymentMethod = $validated['payment_method'];
-        $weekendDiscount = 0;
+        $navratriDiscount = 0;
         if (now()->isWeekend() && $paymentMethod !== 'cod') {
-            $weekendDiscount = round(($cart->subtotal - $cart->discount) * 0.05, 2);
+            $navratriDiscount = round(($cart->subtotal - $cart->discount) * 0.05, 2);
         }
-        $totalDiscount = $cart->discount + $weekendDiscount;
+        $totalDiscount = $cart->discount + $navratriDiscount;
         $finalTotal = max(0, $cart->subtotal - $totalDiscount);
         $amountInPaise = (int) round($finalTotal * 100);
 
@@ -374,7 +412,7 @@ class CheckoutController extends Controller
             'validated' => $validated,
             'final_total' => $finalTotal,
             'total_discount' => $totalDiscount,
-            'weekend_discount' => $weekendDiscount,
+            'navratri_discount' => $navratriDiscount,
             'payment_method' => $paymentMethod,
         ]);
 
@@ -493,17 +531,32 @@ class CheckoutController extends Controller
 
         $finalTotal = $checkoutData['final_total'];
         $totalDiscount = $checkoutData['total_discount'];
-        $weekendDiscount = $checkoutData['weekend_discount'];
+        $navratriDiscount = $checkoutData['navratri_discount'];
         $paymentMethod = $checkoutData['payment_method'];
 
-        $order = DB::transaction(function () use ($cart, $shippingSnapshot, $billingSnapshot, $shippingAddressId, $billingAddressId, $validated, $isGuest, $finalTotal, $totalDiscount, $paymentMethod, $weekendDiscount, $request) {
+        // Resolve affiliate from cookie/session
+        $affiliateId = null;
+        $affiliateRefCode = null;
+        $refCode = session('affiliate_ref') ?? request()->cookie(config('affiliate.cookie_name', 'jikra_ref'));
+        if ($refCode) {
+            $razorpayAffiliate = Affiliate::where('referral_code', $refCode)->where('status', 'approved')->first();
+            if ($razorpayAffiliate) {
+                $affiliateId = $razorpayAffiliate->id;
+                $affiliateRefCode = $refCode;
+            }
+        }
+
+        $order = DB::transaction(function () use ($cart, $shippingSnapshot, $billingSnapshot, $shippingAddressId, $billingAddressId, $validated, $isGuest, $finalTotal, $totalDiscount, $paymentMethod, $navratriDiscount, $request, $affiliateId, $affiliateRefCode) {
             $metadata = [
                 'payment_method' => $paymentMethod,
                 'razorpay_order_id' => $request->razorpay_order_id,
                 'razorpay_payment_id' => $request->razorpay_payment_id,
             ];
-            if ($weekendDiscount > 0) {
-                $metadata['weekend_discount'] = $weekendDiscount;
+            if ($navratriDiscount > 0) {
+                $metadata['navratri_discount'] = $navratriDiscount;
+            }
+            if ($affiliateRefCode) {
+                $metadata['affiliate_referral_code'] = $affiliateRefCode;
             }
 
             $order = Order::create([
@@ -515,11 +568,13 @@ class CheckoutController extends Controller
                 'payment_status' => 'paid',
                 'subtotal' => $cart->subtotal,
                 'discount' => $totalDiscount,
-                'shipping_cost' => 0,
+                'shipping_cost' => $shippingFee,
                 'tax' => 0,
                 'total' => $finalTotal,
                 'paid_amount' => $finalTotal,
                 'coupon_id' => $cart->coupon_id,
+                'affiliate_id' => $affiliateId,
+                'affiliate_referral_code' => $affiliateRefCode,
                 'shipping_address_id' => $shippingAddressId,
                 'billing_address_id' => $billingAddressId,
                 'shipping_address_snapshot' => $shippingSnapshot,

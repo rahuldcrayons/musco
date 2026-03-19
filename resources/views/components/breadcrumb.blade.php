@@ -31,8 +31,8 @@
 </nav>
 
 {{-- BreadcrumbList JSON-LD --}}
-@php
-$breadcrumbJsonLd = [
+<?php
+$breadcrumbSchema = [
     '@context' => 'https://schema.org',
     '@type' => 'BreadcrumbList',
     'itemListElement' => [
@@ -44,9 +44,7 @@ foreach ($items as $i => $item) {
     if (!empty($item['url'])) {
         $entry['item'] = $item['url'];
     }
-    $breadcrumbJsonLd['itemListElement'][] = $entry;
+    $breadcrumbSchema['itemListElement'][] = $entry;
 }
-@endphp
-<script type="application/ld+json">
-{!! json_encode($breadcrumbJsonLd, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}
-</script>
+?>
+<script type="application/ld+json">{!! json_encode($breadcrumbSchema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}</script>

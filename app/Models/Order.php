@@ -17,6 +17,8 @@ class Order extends Model
         'shipping_address_id',
         'billing_address_id',
         'coupon_id',
+        'affiliate_id',
+        'affiliate_referral_code',
         'status',
         'payment_status',
         'subtotal',
@@ -120,6 +122,11 @@ class Order extends Model
     public function deliveryPartner(): BelongsTo
     {
         return $this->belongsTo(DeliveryPartner::class);
+    }
+
+    public function affiliate(): BelongsTo
+    {
+        return $this->belongsTo(Affiliate::class);
     }
 
     public function items(): HasMany

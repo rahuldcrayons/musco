@@ -49,6 +49,101 @@ class ReviewGeneratorService
         };
     }
 
+    /**
+     * Pick a rating targeting a specific average (3.9-4.6 range).
+     * Uses weighted distribution tuned to hit the target.
+     */
+    public function pickRatingForTarget(float $targetAvg = 4.2): int
+    {
+        $targetAvg = max(3.5, min(4.8, $targetAvg));
+
+        // Dynamically adjust distribution to hit target average
+        // Base: 1star=3%, 2star=7%, 3star=18%, 4star=32%, 5star=40% → avg ~3.99
+        // Shift weight between 3/4/5 stars based on target
+        $shift = ($targetAvg - 4.0) * 20; // -2 to +16
+
+        $w1 = max(1, 3 - (int) ($shift * 0.2));
+        $w2 = max(2, 7 - (int) ($shift * 0.5));
+        $w3 = max(8, 18 - (int) ($shift * 1.2));
+        $w4 = 32 + (int) ($shift * 0.3);
+        $w5 = 100 - $w1 - $w2 - $w3 - $w4;
+        $w5 = max(20, $w5);
+
+        // Normalize to 100
+        $total = $w1 + $w2 + $w3 + $w4 + $w5;
+        $rand = mt_rand(1, $total);
+
+        return match (true) {
+            $rand <= $w1 => 1,
+            $rand <= $w1 + $w2 => 2,
+            $rand <= $w1 + $w2 + $w3 => 3,
+            $rand <= $w1 + $w2 + $w3 + $w4 => 4,
+            default => 5,
+        };
+    }
+
+    /**
+     * Generate a standalone review (not tied to an order item).
+     * Used by seed/drip commands.
+     */
+    public function generateStandaloneReview(Product $product, ?string $guestName = null, ?float $targetAvg = null, ?\Carbon\Carbon $createdAt = null): Review
+    {
+        $rating = $targetAvg ? $this->pickRatingForTarget($targetAvg) : $this->pickRating();
+
+        $review = Review::create([
+            'product_id' => $product->id,
+            'user_id' => null,
+            'guest_name' => $guestName ?? $this->randomIndianName(),
+            'guest_email' => 'review' . mt_rand(10000, 99999) . '@customer.jikra.in',
+            'rating' => $rating,
+            'title' => $this->generateTitle($product, $rating),
+            'content' => $this->generateContent($product, $rating),
+            'pros' => $this->generatePros($product, $rating),
+            'cons' => $this->generateCons($product, $rating),
+            'is_verified_purchase' => (bool) mt_rand(0, 1),
+            'is_approved' => true,
+            'status' => 'approved',
+            'is_generated' => true,
+            'helpful_count' => mt_rand(0, 15),
+            'unhelpful_count' => mt_rand(0, 2),
+            'created_at' => $createdAt ?? now()->subHours(mt_rand(1, 6)),
+            'updated_at' => $createdAt ?? now()->subHours(mt_rand(1, 6)),
+        ]);
+
+        return $review;
+    }
+
+    /**
+     * Return a random Indian name.
+     */
+    public function randomIndianName(): string
+    {
+        $names = [
+            'Priya Sharma', 'Rahul Verma', 'Sneha Patel', 'Amit Kumar', 'Ananya Reddy',
+            'Vikram Singh', 'Meera Iyer', 'Deepak Joshi', 'Kavita Nair', 'Arjun Mehta',
+            'Pooja Gupta', 'Suresh Rao', 'Neha Mishra', 'Rajesh Tiwari', 'Divya Kapoor',
+            'Manish Agarwal', 'Ritu Saxena', 'Sanjay Malhotra', 'Swati Bhatt', 'Arun Pillai',
+            'Geeta Deshmukh', 'Kiran Jain', 'Nitin Bansal', 'Pallavi Kulkarni', 'Rohit Pandey',
+            'Sunita Chaudhary', 'Vijay Thakur', 'Aarti Srivastava', 'Gaurav Dubey', 'Lakshmi Menon',
+            'Harish Yadav', 'Anjali Bose', 'Prakash Naik', 'Rekha Chauhan', 'Manoj Sethi',
+            'Shilpa Rathore', 'Tarun Khanna', 'Uma Devi', 'Naveen Gowda', 'Bhavna Shah',
+            'Dinesh Choudhury', 'Falguni Parikh', 'Girish Shetty', 'Heena Ansari', 'Isha Tandon',
+            'Jagdish Patil', 'Komal Bajaj', 'Lalit Mittal', 'Madhuri Hegde', 'Nilesh Kale',
+            'Aditi Mukherjee', 'Bharat Jha', 'Chitra Nambiar', 'Devendra Rawat', 'Ekta Soni',
+            'Farhan Qureshi', 'Gagan Arora', 'Hemant Bhardwaj', 'Ira Deshpande', 'Jayesh Solanki',
+            'Kamini Prasad', 'Lokesh Shukla', 'Monika Randhawa', 'Nandini Bhat', 'Om Prakash',
+            'Padma Subramaniam', 'Qadir Hussain', 'Rashmi Dixit', 'Sahil Chopra', 'Tara Nayak',
+            'Urvashi Trivedi', 'Vaibhav Rastogi', 'Wasim Shaikh', 'Yamini Goswami', 'Zubin Contractor',
+            'Ashwin Menon', 'Bindu Krishnan', 'Chetan Parmar', 'Deepa Venkatesh', 'Esha Luthra',
+            'Gaurav Ahuja', 'Hema Rajan', 'Indira Chakraborty', 'Jatin Grover', 'Kriti Mathur',
+            'Lavanya Hegde', 'Mohit Oberoi', 'Nisha Dalal', 'Omkar Deshpande', 'Preeti Walia',
+            'Ravi Shankar', 'Shalini Batra', 'Tushar Kamat', 'Urmi Dasgupta', 'Vivek Anand',
+            'Alok Tiwari', 'Bina Kothari', 'Chirag Vyas', 'Damini Kashyap', 'Eknath Shinde',
+        ];
+
+        return $names[array_rand($names)];
+    }
+
     public function generateTitle(Product $product, int $rating): string
     {
         $productType = $this->detectProductType($product);
@@ -338,6 +433,24 @@ class ReviewGeneratorService
     {
         return match (true) {
             $rating >= 5 => [
+                // Short reviews (1-2 lines)
+                'Excellent product! Works perfectly.',
+                'Love it! Best {product_type} at this price.',
+                'Superb quality. Highly recommend.',
+                'Perfect. Exactly what I needed.',
+                'Amazing {product_type}! Worth every penny.',
+                'Brilliant. No complaints at all.',
+                'Outstanding quality for the price!',
+                'Top notch {product_type}. Very happy.',
+                'Wonderful purchase. Works like a charm!',
+                'Absolutely fantastic {product_type}.',
+                'Great buy! Using daily without any issues.',
+                'Best value {product_type} out there.',
+                'Super happy with this. Will order again!',
+                'Five stars all the way. Premium feel.',
+                'Really impressed. Quality exceeds the price.',
+
+                // Medium reviews (3-4 lines)
                 'Bought this {product_type} and it turned out to be a great purchase. The build quality is excellent and it feels premium. Really happy with how it works.',
                 'I have been looking for a good {product_type} for {timeframe} and finally found this one. Works perfectly and the quality is top notch for the price.',
                 'This {product_type} is amazing! I have been using it for {timeframe} now and it still works like new. Definitely worth the money.',
@@ -350,16 +463,41 @@ class ReviewGeneratorService
                 'This {product_type} is honestly one of the best I have bought in this price range. Great build and works perfectly.',
                 'Was looking for something reliable and this {product_type} did not disappoint. Great quality and great price.',
                 'Absolutely love this {product_type}! I use it every day and it has not let me down once. The quality feels premium.',
-                'I compared this with several other options and this {product_type} stood out for the quality. Been using it for {timeframe} and still works amazing.',
-                'Really pleased with this purchase. The {product_type} is well-built and performs flawlessly. Good experience shopping at Jikra.',
                 'Using this {product_type} for {timeframe} now. No issues whatsoever. Everything is top notch. Best value for money.',
                 'Ordered this and was so impressed that I bought another one as a gift. The {product_type} performs brilliantly.',
                 'The {product_type} arrived well packaged and works perfectly out of the box. Performance has been flawless for {timeframe} now.',
                 'Hands down the best {product_type} I have used at this price point. Will recommend to everyone.',
-                'This {product_type} from Jikra exceeded my expectations completely. The material and build quality are really good. Have been using it for {timeframe} and it is holding up great.',
                 'Got this {product_type} on a friend\'s recommendation and I am not disappointed. Works exactly as described. Very happy with the purchase.',
+                'Received it yesterday and already loving it. Build quality of this {product_type} is seriously impressive for the price.',
+                'My wife also liked it so much she asked me to order one more. Great quality {product_type} from Jikra.',
+                'Replaced my old one with this {product_type} and the difference is night and day. So much better. Highly recommend.',
+
+                // Long reviews (5+ lines)
+                'I compared this with several other options and this {product_type} stood out for the quality. Been using it for {timeframe} and still works amazing. The build feels solid and premium. Would definitely recommend to friends and family.',
+                'Really pleased with this purchase. The {product_type} is well-built and performs flawlessly. Good experience shopping at Jikra. The delivery was quick and the packaging was nice. I have already recommended this to my colleagues.',
+                'This {product_type} from Jikra exceeded my expectations completely. The material and build quality are really good. Have been using it for {timeframe} and it is holding up great. I initially had doubts because of the low price but this is genuinely premium quality. Very impressed.',
+                'Let me share my honest experience. I ordered this {product_type} after reading other reviews and I am glad I did. The quality is exactly what they describe. I have been using it daily for {timeframe} now and there are zero issues. The build feels sturdy, the performance is consistent, and the design looks great. This is the kind of product that makes you trust a brand. Will be ordering more from Jikra for sure.',
+                'I have bought many {product_type} products over the years from different brands and this one from {brand} stands out. The attention to detail is remarkable for this price point. I use it every single day and it has held up perfectly. The packaging was also neat and professional. If you are on the fence about buying this, just go for it. You will not regret it. Already gifted one to my brother.',
+                'Was hesitant initially because the price seemed too good for the quality promised. But after using this {product_type} for {timeframe}, I can confirm it is the real deal. The build quality matches products that cost 2-3x more. Performance has been flawless. No issues with durability either. This has become my go-to recommendation whenever someone asks me for a good {product_type}.',
+                'I bought this as a gift for my father and he absolutely loves it. The {product_type} looks premium, works great, and the packaging made it feel like a proper gift. Dad has been using it for {timeframe} now and keeps telling me how good it is. Jikra has earned a loyal customer. Already planning to buy more products from here.',
+                'My experience with this {product_type} has been nothing short of excellent. From ordering to delivery to actual usage, everything was smooth. The product looks exactly like the photos, which is rare these days with online shopping. Have been using it for {timeframe} and it works just as well as day one. The quality control is clearly good. Highly recommended for anyone looking for a reliable {product_type} without breaking the bank.',
+                'I ordered two of these {product_type} - one for myself and one for my friend. We both are extremely happy with the purchase. The build quality is solid, the performance is consistent, and the design is clean and modern. For the price, you simply cannot find a better {product_type} anywhere. Jikra has really nailed it with this product. Five stars without any hesitation.',
+                'After trying multiple {product_type} products that disappointed me, I finally found this gem. The quality is top notch. Been using it for {timeframe} without a single issue. What impressed me most is the attention to detail in the build. Everything feels well thought out and premium. If Jikra keeps making products like this, they will become my default shopping destination. Already eyeing a few more things on their site.',
             ],
             $rating >= 4 => [
+                // Short reviews
+                'Good product. Works well for the price.',
+                'Nice quality. Minor issues but overall happy.',
+                'Decent {product_type}. Would recommend.',
+                'Good value. Does the job well.',
+                'Solid purchase. Mostly satisfied.',
+                'Pretty nice {product_type}. Happy overall.',
+                'Good buy. Performs as expected.',
+                'Works well. Packaging could be better.',
+                'Nice {product_type}. Quick delivery too.',
+                'Satisfied. Good product for the money.',
+
+                // Medium reviews
                 'Good {product_type} overall. It works well and the quality is decent for the price. Only minor thing is the build could be slightly sturdier.',
                 'Bought this and it is a solid purchase. Nice build and good performance. Could be slightly better in terms of packaging.',
                 'Happy with this {product_type}. Been using it for {timeframe}. The quality is good though I wish the finish was a bit more premium.',
@@ -375,8 +513,27 @@ class ReviewGeneratorService
                 'Good product for the price. The {product_type} has been working great for {timeframe}. Build quality is solid.',
                 'Satisfied with this {product_type}. It does what it promises. Minor improvements would make it perfect.',
                 'Nice {product_type} from Jikra. Performance is good and the design looks nice. Value for money. Would buy again.',
+                'Received it in good condition. The {product_type} works well and looks nice. A small QC issue but nothing major. Four stars.',
+                'Used it for {timeframe} now. Good {product_type} overall. My only gripe is the colour is slightly different from photos.',
+                'Gifted this to a friend and they liked it. The {product_type} quality is good. Delivery was smooth. Would have been 5 stars if packaging was better.',
+
+                // Long reviews
+                'I have been using this {product_type} for {timeframe} and it has been a good experience overall. The build quality is nice and it performs well for daily use. The only reason I am not giving 5 stars is because the packaging felt a bit basic and the finish could be slightly better. But for the price, it is a very fair deal. Would recommend to anyone looking for a budget-friendly option.',
+                'Let me be honest - this {product_type} is really good but not perfect. The quality is above average for the price and it works well. I have been using it for {timeframe} and no major complaints. The design looks great. However, I noticed a few minor quality issues that kept it from being a 5-star product for me. Still, I would buy from Jikra again.',
+                'This {product_type} does what it is supposed to do and does it well. I bought it after comparing with a few other options and this had the best value for money. Been using it for {timeframe} now. Works reliably. The materials feel decent. My only complaint is that the colour is slightly different from the product photos but that is a minor thing. Overall a solid 4-star product.',
             ],
             $rating >= 3 => [
+                // Short reviews
+                'Okay product. Nothing special.',
+                'Average quality. Does the basic job.',
+                'It is alright for the price.',
+                'Decent. Not great, not terrible.',
+                'Average {product_type}. Expected more.',
+                'Fair enough. Serves its purpose.',
+                'Mediocre quality. Acceptable for the price.',
+                'Just okay. Could be better.',
+
+                // Medium reviews
                 'The {product_type} is okay. Not bad but not exceptional either. It works but the build quality could be better for what I paid.',
                 'Average {product_type}. It serves its purpose. The design is fine but the materials feel a bit cheap.',
                 'Mixed feelings about this one. Looks nice but the quality does not feel premium. Fair for the price.',
@@ -387,19 +544,40 @@ class ReviewGeneratorService
                 'OK product. I use it but it is not great. The build is acceptable and the performance is basic.',
                 'Average purchase. The {product_type} looks decent but the quality is just okay. Fair value.',
                 'Not great, not terrible. This {product_type} does the job. Some quality issues but still usable.',
+                'Product is fine for casual use. The {product_type} works as described. Build quality is average. Nothing to complain about but nothing exciting either.',
+                'Been using it for {timeframe}. The {product_type} is average. No issues so far but the quality does not impress me. Fair for the price I guess.',
+
+                // Long reviews
+                'I wanted to like this {product_type} more than I do. The design looks great in photos but in person the build quality is just average. It works fine for basic use but if you are expecting premium quality, you might be disappointed. I have been using it for {timeframe} and it does the job but I can already see some wear. For the price it is acceptable but I would not rave about it. Three stars feels fair.',
+                'Mixed review here. The {product_type} has some good things going for it - the design is nice and the basic functionality works. But the materials feel a bit cheap and the overall quality is just okay. I have seen both better and worse at this price point. If your expectations are moderate, you will be fine with it. Not bad, not amazing.',
             ],
             $rating >= 2 => [
+                // Short reviews
+                'Disappointed. Quality is poor.',
+                'Not worth the price. Expected better.',
+                'Below average. Would not buy again.',
+                'Poor quality {product_type}.',
+
+                // Medium reviews
                 'Honestly expected better. The {product_type} quality is below what I thought I would get. The materials feel cheap.',
                 'The {product_type} looked much better in the photos. In person, the quality is disappointing.',
                 'Not happy with this purchase. The build quality is poor. Would not recommend at this price.',
                 'Below average {product_type}. Started having issues within a few days. Quality control seems lacking.',
                 'Disappointed with the quality of this {product_type}. For the price paid, I expected much better.',
                 'Not worth it. The {product_type} quality is poor and does not match the product images at all.',
+                'Received the {product_type} and was disappointed from the start. The build feels flimsy and cheap. Product photos are misleading.',
+                'Used it for barely {timeframe} and already seeing problems. The quality is nowhere near what was advertised.',
             ],
             default => [
+                // Short
+                'Terrible. Waste of money.',
+                'Very poor quality. Do not buy.',
+
+                // Medium
                 'Very poor quality {product_type}. The build feels terrible and it stopped working within days. Very disappointed.',
                 'Terrible purchase. The {product_type} arrived with defects and barely works. Complete waste of money.',
                 'Worst {product_type} I have bought. Cheap materials, poor build, and nothing like the pictures.',
+                'Extremely disappointed with this {product_type}. Stopped working after {timeframe}. Not worth even half the price. Avoid.',
             ],
         };
     }

@@ -34,46 +34,48 @@
         </a>
 
         <a href="{{ route('product.show', $product) }}" class="block px-0.5">
-            <h3 class="text-[13px] text-[#0F1111] line-clamp-2 mb-1 leading-snug min-h-[2.5rem] hover:text-[#C7511F] transition-colors">
+            <h3 class="text-[13px] text-[#0F1111] line-clamp-2 mb-1 leading-snug hover:text-[#C7511F] transition-colors" style="min-height: 2.5em;">
                 {{ $product->name }}
             </h3>
         </a>
 
-        {{-- Star Rating --}}
-        <div class="flex items-center gap-1 mb-1 px-0.5">
-            <div class="flex items-center">
-                @for($i = 1; $i <= 5; $i++)
-                    @if($i <= floor($rating))
-                        <svg class="w-3.5 h-3.5 text-[#205258]" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                    @elseif($i == ceil($rating) && $rating - floor($rating) >= 0.25)
-                        <svg class="w-3.5 h-3.5" viewBox="0 0 20 20">
-                            <defs><linearGradient id="half-star-compact"><stop offset="50%" stop-color="#205258"/><stop offset="50%" stop-color="#E0E0E0"/></linearGradient></defs>
-                            <path fill="url(#half-star-compact)" d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
-                        </svg>
-                    @else
-                        <svg class="w-3.5 h-3.5 text-[#E0E0E0]" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                    @endif
-                @endfor
+        {{-- Bottom section pushed down --}}
+        <div style="margin-top:auto;" class="px-0.5">
+            {{-- Star Rating --}}
+            <div class="flex items-center gap-1 mb-1">
+                <div class="flex items-center">
+                    @for($i = 1; $i <= 5; $i++)
+                        @if($i <= floor($rating))
+                            <svg class="w-3.5 h-3.5 text-[#205258]" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                        @elseif($i == ceil($rating) && $rating - floor($rating) >= 0.25)
+                            <svg class="w-3.5 h-3.5" viewBox="0 0 20 20">
+                                <defs><linearGradient id="half-star-compact-{{ $product->id }}"><stop offset="50%" stop-color="#205258"/><stop offset="50%" stop-color="#E0E0E0"/></linearGradient></defs>
+                                <path fill="url(#half-star-compact-{{ $product->id }})" d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                            </svg>
+                        @else
+                            <svg class="w-3.5 h-3.5 text-[#E0E0E0]" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                        @endif
+                    @endfor
+                </div>
+                <span class="text-[11px] text-[#007185]">({{ $reviewCount }})</span>
             </div>
-            <span class="text-[11px] text-[#007185]">({{ $reviewCount }})</span>
-        </div>
 
-        <div class="flex items-baseline gap-1 flex-wrap px-0.5 mb-1">
-            <span class="text-[15px] font-medium text-[#0F1111]">@price($product->price)</span>
-            @if($hasDiscount)
-                <span class="text-[11px] text-[#565959] line-through">@price($product->mrp)</span>
-            @endif
-        </div>
+            <div class="flex items-baseline gap-1 flex-wrap mb-1">
+                <span class="text-[15px] font-medium text-[#0F1111]">@price($product->price)</span>
+                @if($hasDiscount)
+                    <span class="text-[11px] text-[#565959] line-through">@price($product->mrp)</span>
+                @endif
+            </div>
 
-        <div class="h-4 px-0.5 mb-1">
-            @if($hasDiscount)
-                <p class="text-[11px] text-[#CC0C39] font-medium">Save {{ round($discount) }}%</p>
-            @endif
-        </div>
+            <div style="height:16px;" class="mb-1">
+                @if($hasDiscount)
+                    <p class="text-[11px] text-[#CC0C39] font-medium">Save {{ round($discount) }}%</p>
+                @endif
+            </div>
 
         {{-- Add to Cart --}}
         @if($showAddToCart)
-            <div class="mt-auto px-0.5">
+            <div>
                 @unless($outOfStock)
                     <button @click="$store.cart.add({{ $product->id }})"
                             class="w-full py-1.5 text-xs font-medium text-white bg-[#F8931D] hover:bg-[#E07E0A] rounded-full transition-colors shadow-sm">
@@ -87,6 +89,7 @@
                 @endunless
             </div>
         @endif
+        </div>{{-- end mt-auto bottom section --}}
     </div>
 @else
     {{-- Full product card --}}
