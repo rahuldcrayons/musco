@@ -5,6 +5,7 @@
 .env.production
 .phpactor.json
 .phpunit.result.cache
+/.ai-memory
 /.fleet
 /.idea
 /.nova

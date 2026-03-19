@@ -297,7 +297,7 @@
                             <svg class="w-5 h-5 text-[#205258]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/></svg>
                         </div>
                         <p class="text-[10px] font-medium text-[#0F1111] leading-tight">Free Delivery</p>
-                        <p class="text-[9px] text-[#565959]">Above ₹499</p>
+                        <p class="text-[9px] text-[#565959]">Above {{ currency_symbol() }}{{ \App\Models\Setting::get('free_shipping_threshold', 499) }}</p>
                     </div>
                     <div class="flex flex-col items-center text-center">
                         <div class="w-11 h-11 bg-[#F0F8F8] rounded-full flex items-center justify-center mb-1.5">
@@ -355,7 +355,7 @@
                     <!-- Price (repeated in buy box) -->
                     <div class="text-[24px] font-medium text-[#0F1111]">@price($product->price)</div>
 
-                    @if($product->price >= 499)
+                    @if($product->price >= \App\Models\Setting::get('free_shipping_threshold', 499))
                         <div class="text-sm">
                             <span class="text-[#007600] font-medium">FREE delivery</span>
                             <span class="text-[#0F1111] font-medium">{{ now()->addDays(3)->format('D, d M') }}</span>

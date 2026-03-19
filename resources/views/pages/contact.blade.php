@@ -128,8 +128,8 @@
                                     </svg>
                                 </div>
                                 <div>
-                                    <p class="text-sm font-medium text-neutral-900">Address</p>
-                                    <p class="text-[13px] text-neutral-600 leading-relaxed">Jikra, G118 Deep Vihar,<br>Rohini Sector 24, Delhi 110084</p>
+                                    <p class="text-sm font-medium text-neutral-900">{{ __('ui.contact_us') }}</p>
+                                    <p class="text-[13px] text-neutral-600 leading-relaxed">{!! nl2br(e(\App\Models\Setting::get('company_address', 'Jikra, G118 Deep Vihar, Rohini Sector 24, Delhi 110084'))) !!}</p>
                                 </div>
                             </div>
 
@@ -141,8 +141,8 @@
                                     </svg>
                                 </div>
                                 <div>
-                                    <p class="text-sm font-medium text-neutral-900">Phone</p>
-                                    <a href="tel:+919876543210" class="text-[13px] text-[#205258] hover:text-[#1b454a] transition-colors">+91 98765 43210</a>
+                                    <p class="text-sm font-medium text-neutral-900">{{ __('ui.phone') }}</p>
+                                    <a href="https://wa.me/{{ \App\Models\Setting::get('contact_whatsapp', '919354567705') }}" target="_blank" class="text-[13px] text-[#205258] hover:text-[#1b454a] transition-colors">{{ \App\Models\Setting::get('contact_phone', '+91 93545 67705') }} (WhatsApp)</a>
                                 </div>
                             </div>
 
@@ -154,8 +154,8 @@
                                     </svg>
                                 </div>
                                 <div>
-                                    <p class="text-sm font-medium text-neutral-900">Email</p>
-                                    <a href="mailto:support@jikra.in" class="text-[13px] text-[#205258] hover:text-[#1b454a] transition-colors">support@jikra.in</a>
+                                    <p class="text-sm font-medium text-neutral-900">{{ __('ui.email') }}</p>
+                                    <a href="mailto:{{ \App\Models\Setting::get('contact_email', 'support@jikra.in') }}" class="text-[13px] text-[#205258] hover:text-[#1b454a] transition-colors">{{ \App\Models\Setting::get('contact_email', 'support@jikra.in') }}</a>
                                 </div>
                             </div>
 
@@ -168,7 +168,7 @@
                                 </div>
                                 <div>
                                     <p class="text-sm font-medium text-neutral-900">Business Hours</p>
-                                    <p class="text-[13px] text-neutral-600 leading-relaxed">Mon - Fri: 9:00 AM - 6:00 PM<br>Sat: 10:00 AM - 4:00 PM</p>
+                                    <p class="text-[13px] text-neutral-600 leading-relaxed">{{ \App\Models\Setting::get('business_hours', 'Mon-Fri 9AM-6PM, Sat 10AM-4PM') }}</p>
                                 </div>
                             </div>
                         </div>

@@ -96,7 +96,7 @@
                         </svg>
                     </div>
                     <h3 class="text-sm font-semibold text-neutral-900 mb-1 group-hover:text-info-600 transition-colors">Free Shipping</h3>
-                    <p class="text-xs text-neutral-600 leading-relaxed">Enjoy free delivery on orders over $50 with fast and reliable shipping partners.</p>
+                    <p class="text-xs text-neutral-600 leading-relaxed">Enjoy free delivery on orders above {{ currency_symbol() }}{{ \App\Models\Setting::get('free_shipping_threshold', 499) }} with fast and reliable shipping partners.</p>
                 </div>
 
                 <!-- Secure Shopping -->

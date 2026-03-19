@@ -1,10 +1,16 @@
 @props(['faqs' => null])
 
 @php
+    $cs = currency_symbol();
+    $dispatchTime = \App\Models\Setting::get('dispatch_time', '24 hours');
+    $deliveryDays = \App\Models\Setting::get('standard_delivery_days', '3-7');
+    $returnDays = \App\Models\Setting::get('return_policy_days', 7);
+    $codAdvance = \App\Models\Setting::get('cod_advance_amount', 100);
+
     $defaultFaqs = [
-        ['q' => 'How long does delivery take?', 'a' => 'We dispatch all orders within 24 hours. Standard delivery takes 3-7 business days depending on your location. Metro cities typically receive orders in 3-4 days.'],
-        ['q' => 'What is your return policy?', 'a' => 'We offer a 7-day hassle-free return policy. If you receive a damaged or wrong product, contact us within 7 days and we will arrange a pickup and full refund.'],
-        ['q' => 'Is Cash on Delivery available?', 'a' => 'Yes! We offer Partial Pay (COD) where you pay a small advance of ₹100 online and the rest on delivery. This helps us confirm genuine orders.'],
+        ['q' => 'How long does delivery take?', 'a' => "We dispatch all orders within {$dispatchTime}. Standard delivery takes {$deliveryDays} business days depending on your location. Metro cities typically receive orders in 3-4 days."],
+        ['q' => 'What is your return policy?', 'a' => "We offer a {$returnDays}-day hassle-free return policy. If you receive a damaged or wrong product, contact us within {$returnDays} days and we will arrange a pickup and full refund."],
+        ['q' => 'Is Cash on Delivery available?', 'a' => "Yes! We offer Partial Pay (COD) where you pay a small advance of {$cs}{$codAdvance} online and the rest on delivery. This helps us confirm genuine orders."],
         ['q' => 'Are all products genuine?', 'a' => 'Absolutely. We source directly from brands and authorized distributors. Every product comes with a quality guarantee and manufacturer warranty where applicable.'],
         ['q' => 'How can I track my order?', 'a' => 'Once shipped, you will receive a tracking link via SMS and email. You can also track anytime on our Track Order page using your order number.'],
         ['q' => 'What payment methods do you accept?', 'a' => 'We accept all major payment methods via Razorpay including Credit/Debit Cards, UPI (GPay, PhonePe, Paytm), Net Banking, and Wallets. We also offer Partial Pay (COD).'],

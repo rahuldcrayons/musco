@@ -73,7 +73,7 @@
                         <label for="phone" class="block text-sm font-medium text-neutral-700 mb-1">Phone number <span class="text-neutral-600">(optional)</span></label>
                         <input type="text" name="phone" id="phone" value="{{ old('phone') }}"
                                class="form-input w-full @error('phone') border-error-300 @enderror"
-                               placeholder="+1 (555) 000-0000">
+                               placeholder="+91 XXXXX XXXXX">
                         @error('phone')
                             <p class="mt-1 text-sm text-error-600">{{ $message }}</p>
                         @enderror

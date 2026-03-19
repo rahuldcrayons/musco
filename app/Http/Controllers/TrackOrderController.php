@@ -35,7 +35,11 @@ class TrackOrderController extends Controller
             ]);
 
             $order = Order::where('order_number', $validated['order_number'])
-                ->whereHas('user', fn($q) => $q->where('email', $validated['email']))
+                ->where(function ($q) use ($validated) {
+                    // Match guest orders by guest_email OR registered user orders by user email
+                    $q->where('guest_email', $validated['email'])
+                      ->orWhereHas('user', fn($u) => $u->where('email', $validated['email']));
+                })
                 ->with(['items.product', 'shipments', 'statusHistory', 'deliveryPartner.user'])
                 ->first();
 

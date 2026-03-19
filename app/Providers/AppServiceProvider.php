@@ -42,6 +42,16 @@ class AppServiceProvider extends ServiceProvider
             return "<?php echo format_price({$expression}); ?>";
         });
 
+        // @setting('key', 'default') — pull value from DB settings
+        Blade::directive('setting', function (string $expression) {
+            return "<?php echo \App\Models\Setting::get({$expression}); ?>";
+        });
+
+        // @currency — output currency symbol (e.g. ₹)
+        Blade::directive('currency', function () {
+            return "<?php echo currency_symbol(); ?>";
+        });
+
         View::composer('partials.mobile-nav', function ($view) {
             $view->with('navCategories', Category::whereNull('parent_id')
                 ->where('is_active', true)

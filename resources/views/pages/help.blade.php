@@ -109,7 +109,7 @@
                             </svg>
                         </div>
                         <h3 class="text-sm font-semibold text-neutral-900 mb-1">Email Support</h3>
-                        <p class="text-xs text-neutral-600 mb-3">We'll respond within 24 hours.</p>
+                        <p class="text-xs text-neutral-600 mb-3">We'll respond within {{ \App\Models\Setting::get('email_response_time', '24 hours') }}.</p>
                         <a href="{{ route('contact') }}" class="inline-flex items-center px-4 py-2 text-[13px] font-medium text-primary-600 border border-primary-200 rounded-lg hover:bg-primary-50 transition-colors">Send Email</a>
                     </div>
                     <div class="text-center">
@@ -118,9 +118,9 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
                             </svg>
                         </div>
-                        <h3 class="text-sm font-semibold text-neutral-900 mb-1">Phone Support</h3>
-                        <p class="text-xs text-neutral-600 mb-3">Mon-Fri, 9am-5pm EST</p>
-                        <a href="tel:+15551234567" class="inline-flex items-center px-4 py-2 text-[13px] font-medium text-primary-600 border border-primary-200 rounded-lg hover:bg-primary-50 transition-colors">+1 (555) 123-4567</a>
+                        <h3 class="text-sm font-semibold text-neutral-900 mb-1">Phone / WhatsApp</h3>
+                        <p class="text-xs text-neutral-600 mb-3">{{ \App\Models\Setting::get('business_hours', 'Mon-Fri 9AM-6PM, Sat 10AM-4PM') }}</p>
+                        <a href="https://wa.me/{{ \App\Models\Setting::get('contact_whatsapp', '919354567705') }}" target="_blank" class="inline-flex items-center px-4 py-2 text-[13px] font-medium text-primary-600 border border-primary-200 rounded-lg hover:bg-primary-50 transition-colors">{{ \App\Models\Setting::get('contact_phone', '+91 93545 67705') }}</a>
                     </div>
                 </div>
             </div>

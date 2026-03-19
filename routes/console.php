@@ -17,6 +17,9 @@ Schedule::command('reviews:drip-daily --min=1 --max=3')->hourly()->when(function
     return mt_rand(1, 100) <= 60;
 });
 
+// Publish scheduled social media posts every minute
+Schedule::command('social:publish-scheduled')->everyMinute();
+
 // Refresh Instagram reels cache every 2 hours
 Schedule::command('instagram:refresh-reels')->everyTwoHours();
 

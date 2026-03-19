@@ -157,6 +157,19 @@ Route::prefix('admin')->name('admin.')->group(function () {
                 Route::post('/redemptions/{redemption}/fail', [App\Http\Controllers\Admin\AffiliateController::class, 'failRedemption'])->name('redemptions.fail');
             });
 
+            // Social Media Content Calendar
+            Route::prefix('social-calendar')->name('social-calendar.')->group(function () {
+                Route::get('/', [App\Http\Controllers\Admin\SocialMediaPostController::class, 'index'])->name('index');
+                Route::get('/calendar-data', [App\Http\Controllers\Admin\SocialMediaPostController::class, 'calendarData'])->name('calendar-data');
+                Route::get('/create', [App\Http\Controllers\Admin\SocialMediaPostController::class, 'create'])->name('create');
+                Route::post('/', [App\Http\Controllers\Admin\SocialMediaPostController::class, 'store'])->name('store');
+                Route::get('/{post}/edit', [App\Http\Controllers\Admin\SocialMediaPostController::class, 'edit'])->name('edit');
+                Route::put('/{post}', [App\Http\Controllers\Admin\SocialMediaPostController::class, 'update'])->name('update');
+                Route::delete('/{post}', [App\Http\Controllers\Admin\SocialMediaPostController::class, 'destroy'])->name('destroy');
+                Route::post('/{post}/publish-now', [App\Http\Controllers\Admin\SocialMediaPostController::class, 'publishNow'])->name('publish-now');
+                Route::post('/{post}/retry', [App\Http\Controllers\Admin\SocialMediaPostController::class, 'retry'])->name('retry');
+            });
+
             // Newsletter
             Route::prefix('newsletter')->name('newsletter.')->group(function () {
                 Route::get('/', [App\Http\Controllers\Admin\NewsletterController::class, 'index'])->name('index');

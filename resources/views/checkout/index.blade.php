@@ -377,7 +377,7 @@
                                             </div>
                                             <div>
                                                 <span class="text-xs font-medium text-[#0F1111]">Partial Pay</span>
-                                                <p class="text-[10px] text-[#565959]">Pay ₹100 now, rest on delivery</p>
+                                                <p class="text-[10px] text-[#565959]">Pay {{ currency_symbol() }}{{ \App\Models\Setting::get('cod_advance_amount', 100) }} now, rest on delivery</p>
                                             </div>
                                         </div>
                                     </div>
@@ -385,7 +385,7 @@
                                         <div class="px-2.5 pb-2.5 pt-0">
                                             <div class="flex items-center gap-1.5 p-2 bg-[#205258]/5 border border-[#205258]/15 rounded text-[10px] text-[#0F1111]">
                                                 <svg class="w-3.5 h-3.5 text-[#205258] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-                                                <span>Pay <strong class="text-[#205258]">@price(100)</strong> advance via Razorpay to confirm. <strong>@price($cart->total - 100 > 0 ? $cart->total - 100 : 0)</strong> on delivery.</span>
+                                                <span>Pay <strong class="text-[#205258]">@price(\App\Models\Setting::get('cod_advance_amount', 100))</strong> advance via Razorpay to confirm. <strong>@price($cart->total - \App\Models\Setting::get('cod_advance_amount', 100) > 0 ? $cart->total - \App\Models\Setting::get('cod_advance_amount', 100) : 0)</strong> on delivery.</span>
                                             </div>
                                         </div>
                                     </div>
@@ -541,7 +541,7 @@
                                     @endif
 
                                     @php
-                                        $freeShipThreshold = (float) \App\Models\Setting::get('free_shipping_threshold', 499);
+                                        $freeShipThreshold = (float) \App\Models\\App\Models\Setting::get('free_shipping_threshold', 499);
                                         $afterCoupon = $cart->subtotal - $cart->discount;
                                         $shipFee = $afterCoupon >= $freeShipThreshold ? 0 : 50;
                                     @endphp
@@ -606,7 +606,7 @@
                                             <span>Pay Now &middot; @price($cart->total)</span>
                                         </template>
                                         <template x-if="paymentMethod === 'cod'">
-                                            <span>Pay ₹100 & Place Order</span>
+                                            <span>Pay {{ currency_symbol() }}{{ \App\Models\Setting::get('cod_advance_amount', 100) }} & Place Order</span>
                                         </template>
                                     </span>
                                     <span x-show="processing" x-cloak class="flex items-center justify-center gap-1.5">
