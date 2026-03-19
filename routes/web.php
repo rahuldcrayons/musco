@@ -19,6 +19,7 @@ Route::get('/csrf-token', fn () => response()->json(['token' => csrf_token()]))-
 // WhatsApp Webhook
 Route::get('/webhook/whatsapp', [App\Http\Controllers\WhatsAppWebhookController::class, 'verify']);
 Route::post('/webhook/whatsapp', [App\Http\Controllers\WhatsAppWebhookController::class, 'handle']);
+Route::post('/webhook/delhivery', [App\Http\Controllers\DelhiveryWebhookController::class, 'handle']);
 
 // XML Sitemap
 Route::get('/sitemap.xml', [App\Http\Controllers\SitemapController::class, 'index'])->name('sitemap');
@@ -131,9 +132,9 @@ Route::middleware(['guest', 'throttle:10,1'])->group(function () {
 // Checkout (guest + auth)
 Route::prefix('checkout')->name('checkout.')->group(function () {
     Route::get('/', [App\Http\Controllers\CheckoutController::class, 'index'])->name('index');
-    Route::post('/process', [App\Http\Controllers\CheckoutController::class, 'process'])->name('process');
-    Route::post('/razorpay/create-order', [App\Http\Controllers\CheckoutController::class, 'createRazorpayOrder'])->name('razorpay.create');
-    Route::post('/razorpay/verify', [App\Http\Controllers\CheckoutController::class, 'verifyRazorpayPayment'])->name('razorpay.verify');
+    Route::post('/process', [App\Http\Controllers\CheckoutController::class, 'process'])->middleware('throttle:10,1')->name('process');
+    Route::post('/razorpay/create-order', [App\Http\Controllers\CheckoutController::class, 'createRazorpayOrder'])->middleware('throttle:10,1')->name('razorpay.create');
+    Route::post('/razorpay/verify', [App\Http\Controllers\CheckoutController::class, 'verifyRazorpayPayment'])->middleware('throttle:10,1')->name('razorpay.verify');
     Route::get('/success/{order}', [App\Http\Controllers\CheckoutController::class, 'success'])->name('success');
     Route::get('/failed', [App\Http\Controllers\CheckoutController::class, 'failed'])->name('failed');
 });
@@ -203,6 +204,17 @@ Route::post('/sell/register', [App\Http\Controllers\Seller\RegistrationControlle
 
 // Newsletter
 Route::post('/newsletter/subscribe', [App\Http\Controllers\NewsletterController::class, 'subscribe'])->middleware('throttle:5,1')->name('newsletter.subscribe');
+
+// OTP Login & Password Reset
+Route::post('/otp/send-login', [App\Http\Controllers\Auth\OtpController::class, 'sendLoginOtp'])->middleware('throttle:20,5')->name('otp.send-login');
+Route::post('/otp/verify-login', [App\Http\Controllers\Auth\OtpController::class, 'verifyLoginOtp'])->middleware('throttle:30,5')->name('otp.verify-login');
+Route::post('/otp/send-reset', [App\Http\Controllers\Auth\OtpController::class, 'sendResetOtp'])->middleware('throttle:20,5')->name('otp.send-reset');
+Route::post('/otp/verify-reset', [App\Http\Controllers\Auth\OtpController::class, 'verifyResetOtp'])->middleware('throttle:30,5')->name('otp.verify-reset');
+Route::post('/otp/reset-password', [App\Http\Controllers\Auth\OtpController::class, 'resetPassword'])->middleware('throttle:10,5')->name('otp.reset-password');
+
+// Social Login (Google, Facebook)
+Route::get('/auth/{provider}/redirect', [App\Http\Controllers\SocialLoginController::class, 'redirect'])->name('social.redirect');
+Route::get('/auth/{provider}/callback', [App\Http\Controllers\SocialLoginController::class, 'callback'])->name('social.callback');
 
 // Push Notifications
 Route::post('/push/subscribe', [App\Http\Controllers\PushSubscriptionController::class, 'subscribe'])->middleware('throttle:10,1')->name('push.subscribe');

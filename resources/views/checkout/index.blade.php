@@ -32,6 +32,13 @@
             }
         }
         </script>
+        <style>
+            @media (min-width: 1024px) {
+                #checkout-grid { display: flex !important; flex-direction: row !important; align-items: flex-start !important; gap: 16px !important; }
+                #checkout-left { flex: 1 !important; min-width: 0 !important; }
+                #checkout-right { width: 340px !important; flex-shrink: 0 !important; position: sticky !important; top: 16px !important; }
+            }
+        </style>
     @endpush
 
     {{-- Facebook Pixel: InitiateCheckout --}}
@@ -114,9 +121,9 @@
                   @submit.prevent="handleSubmit($event)">
                 @csrf
 
-                <div class="flex flex-col lg:flex-row lg:items-start gap-4">
+                <div id="checkout-grid" class="space-y-4">
                     {{-- ═══ LEFT COLUMN ═══ --}}
-                    <div class="flex-1 min-w-0 space-y-3">
+                    <div id="checkout-left" class="space-y-3">
 
                         {{-- ── Section 1: Contact + Shipping (merged for guests, just shipping for auth) ── --}}
                         <div class="bg-white rounded border border-[#E3E6E6]">
@@ -443,7 +450,7 @@
                     </div>
 
                     {{-- ═══ RIGHT COLUMN - Order Summary ═══ --}}
-                    <div class="lg:w-80 shrink-0 self-stretch">
+                    <div id="checkout-right">
                         {{-- Free Shipping Nudge --}}
                         @php
                             $freeShipThreshold = (float) \App\Models\Setting::get('free_shipping_threshold', 399);
@@ -551,7 +558,12 @@
                                             <div class="flex-1 min-w-0">
                                                 <p class="text-[11px] font-medium text-[#0F1111] line-clamp-1">{{ $item->product->name }}</p>
                                                 <div class="flex items-center justify-between">
-                                                    <span class="text-[10px] text-[#565959]">Qty: {{ $item->quantity }}</span>
+                                                    <span class="text-[10px] text-[#565959] flex items-center gap-1">
+                                                        <button type="button" class="w-5 h-5 rounded bg-gray-100 hover:bg-gray-200 text-xs flex items-center justify-center border" onclick="fetch('/cart/{{ $item->id }}',{method:'PUT',headers:{'Content-Type':'application/json','X-XSRF-TOKEN':decodeURIComponent(document.cookie.match(/XSRF-TOKEN=([^;]+)/)?.[1]||''),'Accept':'application/json'},body:JSON.stringify({quantity:{{ max(1,$item->quantity-1) }}})}).then(()=>location.reload())">-</button>
+                                                        <span class="font-semibold text-[#0F1111] px-1">{{ $item->quantity }}</span>
+                                                        <button type="button" class="w-5 h-5 rounded bg-gray-100 hover:bg-gray-200 text-xs flex items-center justify-center border" onclick="fetch('/cart/{{ $item->id }}',{method:'PUT',headers:{'Content-Type':'application/json','X-XSRF-TOKEN':decodeURIComponent(document.cookie.match(/XSRF-TOKEN=([^;]+)/)?.[1]||''),'Accept':'application/json'},body:JSON.stringify({quantity:{{ $item->quantity+1 }}})}).then(()=>location.reload())">+</button>
+                                                        <button type="button" class="ml-1 text-[9px] text-[#CC0C39] hover:underline" onclick="if(confirm('Remove this item?'))fetch('/cart/{{ $item->id }}',{method:'DELETE',headers:{'X-XSRF-TOKEN':decodeURIComponent(document.cookie.match(/XSRF-TOKEN=([^;]+)/)?.[1]||''),'Accept':'application/json'}}).then(()=>location.reload())">Remove</button>
+                                                    </span>
                                                     <span class="text-[11px] font-semibold text-[#0F1111]">@price($item->price * $item->quantity)</span>
                                                 </div>
                                             </div>
@@ -597,6 +609,23 @@
                                     </div>
                                     @if($shipFee > 0)
                                         <p class="text-[9px] text-[#565959]">Free shipping on orders above @price($freeShipThreshold)</p>
+                                    @endif
+
+                                    {{-- Loyalty Points Redemption --}}
+                                    @if(!empty($loyaltyPoints) && $loyaltyPoints > 0)
+                                        <div class="flex items-center justify-between text-[11px] pt-1 border-t border-dashed border-[#E3E6E6]"
+                                             x-data="{ usePoints: false, pointsToUse: {{ min($loyaltyPoints, (int) ceil(($cart->subtotal - $cart->discount) / 0.25)) }} }">
+                                            <div class="flex items-center gap-1.5">
+                                                <input type="checkbox" name="use_loyalty_points" value="1" x-model="usePoints"
+                                                       class="w-3 h-3 rounded border-gray-300 text-amber-600 focus:ring-amber-500">
+                                                <span class="text-amber-700 font-medium">Use {{ number_format($loyaltyPoints) }} points</span>
+                                                <span class="text-[9px] text-[#565959]">(worth @price($loyaltyValue))</span>
+                                            </div>
+                                            <template x-if="usePoints">
+                                                <span class="text-amber-600 font-semibold">-@price($loyaltyValue)</span>
+                                            </template>
+                                            <input type="hidden" name="loyalty_points_used" :value="usePoints ? {{ $loyaltyPoints }} : 0">
+                                        </div>
                                     @endif
 
                                     @if($cart->tax > 0)
@@ -645,7 +674,7 @@
                                         class="block w-full py-2.5 bg-[#F8931D] hover:bg-[#E8850F] text-white text-xs font-bold text-center rounded transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed uppercase tracking-wide">
                                     <span x-show="!processing">
                                         <template x-if="paymentMethod === 'razorpay'">
-                                            <span>Pay Now &middot; @price($cart->total)</span>
+                                            <span>Pay Now &middot; @price($displayTotal)</span>
                                         </template>
                                         <template x-if="paymentMethod === 'cod'">
                                             <span>Pay {{ currency_symbol() }}{{ \App\Models\Setting::get('cod_advance_amount', 100) }} & Place Order</span>

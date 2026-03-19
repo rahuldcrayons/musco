@@ -278,6 +278,46 @@
                 </div>
             </div>
 
+            <!-- Delhivery Shipping -->
+            @if(in_array($order->status, ['confirmed', 'packed', 'shipped', 'out_for_delivery']))
+                <div class="card overflow-hidden">
+                    <div class="px-5 py-4 border-b border-neutral-200">
+                        <h2 class="font-semibold text-neutral-900">Delhivery Shipping</h2>
+                    </div>
+                    <div class="p-5">
+                        @if($order->tracking_number && $order->carrier === 'Delhivery')
+                            <div class="flex items-center gap-3 mb-3">
+                                <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                                    <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-medium text-neutral-900">Shipment Booked</p>
+                                    <p class="text-xs text-neutral-600">AWB: <span class="font-mono font-medium text-primary-600">{{ $order->tracking_number }}</span></p>
+                                </div>
+                            </div>
+                            <div class="flex gap-2">
+                                <a href="{{ route('admin.delivery.label', $order) }}" class="btn btn-outline text-xs flex-1">Download Label</a>
+                                <button onclick="fetch('{{ route('admin.delivery.track', $order) }}').then(r=>r.json()).then(d=>alert(d.success ? 'Status: ' + d.status + '\nLocation: ' + d.status_location : d.message))"
+                                        class="btn btn-outline text-xs flex-1">Track</button>
+                            </div>
+                            <form action="{{ route('admin.delivery.cancel', $order) }}" method="POST" class="mt-2" onsubmit="return confirm('Cancel Delhivery shipment?')">
+                                @csrf
+                                <button type="submit" class="text-xs text-red-500 hover:underline">Cancel Shipment</button>
+                            </form>
+                        @elseif(!$order->tracking_number)
+                            <form action="{{ route('admin.delivery.book', $order) }}" method="POST" onsubmit="return confirm('Book Delhivery shipment for this order?')">
+                                @csrf
+                                <button type="submit" class="btn btn-primary w-full">
+                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25"/></svg>
+                                    Book via Delhivery
+                                </button>
+                            </form>
+                            <p class="text-[10px] text-neutral-500 mt-2 text-center">One-click shipment booking with auto-tracking</p>
+                        @endif
+                    </div>
+                </div>
+            @endif
+
             <!-- Assign Delivery Partner -->
             @if(in_array($order->status, ['packed', 'shipped', 'out_for_delivery']))
                 <div class="card overflow-hidden">

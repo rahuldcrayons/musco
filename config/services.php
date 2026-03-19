@@ -55,6 +55,9 @@ return [
         'pixel_id' => env('FB_PIXEL_ID'),
         'access_token' => env('FB_ACCESS_TOKEN'),
         'test_event_code' => env('FB_TEST_EVENT_CODE'),
+        'client_id' => env('FACEBOOK_CLIENT_ID', env('META_APP_ID')),
+        'client_secret' => env('FACEBOOK_CLIENT_SECRET', env('META_APP_SECRET')),
+        'redirect' => env('FACEBOOK_REDIRECT_URL', '/auth/facebook/callback'),
     ],
 
     'meta' => [
@@ -78,9 +81,14 @@ return [
         'access_token' => env('INSTAGRAM_ACCESS_TOKEN'),
     ],
 
-    'shiprocket' => [
-        'email' => env('SHIPROCKET_EMAIL'),
-        'password' => env('SHIPROCKET_PASSWORD'),
+    'google' => [
+        'client_id' => env('GOOGLE_CLIENT_ID'),
+        'client_secret' => env('GOOGLE_CLIENT_SECRET'),
+        'redirect' => env('GOOGLE_REDIRECT_URL', '/auth/google/callback'),
+    ],
+
+    'delhivery' => [
+        'token' => env('DELHIVERY_API_TOKEN', 'f8095c3d8637611b23bf4af72743cc7586e5b256'),
     ],
 
     'webpush' => [

@@ -17,15 +17,9 @@
 </head>
 <body style="background:#f8f6f3; margin:0;">
 
-    {{-- Header --}}
-    <header style="background:#205258; padding:14px 0;">
-        <div style="max-width:1100px; margin:0 auto; padding:0 20px; display:flex; align-items:center; justify-content:space-between;">
-            <a href="{{ url('/') }}">
-                <img src="{{ asset('images/jikra-logo.png') }}" alt="Jikra" style="height:32px; filter:brightness(0) invert(1);">
-            </a>
-            <a href="{{ route('affiliate.login') }}" style="background:#F8931D; color:#fff; padding:8px 20px; border-radius:50px; font-size:13px; font-weight:600; text-decoration:none; transition:all 0.2s;">
-                Sign In
-            </a>
+    @include('partials.header')
+
+    <div style="display:none;">
         </div>
     </header>
 
@@ -153,13 +147,6 @@
         </div>
     </section>
 
-    {{-- Footer --}}
-    <footer style="text-align:center; padding:20px; font-size:11px; color:#9ca3af;">
-        &copy; {{ date('Y') }} {{ config('app.name') }}. All rights reserved.
-        <span style="margin:0 4px;">|</span>
-        <a href="{{ url('/terms') }}" style="color:#9ca3af; text-decoration:none;">Terms</a>
-        <span style="margin:0 4px;">|</span>
-        <a href="{{ url('/privacy') }}" style="color:#9ca3af; text-decoration:none;">Privacy</a>
-    </footer>
+    @include('partials.footer')
 </body>
 </html>

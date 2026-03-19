@@ -109,10 +109,19 @@ class CheckoutController extends Controller
                 && $defaultAddress;
         }
 
+        // Loyalty points
+        $loyaltyPoints = 0;
+        $loyaltyValue = 0;
+        $loyaltyEnabled = (bool) Setting::get('loyalty_enabled', true);
+        if (!$isGuest && $loyaltyEnabled) {
+            $loyaltyPoints = auth()->user()->loyalty_points_balance ?? 0;
+            $loyaltyValue = round($loyaltyPoints * (float) Setting::get('loyalty_redeem_rate', 0.25), 2);
+        }
+
         return view('checkout.index', compact(
             'cart', 'addresses', 'defaultAddress', 'paymentSettings',
             'isGuest', 'availableCoupons', 'navratriActive', 'fbEventId',
-            'oneClickReady', 'checkoutPreference'
+            'oneClickReady', 'checkoutPreference', 'loyaltyPoints', 'loyaltyValue'
         ));
     }
 
@@ -122,16 +131,16 @@ class CheckoutController extends Controller
 
         $rules = [
             'same_billing_address' => ['nullable', 'boolean'],
-            'payment_method' => ['required', 'string'],
+            'payment_method' => ['required', 'string', 'in:cod,partial_pay,razorpay,upi'],
             'notes' => ['nullable', 'string', 'max:500'],
         ];
 
         if ($isGuest) {
             $rules['guest_email'] = ['required', 'email', 'max:255'];
             $rules['guest_name'] = ['required', 'string', 'max:255'];
-            $rules['guest_phone'] = ['required', 'string', 'max:20'];
+            $rules['guest_phone'] = ['required', 'string', 'regex:/^[6-9]\d{9}$/'];
             $rules['shipping_name'] = ['required', 'string', 'max:255'];
-            $rules['shipping_phone'] = ['required', 'string', 'max:20'];
+            // shipping_phone uses guest_phone
             $rules['shipping_address_line_1'] = ['required', 'string', 'max:255'];
             $rules['shipping_address_line_2'] = ['nullable', 'string', 'max:255'];
             $rules['shipping_city'] = ['required', 'string', 'max:100'];
@@ -166,7 +175,7 @@ class CheckoutController extends Controller
         if ($isGuest) {
             $shippingSnapshot = [
                 'name' => $validated['shipping_name'],
-                'phone' => $validated['shipping_phone'],
+                'phone' => $validated['guest_phone'] ?? '',
                 'address_line_1' => $validated['shipping_address_line_1'],
                 'address_line_2' => $validated['shipping_address_line_2'] ?? '',
                 'city' => $validated['shipping_city'],
@@ -216,6 +225,19 @@ class CheckoutController extends Controller
 
         $totalDiscount = $cart->discount + $navratriDiscount;
 
+        // Loyalty points redemption
+        $loyaltyPointsUsed = 0;
+        $loyaltyDiscount = 0;
+        if (!$isGuest && $request->boolean('use_loyalty_points') && (bool) Setting::get('loyalty_enabled', true)) {
+            $user = auth()->user();
+            $pointsAvailable = $user->loyalty_points_balance ?? 0;
+            $redeemRate = (float) Setting::get('loyalty_redeem_rate', 0.25);
+            $maxDiscount = $pointsAvailable * $redeemRate;
+            $loyaltyDiscount = min($maxDiscount, $cart->subtotal - $totalDiscount); // Can't exceed order value
+            $loyaltyPointsUsed = (int) ceil($loyaltyDiscount / $redeemRate);
+            $totalDiscount += $loyaltyDiscount;
+        }
+
         // Shipping fee: free above threshold, else Rs50
         $freeShipThreshold = (float) Setting::get('free_shipping_threshold', 499);
         $shippingFee = ($cart->subtotal - $cart->discount) >= $freeShipThreshold ? 0 : 50;
@@ -245,7 +267,7 @@ class CheckoutController extends Controller
             }
         }
 
-        $order = DB::transaction(function () use ($cart, $shippingSnapshot, $billingSnapshot, $shippingAddressId, $billingAddressId, $validated, $isGuest, $finalTotal, $totalDiscount, $paymentMethod, $navratriDiscount, $codAdvance, $affiliateId, $affiliateRefCode, $shippingFee) {
+        $order = DB::transaction(function () use ($cart, $shippingSnapshot, $billingSnapshot, $shippingAddressId, $billingAddressId, $validated, $isGuest, $finalTotal, $totalDiscount, $paymentMethod, $navratriDiscount, $codAdvance, $affiliateId, $affiliateRefCode, $shippingFee, $loyaltyPointsUsed, $loyaltyDiscount) {
             $metadata = ['payment_method' => $paymentMethod];
             if ($navratriDiscount > 0) {
                 $metadata['navratri_discount'] = $navratriDiscount;
@@ -256,6 +278,10 @@ class CheckoutController extends Controller
             }
             if ($affiliateRefCode) {
                 $metadata['affiliate_referral_code'] = $affiliateRefCode;
+            }
+            if ($loyaltyPointsUsed > 0) {
+                $metadata['loyalty_points_used'] = $loyaltyPointsUsed;
+                $metadata['loyalty_discount'] = $loyaltyDiscount;
             }
 
             $order = Order::create([
@@ -299,17 +325,34 @@ class CheckoutController extends Controller
                     'total' => $item->price * $item->quantity,
                 ]);
 
+                // Atomic stock decrement with check to prevent overselling
                 if ($item->variant_id) {
-                    $item->variant->decrement('stock_quantity', $item->quantity);
+                    $updated = DB::table('product_variants')
+                        ->where('id', $item->variant_id)
+                        ->where('stock_quantity', '>=', $item->quantity)
+                        ->update(['stock_quantity' => DB::raw("stock_quantity - {$item->quantity}")]);
                 } else {
-                    $item->product->decrement('stock_quantity', $item->quantity);
+                    $updated = DB::table('products')
+                        ->where('id', $item->product_id)
+                        ->where('stock_quantity', '>=', $item->quantity)
+                        ->update(['stock_quantity' => DB::raw("stock_quantity - {$item->quantity}")]);
+                }
+
+                if (!$updated) {
+                    throw new \RuntimeException("Insufficient stock for \"{$item->product->name}\". Please try again.");
                 }
 
                 $item->product->increment('sales_count', $item->quantity);
             }
 
+            // Re-validate coupon at order creation
             if ($cart->coupon) {
-                $cart->coupon->increment('times_used');
+                $coupon = $cart->coupon;
+                if (!$coupon->is_active || ($coupon->expires_at && $coupon->expires_at < now()) || ($coupon->usage_limit && $coupon->times_used >= $coupon->usage_limit)) {
+                    Log::warning('Coupon expired/exhausted at checkout', ['coupon' => $coupon->code]);
+                } else {
+                    $coupon->increment('times_used');
+                }
             }
 
             $cart->items()->delete();
@@ -318,11 +361,23 @@ class CheckoutController extends Controller
             return $order;
         });
 
+        // Redeem loyalty points inside try/catch
+        if ($loyaltyPointsUsed > 0 && !$isGuest) {
+            try {
+                app(\App\Services\LoyaltyService::class)->redeem(auth()->user(), $loyaltyPointsUsed, $order);
+            } catch (\Exception $e) {
+                Log::error('Loyalty points redemption failed', ['order' => $order->id, 'error' => $e->getMessage()]);
+            }
+        }
+
         // Mark abandoned checkout as recovered
         $this->markAbandonedRecovered($cart);
 
         if ($isGuest) {
             session()->put('guest_order_id', $order->id);
+
+            // Auto-create account for guest and send credentials
+            $this->createAccountForGuest($order, $validated);
         } else {
             // Save checkout preferences for one-click checkout next time
             \App\Models\UserCheckoutPreference::updateOrCreate(
@@ -375,7 +430,7 @@ class CheckoutController extends Controller
 
         $rules = [
             'same_billing_address' => ['nullable', 'boolean'],
-            'payment_method' => ['required', 'string', 'in:razorpay,upi'],
+            'payment_method' => ['required', 'string', 'in:razorpay,upi,cod,partial_pay'],
             'notes' => ['nullable', 'string', 'max:500'],
         ];
 
@@ -384,7 +439,7 @@ class CheckoutController extends Controller
             $rules['guest_name'] = ['required', 'string', 'max:255'];
             $rules['guest_phone'] = ['required', 'string', 'max:20'];
             $rules['shipping_name'] = ['required', 'string', 'max:255'];
-            $rules['shipping_phone'] = ['required', 'string', 'max:20'];
+            // shipping_phone uses guest_phone
             $rules['shipping_address_line_1'] = ['required', 'string', 'max:255'];
             $rules['shipping_address_line_2'] = ['nullable', 'string', 'max:255'];
             $rules['shipping_city'] = ['required', 'string', 'max:100'];
@@ -416,14 +471,20 @@ class CheckoutController extends Controller
             }
         }
 
-        // Calculate total
+        // Calculate total (same logic as COD flow)
         $paymentMethod = $validated['payment_method'];
         $navratriDiscount = 0;
-        if (now()->isWeekend() && $paymentMethod !== 'cod') {
+        $navratriActive = Setting::get('navratri_offer_active', '1') === '1';
+        if ($navratriActive) {
             $navratriDiscount = round(($cart->subtotal - $cart->discount) * 0.05, 2);
         }
         $totalDiscount = $cart->discount + $navratriDiscount;
-        $finalTotal = max(0, $cart->subtotal - $totalDiscount);
+
+        // Shipping fee
+        $freeShipThreshold = (float) Setting::get('free_shipping_threshold', 499);
+        $shippingFee = ($cart->subtotal - $cart->discount) >= $freeShipThreshold ? 0 : 50;
+
+        $finalTotal = max(0, $cart->subtotal - $totalDiscount + $shippingFee);
         $amountInPaise = (int) round($finalTotal * 100);
 
         // Create Razorpay order via REST API
@@ -460,7 +521,9 @@ class CheckoutController extends Controller
             'final_total' => $finalTotal,
             'total_discount' => $totalDiscount,
             'navratri_discount' => $navratriDiscount,
+            'shipping_fee' => $shippingFee,
             'payment_method' => $paymentMethod,
+            'cart_subtotal' => $cart->subtotal,
         ]);
 
         $contactName = $isGuest
@@ -527,17 +590,49 @@ class CheckoutController extends Controller
         // Payment verified - create the order
         $validated = $checkoutData['validated'];
         $isGuest = !auth()->check();
+
+        // Idempotency: check if order already created for this Razorpay order
+        $existingOrder = Order::where('razorpay_order_id', $request->razorpay_order_id)->first();
+        if ($existingOrder) {
+            session()->forget('razorpay_checkout');
+            return response()->json([
+                'success' => true,
+                'redirect' => route('checkout.success', $existingOrder),
+            ]);
+        }
+
         $cart = $this->getCart(['items.product', 'items.variant', 'coupon']);
 
         if (!$cart || $cart->items->isEmpty()) {
             return response()->json(['error' => 'Your cart is empty.'], 422);
         }
 
+        // Re-verify cart total matches what was charged
+        if (abs($cart->subtotal - ($checkoutData['cart_subtotal'] ?? 0)) > 0.01) {
+            Log::warning('Cart modified between payment creation and verification', [
+                'expected_subtotal' => $checkoutData['cart_subtotal'],
+                'actual_subtotal' => $cart->subtotal,
+            ]);
+            return response()->json(['error' => 'Cart was modified. Please try again.'], 422);
+        }
+
+        // Re-validate stock before creating order
+        foreach ($cart->items as $item) {
+            $available = $item->variant_id
+                ? $item->variant->stock_quantity
+                : $item->product->stock_quantity;
+            if ($available < $item->quantity) {
+                return response()->json([
+                    'error' => "\"{$item->product->name}\" is now out of stock. Your payment will be refunded automatically.",
+                ], 422);
+            }
+        }
+
         // Build address snapshots
         if ($isGuest) {
             $shippingSnapshot = [
                 'name' => $validated['shipping_name'],
-                'phone' => $validated['shipping_phone'],
+                'phone' => $validated['guest_phone'] ?? '',
                 'address_line_1' => $validated['shipping_address_line_1'],
                 'address_line_2' => $validated['shipping_address_line_2'] ?? '',
                 'city' => $validated['shipping_city'],
@@ -580,6 +675,7 @@ class CheckoutController extends Controller
         $finalTotal = $checkoutData['final_total'];
         $totalDiscount = $checkoutData['total_discount'];
         $navratriDiscount = $checkoutData['navratri_discount'];
+        $shippingFee = $checkoutData['shipping_fee'] ?? 0;
         $paymentMethod = $checkoutData['payment_method'];
 
         // Resolve affiliate from cookie/session
@@ -594,7 +690,7 @@ class CheckoutController extends Controller
             }
         }
 
-        $order = DB::transaction(function () use ($cart, $shippingSnapshot, $billingSnapshot, $shippingAddressId, $billingAddressId, $validated, $isGuest, $finalTotal, $totalDiscount, $paymentMethod, $navratriDiscount, $request, $affiliateId, $affiliateRefCode) {
+        $order = DB::transaction(function () use ($cart, $shippingSnapshot, $billingSnapshot, $shippingAddressId, $billingAddressId, $validated, $isGuest, $finalTotal, $totalDiscount, $paymentMethod, $navratriDiscount, $request, $affiliateId, $affiliateRefCode, $shippingFee) {
             $metadata = [
                 'payment_method' => $paymentMethod,
                 'razorpay_order_id' => $request->razorpay_order_id,
@@ -620,6 +716,8 @@ class CheckoutController extends Controller
                 'tax' => 0,
                 'total' => $finalTotal,
                 'paid_amount' => $finalTotal,
+                'razorpay_order_id' => $request->razorpay_order_id,
+                'razorpay_payment_id' => $request->razorpay_payment_id,
                 'coupon_id' => $cart->coupon_id,
                 'affiliate_id' => $affiliateId,
                 'affiliate_referral_code' => $affiliateRefCode,
@@ -648,17 +746,32 @@ class CheckoutController extends Controller
                     'total' => $item->price * $item->quantity,
                 ]);
 
+                // Atomic stock decrement with check to prevent overselling
                 if ($item->variant_id) {
-                    $item->variant->decrement('stock_quantity', $item->quantity);
+                    $updated = DB::table('product_variants')
+                        ->where('id', $item->variant_id)
+                        ->where('stock_quantity', '>=', $item->quantity)
+                        ->update(['stock_quantity' => DB::raw("stock_quantity - {$item->quantity}")]);
                 } else {
-                    $item->product->decrement('stock_quantity', $item->quantity);
+                    $updated = DB::table('products')
+                        ->where('id', $item->product_id)
+                        ->where('stock_quantity', '>=', $item->quantity)
+                        ->update(['stock_quantity' => DB::raw("stock_quantity - {$item->quantity}")]);
+                }
+
+                if (!$updated) {
+                    throw new \RuntimeException("Insufficient stock for \"{$item->product->name}\".");
                 }
 
                 $item->product->increment('sales_count', $item->quantity);
             }
 
+            // Re-validate coupon
             if ($cart->coupon) {
-                $cart->coupon->increment('times_used');
+                $coupon = $cart->coupon;
+                if ($coupon->is_active && (!$coupon->expires_at || $coupon->expires_at >= now()) && (!$coupon->usage_limit || $coupon->times_used < $coupon->usage_limit)) {
+                    $coupon->increment('times_used');
+                }
             }
 
             $cart->items()->delete();
@@ -724,5 +837,81 @@ class CheckoutController extends Controller
     private function markAbandonedRecovered(Cart $cart): void
     {
         AbandonedCheckout::where('cart_id', $cart->id)->update(['recovered' => true]);
+    }
+
+    /**
+     * Auto-create user account for guest orders and send credentials via email + WhatsApp.
+     */
+    private function createAccountForGuest(Order $order, array $validated): void
+    {
+        $email = $validated['guest_email'] ?? null;
+        $phone = $validated['guest_phone'] ?? null;
+        $name = $validated['guest_name'] ?? 'Customer';
+
+        if (!$email) {
+            return;
+        }
+
+        // Check if account already exists
+        if (\App\Models\User::where('email', $email)->exists()) {
+            return;
+        }
+
+        try {
+            $password = strtolower(substr(str_replace(' ', '', $name), 0, 4)) . rand(1000, 9999);
+            $nameParts = explode(' ', $name, 2);
+
+            $user = \App\Models\User::create([
+                'first_name' => $nameParts[0],
+                'last_name' => $nameParts[1] ?? '',
+                'email' => $email,
+                'phone' => $phone ? preg_replace('/\D/', '', $phone) : null,
+                'password' => bcrypt($password),
+                'email_verified_at' => now(),
+            ]);
+
+            // Link order to new user
+            $order->update(['user_id' => $user->id]);
+
+            // Send credentials via email
+            \Illuminate\Support\Facades\Mail::send([], [], function ($m) use ($email, $name, $password, $order) {
+                $m->to($email)
+                  ->from(config('mail.from.address', 'jikra@jikra.in'), config('app.name', 'Jikra'))
+                  ->subject('Your Jikra Account is Ready!')
+                  ->html("<div style='font-family:sans-serif;max-width:450px;margin:0 auto;padding:20px;'>
+                    <h2 style='color:#205258;'>Welcome to Jikra, {$name}!</h2>
+                    <p style='font-size:14px;color:#333;'>Your account has been created with your recent order #{$order->order_number}.</p>
+                    <div style='background:#f5f5f5;border-radius:8px;padding:15px;margin:15px 0;'>
+                        <p style='font-size:13px;color:#555;margin:0 0 5px;'><strong>Email:</strong> {$email}</p>
+                        <p style='font-size:13px;color:#555;margin:0 0 5px;'><strong>Password:</strong> {$password}</p>
+                    </div>
+                    <p style='font-size:13px;color:#333;'>You can also login using OTP via WhatsApp — no password needed!</p>
+                    <a href='" . url('/login') . "' style='display:inline-block;background:#205258;color:#fff;padding:10px 24px;border-radius:6px;text-decoration:none;font-size:14px;font-weight:bold;margin-top:10px;'>Login Now</a>
+                    <p style='font-size:11px;color:#999;margin-top:20px;'>We recommend changing your password after first login.</p>
+                  </div>");
+            });
+
+            // Send credentials via WhatsApp
+            if ($phone) {
+                $token = config('services.meta.page_access_token');
+                $phoneId = config('services.meta.whatsapp_phone_number_id');
+                if ($token && $phoneId) {
+                    $cleanPhone = preg_replace('/\D/', '', $phone);
+                    if (!str_starts_with($cleanPhone, '91') && strlen($cleanPhone) === 10) {
+                        $cleanPhone = '91' . $cleanPhone;
+                    }
+                    Http::withToken($token)->post("https://graph.facebook.com/v21.0/{$phoneId}/messages", [
+                        'messaging_product' => 'whatsapp',
+                        'to' => $cleanPhone,
+                        'type' => 'text',
+                        'text' => [
+                            'body' => "Hi {$name}! Your Jikra account is ready.\n\nEmail: {$email}\nPassword: {$password}\n\nYou can also login with OTP — just enter your phone number on the login page.\n\nLogin: " . url('/login'),
+                        ],
+                    ]);
+                }
+            }
+        } catch (\Exception $e) {
+            Log::warning('Guest account creation failed', ['email' => $email, 'error' => $e->getMessage()]);
+        }
     }
 }

@@ -46,6 +46,19 @@ Route::prefix('admin')->name('admin.')->group(function () {
                 Route::put('/{order}/expected-delivery', [App\Http\Controllers\Admin\OrderController::class, 'setExpectedDelivery'])->name('expected-delivery');
             });
 
+            // Delivery (Delhivery Integration)
+            Route::prefix('delivery')->name('delivery.')->group(function () {
+                Route::get('/', [App\Http\Controllers\Admin\DeliveryController::class, 'index'])->name('index');
+                Route::post('/orders/{order}/book', [App\Http\Controllers\Admin\DeliveryController::class, 'book'])->name('book');
+                Route::get('/orders/{order}/track', [App\Http\Controllers\Admin\DeliveryController::class, 'track'])->name('track');
+                Route::post('/orders/{order}/cancel', [App\Http\Controllers\Admin\DeliveryController::class, 'cancel'])->name('cancel');
+                Route::get('/orders/{order}/label', [App\Http\Controllers\Admin\DeliveryController::class, 'label'])->name('label');
+                Route::post('/orders/{order}/ndr', [App\Http\Controllers\Admin\DeliveryController::class, 'ndrAction'])->name('ndr');
+                Route::post('/pickup', [App\Http\Controllers\Admin\DeliveryController::class, 'requestPickup'])->name('pickup');
+                Route::get('/check-pincode', [App\Http\Controllers\Admin\DeliveryController::class, 'checkPincode'])->name('check-pincode');
+                Route::get('/calculate-cost', [App\Http\Controllers\Admin\DeliveryController::class, 'calculateCost'])->name('calculate-cost');
+            });
+
             // Returns
             Route::prefix('returns')->name('returns.')->group(function () {
                 Route::get('/', [App\Http\Controllers\Admin\ReturnController::class, 'index'])->name('index');

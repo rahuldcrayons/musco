@@ -23,6 +23,9 @@ Schedule::command('social:publish-scheduled')->everyMinute();
 // Send abandoned cart reminders every 10 minutes
 Schedule::command('cart:remind-abandoned')->everyTenMinutes();
 
+// Sync Delhivery tracking status every 30 minutes
+Schedule::command('delhivery:sync-tracking')->everyThirtyMinutes();
+
 // Refresh Instagram reels cache every 2 hours
 Schedule::command('instagram:refresh-reels')->everyTwoHours();
 

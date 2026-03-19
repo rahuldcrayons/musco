@@ -13,16 +13,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="font-sans antialiased bg-white">
-    <!-- Top Bar -->
-    <div class="border-b border-neutral-200">
-        <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
-            <a href="{{ url('/') }}" class="flex items-center gap-2">
-                <x-application-logo class="w-8 h-8" />
-                <span class="text-xl font-bold text-neutral-900">Jikra</span>
-            </a>
-            <span class="text-sm text-neutral-500">Affiliate Program</span>
-        </div>
-    </div>
+    @include('partials.header')
 
     <!-- Login Form -->
     <div class="min-h-[70vh] flex items-center justify-center px-4 py-12">
@@ -72,17 +63,6 @@
         </div>
     </div>
 
-    <!-- Footer -->
-    <div class="border-t border-neutral-200 bg-neutral-50">
-        <div class="max-w-5xl mx-auto px-4 py-6 text-center text-xs text-neutral-500">
-            &copy; {{ date('Y') }} {{ config('app.name') }}. All rights reserved.
-            <span class="mx-1">|</span>
-            <a href="{{ url('/terms') }}" class="hover:underline">Terms</a>
-            <span class="mx-1">|</span>
-            <a href="{{ url('/privacy') }}" class="hover:underline">Privacy</a>
-            <span class="mx-1">|</span>
-            <a href="{{ url('/') }}" class="hover:underline">Back to store</a>
-        </div>
-    </div>
+    @include('partials.footer')
 </body>
 </html>

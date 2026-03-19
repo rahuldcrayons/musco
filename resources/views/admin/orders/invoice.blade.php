@@ -114,12 +114,16 @@
             <div class="header-left">
                 <img src="/images/jikra-logo.png" alt="Jikra" height="55" style="flex-shrink: 0;">
                 <div>
-                    <div class="invoice-title">Invoice</div>
-                    <div class="invoice-number">{{ $order->order_number }}</div>
+                    <div class="invoice-title">Tax Invoice</div>
+                    <div class="invoice-number">{{ $order->invoice_number ?? $order->order_number }}</div>
                 </div>
             </div>
             <div class="header-right">
                 <div class="header-meta">
+                    <strong>Enormous Technology</strong><br>
+                    <span style="font-size:11px;">G-118, Deep Vihar, Rohini Sec 24, Delhi 110085</span><br>
+                    <span style="font-size:11px;">GSTIN: {{ \App\Models\Setting::get('company_gstin', '07XXXXXXXXXXXXXXX') }}</span><br>
+                    <span style="font-size:11px;">PAN: {{ \App\Models\Setting::get('company_pan', 'XXXXXXXXXX') }}</span><br>
                     <strong>{{ $order->created_at->format('F d, Y') }}</strong><br>
                     @php
                         $badgeClass = match($order->payment_status) {
@@ -206,15 +210,25 @@
         <table>
             <thead>
                 <tr>
-                    <th style="width: 44%;">Product</th>
+                    <th style="width: 34%;">Product</th>
+                    <th>HSN</th>
                     <th>SKU</th>
-                    <th class="text-right">Price</th>
+                    <th class="text-right">Rate</th>
                     <th class="text-center">Qty</th>
+                    <th class="text-right">Taxable</th>
+                    <th class="text-right">GST</th>
                     <th class="text-right">Total</th>
                 </tr>
             </thead>
             <tbody>
+                @php $totalTax = 0; $gstRate = (float) \App\Models\Setting::get('default_gst_rate', 18); @endphp
                 @foreach($order->items as $item)
+                    @php
+                        $taxableAmount = round($item->total / (1 + $gstRate / 100), 2);
+                        $gstAmount = round($item->total - $taxableAmount, 2);
+                        $totalTax += $gstAmount;
+                        $hsn = $item->product?->hsn_code ?? '';
+                    @endphp
                     <tr>
                         <td>
                             <div class="product-name">{{ $item->product_name }}</div>
@@ -222,9 +236,12 @@
                                 <div class="product-variant">{{ $item->variant_name }}</div>
                             @endif
                         </td>
+                        <td><span class="product-sku">{{ $hsn }}</span></td>
                         <td><span class="product-sku">{{ $item->sku }}</span></td>
                         <td class="text-right">{{ format_price($item->price) }}</td>
                         <td class="text-center">{{ $item->quantity }}</td>
+                        <td class="text-right">{{ format_price($taxableAmount) }}</td>
+                        <td class="text-right" style="font-size:12px;color:#6b7280;">{{ format_price($gstAmount) }}<br><span style="font-size:10px;">{{ $gstRate }}%</span></td>
                         <td class="text-right" style="font-weight: 600;">{{ format_price($item->total) }}</td>
                     </tr>
                 @endforeach
@@ -248,11 +265,30 @@
                     <span class="totals-label">Shipping</span>
                     <span class="totals-value">{{ format_price($order->shipping_cost) }}</span>
                 </div>
-                @if($order->tax > 0)
-                    <div class="totals-row">
-                        <span class="totals-label">Tax</span>
-                        <span class="totals-value">{{ format_price($order->tax) }}</span>
-                    </div>
+                @php
+                    $isInterstate = false; // Same state = CGST+SGST, different = IGST
+                    if ($shipping) {
+                        $shipState = strtolower($shipping['state'] ?? '');
+                        $isInterstate = !in_array($shipState, ['delhi', 'new delhi', 'dl']);
+                    }
+                    $taxAmount = $totalTax > 0 ? $totalTax : (float) $order->tax;
+                @endphp
+                @if($taxAmount > 0)
+                    @if($isInterstate)
+                        <div class="totals-row">
+                            <span class="totals-label">IGST ({{ $gstRate }}%)</span>
+                            <span class="totals-value">{{ format_price($taxAmount) }}</span>
+                        </div>
+                    @else
+                        <div class="totals-row">
+                            <span class="totals-label">CGST ({{ $gstRate / 2 }}%)</span>
+                            <span class="totals-value">{{ format_price($taxAmount / 2) }}</span>
+                        </div>
+                        <div class="totals-row">
+                            <span class="totals-label">SGST ({{ $gstRate / 2 }}%)</span>
+                            <span class="totals-value">{{ format_price($taxAmount / 2) }}</span>
+                        </div>
+                    @endif
                 @endif
                 <div class="totals-row grand totals-divider">
                     <span class="totals-label">Total</span>
