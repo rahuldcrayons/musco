@@ -232,7 +232,7 @@
 .newsletter-input {
     flex: 1; padding: 16px 20px; border: none;
     background: #fff; color: var(--text-dark);
-    font-size: 14px; outline: none;
+    font-size: 16px; outline: none;
 }
 .newsletter-input::placeholder { color: #999; }
 .newsletter-btn {

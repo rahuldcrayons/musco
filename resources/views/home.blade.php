@@ -581,13 +581,13 @@
          ========================================== -->
     <section style="background:#232f3e;">
         <a href="https://www.amazon.in/stores/JIKRA/page/5EC79DB1-60CB-4876-86A5-2314EC52E625?ref_=ast_bln" target="_blank" rel="noopener" class="block">
-            <div class="container mx-auto px-4" style="display:flex;align-items:center;justify-content:center;gap:24px;padding:28px 16px;">
-                <img src="{{ asset('images/amazon-logo.jpg') }}" alt="Amazon" style="height:48px;width:auto;border-radius:8px;" loading="lazy">
-                <div style="color:#fff;">
-                    <p style="font-size:18px;font-weight:700;margin:0;">Also Available on Amazon</p>
-                    <p style="font-size:12px;color:rgba(255,255,255,0.6);margin:4px 0 0;">Shop Jikra with Prime delivery & easy returns</p>
+            <div class="container mx-auto px-4 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6 py-5 sm:py-7">
+                <img src="{{ asset('images/amazon-logo.jpg') }}" alt="Amazon" class="h-10 sm:h-12 w-auto rounded-lg" loading="lazy">
+                <div class="text-white text-center sm:text-left">
+                    <p class="text-base sm:text-lg font-bold m-0">Also Available on Amazon</p>
+                    <p class="text-[11px] sm:text-xs text-white/60 mt-0.5">Shop Jikra with Prime delivery & easy returns</p>
                 </div>
-                <span style="background:#FF9900;color:#0F1111;padding:10px 24px;border-radius:50px;font-size:13px;font-weight:700;white-space:nowrap;">Shop on Amazon</span>
+                <span class="bg-[#FF9900] text-[#0F1111] px-5 py-2 sm:px-6 sm:py-2.5 rounded-full text-xs sm:text-sm font-bold whitespace-nowrap">Shop on Amazon</span>
             </div>
         </a>
     </section>

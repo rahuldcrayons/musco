@@ -13,6 +13,9 @@ class ReviewSchemaService
             $description = $product->name . ' - Available at ' . config('app.name', 'Jikra');
         }
 
+        // Truncate description to avoid Google warnings (max ~5000 chars)
+        $description = mb_substr($description, 0, 5000);
+
         $schema = [
             '@context' => 'https://schema.org',
             '@type' => 'Product',
@@ -23,7 +26,7 @@ class ReviewSchemaService
             'productID' => (string) $product->id,
         ];
 
-        // Images (required by Google)
+        // Images (required by Google — must be present)
         $images = $product->images->pluck('url')->map(fn ($url) => url($url))->toArray();
         if (!empty($images)) {
             $schema['image'] = $images;
@@ -31,11 +34,16 @@ class ReviewSchemaService
             $schema['image'] = [$product->primary_image_url];
         }
 
-        // Brand
+        // Brand (recommended by Google to avoid warnings)
         if ($product->brand) {
             $schema['brand'] = [
                 '@type' => 'Brand',
                 'name' => $product->brand->name,
+            ];
+        } else {
+            $schema['brand'] = [
+                '@type' => 'Brand',
+                'name' => config('app.name', 'Jikra'),
             ];
         }
 
@@ -44,24 +52,13 @@ class ReviewSchemaService
             $schema['mpn'] = $product->sku;
         }
 
-        // Video (if product has video URL)
-        if ($product->video_url) {
-            $schema['video'] = [
-                '@type' => 'VideoObject',
-                'name' => $product->name . ' - Product Video',
-                'description' => $description,
-                'thumbnailUrl' => $images[0] ?? $product->primary_image_url,
-                'contentUrl' => $product->video_url,
-                'uploadDate' => $product->created_at->format('Y-m-d'),
-            ];
-        }
-
-        // Offers
+        // Offers (required — Google warns if missing priceValidUntil)
         $offer = [
             '@type' => 'Offer',
             'url' => route('product.show', $product),
             'priceCurrency' => 'INR',
             'price' => (float) number_format((float) $product->price, 2, '.', ''),
+            'priceValidUntil' => now()->addMonths(6)->format('Y-m-d'),
             'itemCondition' => 'https://schema.org/NewCondition',
             'availability' => $product->isInStock()
                 ? 'https://schema.org/InStock'
@@ -71,10 +68,6 @@ class ReviewSchemaService
                 'name' => config('app.name', 'Jikra'),
             ],
         ];
-
-        if ($product->mrp > $product->price) {
-            $offer['priceValidUntil'] = now()->addMonths(3)->format('Y-m-d');
-        }
 
         $schema['offers'] = $offer;
 
@@ -94,15 +87,17 @@ class ReviewSchemaService
                 'worstRating' => 1,
             ];
 
-            // Include up to 10 most recent reviews with content in structured data
-            // Google requires reviewBody or name to be present for valid review markup
-            $schema['review'] = $approvedReviews
-                ->filter(fn ($r) => !empty($r->content) || !empty($r->title))
+            // Include up to 10 most recent reviews with content
+            // Google requires reviewBody to be present for valid review markup
+            $reviewsForSchema = $approvedReviews
+                ->filter(fn ($r) => !empty($r->content))
                 ->sortByDesc('created_at')
-                ->take(10)
-                ->map(function ($review) {
+                ->take(10);
+
+            if ($reviewsForSchema->isNotEmpty()) {
+                $schema['review'] = $reviewsForSchema->map(function ($review) {
                     $authorName = $review->user
-                        ? $review->user->first_name . ' ' . strtoupper(substr($review->user->last_name ?? '', 0, 1)) . '.'
+                        ? trim($review->user->first_name . ' ' . strtoupper(substr($review->user->last_name ?? '', 0, 1)) . '.')
                         : ($review->guest_name ?? 'A Customer');
 
                     $reviewSchema = [
@@ -118,18 +113,16 @@ class ReviewSchemaService
                             '@type' => 'Person',
                             'name' => $authorName,
                         ],
+                        'reviewBody' => $review->content,
                     ];
 
                     if (!empty($review->title)) {
                         $reviewSchema['name'] = $review->title;
                     }
 
-                    if (!empty($review->content)) {
-                        $reviewSchema['reviewBody'] = $review->content;
-                    }
-
                     return $reviewSchema;
                 })->values()->toArray();
+            }
         }
 
         return $schema;
