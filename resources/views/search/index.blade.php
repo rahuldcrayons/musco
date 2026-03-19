@@ -25,7 +25,8 @@
                        @blur="if(!query) startTypewriter()"
                        @keydown.escape="showResults = false; $refs.searchInput.blur()"
                        :placeholder="currentPlaceholder"
-                       class="w-full pl-10 pr-20 py-3 text-sm bg-white border border-neutral-200 rounded-lg focus:outline-none focus:border-[#205258] focus:ring-1 focus:ring-[#205258]"
+                       class="w-full pl-10 pr-20 py-3 text-base bg-white border border-neutral-200 rounded-lg focus:outline-none focus:border-[#205258] focus:ring-1 focus:ring-[#205258]"
+                       style="font-size:16px;"
                        autocomplete="off"
                        autofocus>
 

@@ -84,8 +84,8 @@
                                @blur="if(!query) startTypewriter()"
                                @keydown.escape="showResults = false; $refs.searchInput.blur()"
                                :placeholder="currentPlaceholder"
-                               class="w-full pl-8 pr-16 py-2 text-sm bg-neutral-50 border border-neutral-200 rounded-full placeholder-neutral-400 focus:bg-white focus:border-[#205258] transition-all"
-                               style="outline:none !important; box-shadow:none !important;"
+                               class="w-full pl-8 pr-16 py-2 text-base bg-neutral-50 border border-neutral-200 rounded-full placeholder-neutral-400 focus:bg-white focus:border-[#205258] transition-all"
+                               style="outline:none !important; box-shadow:none !important; font-size:16px;"
                                autocomplete="off">
 
                         <!-- Mic button (only shown when browser supports Speech Recognition) -->

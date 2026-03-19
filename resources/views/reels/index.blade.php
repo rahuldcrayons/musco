@@ -10,30 +10,46 @@
         <link rel="canonical" href="{{ route('reels.index') }}">
 
         {{-- JSON-LD ItemList for video gallery --}}
-        <?php $reelsSchema = [
-            '@context' => 'https://schema.org',
-            '@type' => 'CollectionPage',
-            'name' => 'Reels & Videos - ' . config('app.name'),
-            'description' => 'Watch the latest reels and videos from ' . config('app.name'),
-            'url' => route('reels.index'),
-            'mainEntity' => [
-                '@type' => 'ItemList',
-                'numberOfItems' => count($reels),
-                'itemListElement' => collect($reels)->map(fn($r, $i) => [
-                    '@type' => 'ListItem',
-                    'position' => $i + 1,
-                    'item' => [
-                        '@type' => 'VideoObject',
-                        'name' => Str::limit($r['caption'], 100) ?: config('app.name') . ' Reel',
-                        'description' => $r['caption'] ?: 'Watch this reel from ' . config('app.name'),
-                        'thumbnailUrl' => $r['thumbnail_url'] ?: '',
-                        'uploadDate' => $r['timestamp'] ?: now()->toIso8601String(),
-                        'contentUrl' => $r['media_url'] ?: $r['permalink'],
-                        'url' => route('reels.show', $r['shortcode']),
-                    ],
-                ])->toArray(),
-            ],
-        ]; ?>
+        <?php
+            $fallbackThumb = asset('images/jikra-banner.png');
+            $reelsSchema = [
+                '@context' => 'https://schema.org',
+                '@type' => 'CollectionPage',
+                'name' => 'Reels & Videos - ' . config('app.name'),
+                'description' => 'Watch the latest product videos and reels from ' . config('app.name') . '. Shop trending products now.',
+                'url' => route('reels.index'),
+                'mainEntity' => [
+                    '@type' => 'ItemList',
+                    'numberOfItems' => count($reels),
+                    'itemListElement' => collect($reels)->map(function ($r, $i) use ($fallbackThumb) {
+                        $isVideo = in_array($r['media_type'] ?? 'VIDEO', ['VIDEO', 'REELS']);
+                        $caption = $r['caption'] ?: config('app.name') . ' - Product Video';
+                        $thumb = $r['thumbnail_url'] ?: $fallbackThumb;
+                        $date = !empty($r['timestamp']) ? \Carbon\Carbon::parse($r['timestamp'])->toIso8601String() : now()->toIso8601String();
+
+                        $item = [
+                            '@type' => $isVideo ? 'VideoObject' : 'ImageObject',
+                            'name' => Str::limit($caption, 100),
+                            'description' => Str::limit($r['caption'] ?: 'Watch this product video from ' . config('app.name'), 300),
+                            'thumbnailUrl' => $thumb,
+                            'uploadDate' => $date,
+                            'url' => route('reels.show', $r['shortcode']),
+                        ];
+
+                        // Only add contentUrl for videos with actual media URL
+                        if ($isVideo && !empty($r['media_url'])) {
+                            $item['contentUrl'] = $r['media_url'];
+                        }
+
+                        return [
+                            '@type' => 'ListItem',
+                            'position' => $i + 1,
+                            'item' => $item,
+                        ];
+                    })->toArray(),
+                ],
+            ];
+        ?>
         <script type="application/ld+json">{!! json_encode($reelsSchema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}</script>
     @endpush
 

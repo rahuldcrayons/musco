@@ -24,27 +24,57 @@
 
         <?php
             $isVideo = in_array($reel['media_type'] ?? 'VIDEO', ['VIDEO', 'REELS']);
-            $schemaType = $isVideo ? 'VideoObject' : 'ImageObject';
-            $reelShowSchema = [
-                '@context' => 'https://schema.org',
-                '@type' => $schemaType,
-                'name' => Str::limit($reel['caption'], 100) ?: config('app.name') . ' Post',
-                'description' => $reel['caption'] ?: 'Content from ' . config('app.name'),
-                'thumbnailUrl' => $reel['thumbnail_url'] ?: '',
-                'uploadDate' => $reel['timestamp'] ?: now()->toIso8601String(),
-                'url' => route('reels.show', $reel['shortcode']),
-                'publisher' => [
-                    '@type' => 'Organization',
-                    'name' => config('app.name'),
-                    'logo' => [
-                        '@type' => 'ImageObject',
-                        'url' => asset('images/jikra-logo.png'),
-                    ],
-                ],
-            ];
+            $reelCaption = $reel['caption'] ?: config('app.name') . ' - Product Video';
+            $reelDesc = $reel['caption'] ?: 'Watch this product video from ' . config('app.name') . '. Shop the latest trending products.';
+            $reelThumb = $reel['thumbnail_url'] ?: asset('images/jikra-banner.png');
+            $reelDate = !empty($reel['timestamp']) ? \Carbon\Carbon::parse($reel['timestamp'])->toIso8601String() : now()->toIso8601String();
+
             if ($isVideo) {
-                $reelShowSchema['contentUrl'] = $reel['media_url'] ?: $reel['permalink'];
-                $reelShowSchema['embedUrl'] = route('reels.show', $reel['shortcode']);
+                $reelShowSchema = [
+                    '@context' => 'https://schema.org',
+                    '@type' => 'VideoObject',
+                    'name' => Str::limit($reelCaption, 100),
+                    'description' => Str::limit($reelDesc, 300),
+                    'thumbnailUrl' => $reelThumb,
+                    'uploadDate' => $reelDate,
+                    'url' => route('reels.show', $reel['shortcode']),
+                    'embedUrl' => route('reels.show', $reel['shortcode']),
+                    'publisher' => [
+                        '@type' => 'Organization',
+                        'name' => config('app.name'),
+                        'logo' => [
+                            '@type' => 'ImageObject',
+                            'url' => asset('images/jikra-logo.png'),
+                        ],
+                    ],
+                    'interactionStatistic' => [
+                        '@type' => 'InteractionCounter',
+                        'interactionType' => ['@type' => 'WatchAction'],
+                        'userInteractionCount' => ($reel['like_count'] ?? 0) + ($reel['comments_count'] ?? 0),
+                    ],
+                ];
+                // Only add contentUrl if actual video URL exists (not permalink)
+                if (!empty($reel['media_url'])) {
+                    $reelShowSchema['contentUrl'] = $reel['media_url'];
+                }
+            } else {
+                $reelShowSchema = [
+                    '@context' => 'https://schema.org',
+                    '@type' => 'ImageObject',
+                    'name' => Str::limit($reelCaption, 100),
+                    'description' => Str::limit($reelDesc, 300),
+                    'thumbnailUrl' => $reelThumb,
+                    'uploadDate' => $reelDate,
+                    'url' => route('reels.show', $reel['shortcode']),
+                    'publisher' => [
+                        '@type' => 'Organization',
+                        'name' => config('app.name'),
+                        'logo' => [
+                            '@type' => 'ImageObject',
+                            'url' => asset('images/jikra-logo.png'),
+                        ],
+                    ],
+                ];
             }
         ?>
         <script type="application/ld+json">{!! json_encode($reelShowSchema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}</script>
