@@ -129,6 +129,17 @@ Route::middleware(['guest', 'throttle:10,1'])->group(function () {
     Route::post('/password/reset', [App\Http\Controllers\Auth\ResetPasswordController::class, 'reset'])->name('password.update');
 });
 
+// Pincode Serviceability Check (public AJAX)
+Route::get('/api/check-pincode/{pincode}', [App\Http\Controllers\CheckoutController::class, 'checkPincode'])
+    ->where('pincode', '[0-9]{6}')
+    ->middleware('throttle:30,1')
+    ->name('pincode.check');
+
+// Abandoned Checkout Capture (AJAX - captures email/phone before form submit)
+Route::post('/api/abandoned-capture', [App\Http\Controllers\CheckoutController::class, 'captureAbandoned'])
+    ->middleware('throttle:20,1')
+    ->name('checkout.abandoned.capture');
+
 // Checkout (guest + auth)
 Route::prefix('checkout')->name('checkout.')->group(function () {
     Route::get('/', [App\Http\Controllers\CheckoutController::class, 'index'])->name('index');

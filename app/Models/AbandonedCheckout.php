@@ -9,7 +9,8 @@ class AbandonedCheckout extends Model
 {
     protected $fillable = [
         'cart_id', 'user_id', 'session_id', 'email', 'name', 'phone',
-        'cart_total', 'items_count', 'step', 'cart_snapshot', 'recovered', 'notified_at',
+        'cart_total', 'items_count', 'step', 'cart_snapshot', 'recovered',
+        'order_id', 'recovered_at', 'notified_at',
     ];
 
     protected function casts(): array
@@ -18,6 +19,7 @@ class AbandonedCheckout extends Model
             'cart_snapshot' => 'array',
             'recovered' => 'boolean',
             'notified_at' => 'datetime',
+            'recovered_at' => 'datetime',
         ];
     }
 
@@ -29,5 +31,10 @@ class AbandonedCheckout extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function order(): BelongsTo
+    {
+        return $this->belongsTo(Order::class);
     }
 }

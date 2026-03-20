@@ -32,12 +32,15 @@
             }
         }
         </script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@21.1.1/build/css/intlTelInput.css">
         <style>
             @media (min-width: 1024px) {
                 #checkout-grid { display: flex !important; flex-direction: row !important; align-items: flex-start !important; gap: 16px !important; }
                 #checkout-left { flex: 1 !important; min-width: 0 !important; }
                 #checkout-right { width: 340px !important; flex-shrink: 0 !important; position: sticky !important; top: 16px !important; }
             }
+            .iti { width: 100%; }
+            .iti__tel-input { width: 100% !important; }
         </style>
     @endpush
 
@@ -139,24 +142,29 @@
                                 {{-- Guest: contact + address in one compact block --}}
                                 <p class="text-[11px] text-[#565959] mb-2">Have an account? <a href="{{ route('login') }}" class="text-[#007185] hover:text-[#C7511F] font-medium">Log in</a> for faster checkout.</p>
 
-                                <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 mb-2">
+                                <div class="space-y-2 mb-2">
                                     <div>
                                         <label class="block text-[10px] font-semibold text-[#565959] mb-0.5">Phone *</label>
                                         <input type="tel" name="guest_phone" id="guest_phone" value="{{ old('guest_phone') }}" required autocomplete="tel" autofocus
-                                               class="w-full text-sm border border-[#E3E6E6] rounded px-2.5 py-2" style="outline:none" onfocus="this.style.border='1px solid #007185'" onblur="this.style.border='1px solid #E3E6E6'" placeholder="+91 98765 43210">
+                                               class="w-full text-sm border border-[#E3E6E6] rounded px-2.5 py-2 focus:border-[#007185] focus:outline-none" placeholder="+91 98765 43210"
+                                               @input="captureAbandoned(false)" @blur="captureAbandoned(true)">
                                         @error('guest_phone') <p class="text-[10px] text-[#CC0C39] mt-0.5">{{ $message }}</p> @enderror
                                     </div>
-                                    <div>
-                                        <label class="block text-[10px] font-semibold text-[#565959] mb-0.5">Name *</label>
-                                        <input type="text" name="guest_name" value="{{ old('guest_name') }}" required autocomplete="name"
-                                               class="w-full text-sm border border-[#E3E6E6] rounded px-2.5 py-2" style="outline:none" onfocus="this.style.border='1px solid #007185'" onblur="this.style.border='1px solid #E3E6E6'" placeholder="Full name">
-                                        @error('guest_name') <p class="text-[10px] text-[#CC0C39] mt-0.5">{{ $message }}</p> @enderror
-                                    </div>
-                                    <div>
-                                        <label class="block text-[10px] font-semibold text-[#565959] mb-0.5">Email *</label>
-                                        <input type="email" name="guest_email" value="{{ old('guest_email') }}" required autocomplete="email"
-                                               class="w-full text-sm border border-[#E3E6E6] rounded px-2.5 py-2" style="outline:none" onfocus="this.style.border='1px solid #007185'" onblur="this.style.border='1px solid #E3E6E6'" placeholder="email@example.com">
-                                        @error('guest_email') <p class="text-[10px] text-[#CC0C39] mt-0.5">{{ $message }}</p> @enderror
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                        <div>
+                                            <label class="block text-[10px] font-semibold text-[#565959] mb-0.5">Name *</label>
+                                            <input type="text" name="guest_name" value="{{ old('guest_name') }}" required autocomplete="name"
+                                                   class="w-full text-sm border border-[#E3E6E6] rounded px-2.5 py-2 focus:border-[#007185] focus:outline-none" placeholder="Full name"
+                                                   @input="captureAbandoned(false)" @blur="captureAbandoned(true)">
+                                            @error('guest_name') <p class="text-[10px] text-[#CC0C39] mt-0.5">{{ $message }}</p> @enderror
+                                        </div>
+                                        <div>
+                                            <label class="block text-[10px] font-semibold text-[#565959] mb-0.5">Email *</label>
+                                            <input type="email" name="guest_email" value="{{ old('guest_email') }}" required autocomplete="email"
+                                                   class="w-full text-sm border border-[#E3E6E6] rounded px-2.5 py-2 focus:border-[#007185] focus:outline-none" placeholder="email@example.com"
+                                                   @input="captureAbandoned(false)" @blur="captureAbandoned(true)">
+                                            @error('guest_email') <p class="text-[10px] text-[#CC0C39] mt-0.5">{{ $message }}</p> @enderror
+                                        </div>
                                     </div>
                                 </div>
 
@@ -170,6 +178,10 @@
                                             <input type="text" name="shipping_postal_code" x-model="pin" @input="fetchPinData()" value="{{ old('shipping_postal_code') }}" required maxlength="6" autocomplete="postal-code"
                                                    class="w-full text-sm border border-[#E3E6E6] rounded px-2.5 py-2 focus:border-[#007185] focus:outline-none" placeholder="400001">
                                             <p x-show="pinError" x-text="pinError" class="text-[10px] text-[#CC0C39] mt-0.5" x-cloak></p>
+                                            <p x-show="pinServiceable === true" class="text-[10px] text-[#067D62] mt-0.5 flex items-center gap-0.5" x-cloak>
+                                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                                Delivery available
+                                            </p>
                                             @error('shipping_postal_code') <p class="text-[10px] text-[#CC0C39] mt-0.5">{{ $message }}</p> @enderror
                                         </div>
                                         <div>
@@ -654,6 +666,7 @@
                                     <span class="text-sm font-bold text-[#0F1111]">Total</span>
                                     <span class="text-sm font-bold text-[#CC0C39]">@price($displayTotal)</span>
                                 </div>
+                                <p class="text-[9px] text-[#565959] text-center mt-0.5">Inclusive of all taxes</p>
 
                                 @if($totalSavings > 0)
                                     <p class="text-[10px] font-medium text-green-700 text-center mt-1.5 bg-green-50 rounded py-1">
@@ -726,22 +739,44 @@
 
     <x-slot name="scripts">
         <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@21.1.1/build/js/intlTelInput.min.js"></script>
         <script>
-            // PIN code autocomplete using India Post API
+            // Initialize intl-tel-input on phone fields
+            document.addEventListener('DOMContentLoaded', function() {
+                const phoneInputs = document.querySelectorAll('input[type="tel"]');
+                phoneInputs.forEach(function(input) {
+                    const iti = window.intlTelInput(input, {
+                        initialCountry: 'in',
+                        preferredCountries: ['in', 'us', 'gb', 'ae', 'sg'],
+                        separateDialCode: true,
+                        utilsScript: 'https://cdn.jsdelivr.net/npm/intl-tel-input@21.1.1/build/js/utils.js',
+                    });
+                    // On form submit, prepend dial code to value
+                    input.closest('form')?.addEventListener('submit', function() {
+                        input.value = iti.getNumber();
+                    });
+                });
+            });
+        </script>
+        <script>
+            // PIN code autocomplete using India Post API + Delhivery serviceability
             function pinLookup() {
                 return {
                     pin: '',
                     city: '',
                     state: '',
                     pinError: '',
+                    pinServiceable: null,
                     pinTimeout: null,
 
                     fetchPinData() {
                         this.pinError = '';
+                        this.pinServiceable = null;
                         clearTimeout(this.pinTimeout);
                         if (this.pin.length !== 6) return;
 
                         this.pinTimeout = setTimeout(() => {
+                            // India Post API for city/state autofill
                             fetch('https://api.postalpincode.in/pincode/' + this.pin)
                                 .then(r => r.json())
                                 .then(data => {
@@ -753,12 +788,52 @@
                                         this.pinError = 'Invalid PIN code';
                                     }
                                 })
-                                .catch(() => {
-                                    // Silently fail - user can fill manually
-                                });
+                                .catch(() => {});
+
+                            // Delhivery serviceability check
+                            fetch('/api/check-pincode/' + this.pin)
+                                .then(r => r.json())
+                                .then(data => {
+                                    this.pinServiceable = data.serviceable === true;
+                                    if (!data.serviceable) {
+                                        this.pinError = 'Delivery not available to this pincode';
+                                    }
+                                })
+                                .catch(() => {});
                         }, 300);
                     }
                 };
+            }
+
+            // Capture guest contact info for abandoned checkout recovery
+            // Fires on both @input (debounced 2s) and @blur (immediate) for early capture
+            let abandonedCaptureTimeout = null;
+            let lastCapturedData = '';
+            function captureAbandoned(immediate) {
+                clearTimeout(abandonedCaptureTimeout);
+                const delay = immediate ? 0 : 2000;
+                abandonedCaptureTimeout = setTimeout(() => {
+                    const phone = (document.querySelector('[name="guest_phone"]')?.value || '').replace(/\D/g, '');
+                    const email = document.querySelector('[name="guest_email"]')?.value || '';
+                    const name = document.querySelector('[name="guest_name"]')?.value || '';
+
+                    // Need at least a phone (10+ digits) or email to capture
+                    if (phone.length < 10 && !email.includes('@')) return;
+
+                    // Don't re-send identical data
+                    const dataKey = phone + '|' + email + '|' + name;
+                    if (dataKey === lastCapturedData) return;
+                    lastCapturedData = dataKey;
+
+                    fetch('{{ route("checkout.abandoned.capture") }}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        },
+                        body: JSON.stringify({ phone, email, name }),
+                    }).catch(() => {});
+                }, delay);
             }
 
             function checkoutForm(firstMethod) {

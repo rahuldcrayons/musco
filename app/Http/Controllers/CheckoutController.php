@@ -12,6 +12,7 @@ use App\Models\OrderItem;
 use App\Models\Setting;
 use App\Models\UserAddress;
 use App\Services\AnalyticsService;
+use App\Services\DelhiveryService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -370,8 +371,8 @@ class CheckoutController extends Controller
             }
         }
 
-        // Mark abandoned checkout as recovered
-        $this->markAbandonedRecovered($cart);
+        // Mark abandoned checkout as recovered → linked to order
+        $this->markAbandonedRecovered($cart, $order);
 
         if ($isGuest) {
             session()->put('guest_order_id', $order->id);
@@ -782,7 +783,7 @@ class CheckoutController extends Controller
 
         // Clean up
         session()->forget('razorpay_checkout');
-        $this->markAbandonedRecovered($cart);
+        $this->markAbandonedRecovered($cart, $order);
 
         if ($isGuest) {
             session()->put('guest_order_id', $order->id);
@@ -834,9 +835,64 @@ class CheckoutController extends Controller
         );
     }
 
-    private function markAbandonedRecovered(Cart $cart): void
+    private function markAbandonedRecovered(Cart $cart, Order $order): void
     {
-        AbandonedCheckout::where('cart_id', $cart->id)->update(['recovered' => true]);
+        AbandonedCheckout::where('cart_id', $cart->id)->update([
+            'recovered' => true,
+            'order_id' => $order->id,
+            'recovered_at' => now(),
+        ]);
+    }
+
+    /**
+     * Check pincode serviceability via Delhivery API.
+     */
+    public function checkPincode(string $pincode, DelhiveryService $delhivery): JsonResponse
+    {
+        $result = $delhivery->checkPincode($pincode);
+
+        return response()->json($result);
+    }
+
+    /**
+     * Capture guest email/phone for abandoned checkout recovery (AJAX).
+     */
+    public function captureAbandoned(Request $request): JsonResponse
+    {
+        $cart = $this->getCart($request);
+        if (!$cart) {
+            return response()->json(['ok' => false], 404);
+        }
+
+        $email = $request->input('email');
+        $phone = $request->input('phone');
+        $name = $request->input('name');
+
+        if (!$email && !$phone) {
+            return response()->json(['ok' => false], 422);
+        }
+
+        AbandonedCheckout::updateOrCreate(
+            ['cart_id' => $cart->id],
+            array_filter([
+                'user_id' => auth()->id(),
+                'session_id' => session()->getId(),
+                'email' => $email,
+                'phone' => $phone,
+                'name' => $name,
+                'cart_total' => $cart->subtotal - $cart->discount,
+                'items_count' => $cart->items->count(),
+                'step' => 'contact_captured',
+                'cart_snapshot' => $cart->items->map(fn ($item) => [
+                    'product_id' => $item->product_id,
+                    'product_name' => $item->product->name,
+                    'quantity' => $item->quantity,
+                    'price' => $item->price,
+                ])->toArray(),
+            ])
+        );
+
+        return response()->json(['ok' => true]);
     }
 
     /**

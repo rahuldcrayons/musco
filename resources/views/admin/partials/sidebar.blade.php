@@ -45,8 +45,8 @@
         <!-- Orders -->
         @if($user->canAccessSection('orders'))
         @php $pendingOrders = \App\Models\Order::where('status', 'pending')->count(); @endphp
-        <div x-data="{ open: {{ $isActive(['admin.orders.*','admin.returns.*','admin.credit-notes.*']) ? 'true' : 'false' }} }">
-            <button @click="open = !open" class="{{ $linkClass }} w-full text-left {{ $isActive(['admin.orders.*','admin.returns.*','admin.credit-notes.*']) ? $activeClass : $normalClass }}">
+        <div x-data="{ open: {{ $isActive(['admin.orders.*','admin.returns.*','admin.credit-notes.*','admin.abandoned-checkouts']) ? 'true' : 'false' }} }">
+            <button @click="open = !open" class="{{ $linkClass }} w-full text-left {{ $isActive(['admin.orders.*','admin.returns.*','admin.credit-notes.*','admin.abandoned-checkouts']) ? $activeClass : $normalClass }}">
                 <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z"/></svg>
                 Orders
                 @if($pendingOrders > 0)
@@ -55,6 +55,7 @@
             </button>
             <div x-show="open" x-cloak class="ml-8 space-y-px mb-1">
                 <a href="{{ route('admin.orders.index') }}" class="{{ $subClass }} {{ $isActive('admin.orders.*') ? 'text-neutral-800' : 'text-neutral-700 hover:text-neutral-900' }}">All Orders</a>
+                <a href="{{ route('admin.abandoned-checkouts') }}" class="{{ $subClass }} {{ $isActive('admin.abandoned-checkouts') ? 'text-neutral-800' : 'text-neutral-700 hover:text-neutral-900' }}">Abandoned Checkouts</a>
                 <a href="{{ route('admin.returns.index') }}" class="{{ $subClass }} {{ $isActive('admin.returns.*') ? 'text-neutral-800' : 'text-neutral-700 hover:text-neutral-900' }}">Returns</a>
                 <a href="{{ route('admin.credit-notes.index') }}" class="{{ $subClass }} {{ $isActive('admin.credit-notes.*') ? 'text-neutral-800' : 'text-neutral-700 hover:text-neutral-900' }}">Credit Notes</a>
             </div>

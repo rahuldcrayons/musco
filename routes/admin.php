@@ -35,6 +35,40 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         // Orders
         Route::middleware('admin.section:orders')->group(function () {
+            // Abandoned Checkouts
+            Route::get('/abandoned-checkouts', function () {
+                $abandoned = \App\Models\AbandonedCheckout::latest()->paginate(25);
+                return view('admin.abandoned-checkouts', compact('abandoned'));
+            })->name('abandoned-checkouts');
+
+            Route::delete('/abandoned-checkouts/{id}', function ($id) {
+                \App\Models\AbandonedCheckout::findOrFail($id)->delete();
+                return back()->with('success', 'Abandoned checkout deleted.');
+            })->name('abandoned-checkouts.delete');
+
+            Route::delete('/abandoned-checkouts-cleanup', function () {
+                $count = \App\Models\AbandonedCheckout::whereNull('email')->whereNull('phone')->where('recovered', false)->delete();
+                return back()->with('success', "Cleaned up {$count} entries without contact info.");
+            })->name('abandoned-checkouts.cleanup');
+
+            Route::post('/abandoned-checkouts/{id}/remind', function ($id) {
+                $ac = \App\Models\AbandonedCheckout::findOrFail($id);
+                if ($ac->email) {
+                    \Illuminate\Support\Facades\Mail::send('emails.abandoned-cart', ['ac' => $ac], function ($m) use ($ac) {
+                        $m->to($ac->email, $ac->name)->subject('You left something behind! Complete your order');
+                    });
+                }
+                if ($ac->phone) {
+                    try {
+                        app(\App\Services\WhatsAppService::class)->sendAbandonedCartReminder($ac->phone, $ac->name ?: 'there', $ac->cart_total);
+                    } catch (\Exception $e) {
+                        \Illuminate\Support\Facades\Log::error('WhatsApp abandoned reminder failed: ' . $e->getMessage());
+                    }
+                }
+                $ac->update(['notified_at' => now()]);
+                return back()->with('success', 'Reminder sent to ' . ($ac->email ?: $ac->phone));
+            })->name('abandoned-checkouts.remind');
+
             Route::prefix('orders')->name('orders.')->group(function () {
                 Route::get('/', [App\Http\Controllers\Admin\OrderController::class, 'index'])->name('index');
                 Route::get('/{order}', [App\Http\Controllers\Admin\OrderController::class, 'show'])->name('show');
