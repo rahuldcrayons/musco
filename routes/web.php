@@ -47,8 +47,10 @@ Route::prefix('products')->name('products.')->group(function () {
     Route::get('/{product:slug}', [App\Http\Controllers\ProductController::class, 'show'])->name('show')->middleware('cache.response:5');
 });
 
-// Alias for product show
-Route::get('/product/{product:slug}', [App\Http\Controllers\ProductController::class, 'show'])->name('product.show');
+// Alias: /product/slug → 301 redirect to /products/slug (avoid duplicate content)
+Route::get('/product/{slug}', function (string $slug) {
+    return redirect()->route('products.show', $slug, 301);
+})->name('product.show');
 
 // Instagram Reels / Videos
 Route::get('/reels', [App\Http\Controllers\ReelController::class, 'index'])->name('reels.index')->middleware('cache.response:5');
@@ -74,8 +76,10 @@ Route::prefix('categories')->name('categories.')->group(function () {
     Route::get('/{category:slug}', [App\Http\Controllers\CategoryController::class, 'show'])->name('show')->middleware('cache.response:5');
 });
 
-// Alias for category show
-Route::get('/category/{category:slug}', [App\Http\Controllers\CategoryController::class, 'show'])->name('category.show')->middleware('cache.response:5');
+// Alias: /category/slug → 301 redirect to /categories/slug (avoid duplicate content)
+Route::get('/category/{slug}', function (string $slug) {
+    return redirect()->route('categories.show', $slug, 301);
+})->name('category.show');
 
 // Brands
 Route::prefix('brands')->name('brands.')->group(function () {

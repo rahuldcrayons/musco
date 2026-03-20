@@ -41,7 +41,7 @@
         <meta name="twitter:image" content="{{ asset('images/og-default.png') }}">
     @endunless
 
-    <link rel="canonical" href="{{ url()->current() }}">
+    {{-- Canonical is set by each page via @push('meta'). No layout fallback to avoid duplicates. --}}
 
     <!-- Performance: DNS prefetch + preconnect -->
     <link rel="dns-prefetch" href="https://fonts.bunny.net">

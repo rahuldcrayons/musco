@@ -32,7 +32,7 @@
     <!-- Default OG fallbacks (only if no page-specific meta pushed) -->
     <meta property="og:site_name" content="{{ config('app.name') }}">
 
-    <link rel="canonical" href="{{ url()->current() }}">
+    {{-- Canonical is set by each page via @push('meta'). No layout fallback to avoid duplicates. --}}
 
     <!-- Performance: DNS prefetch + preconnect -->
     <link rel="dns-prefetch" href="https://fonts.bunny.net">
