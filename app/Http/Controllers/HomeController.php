@@ -29,6 +29,7 @@ class HomeController extends Controller
         // Featured products
         $featuredProducts = Product::query()
             ->where('is_active', true)
+            ->where('stock_quantity', '>', 0)
             ->where('is_featured', true)
             ->with($productEager)
             ->orderBy('created_at', 'desc')
@@ -38,6 +39,7 @@ class HomeController extends Controller
         // New arrivals
         $newArrivals = Product::query()
             ->where('is_active', true)
+            ->where('stock_quantity', '>', 0)
             ->where('created_at', '>=', now()->subDays($newArrivalsDays))
             ->with($productEager)
             ->orderBy('created_at', 'desc')
@@ -47,6 +49,7 @@ class HomeController extends Controller
         // Bestsellers
         $bestsellers = Product::query()
             ->where('is_active', true)
+            ->where('stock_quantity', '>', 0)
             ->with($productEager)
             ->orderBy('sales_count', 'desc')
             ->take($bestsellersCount)
@@ -55,6 +58,7 @@ class HomeController extends Controller
         // Deal products (where price < mrp)
         $deals = Product::query()
             ->where('is_active', true)
+            ->where('stock_quantity', '>', 0)
             ->whereColumn('price', '<', 'mrp')
             ->with($productEager)
             ->orderByRaw('(mrp - price) / mrp DESC')

@@ -65,14 +65,13 @@ class CartController extends Controller
 
         $product = Product::with(['category', 'brand'])->findOrFail($validated['product_id']);
 
-        // Check stock (allow overselling like Shopify default)
+        // Check stock
         $variantId = $validated['variant_id'] ?? null;
         $stockQuantity = $variantId
             ? $product->variants()->find($variantId)->stock_quantity
             : $product->stock_quantity;
 
-        $allowOversell = $product->allow_oversell ?? true;
-        if (!$allowOversell && $stockQuantity < $validated['quantity']) {
+        if ($stockQuantity < $validated['quantity']) {
             $error = $stockQuantity > 0
                 ? "Only {$stockQuantity} item(s) available in stock."
                 : 'This item is currently out of stock.';
