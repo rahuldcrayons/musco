@@ -15,6 +15,11 @@ class Product extends Model
 {
     use HasSlug, Searchable, SoftDeletes;
 
+    public function getRouteKeyName(): string
+    {
+        return 'slug';
+    }
+
     protected $fillable = [
         'uuid',
         'seller_id',
