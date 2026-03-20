@@ -859,7 +859,7 @@ class CheckoutController extends Controller
      */
     public function captureAbandoned(Request $request): JsonResponse
     {
-        $cart = $this->getCart($request);
+        $cart = $this->getCart();
         if (!$cart) {
             return response()->json(['ok' => false], 404);
         }
