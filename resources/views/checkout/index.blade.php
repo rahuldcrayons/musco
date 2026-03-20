@@ -11,27 +11,28 @@
         <meta name="twitter:card" content="summary">
         <meta name="twitter:title" content="Checkout - {{ config('app.name') }}">
 
-        <script type="application/ld+json">
-        {
-            "@context": "https://schema.org",
-            "@type": "WebPage",
-            "name": "Checkout",
-            "description": "Secure checkout at {{ config('app.name') }}",
-            "url": "{{ route('checkout.index') }}",
-            "breadcrumb": {
-                "@type": "BreadcrumbList",
-                "itemListElement": [
-                    { "@type": "ListItem", "position": 1, "name": "Home", "item": "{{ url('/') }}" },
-                    { "@type": "ListItem", "position": 2, "name": "Cart", "item": "{{ route('cart.index') }}" },
-                    { "@type": "ListItem", "position": 3, "name": "Checkout" }
-                ]
-            },
-            "potentialAction": {
-                "@type": "OrderAction",
-                "target": "{{ route('checkout.process') }}"
-            }
-        }
-        </script>
+        <?php
+        $checkoutSchema = [
+            '@context' => 'https://schema.org',
+            '@type' => 'WebPage',
+            'name' => 'Checkout',
+            'description' => 'Secure checkout at ' . config('app.name'),
+            'url' => route('checkout.index'),
+            'breadcrumb' => [
+                '@type' => 'BreadcrumbList',
+                'itemListElement' => [
+                    ['@type' => 'ListItem', 'position' => 1, 'name' => 'Home', 'item' => url('/')],
+                    ['@type' => 'ListItem', 'position' => 2, 'name' => 'Cart', 'item' => route('cart.index')],
+                    ['@type' => 'ListItem', 'position' => 3, 'name' => 'Checkout'],
+                ],
+            ],
+            'potentialAction' => [
+                '@type' => 'OrderAction',
+                'target' => route('checkout.process'),
+            ],
+        ];
+        ?>
+        <script type="application/ld+json">{!! json_encode($checkoutSchema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}</script>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@21.1.1/build/css/intlTelInput.css">
         <style>
             @media (min-width: 1024px) {
