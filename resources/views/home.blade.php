@@ -27,7 +27,27 @@
                     'url' => url('/'),
                     'logo' => ['@type' => 'ImageObject', 'url' => asset('images/jikra-logo.png')],
                     'description' => $siteSettings['site_tagline'] . ' - Shop gadgets, home essentials, and accessories online.',
-                    'contactPoint' => ['@type' => 'ContactPoint', 'contactType' => 'customer service', 'url' => url('/contact')],
+                    'email' => 'support@jikra.in',
+                    'telephone' => '+919354567705',
+                    'address' => [
+                        '@type' => 'PostalAddress',
+                        'addressCountry' => 'IN',
+                        'addressLocality' => 'Delhi',
+                        'addressRegion' => 'DL',
+                    ],
+                    'contactPoint' => [
+                        '@type' => 'ContactPoint',
+                        'contactType' => 'customer service',
+                        'telephone' => '+919354567705',
+                        'email' => 'support@jikra.in',
+                        'url' => url('/contact'),
+                        'availableLanguage' => ['English', 'Hindi'],
+                    ],
+                    'sameAs' => [
+                        'https://www.instagram.com/jikra.in',
+                        'https://www.facebook.com/jikra.in',
+                    ],
+                    'areaServed' => ['@type' => 'Country', 'name' => 'India'],
                 ],
                 [
                     '@type' => 'WebSite',

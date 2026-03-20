@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Product;
+use App\Models\Setting;
 
 class ReviewSchemaService
 {
@@ -67,6 +68,49 @@ class ReviewSchemaService
                 '@type' => 'Organization',
                 'name' => config('app.name', 'Jikra'),
             ],
+        ];
+
+        // Shipping Details (Google Merchant requirement)
+        $freeShipThreshold = (float) Setting::get('free_shipping_threshold', 499);
+        $shippingCost = (float) $product->price >= $freeShipThreshold ? 0 : 49;
+
+        $offer['shippingDetails'] = [
+            '@type' => 'OfferShippingDetails',
+            'shippingRate' => [
+                '@type' => 'MonetaryAmount',
+                'value' => $shippingCost,
+                'currency' => 'INR',
+            ],
+            'shippingDestination' => [
+                '@type' => 'DefinedRegion',
+                'addressCountry' => 'IN',
+            ],
+            'deliveryTime' => [
+                '@type' => 'ShippingDeliveryTime',
+                'handlingTime' => [
+                    '@type' => 'QuantitativeValue',
+                    'minValue' => 0,
+                    'maxValue' => 1,
+                    'unitCode' => 'd',
+                ],
+                'transitTime' => [
+                    '@type' => 'QuantitativeValue',
+                    'minValue' => 3,
+                    'maxValue' => 7,
+                    'unitCode' => 'd',
+                ],
+            ],
+        ];
+
+        // Merchant Return Policy (Google Merchant requirement)
+        $returnDays = (int) Setting::get('return_policy_days', 7);
+        $offer['hasMerchantReturnPolicy'] = [
+            '@type' => 'MerchantReturnPolicy',
+            'applicableCountry' => 'IN',
+            'returnPolicyCategory' => 'https://schema.org/MerchantReturnFiniteReturnWindow',
+            'merchantReturnDays' => $returnDays,
+            'returnMethod' => 'https://schema.org/ReturnByMail',
+            'returnFees' => 'https://schema.org/FreeReturn',
         ];
 
         $schema['offers'] = $offer;
