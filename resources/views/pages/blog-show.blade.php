@@ -105,23 +105,73 @@
                         <p class="text-[15px] text-neutral-600 mb-6 leading-relaxed border-l-4 border-primary-200 pl-4">{{ $post->excerpt }}</p>
                     @endif
 
-                    {{-- Featured Image --}}
+                    {{-- Featured Image or Generated Cover --}}
                     @if($post->featured_image)
                         <div class="rounded-xl overflow-hidden mb-6 aspect-video bg-neutral-100">
                             <img src="{{ asset('storage/' . $post->featured_image) }}" alt="{{ $post->title }}"
                                  class="w-full h-full object-cover">
+                        </div>
+                    @else
+                        @php
+                            $gradients = [
+                                'from-[#205258] to-[#0F2D30]',
+                                'from-[#1a3a5c] to-[#0d1f33]',
+                                'from-[#4a2c5e] to-[#2a1835]',
+                                'from-[#2d4a3e] to-[#1a2d25]',
+                                'from-[#5c3a1a] to-[#33200d]',
+                            ];
+                            $gradient = $gradients[crc32($post->title) % count($gradients)];
+                        @endphp
+                        <div class="rounded-xl overflow-hidden mb-6 aspect-video bg-gradient-to-br {{ $gradient }} flex items-center justify-center p-8">
+                            <div class="text-center max-w-md">
+                                <div class="w-12 h-12 mx-auto mb-3 rounded-full bg-white/10 flex items-center justify-center">
+                                    <svg class="w-6 h-6 text-white/60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>
+                                </div>
+                                <h2 class="text-white font-bold text-xl sm:text-2xl leading-snug">{{ $post->title }}</h2>
+                                @if($post->category)
+                                <p class="text-white/50 text-xs font-medium uppercase tracking-wider mt-2">{{ $post->category }}</p>
+                                @endif
+                            </div>
                         </div>
                     @endif
 
                     {{-- Content --}}
                     <div class="bg-white border border-neutral-100 rounded-xl p-5 sm:p-8 mb-6">
                         @if($post->content)
-                            <div class="prose prose-neutral prose-headings:font-bold prose-a:text-primary-600 prose-img:rounded-xl max-w-none text-neutral-700 leading-relaxed">
+                            <div class="prose prose-neutral max-w-none text-neutral-700 leading-relaxed
+                                        prose-headings:text-neutral-900 prose-headings:font-bold prose-headings:leading-tight
+                                        prose-h2:text-xl prose-h2:mt-8 prose-h2:mb-3 prose-h2:pb-2 prose-h2:border-b prose-h2:border-neutral-100
+                                        prose-h3:text-lg prose-h3:mt-6 prose-h3:mb-2
+                                        prose-p:text-[15px] prose-p:leading-[1.8] prose-p:mb-4
+                                        prose-a:text-primary-600 prose-a:font-medium prose-a:no-underline hover:prose-a:underline
+                                        prose-img:rounded-xl prose-img:shadow-sm
+                                        prose-ul:my-4 prose-ul:space-y-1 prose-li:text-[15px] prose-li:leading-[1.7]
+                                        prose-ol:my-4 prose-ol:space-y-1
+                                        prose-blockquote:border-l-4 prose-blockquote:border-primary-300 prose-blockquote:bg-primary-50/50 prose-blockquote:rounded-r-lg prose-blockquote:py-3 prose-blockquote:px-5 prose-blockquote:not-italic prose-blockquote:text-neutral-700
+                                        prose-strong:text-neutral-900
+                                        prose-code:text-primary-700 prose-code:bg-primary-50 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-sm">
                                 {!! $post->content !!}
                             </div>
                         @else
                             <p class="text-neutral-600 italic text-[13px]">No content available.</p>
                         @endif
+                    </div>
+
+                    {{-- Share --}}
+                    <div class="flex items-center gap-3 mb-6">
+                        <span class="text-[13px] text-neutral-500 font-medium">Share:</span>
+                        <a href="https://wa.me/?text={{ urlencode($post->title . ' ' . route('blog.show', $post->slug)) }}" target="_blank" rel="noopener"
+                           class="w-8 h-8 rounded-full bg-[#25D366]/10 text-[#25D366] flex items-center justify-center hover:bg-[#25D366]/20 transition">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.625.846 5.059 2.284 7.034L.789 23.492l4.624-1.474A11.932 11.932 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.75c-2.15 0-4.148-.688-5.78-1.855l-.413-.31-2.741.874.892-2.657-.342-.432A9.706 9.706 0 012.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75z"/></svg>
+                        </a>
+                        <a href="https://twitter.com/intent/tweet?text={{ urlencode($post->title) }}&url={{ urlencode(route('blog.show', $post->slug)) }}" target="_blank" rel="noopener"
+                           class="w-8 h-8 rounded-full bg-neutral-100 text-neutral-600 flex items-center justify-center hover:bg-neutral-200 transition">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                        </a>
+                        <a href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode(route('blog.show', $post->slug)) }}" target="_blank" rel="noopener"
+                           class="w-8 h-8 rounded-full bg-[#1877F2]/10 text-[#1877F2] flex items-center justify-center hover:bg-[#1877F2]/20 transition">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                        </a>
                     </div>
 
                     {{-- Tags --}}
@@ -132,6 +182,43 @@
                                 <span class="px-3 py-1 bg-neutral-100 text-neutral-600 rounded-full text-[13px]">{{ $tag }}</span>
                             @endforeach
                         </div>
+                    @endif
+
+                    {{-- Recommended Products --}}
+                    @php
+                        $recommendedProducts = \App\Models\Product::where('is_active', true)
+                            ->where('stock_quantity', '>', 0)
+                            ->inRandomOrder()
+                            ->take(4)
+                            ->get();
+                    @endphp
+                    @if($recommendedProducts->count())
+                    <div class="bg-white border border-neutral-100 rounded-xl p-5 sm:p-6 mb-6">
+                        <h2 class="text-base font-bold text-neutral-900 mb-4">Recommended Products</h2>
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                            @foreach($recommendedProducts as $rProduct)
+                            <a href="{{ route('products.show', $rProduct->slug) }}" class="group">
+                                <div class="aspect-square rounded-lg overflow-hidden bg-neutral-50 mb-2">
+                                    @if($rProduct->primary_image_url)
+                                        <img src="{{ $rProduct->primary_image_url }}" alt="{{ $rProduct->name }}"
+                                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200">
+                                    @else
+                                        <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-neutral-100 to-neutral-50">
+                                            <svg class="w-8 h-8 text-neutral-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+                                        </div>
+                                    @endif
+                                </div>
+                                <p class="text-[12px] font-medium text-neutral-800 line-clamp-2 leading-snug group-hover:text-primary-600 transition-colors">{{ $rProduct->name }}</p>
+                                <div class="flex items-center gap-1.5 mt-1">
+                                    <span class="text-[13px] font-bold text-neutral-900">@price($rProduct->price)</span>
+                                    @if($rProduct->compare_at_price && $rProduct->compare_at_price > $rProduct->price)
+                                    <span class="text-[11px] text-neutral-400 line-through">@price($rProduct->compare_at_price)</span>
+                                    @endif
+                                </div>
+                            </a>
+                            @endforeach
+                        </div>
+                    </div>
                     @endif
 
                     {{-- Back link --}}

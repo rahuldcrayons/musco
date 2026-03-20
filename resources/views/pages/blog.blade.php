@@ -73,15 +73,31 @@
                 @foreach($posts as $post)
                     <article class="bg-white rounded-xl border border-neutral-100 overflow-hidden hover:shadow-md transition-all duration-200 group flex flex-col">
                         {{-- Image --}}
-                        <a href="{{ route('blog.show', $post->slug) }}" class="block aspect-video overflow-hidden bg-neutral-100 shrink-0">
+                        <a href="{{ route('blog.show', $post->slug) }}" class="block aspect-video overflow-hidden shrink-0">
                             @if($post->featured_image)
                                 <img src="{{ asset('storage/' . $post->featured_image) }}" alt="{{ $post->title }}"
                                      class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
                             @else
-                                <div class="w-full h-full flex items-center justify-center bg-neutral-50">
-                                    <svg class="w-10 h-10 text-neutral-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                                    </svg>
+                                @php
+                                    $gradients = [
+                                        'from-[#205258] to-[#0F2D30]',
+                                        'from-[#1a3a5c] to-[#0d1f33]',
+                                        'from-[#4a2c5e] to-[#2a1835]',
+                                        'from-[#2d4a3e] to-[#1a2d25]',
+                                        'from-[#5c3a1a] to-[#33200d]',
+                                    ];
+                                    $gradient = $gradients[crc32($post->title) % count($gradients)];
+                                @endphp
+                                <div class="w-full h-full bg-gradient-to-br {{ $gradient }} flex items-center justify-center p-5 group-hover:scale-105 transition-transform duration-300">
+                                    <div class="text-center">
+                                        <div class="w-8 h-8 mx-auto mb-2 rounded-full bg-white/10 flex items-center justify-center">
+                                            <svg class="w-4 h-4 text-white/60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>
+                                        </div>
+                                        <p class="text-white font-bold text-sm leading-snug line-clamp-3 px-2">{{ $post->title }}</p>
+                                        @if($post->category)
+                                        <p class="text-white/50 text-[10px] font-medium uppercase tracking-wider mt-1.5">{{ $post->category }}</p>
+                                        @endif
+                                    </div>
                                 </div>
                             @endif
                         </a>

@@ -33,7 +33,7 @@
         ];
         ?>
         <script type="application/ld+json">{!! json_encode($checkoutSchema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}</script>
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@21.1.1/build/css/intlTelInput.css">
+        {{-- Phone input styled inline - India only --}}
         <style>
             @media (min-width: 1024px) {
                 #checkout-grid { display: flex !important; flex-direction: row !important; align-items: flex-start !important; gap: 16px !important; }
@@ -740,25 +740,7 @@
 
     <x-slot name="scripts">
         <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@21.1.1/build/js/intlTelInput.min.js"></script>
-        <script>
-            // Initialize intl-tel-input on phone fields
-            document.addEventListener('DOMContentLoaded', function() {
-                const phoneInputs = document.querySelectorAll('input[type="tel"]');
-                phoneInputs.forEach(function(input) {
-                    const iti = window.intlTelInput(input, {
-                        initialCountry: 'in',
-                        preferredCountries: ['in', 'us', 'gb', 'ae', 'sg'],
-                        separateDialCode: true,
-                        utilsScript: 'https://cdn.jsdelivr.net/npm/intl-tel-input@21.1.1/build/js/utils.js',
-                    });
-                    // On form submit, prepend dial code to value
-                    input.closest('form')?.addEventListener('submit', function() {
-                        input.value = iti.getNumber();
-                    });
-                });
-            });
-        </script>
+        {{-- Phone: simple +91 prefix for India-only store --}}
         <script>
             // PIN code autocomplete using India Post API + Delhivery serviceability
             function pinLookup() {
