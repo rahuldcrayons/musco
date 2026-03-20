@@ -50,7 +50,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             if (typeof fbq !== 'undefined') {
                 fbq('track', 'InitiateCheckout', {
-                    content_ids: @json($cart->items->pluck('product_id')->map(fn ($id) => (string) $id)->toArray()),
+                    content_ids: {!! json_encode($cart->items->pluck('product_id')->map('strval')->values()->toArray()) !!},
                     content_type: 'product',
                     value: {{ (float) ($cart->subtotal - $cart->discount) }},
                     currency: 'INR',
