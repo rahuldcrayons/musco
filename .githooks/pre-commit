@@ -1,0 +1,64 @@
+#!/bin/bash
+# Jikra Pre-Commit Hook — Prevents broken code from being committed
+
+echo "🔍 Running pre-commit checks..."
+ERRORS=0
+
+# 1. PHP Syntax Check on staged files
+echo "  [1/4] PHP syntax check..."
+for file in $(git diff --cached --name-only --diff-filter=ACM | grep "\.php$"); do
+  if ! php -l "$file" > /dev/null 2>&1; then
+    echo "  ❌ PHP syntax error: $file"
+    ERRORS=$((ERRORS + 1))
+  fi
+done
+
+# 2. Blade @json with fn() arrow functions (causes runtime crash)
+echo "  [2/4] Checking for @json with arrow functions..."
+BLADE_ERRORS=$(git diff --cached --name-only --diff-filter=ACM | grep "\.blade\.php$" | xargs grep -l "@json.*fn " 2>/dev/null)
+if [ -n "$BLADE_ERRORS" ]; then
+  echo "  ❌ @json with fn() found (use {!! json_encode() !!} instead):"
+  echo "     $BLADE_ERRORS"
+  ERRORS=$((ERRORS + 1))
+fi
+
+# 3. Blade @context/@type in JSON-LD (Blade interprets @ as directive)
+echo "  [3/4] Checking for @context/@type in Blade..."
+BAD_SCHEMA=$(git diff --cached --name-only --diff-filter=ACM | grep "\.blade\.php$" | xargs grep -ln '"@context"\|"@type"\|"@id"\|"@graph"' 2>/dev/null | while read f; do
+  # Only flag if NOT inside <?php ?> block
+  if grep -P '"@(context|type|id|graph)"' "$f" | grep -v "<?php\|json_encode\|chr(64)" > /dev/null 2>&1; then
+    echo "$f"
+  fi
+done)
+if [ -n "$BAD_SCHEMA" ]; then
+  echo "  ❌ @context/@type found outside PHP block (use <?php ?> with json_encode):"
+  echo "     $BAD_SCHEMA"
+  ERRORS=$((ERRORS + 1))
+fi
+
+# 4. Blade directive balance check
+echo "  [4/4] Checking Blade directive balance..."
+for file in $(git diff --cached --name-only --diff-filter=ACM | grep "\.blade\.php$"); do
+  IF_COUNT=$(grep -c "@if\b" "$file" 2>/dev/null || echo 0)
+  ENDIF_COUNT=$(grep -c "@endif" "$file" 2>/dev/null || echo 0)
+  if [ "$IF_COUNT" != "$ENDIF_COUNT" ]; then
+    echo "  ❌ Unbalanced @if/$IF_COUNT vs @endif/$ENDIF_COUNT in $file"
+    ERRORS=$((ERRORS + 1))
+  fi
+
+  FOREACH_COUNT=$(grep -c "@foreach" "$file" 2>/dev/null || echo 0)
+  ENDFOREACH_COUNT=$(grep -c "@endforeach" "$file" 2>/dev/null || echo 0)
+  if [ "$FOREACH_COUNT" != "$ENDFOREACH_COUNT" ]; then
+    echo "  ❌ Unbalanced @foreach/$FOREACH_COUNT vs @endforeach/$ENDFOREACH_COUNT in $file"
+    ERRORS=$((ERRORS + 1))
+  fi
+done
+
+if [ $ERRORS -gt 0 ]; then
+  echo ""
+  echo "❌ Pre-commit check failed with $ERRORS error(s). Fix before committing."
+  exit 1
+fi
+
+echo "✅ All pre-commit checks passed!"
+exit 0
