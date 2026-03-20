@@ -1,161 +1,151 @@
 <x-layouts.admin>
 <x-slot name="title">Abandoned Checkouts</x-slot>
-<div class="p-6">
-    <div class="flex items-center justify-between mb-4">
-        <h1 class="text-2xl font-bold text-gray-800">Abandoned Checkouts</h1>
-        <div class="flex items-center gap-2">
-            <form method="POST" action="{{ route('admin.abandoned-checkouts.cleanup') }}" onsubmit="return confirm('Delete all entries without contact info?')">
-                @csrf @method('DELETE')
-                <button type="submit" class="px-3 py-1.5 text-xs font-medium text-red-600 border border-red-200 rounded hover:bg-red-50 transition">
-                    Clean Up (No Contact)
-                </button>
-            </form>
-            <span class="text-sm text-gray-500">{{ $abandoned->total() }} total</span>
-        </div>
-    </div>
-
-    {{-- Stats cards --}}
-    @php
-        $totalAbandoned = \App\Models\AbandonedCheckout::count();
-        $recovered = \App\Models\AbandonedCheckout::where('recovered', true)->count();
-        $withContact = \App\Models\AbandonedCheckout::where(function($q) { $q->whereNotNull('email')->orWhereNotNull('phone'); })->count();
-        $totalValue = \App\Models\AbandonedCheckout::where('recovered', false)->sum('cart_total');
-        $recoveryRate = $totalAbandoned > 0 ? round(($recovered / $totalAbandoned) * 100, 1) : 0;
-    @endphp
-    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
-        <div class="bg-white rounded-lg shadow p-4">
-            <p class="text-xs text-gray-500 uppercase font-semibold">Total Abandoned</p>
-            <p class="text-2xl font-bold text-gray-900">{{ $totalAbandoned }}</p>
-        </div>
-        <div class="bg-white rounded-lg shadow p-4">
-            <p class="text-xs text-gray-500 uppercase font-semibold">Recovered</p>
-            <p class="text-2xl font-bold text-green-600">{{ $recovered }} <span class="text-sm text-gray-400">({{ $recoveryRate }}%)</span></p>
-        </div>
-        <div class="bg-white rounded-lg shadow p-4">
-            <p class="text-xs text-gray-500 uppercase font-semibold">With Contact Info</p>
-            <p class="text-2xl font-bold text-blue-600">{{ $withContact }}</p>
-        </div>
-        <div class="bg-white rounded-lg shadow p-4">
-            <p class="text-xs text-gray-500 uppercase font-semibold">Lost Revenue</p>
-            <p class="text-2xl font-bold text-red-600">{{ config('app.currency_symbol', '₹') }}{{ number_format($totalValue, 0) }}</p>
-        </div>
+<div class="p-6 max-w-7xl mx-auto">
+    {{-- Header --}}
+    <div class="flex items-center justify-between mb-5">
+        <h1 class="text-xl font-semibold text-gray-900">Abandoned checkouts</h1>
     </div>
 
     @if(session('success'))
-    <div class="mb-4 p-3 rounded bg-green-50 text-green-800 text-sm font-medium">{{ session('success') }}</div>
+    <div class="mb-4 p-3 rounded-lg bg-green-50 border border-green-200 text-green-800 text-sm">{{ session('success') }}</div>
     @endif
 
-    <div class="bg-white rounded-lg shadow overflow-x-auto">
+    {{-- Tabs --}}
+    @php
+        $totalCount = \App\Models\AbandonedCheckout::count();
+        $withContactCount = \App\Models\AbandonedCheckout::where(function($q) { $q->whereNotNull('email')->orWhereNotNull('phone'); })->where('recovered', false)->count();
+        $recoveredCount = \App\Models\AbandonedCheckout::where('recovered', true)->count();
+        $tab = request('tab', 'all');
+    @endphp
+    <div class="flex items-center gap-6 border-b border-gray-200 mb-0" x-data>
+        <a href="{{ route('admin.abandoned-checkouts') }}"
+           class="pb-3 text-sm font-medium border-b-2 {{ $tab === 'all' ? 'border-gray-900 text-gray-900' : 'border-transparent text-gray-500 hover:text-gray-700' }}">
+            All <span class="ml-1 text-xs text-gray-400">{{ $totalCount }}</span>
+        </a>
+        <a href="{{ route('admin.abandoned-checkouts', ['tab' => 'with-contact']) }}"
+           class="pb-3 text-sm font-medium border-b-2 {{ $tab === 'with-contact' ? 'border-gray-900 text-gray-900' : 'border-transparent text-gray-500 hover:text-gray-700' }}">
+            With contact info <span class="ml-1 text-xs text-gray-400">{{ $withContactCount }}</span>
+        </a>
+        <a href="{{ route('admin.abandoned-checkouts', ['tab' => 'recovered']) }}"
+           class="pb-3 text-sm font-medium border-b-2 {{ $tab === 'recovered' ? 'border-gray-900 text-gray-900' : 'border-transparent text-gray-500 hover:text-gray-700' }}">
+            Recovered <span class="ml-1 text-xs text-gray-400">{{ $recoveredCount }}</span>
+        </a>
+    </div>
+
+    {{-- Table --}}
+    <div class="bg-white rounded-b-lg border border-t-0 border-gray-200" x-data="bulkActions()">
+        {{-- Bulk actions bar --}}
+        <div x-show="selected.length > 0" x-cloak class="px-4 py-2.5 bg-gray-50 border-b border-gray-200 flex items-center gap-3">
+            <span class="text-sm text-gray-700" x-text="selected.length + ' selected'"></span>
+            <form method="POST" action="{{ route('admin.abandoned-checkouts.bulk') }}" class="inline" x-ref="bulkForm">
+                @csrf
+                <template x-for="id in selected" :key="id">
+                    <input type="hidden" name="ids[]" :value="id">
+                </template>
+                <button type="submit" name="action" value="delete" onclick="return confirm('Delete selected entries?')"
+                        class="px-3 py-1 text-xs font-medium text-red-600 bg-white border border-gray-300 rounded-md hover:bg-red-50 transition">
+                    Delete selected
+                </button>
+                <button type="submit" name="action" value="remind" onclick="return confirm('Send reminders to entries with contact info?')"
+                        class="px-3 py-1 text-xs font-medium text-blue-600 bg-white border border-gray-300 rounded-md hover:bg-blue-50 transition ml-1">
+                    Send reminder
+                </button>
+            </form>
+        </div>
+
         <table class="w-full text-sm">
-            <thead class="bg-gray-50 border-b">
+            <thead class="border-b border-gray-200">
                 <tr>
-                    <th class="px-4 py-3 text-left font-semibold text-gray-600">ID</th>
-                    <th class="px-4 py-3 text-left font-semibold text-gray-600">Contact</th>
-                    <th class="px-4 py-3 text-right font-semibold text-gray-600">Cart Total</th>
-                    <th class="px-4 py-3 text-center font-semibold text-gray-600">Items</th>
-                    <th class="px-4 py-3 text-left font-semibold text-gray-600">Step</th>
-                    <th class="px-4 py-3 text-center font-semibold text-gray-600">Status</th>
-                    <th class="px-4 py-3 text-left font-semibold text-gray-600">Date</th>
-                    <th class="px-4 py-3 text-center font-semibold text-gray-600">Actions</th>
+                    <th class="w-10 px-4 py-3 text-left">
+                        <input type="checkbox" class="rounded border-gray-300" @change="toggleAll($event)">
+                    </th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Checkout</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Contact</th>
+                    <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Recovery</th>
                 </tr>
             </thead>
+            <tbody class="divide-y divide-gray-100">
                 @forelse($abandoned as $item)
-                <tbody class="divide-y divide-gray-100" x-data="{ showItems: false }">
-                <tr class="hover:bg-gray-50 {{ !$item->email && !$item->phone ? 'opacity-50' : '' }}">
-                    <td class="px-4 py-3 font-medium text-gray-900">{{ $item->id }}</td>
+                <tr class="hover:bg-gray-50 transition-colors" x-data="{ showItems: false }">
                     <td class="px-4 py-3">
-                        @if($item->name || $item->email || $item->phone)
-                            @if($item->name)<p class="font-medium text-gray-900">{{ $item->name }}</p>@endif
-                            @if($item->email)<p class="text-xs text-gray-600">{{ $item->email }}</p>@endif
-                            @if($item->phone)<p class="text-xs text-gray-600">{{ $item->phone }}</p>@endif
-                        @else
-                            <span class="text-xs text-gray-400 italic">No contact info</span>
-                        @endif
+                        <input type="checkbox" class="rounded border-gray-300" value="{{ $item->id }}" x-model="selected">
                     </td>
-                    <td class="px-4 py-3 text-right font-semibold text-gray-900">{{ config('app.currency_symbol', '₹') }}{{ number_format($item->cart_total, 0) }}</td>
-                    <td class="px-4 py-3 text-center">
-                        @if($item->cart_snapshot && count($item->cart_snapshot) > 0)
-                        <button @click="showItems = !showItems" class="text-blue-600 hover:text-blue-800 underline cursor-pointer">
-                            {{ $item->items_count ?? count($item->cart_snapshot) }} item{{ ($item->items_count ?? count($item->cart_snapshot)) > 1 ? 's' : '' }}
+                    <td class="px-4 py-3">
+                        <button @click="showItems = !showItems" class="text-blue-600 hover:text-blue-800 font-medium text-sm hover:underline">
+                            #{{ $item->id }}
                         </button>
-                        @else
-                        {{ $item->items_count ?? 0 }}
-                        @endif
+                        <span class="text-gray-400 text-xs ml-1">{{ $item->items_count ?? ($item->cart_snapshot ? count($item->cart_snapshot) : 0) }} {{ Str::plural('item', $item->items_count ?? 1) }}</span>
+                    </td>
+                    <td class="px-4 py-3 text-gray-600">
+                        <span>{{ $item->created_at->format('M d') }}</span>
+                        <span class="text-gray-400 text-xs block">{{ $item->created_at->format('h:i A') }}</span>
                     </td>
                     <td class="px-4 py-3">
-                        @php
-                            $stepColors = [
-                                'checkout' => 'bg-amber-100 text-amber-800',
-                                'contact_captured' => 'bg-blue-100 text-blue-800',
-                                'payment' => 'bg-purple-100 text-purple-800',
-                            ];
-                        @endphp
-                        <span class="px-2 py-0.5 rounded text-xs {{ $stepColors[$item->step] ?? 'bg-gray-100 text-gray-800' }}">{{ str_replace('_', ' ', ucfirst($item->step)) }}</span>
-                    </td>
-                    <td class="px-4 py-3 text-center">
-                        @if($item->recovered && $item->order_id)
-                            <a href="{{ route('admin.orders.show', $item->order_id) }}" class="inline-flex items-center gap-1 text-green-600 hover:text-green-800 font-medium text-xs">
-                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                                Order #{{ $item->order_id }}
-                            </a>
-                            @if($item->recovered_at)
-                            <p class="text-[10px] text-gray-400">{{ $item->recovered_at->diffForHumans() }}</p>
-                            @endif
-                        @elseif($item->recovered)
-                            <span class="text-green-600 font-medium text-xs">Recovered</span>
+                        @if($item->email || $item->phone || $item->name)
+                            <p class="text-gray-900 font-medium text-sm">{{ $item->name ?: ($item->email ? Str::before($item->email, '@') : 'Guest') }}</p>
+                            @if($item->email)<p class="text-gray-500 text-xs">{{ $item->email }}</p>@endif
+                            @if($item->phone)<p class="text-gray-500 text-xs">{{ $item->phone }}</p>@endif
                         @else
-                            <span class="text-red-500 text-xs">Abandoned</span>
+                            <span class="text-gray-400 text-xs">No contact info</span>
                         @endif
                     </td>
-                    <td class="px-4 py-3 text-xs text-gray-500">
-                        {{ $item->created_at->format('d M Y') }}<br>
-                        <span class="text-gray-400">{{ $item->created_at->format('h:i A') }}</span>
-                    </td>
-                    <td class="px-4 py-3 text-center">
-                        <div class="flex items-center justify-center gap-1">
-                            @if(!$item->recovered && ($item->email || $item->phone))
-                                <form method="POST" action="{{ route('admin.abandoned-checkouts.remind', $item->id) }}" class="inline">
-                                    @csrf
-                                    <button type="submit" title="Send Reminder" class="p-1.5 text-blue-600 hover:bg-blue-50 rounded transition" {{ $item->notified_at ? 'onclick=return\ confirm(\'Already\ notified.\ Send\ again?\')' : '' }}>
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-                                    </button>
-                                </form>
-                            @endif
-                            <form method="POST" action="{{ route('admin.abandoned-checkouts.delete', $item->id) }}" class="inline" onsubmit="return confirm('Delete this entry?')">
-                                @csrf @method('DELETE')
-                                <button type="submit" title="Delete" class="p-1.5 text-red-400 hover:text-red-600 hover:bg-red-50 rounded transition">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                                </button>
-                            </form>
-                        </div>
-                        @if($item->notified_at)
-                        <p class="text-[9px] text-gray-400 mt-0.5">Sent {{ $item->notified_at->format('d M H:i') }}</p>
+                    <td class="px-4 py-3 text-right font-medium text-gray-900">{{ config('app.currency_symbol', '₹') }}{{ number_format($item->cart_total, 0) }}</td>
+                    <td class="px-4 py-3">
+                        @if($item->recovered && $item->order_id)
+                            <a href="{{ route('admin.orders.show', $item->order_id) }}" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-green-50 text-green-700 hover:bg-green-100 transition">
+                                Recovered
+                            </a>
+                        @elseif($item->recovered)
+                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-50 text-green-700">Recovered</span>
+                        @elseif($item->notified_at)
+                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-yellow-50 text-yellow-700">Reminded {{ $item->notified_at->diffForHumans() }}</span>
+                        @else
+                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-50 text-red-600">Not recovered</span>
                         @endif
                     </td>
                 </tr>
                 @if($item->cart_snapshot && count($item->cart_snapshot) > 0)
-                <tr x-show="showItems" x-cloak>
-                    <td colspan="8" class="px-8 py-3 bg-gray-50 border-t border-gray-200">
-                        <p class="text-xs font-semibold text-gray-500 mb-1.5">Cart Items:</p>
-                        <div class="text-xs text-gray-600 space-y-1">
+                <tr x-show="showItems" x-cloak class="bg-gray-50">
+                    <td colspan="6" class="px-12 py-3 border-t border-gray-100">
+                        <div class="text-xs text-gray-600 space-y-1.5">
                             @foreach($item->cart_snapshot as $cartItem)
-                            <div class="flex justify-between max-w-md">
-                                <span>{{ $cartItem['product_name'] ?? 'Product' }} x{{ $cartItem['quantity'] ?? 1 }}</span>
-                                <span class="font-medium">{{ config('app.currency_symbol', '₹') }}{{ number_format(($cartItem['price'] ?? 0) * ($cartItem['quantity'] ?? 1), 0) }}</span>
+                            <div class="flex items-center justify-between max-w-lg">
+                                <span class="text-gray-700">{{ $cartItem['product_name'] ?? 'Product' }} <span class="text-gray-400">x{{ $cartItem['quantity'] ?? 1 }}</span></span>
+                                <span class="font-medium text-gray-900">{{ config('app.currency_symbol', '₹') }}{{ number_format(($cartItem['price'] ?? 0) * ($cartItem['quantity'] ?? 1), 0) }}</span>
                             </div>
                             @endforeach
                         </div>
                     </td>
                 </tr>
                 @endif
-                </tbody>
                 @empty
-                <tbody><tr><td colspan="8" class="px-4 py-12 text-center text-gray-400">No abandoned checkouts yet</td></tr></tbody>
+                <tr><td colspan="6" class="px-4 py-16 text-center text-gray-400 text-sm">No abandoned checkouts</td></tr>
                 @endforelse
+            </tbody>
         </table>
     </div>
+
     @if($abandoned->hasPages())
     <div class="mt-4">{{ $abandoned->links() }}</div>
     @endif
 </div>
+
+@push('scripts')
+<script>
+function bulkActions() {
+    return {
+        selected: [],
+        toggleAll(e) {
+            if (e.target.checked) {
+                this.selected = @json($abandoned->pluck('id')->map(fn($id) => (string) $id));
+            } else {
+                this.selected = [];
+            }
+        }
+    };
+}
+</script>
+@endpush
 </x-layouts.admin>

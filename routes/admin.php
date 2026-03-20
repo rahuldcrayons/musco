@@ -36,38 +36,62 @@ Route::prefix('admin')->name('admin.')->group(function () {
         // Orders
         Route::middleware('admin.section:orders')->group(function () {
             // Abandoned Checkouts
-            Route::get('/abandoned-checkouts', function () {
-                $abandoned = \App\Models\AbandonedCheckout::latest()->paginate(25);
+            Route::get('/abandoned-checkouts', function (\Illuminate\Http\Request $request) {
+                $tab = $request->get('tab', 'all');
+                $query = \App\Models\AbandonedCheckout::latest();
+
+                if ($tab === 'with-contact') {
+                    $query->where(function ($q) { $q->whereNotNull('email')->orWhereNotNull('phone'); })->where('recovered', false);
+                } elseif ($tab === 'recovered') {
+                    $query->where('recovered', true);
+                }
+
+                $abandoned = $query->paginate(25)->appends(['tab' => $tab]);
                 return view('admin.abandoned-checkouts', compact('abandoned'));
             })->name('abandoned-checkouts');
 
-            Route::delete('/abandoned-checkouts/{id}', function ($id) {
-                \App\Models\AbandonedCheckout::findOrFail($id)->delete();
-                return back()->with('success', 'Abandoned checkout deleted.');
-            })->name('abandoned-checkouts.delete');
+            Route::post('/abandoned-checkouts/bulk', function (\Illuminate\Http\Request $request) {
+                $ids = $request->input('ids', []);
+                $action = $request->input('action');
 
-            Route::delete('/abandoned-checkouts-cleanup', function () {
-                $count = \App\Models\AbandonedCheckout::whereNull('email')->whereNull('phone')->where('recovered', false)->delete();
-                return back()->with('success', "Cleaned up {$count} entries without contact info.");
-            })->name('abandoned-checkouts.cleanup');
-
-            Route::post('/abandoned-checkouts/{id}/remind', function ($id) {
-                $ac = \App\Models\AbandonedCheckout::findOrFail($id);
-                if ($ac->email) {
-                    \Illuminate\Support\Facades\Mail::send('emails.abandoned-cart', ['ac' => $ac], function ($m) use ($ac) {
-                        $m->to($ac->email, $ac->name)->subject('You left something behind! Complete your order');
-                    });
+                if (empty($ids)) {
+                    return back()->with('success', 'No items selected.');
                 }
-                if ($ac->phone) {
-                    try {
-                        app(\App\Services\WhatsAppService::class)->sendAbandonedCartReminder($ac->phone, $ac->name ?: 'there', $ac->cart_total);
-                    } catch (\Exception $e) {
-                        \Illuminate\Support\Facades\Log::error('WhatsApp abandoned reminder failed: ' . $e->getMessage());
+
+                if ($action === 'delete') {
+                    $count = \App\Models\AbandonedCheckout::whereIn('id', $ids)->delete();
+                    return back()->with('success', "{$count} abandoned checkouts deleted.");
+                }
+
+                if ($action === 'remind') {
+                    $sent = 0;
+                    $items = \App\Models\AbandonedCheckout::whereIn('id', $ids)->where('recovered', false)->get();
+                    foreach ($items as $ac) {
+                        if ($ac->email) {
+                            try {
+                                \Illuminate\Support\Facades\Mail::send('emails.abandoned-cart', ['ac' => $ac], function ($m) use ($ac) {
+                                    $m->to($ac->email, $ac->name)->subject('You left something behind! Complete your order');
+                                });
+                                $sent++;
+                            } catch (\Exception $e) {
+                                \Illuminate\Support\Facades\Log::error('Abandoned email failed: ' . $e->getMessage());
+                            }
+                        }
+                        if ($ac->phone) {
+                            try {
+                                app(\App\Services\WhatsAppService::class)->sendAbandonedCartReminder($ac->phone, $ac->name ?: 'there', $ac->cart_total);
+                                $sent++;
+                            } catch (\Exception $e) {
+                                \Illuminate\Support\Facades\Log::error('WhatsApp abandoned reminder failed: ' . $e->getMessage());
+                            }
+                        }
+                        $ac->update(['notified_at' => now()]);
                     }
+                    return back()->with('success', "Reminders sent to {$sent} contacts.");
                 }
-                $ac->update(['notified_at' => now()]);
-                return back()->with('success', 'Reminder sent to ' . ($ac->email ?: $ac->phone));
-            })->name('abandoned-checkouts.remind');
+
+                return back();
+            })->name('abandoned-checkouts.bulk');
 
             Route::prefix('orders')->name('orders.')->group(function () {
                 Route::get('/', [App\Http\Controllers\Admin\OrderController::class, 'index'])->name('index');
