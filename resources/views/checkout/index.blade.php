@@ -643,8 +643,8 @@
 
                                     @if($cart->tax > 0)
                                         <div class="flex items-center justify-between text-[11px]">
-                                            <span class="text-[#565959]">Tax</span>
-                                            <span class="text-[#0F1111] font-medium">@price($cart->tax)</span>
+                                            <span class="text-[#565959]">GST (incl.)</span>
+                                            <span class="text-[#067D62] font-medium text-[10px]">incl. @price($cart->tax)</span>
                                         </div>
                                     @endif
                                 </div>
