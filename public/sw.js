@@ -1,5 +1,5 @@
 /**
- * Jikra Main App Service Worker
+ * MusCo Main App Service Worker
  *
  * Strategy:
  *  - Precache critical app shell (layout, CSS, JS)
@@ -9,7 +9,7 @@
  *  - Offline fallback page for navigation requests
  */
 
-const CACHE_VERSION = 'jikra-v1';
+const CACHE_VERSION = 'musco-v2';
 const STATIC_CACHE = `static-${CACHE_VERSION}`;
 const DYNAMIC_CACHE = `dynamic-${CACHE_VERSION}`;
 const IMAGE_CACHE = `images-${CACHE_VERSION}`;
@@ -203,23 +203,23 @@ self.addEventListener('push', event => {
     try {
         data = event.data.json();
     } catch (e) {
-        data = { title: 'Jikra', body: event.data.text() };
+        data = { title: 'MusCo', body: event.data.text() };
     }
 
     const options = {
         body: data.body || '',
-        icon: data.icon || '/images/jikra-logo.png',
-        badge: '/images/jikra-logo.png',
+        icon: data.icon || '/images/musco-logo.png',
+        badge: '/images/musco-logo.png',
         image: data.image || undefined,
         data: { url: data.url || '/' },
         actions: data.actions || [],
         vibrate: [100, 50, 100],
-        tag: data.tag || 'jikra-notification',
+        tag: data.tag || 'musco-notification',
         renotify: true,
     };
 
     event.waitUntil(
-        self.registration.showNotification(data.title || 'Jikra', options)
+        self.registration.showNotification(data.title || 'MusCo', options)
     );
 });
 

@@ -27,7 +27,7 @@
     @endpush
 
     <!-- Breadcrumb -->
-    <div class="bg-white border-b border-[#E3E6E6]">
+    <div class="bg-white border-b border-[#efefef]">
         <div class="container mx-auto px-4 py-2">
             <x-breadcrumb :items="$breadcrumbs" />
         </div>
@@ -37,8 +37,13 @@
         <!-- Product Main Section -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-6">
             <!-- Image Gallery — Col 1 -->
+            @php
+                $galleryImages = $product->images->count() > 0
+                    ? $product->images->pluck('url')->map(fn($u) => str_starts_with($u, 'http') ? $u : asset('storage/' . $u))->values()->toArray()
+                    : [asset('images/no-product-image.svg')];
+            @endphp
             <div x-data="{
-                    images: @js($product->images->pluck('url')->map(fn($u) => str_starts_with($u, 'http') ? $u : asset('storage/' . $u))->values()),
+                    images: @js($galleryImages),
                     videoUrl: '{{ $product->video_url ?? '' }}',
                     showingVideo: false,
                     activeIndex: 0,
@@ -70,7 +75,7 @@
                         <div class="hidden lg:block w-16 shrink-0 relative" x-data="{ thumbEl: null }" x-init="thumbEl = $refs.thumbStrip">
                             {{-- Up arrow --}}
                             <button @click="thumbEl.scrollBy({ top: -144, behavior: 'smooth' })"
-                                    class="absolute -top-1 left-0 right-0 z-10 flex justify-center py-0.5 bg-gradient-to-b from-white via-white/90 to-transparent hover:text-[#C7511F] text-neutral-400 transition-colors"
+                                    class="absolute -top-1 left-0 right-0 z-10 flex justify-center py-0.5 bg-gradient-to-b from-white via-white/90 to-transparent hover:text-[#c29958] text-neutral-400 transition-colors"
                                     aria-label="Scroll up">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"/></svg>
                             </button>
@@ -79,15 +84,15 @@
                                     <button @click="select({{ $index }}); $el.scrollIntoView({ behavior: 'smooth', block: 'nearest' })"
                                             class="w-16 h-16 rounded border-2 overflow-hidden shrink-0 transition-all duration-200 cursor-pointer"
                                             :class="activeIndex === {{ $index }} && !showingVideo
-                                                ? 'border-[#C7511F] shadow-sm'
-                                                : 'border-[#E3E6E6] hover:border-[#C7511F]'">
+                                                ? 'border-[#c29958] shadow-sm'
+                                                : 'border-[#efefef] hover:border-[#c29958]'">
                                         <img src="{{ str_starts_with($image->url, 'http') ? $image->url : asset('storage/' . $image->url) }}" alt="{{ $product->name }}" class="w-full h-full object-contain">
                                     </button>
                                 @endforeach
                                 @if($product->video_url)
                                     <button @click="showVideo(); $el.scrollIntoView({ behavior: 'smooth', block: 'nearest' })"
                                             class="w-16 h-16 rounded border-2 overflow-hidden shrink-0 transition-all duration-200 cursor-pointer relative"
-                                            :class="showingVideo ? 'border-[#C7511F] shadow-sm' : 'border-[#E3E6E6] hover:border-[#C7511F]'">
+                                            :class="showingVideo ? 'border-[#c29958] shadow-sm' : 'border-[#efefef] hover:border-[#c29958]'">
                                         <div class="w-full h-full bg-neutral-900 flex items-center justify-center">
                                             <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
                                         </div>
@@ -96,7 +101,7 @@
                             </div>
                             {{-- Down arrow --}}
                             <button @click="thumbEl.scrollBy({ top: 144, behavior: 'smooth' })"
-                                    class="absolute -bottom-1 left-0 right-0 z-10 flex justify-center py-0.5 bg-gradient-to-t from-white via-white/90 to-transparent hover:text-[#C7511F] text-neutral-400 transition-colors"
+                                    class="absolute -bottom-1 left-0 right-0 z-10 flex justify-center py-0.5 bg-gradient-to-t from-white via-white/90 to-transparent hover:text-[#c29958] text-neutral-400 transition-colors"
                                     aria-label="Scroll down">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                             </button>
@@ -104,7 +109,7 @@
                     @endif
 
                     <!-- Main Image / Video -->
-                    <div class="relative bg-white rounded-lg overflow-hidden group flex-1"
+                    <div class="relative bg-white border border-[#efefef] rounded-lg overflow-hidden group flex-1"
                          @touchstart="touchStartX = $event.changedTouches[0].screenX"
                          @touchend="touchEndX = $event.changedTouches[0].screenX; handleSwipe()">
                         {{-- Video Player --}}
@@ -131,27 +136,28 @@
                                  :style="zooming ? 'transform: scale(2); transform-origin: ' + zoomX + '% ' + zoomY + '%' : ''">
                         </div>
 
-                        <div x-show="!showingVideo && images.length === 0" class="flex items-center justify-center py-20">
-                            <svg class="w-20 h-20 text-neutral-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div x-show="!showingVideo && images.length === 0" class="flex flex-col items-center justify-center aspect-square bg-[#f7f7f7] rounded-lg">
+                            <svg class="w-24 h-24 text-neutral-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                             </svg>
+                            <p class="text-sm text-neutral-400 mt-2">No image available</p>
                         </div>
 
                         <!-- Image counter -->
                         <template x-if="images.length > 1">
-                            <div class="absolute bottom-3 left-3 bg-white/90 text-[#0F1111] text-xs font-medium px-2.5 py-1 rounded shadow-sm border border-[#E3E6E6]" x-text="(activeIndex + 1) + ' / ' + images.length"></div>
+                            <div class="absolute bottom-3 left-3 bg-white/90 text-[#222222] text-xs font-medium px-2.5 py-1 rounded shadow-sm border border-[#efefef]" x-text="(activeIndex + 1) + ' / ' + images.length"></div>
                         </template>
 
                         <!-- Nav Arrows -->
                         <template x-if="images.length > 1">
                             <div>
                                 <button @click="prev()" aria-label="Previous image"
-                                        class="absolute left-2 top-1/2 -translate-y-1/2 w-9 h-9 bg-white hover:bg-[#F7FAFA] rounded-full flex items-center justify-center shadow  opacity-0 group-hover:opacity-100 transition-opacity">
-                                    <svg class="w-4 h-4 text-[#0F1111]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+                                        class="absolute left-2 top-1/2 -translate-y-1/2 w-9 h-9 bg-white hover:bg-[#f7f7f7] rounded-full flex items-center justify-center shadow opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <svg class="w-4 h-4 text-[#222222]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
                                 </button>
                                 <button @click="next()" aria-label="Next image"
-                                        class="absolute right-2 top-1/2 -translate-y-1/2 w-9 h-9 bg-white hover:bg-[#F7FAFA] rounded-full flex items-center justify-center shadow  opacity-0 group-hover:opacity-100 transition-opacity">
-                                    <svg class="w-4 h-4 text-[#0F1111]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                                        class="absolute right-2 top-1/2 -translate-y-1/2 w-9 h-9 bg-white hover:bg-[#f7f7f7] rounded-full flex items-center justify-center shadow opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <svg class="w-4 h-4 text-[#222222]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                                 </button>
                             </div>
                         </template>
@@ -164,14 +170,14 @@
                         @foreach($product->images as $index => $image)
                             <button @click="select({{ $index }})"
                                     class="w-14 h-14 rounded border-2 overflow-hidden shrink-0"
-                                    :class="activeIndex === {{ $index }} && !showingVideo ? 'border-[#C7511F]' : 'border-[#E3E6E6]'">
+                                    :class="activeIndex === {{ $index }} && !showingVideo ? 'border-[#c29958]' : 'border-[#efefef]'">
                                 <img src="{{ str_starts_with($image->url, 'http') ? $image->url : asset('storage/' . $image->url) }}" alt="{{ $product->name }}" class="w-full h-full object-contain">
                             </button>
                         @endforeach
                         @if($product->video_url)
                             <button @click="showVideo()"
                                     class="w-14 h-14 rounded border-2 overflow-hidden shrink-0 relative"
-                                    :class="showingVideo ? 'border-[#C7511F]' : 'border-[#E3E6E6]'">
+                                    :class="showingVideo ? 'border-[#c29958]' : 'border-[#efefef]'">
                                 <div class="w-full h-full bg-neutral-900 flex items-center justify-center">
                                     <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
                                 </div>
@@ -208,28 +214,28 @@
             <div class="lg:col-span-4 space-y-3">
                 <!-- Brand -->
                 @if($product->brand)
-                    <a href="{{ route('brands.show', $product->brand) }}" class="text-sm text-[#007185] hover:text-[#C7511F] hover:underline">
+                    <a href="{{ route('brands.show', $product->brand) }}" class="text-sm text-[#B76E79] hover:text-[#c29958] hover:underline">
                         Visit the {{ $product->brand->name }} Store
                     </a>
                 @endif
 
                 <!-- Title -->
-                <h1 class="text-lg lg:text-xl font-normal text-[#0F1111] leading-snug">{{ $product->name }}</h1>
+                <h1 class="text-lg lg:text-xl font-normal text-[#222222] leading-snug">{{ $product->name }}</h1>
 
                 <!-- Rating Row -->
                 <div class="flex flex-wrap items-center gap-x-2 gap-y-1">
-                    <span class="text-sm text-[#007185]">{{ number_format($product->rating, 1) }}</span>
+                    <span class="text-sm text-[#B76E79]">{{ number_format($product->rating, 1) }}</span>
                     <a href="#customer-reviews" class="inline-flex items-center gap-0.5 group">
                         @for($i = 1; $i <= 5; $i++)
-                            <svg class="w-[16px] h-[16px] {{ $i <= round($product->rating) ? 'text-[#205258]' : 'text-[#E0E0E0]' }}" fill="currentColor" viewBox="0 0 20 20">
+                            <svg class="w-[16px] h-[16px] {{ $i <= round($product->rating) ? 'text-[#B76E79]' : 'text-[#E0E0E0]' }}" fill="currentColor" viewBox="0 0 20 20">
                                 <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
                             </svg>
                         @endfor
                     </a>
-                    <a href="#customer-reviews" class="text-sm text-[#007185] hover:text-[#C7511F] hover:underline">{{ number_format($product->review_count) }} ratings</a>
+                    <a href="#customer-reviews" class="text-sm text-[#B76E79] hover:text-[#c29958] hover:underline">{{ number_format($product->review_count) }} ratings</a>
                 </div>
 
-                <hr class="border-[#E3E6E6]">
+                <hr class="border-[#efefef]">
 
                 <!-- Price Block -->
                 <div class="space-y-1">
@@ -242,25 +248,24 @@
                         @if($product->mrp > $product->price)
                             <span class="text-[#CC0C39] text-xl font-normal">-{{ round($product->discount_percentage) }}%</span>
                         @endif
-                        <span class="text-[28px] font-medium text-[#0F1111]">@price($product->price)</span>
+                        <span class="text-[28px] font-medium text-[#222222]">@price($product->price)</span>
                     </div>
                     @if($product->mrp > $product->price)
-                        <div class="text-sm text-[#565959]">
+                        <div class="text-sm text-[#555555]">
                             M.R.P.: <span class="line-through">@price($product->mrp)</span>
                         </div>
                     @endif
-                    <p class="text-xs text-[#565959]">Inclusive of all taxes</p>
+                    <p class="text-xs text-[#555555]">Inclusive of all taxes</p>
                 </div>
 
                 <!-- Stock Urgency -->
                 @if($product->stock_quantity > 0 && $product->stock_quantity <= 10)
-                <div style="display:flex;align-items:center;gap:6px;margin:8px 0;padding:6px 10px;background:#FFF3E0;border-radius:4px;">
-                    <span style="display:inline-block;width:8px;height:8px;background:#FF6B35;border-radius:50%;animation:pulse-dot 1.5s infinite;"></span>
-                    <span style="font-size:12px;color:#E65100;font-weight:600;">Only {{ $product->stock_quantity }} left in stock - order soon!</span>
+                <div class="flex items-center gap-1.5 my-2 px-2.5 py-1.5 bg-[#B76E79]/10 rounded">
+                    <span class="inline-block w-2 h-2 bg-[#B76E79] rounded-full animate-pulse"></span>
+                    <span class="text-xs text-[#B76E79] font-semibold">Only {{ $product->stock_quantity }} left in stock - order soon!</span>
                 </div>
-                <style>@keyframes pulse-dot{0%,100%{opacity:1}50%{opacity:0.4}}</style>
                 @elseif($product->stock_quantity > 10)
-                <p style="font-size:12px;color:#067D62;font-weight:600;margin:6px 0;">&#10003; In Stock</p>
+                <p class="text-xs text-[#B76E79] font-semibold my-1.5">&#10003; In Stock</p>
                 @endif
 
                 <!-- Available Coupons -->
@@ -268,17 +273,17 @@
                 <div class="space-y-2">
                     <div class="flex items-center gap-2">
                         <svg class="w-5 h-5 text-[#CC0C39]" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5 5a3 3 0 015-2.236A3 3 0 0114.83 6H16a2 2 0 110 4h-5V9a1 1 0 10-2 0v1H4a2 2 0 110-4h1.17C5.06 5.687 5 5.35 5 5zm4 1V5a1 1 0 10-1 1h1zm2 0a1 1 0 10-1-1v1h1z" clip-rule="evenodd"/><path d="M9 11H3v5a2 2 0 002 2h4v-7zM11 18h4a2 2 0 002-2v-5h-6v7z"/></svg>
-                        <span class="text-sm font-bold text-[#0F1111]">Available Offers</span>
+                        <span class="text-sm font-bold text-[#222222]">Available Offers</span>
                     </div>
                     <div class="flex gap-2 overflow-x-auto scrollbar-hide pb-1" style="-webkit-overflow-scrolling: touch;">
                         @foreach($availableCoupons as $coupon)
-                        <div class="flex items-start gap-3 border border-[#E3E6E6] rounded-lg p-3 shrink-0 cursor-pointer hover:border-[#F8931D] transition-colors" style="min-width: 240px; max-width: 280px;" onclick="navigator.clipboard.writeText('{{ $coupon->code }}'); let t=this.querySelector('.copy-msg'); t.style.display='block'; setTimeout(()=>t.style.display='none',1500);">
-                            <div class="shrink-0 bg-[#FFF3E0] border border-dashed border-[#F8931D] rounded px-2 py-1 text-center min-w-[70px] relative">
-                                <span class="text-xs font-bold text-[#C7511F] block">{{ $coupon->code }}</span>
-                                <span class="copy-msg" style="display:none; position:absolute; top:-24px; left:50%; transform:translateX(-50%); background:#0F1111; color:#fff; font-size:10px; padding:2px 8px; border-radius:4px; white-space:nowrap;">Copied!</span>
+                        <div class="flex items-start gap-3 border border-[#efefef] rounded-lg p-3 shrink-0 cursor-pointer hover:border-[#c29958] transition-colors" style="min-width: 240px; max-width: 280px;" onclick="navigator.clipboard.writeText('{{ $coupon->code }}'); let t=this.querySelector('.copy-msg'); t.style.display='block'; setTimeout(()=>t.style.display='none',1500);">
+                            <div class="shrink-0 bg-[#B76E79]/10 border border-dashed border-[#B76E79] rounded px-2 py-1 text-center min-w-[70px] relative">
+                                <span class="text-xs font-bold text-[#B76E79] block">{{ $coupon->code }}</span>
+                                <span class="copy-msg" style="display:none; position:absolute; top:-24px; left:50%; transform:translateX(-50%); background:#222222; color:#fff; font-size:10px; padding:2px 8px; border-radius:4px; white-space:nowrap;">Copied!</span>
                             </div>
                             <div class="flex-1 min-w-0">
-                                <p class="text-xs font-bold text-[#0F1111]">
+                                <p class="text-xs font-bold text-[#222222]">
                                     @if($coupon->type === 'percentage')
                                         {{ (int) $coupon->value }}% Off
                                         @if($coupon->max_discount)
@@ -288,7 +293,7 @@
                                         Flat ₹{{ number_format($coupon->value) }} Off
                                     @endif
                                 </p>
-                                <p class="text-[11px] text-[#565959]">
+                                <p class="text-[11px] text-[#555555]">
                                     {{ $coupon->description }}
                                     @if($coupon->min_order_amount)
                                         · Min. order ₹{{ number_format($coupon->min_order_amount) }}
@@ -305,38 +310,38 @@
                 <div class="grid grid-cols-4 gap-2 py-3">
                     <div class="flex flex-col items-center text-center">
                         <div class="w-11 h-11 bg-[#F0F8F8] rounded-full flex items-center justify-center mb-1.5">
-                            <svg class="w-5 h-5 text-[#205258]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/></svg>
+                            <svg class="w-5 h-5 text-[#B76E79]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/></svg>
                         </div>
-                        <p class="text-[10px] font-medium text-[#0F1111] leading-tight">Free Delivery</p>
-                        <p class="text-[9px] text-[#565959]">Above {{ currency_symbol() }}{{ \App\Models\Setting::get('free_shipping_threshold', 499) }}</p>
+                        <p class="text-[10px] font-medium text-[#222222] leading-tight">Free Delivery</p>
+                        <p class="text-[9px] text-[#555555]">Above {{ currency_symbol() }}{{ \App\Models\Setting::get('free_shipping_threshold', 499) }}</p>
                     </div>
                     <div class="flex flex-col items-center text-center">
                         <div class="w-11 h-11 bg-[#F0F8F8] rounded-full flex items-center justify-center mb-1.5">
-                            <svg class="w-5 h-5 text-[#205258]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                            <svg class="w-5 h-5 text-[#B76E79]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
                         </div>
-                        <p class="text-[10px] font-medium text-[#0F1111] leading-tight">Pay on Delivery</p>
-                        <p class="text-[9px] text-[#565959]">Cash, UPI & Cards</p>
+                        <p class="text-[10px] font-medium text-[#222222] leading-tight">Pay on Delivery</p>
+                        <p class="text-[9px] text-[#555555]">Cash, UPI & Cards</p>
                     </div>
                     <div class="flex flex-col items-center text-center">
                         <div class="w-11 h-11 bg-[#F0F8F8] rounded-full flex items-center justify-center mb-1.5">
-                            <svg class="w-5 h-5 text-[#205258]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/></svg>
+                            <svg class="w-5 h-5 text-[#B76E79]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/></svg>
                         </div>
-                        <p class="text-[10px] font-medium text-[#0F1111] leading-tight">7 Days Return</p>
-                        <p class="text-[9px] text-[#565959]">Easy returns</p>
+                        <p class="text-[10px] font-medium text-[#222222] leading-tight">7 Days Return</p>
+                        <p class="text-[9px] text-[#555555]">Easy returns</p>
                     </div>
                     <div class="flex flex-col items-center text-center">
                         <div class="w-11 h-11 bg-[#F0F8F8] rounded-full flex items-center justify-center mb-1.5">
-                            <svg class="w-5 h-5 text-[#205258]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                            <svg class="w-5 h-5 text-[#B76E79]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
                         </div>
-                        <p class="text-[10px] font-medium text-[#0F1111] leading-tight">Secure Payment</p>
-                        <p class="text-[9px] text-[#565959]">100% secure</p>
+                        <p class="text-[10px] font-medium text-[#222222] leading-tight">Secure Payment</p>
+                        <p class="text-[9px] text-[#555555]">100% secure</p>
                     </div>
                 </div>
 
                 <!-- About this item -->
                 @if($product->short_description)
                     <div>
-                        <h3 class="text-sm font-bold text-[#0F1111] mb-2">About this item</h3>
+                        <h3 class="text-sm font-bold text-[#222222] mb-2">About this item</h3>
                         <ul class="space-y-1.5 text-sm text-[#333] list-disc pl-4">
                             @foreach(preg_split('/[\.\n]+/', $product->short_description, -1, PREG_SPLIT_NO_EMPTY) as $point)
                                 @if(strlen(trim($point)) > 3)
@@ -349,11 +354,11 @@
 
                 <!-- Key Attributes -->
                 @if(is_array($product->attributes) && count($product->attributes))
-                    <div class="border-t border-[#E3E6E6] pt-3">
+                    <div class="border-t border-[#efefef] pt-3">
                         @foreach($product->attributes as $attrName => $attrValue)
                             <div class="flex items-center gap-3 text-sm py-1">
-                                <span class="text-[#565959] w-28 shrink-0 font-medium">{{ $attrName }}</span>
-                                <span class="text-[#0F1111]">{{ $attrValue }}</span>
+                                <span class="text-[#555555] w-28 shrink-0 font-medium">{{ $attrName }}</span>
+                                <span class="text-[#222222]">{{ $attrValue }}</span>
                             </div>
                         @endforeach
                     </div>
@@ -362,30 +367,30 @@
 
             <!-- Buy Box — Col 3 (Right sidebar) -->
             <div class="lg:col-span-3" x-data="quantitySelector()">
-                <div class=" rounded-lg p-4 space-y-3 lg:sticky lg:top-4">
+                <div class="border border-[#efefef] rounded-lg p-4 space-y-3 lg:sticky lg:top-4">
                     <!-- Price (repeated in buy box) -->
-                    <div class="text-[24px] font-medium text-[#0F1111]">@price($product->price)</div>
+                    <div class="text-[24px] font-medium text-[#222222]">@price($product->price)</div>
 
                     @if($product->price >= \App\Models\Setting::get('free_shipping_threshold', 499))
                         <div class="text-sm">
-                            <span class="text-[#007600] font-medium">FREE delivery</span>
-                            <span class="text-[#0F1111] font-medium">{{ now()->addDays(3)->format('D, d M') }}</span>
+                            <span class="text-[#B76E79] font-medium">FREE delivery</span>
+                            <span class="text-[#222222] font-medium">{{ now()->addDays(3)->format('D, d M') }}</span>
                         </div>
-                        <div class="text-xs text-[#565959]">Or fastest delivery <span class="font-medium text-[#0F1111]">Tomorrow</span></div>
+                        <div class="text-xs text-[#555555]">Or fastest delivery <span class="font-medium text-[#222222]">Tomorrow</span></div>
                     @endif
 
                     <!-- Stock Status -->
                     @if($product->stock_quantity > 0)
-                        <p class="text-lg font-medium text-[#007600]">In stock</p>
+                        <p class="text-lg font-medium text-[#B76E79]">In stock</p>
                     @else
-                        <p class="text-lg font-medium text-[#B12704]">Currently unavailable</p>
+                        <p class="text-lg font-medium text-[#CC0C39]">Currently unavailable</p>
                     @endif
 
                     <!-- Quantity -->
                     @if($product->stock_quantity > 0)
                     <div class="flex items-center gap-3">
-                        <label class="text-sm text-[#0F1111]">Qty:</label>
-                        <select x-model="quantity" class=" rounded-lg bg-[#F0F2F2] text-sm py-1.5 px-3 shadow-sm focus:ring-[#007185] focus:border-[#007185]">
+                        <label class="text-sm text-[#222222]">Qty:</label>
+                        <select x-model="quantity" class="border border-[#efefef] rounded-lg bg-[#f2f2f2] text-sm py-1.5 px-3 shadow-sm focus:ring-[#B76E79] focus:border-[#B76E79]">
                             @for($i = 1; $i <= min($product->stock_quantity, 10); $i++)
                                 <option value="{{ $i }}">{{ $i }}</option>
                             @endfor
@@ -399,39 +404,39 @@
                             <button x-data="{ adding: false, added: false }"
                                     @click="if(adding) return; adding = true; await $store.cart.add({{ $product->id }}, quantity); adding = false; added = true; setTimeout(() => added = false, 2000)"
                                     :disabled="adding"
-                                    class="w-full flex items-center justify-center gap-2 bg-[#F8931D] hover:bg-[#E07E0A] text-white font-medium py-2 px-4 rounded-full text-sm transition-colors  disabled:opacity-70 shadow-sm">
+                                    class="w-full flex items-center justify-center gap-2 bg-[#B76E79] hover:bg-[#222222] text-white font-medium py-2 px-4 rounded-full text-sm transition-colors disabled:opacity-70 shadow-sm">
                                 <span x-text="adding ? 'Adding...' : (added ? 'Added to Cart' : 'Add to Cart')"></span>
                             </button>
                             <button @click="$store.cart.add({{ $product->id }}, quantity); setTimeout(() => window.location.href = '{{ route('checkout.index') }}', 300)"
-                                    class="w-full flex items-center justify-center gap-2 bg-[#FFD814] hover:bg-[#F7CA00] text-[#0F1111] font-medium py-2 px-4 rounded-full text-sm transition-colors  shadow-sm">
+                                    class="w-full flex items-center justify-center gap-2 bg-[#B76E79] hover:bg-[#956060] text-white font-medium py-2 px-4 rounded-full text-sm transition-colors shadow-sm">
                                 Buy Now
                             </button>
                         @else
                             <button @click="$dispatch('notify-stock', { productId: {{ $product->id }}, productName: '{{ addslashes($product->name) }}' })"
-                                    class="w-full flex items-center justify-center gap-2 bg-[#F8931D] hover:bg-[#E07E0A] text-white font-medium py-2 px-4 rounded-full text-sm transition-colors ">
+                                    class="w-full flex items-center justify-center gap-2 bg-[#B76E79] hover:bg-[#222222] text-white font-medium py-2 px-4 rounded-full text-sm transition-colors">
                                 Notify Me When Available
                             </button>
                         @endif
                     </div>
 
                     <!-- Secure Transaction -->
-                    <div class="flex items-center gap-1.5 text-xs text-[#565959]">
+                    <div class="flex items-center gap-1.5 text-xs text-[#555555]">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
                         Secure transaction
                     </div>
 
                     <!-- Sold by -->
-                    <div class="text-xs text-[#565959] space-y-0.5">
-                        <div>Ships from <span class="text-[#0F1111] font-medium">{{ config('app.name') }}</span></div>
-                        <div>Sold by <span class="text-[#007185]">{{ $product->seller?->store_name ?? config('app.name') }}</span></div>
+                    <div class="text-xs text-[#555555] space-y-0.5">
+                        <div>Ships from <span class="text-[#222222] font-medium">{{ config('app.name') }}</span></div>
+                        <div>Sold by <span class="text-[#B76E79]">{{ $product->seller?->store_name ?? config('app.name') }}</span></div>
                     </div>
 
-                    <hr class="border-[#E3E6E6]">
+                    <hr class="border-[#efefef]">
 
                     <!-- Wishlist -->
                     <button @click="$store.wishlist.toggle({{ $product->id }})"
                             class="w-full flex items-center justify-center gap-2 py-2 text-sm font-medium rounded-full border transition-colors"
-                            :class="$store.wishlist.has({{ $product->id }}) ? 'text-red-500 border-red-200 bg-red-50' : 'text-[#0F1111] border-[#D5D9D9] hover:bg-[#F7FAFA]'"
+                            :class="$store.wishlist.has({{ $product->id }}) ? 'text-[#CC0C39] border-[#CC0C39]/30 bg-[#CC0C39]/5' : 'text-[#222222] border-[#efefef] hover:bg-[#f7f7f7]'"
                             aria-label="Toggle wishlist">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
@@ -441,14 +446,14 @@
 
                     <!-- Share -->
                     <div x-data="{ copied: false }" class="flex items-center justify-center gap-3 pt-1">
-                        <svg class="w-4 h-4 text-[#565959]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/></svg>
-                        <span class="text-xs text-[#565959]">Share</span>
-                        <a href="https://wa.me/?text={{ urlencode($product->name . ' - ' . route('product.show', $product)) }}" target="_blank" rel="noopener" class="text-[#565959] hover:text-[#25D366]" aria-label="WhatsApp">
+                        <svg class="w-4 h-4 text-[#555555]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/></svg>
+                        <span class="text-xs text-[#555555]">Share</span>
+                        <a href="https://wa.me/?text={{ urlencode($product->name . ' - ' . route('product.show', $product)) }}" target="_blank" rel="noopener" class="text-[#555555] hover:text-[#25D366]" aria-label="WhatsApp">
                             <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
                         </a>
-                        <button @click="navigator.clipboard.writeText(window.location.href); copied = true; setTimeout(() => copied = false, 2000)" class="text-[#565959] hover:text-[#0F1111]" aria-label="Copy link">
+                        <button @click="navigator.clipboard.writeText(window.location.href); copied = true; setTimeout(() => copied = false, 2000)" class="text-[#555555] hover:text-[#222222]" aria-label="Copy link">
                             <svg x-show="!copied" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/></svg>
-                            <svg x-show="copied" x-cloak class="w-4 h-4 text-[#007600]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                            <svg x-show="copied" x-cloak class="w-4 h-4 text-[#B76E79]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
                         </button>
                     </div>
                 </div>
@@ -457,8 +462,8 @@
 
         <!-- Product Description (A+ Content — inline, no tabs) -->
         @if($product->description)
-            <section class="mt-8 border-t border-[#E3E6E6] pt-6">
-                <h2 class="text-lg font-bold text-[#0F1111] mb-4">Product Description</h2>
+            <section class="mt-8 border-t border-[#efefef] pt-6">
+                <h2 class="text-lg font-bold text-[#222222] mb-4">Product Description</h2>
                 <div class="prose prose-neutral max-w-none text-sm text-[#333] leading-relaxed">
                     {!! $product->description !!}
                 </div>
@@ -471,7 +476,7 @@
             $hasAplus = file_exists(public_path($aplusPath . '/hero.jpg'));
         @endphp
         @if($hasAplus)
-            <section class="mt-8 border-t border-[#E3E6E6] pt-6">
+            <section class="mt-8 border-t border-[#efefef] pt-6">
                 {{-- A+ Hero Banner --}}
                 <div class="rounded-xl overflow-hidden mb-6">
                     <img src="{{ asset($aplusPath . '/hero.jpg') }}" alt="{{ $product->name }} - Premium Quality" class="w-full h-auto" loading="lazy">
@@ -481,96 +486,6 @@
                 @if(file_exists(public_path($aplusPath . '/features.jpg')))
                 <div class="rounded-xl overflow-hidden mb-6">
                     <img src="{{ asset($aplusPath . '/features.jpg') }}" alt="{{ $product->name }} - Key Features" class="w-full h-auto" loading="lazy">
-                </div>
-                @endif
-
-                {{-- A+ Content: Key Highlights --}}
-                @if($product->slug === 'temprature-coffee-mug')
-                <div class="bg-gradient-to-br from-[#fdf6ec] to-[#f9eed8] rounded-xl p-6 lg:p-10 mb-6">
-                    <h3 class="text-xl lg:text-2xl font-bold text-[#3a2a0a] mb-2 text-center">Why Choose JIKRA Temperature Coffee Mug?</h3>
-                    <p class="text-sm text-[#5a4520] text-center mb-8 max-w-2xl mx-auto">Engineered with double-wall vacuum insulation and a smart LED temperature display — your perfect companion for office, gym, travel & everyday life.</p>
-                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
-                        <div class="bg-white/80 backdrop-blur rounded-xl p-4 text-center shadow-sm">
-                            <div class="text-3xl mb-2">🌡️</div>
-                            <h4 class="font-semibold text-[#3a2a0a] text-sm mb-1">LED Temperature Display</h4>
-                            <p class="text-xs text-[#5a4520]">Real-time digital temperature readout on the smart lid</p>
-                        </div>
-                        <div class="bg-white/80 backdrop-blur rounded-xl p-4 text-center shadow-sm">
-                            <div class="text-3xl mb-2">🔥</div>
-                            <h4 class="font-semibold text-[#3a2a0a] text-sm mb-1">4 Hours Hot</h4>
-                            <p class="text-xs text-[#5a4520]">Double-wall vacuum insulation keeps beverages hot for hours</p>
-                        </div>
-                        <div class="bg-white/80 backdrop-blur rounded-xl p-4 text-center shadow-sm">
-                            <div class="text-3xl mb-2">❄️</div>
-                            <h4 class="font-semibold text-[#3a2a0a] text-sm mb-1">12 Hours Cold</h4>
-                            <p class="text-xs text-[#5a4520]">Keeps cold drinks chilled all day — iced coffee to smoothies</p>
-                        </div>
-                        <div class="bg-white/80 backdrop-blur rounded-xl p-4 text-center shadow-sm">
-                            <div class="text-3xl mb-2">🛡️</div>
-                            <h4 class="font-semibold text-[#3a2a0a] text-sm mb-1">BPA-Free & Leak-Proof</h4>
-                            <p class="text-xs text-[#5a4520]">Food-grade 304 stainless steel, safe for daily use</p>
-                        </div>
-                    </div>
-                </div>
-                @endif
-
-                {{-- A+ Content: Bird Lunch Box Highlights --}}
-                @if($product->slug === 'super-birdy-lunch-box')
-                <div class="bg-gradient-to-br from-[#f0f7e6] to-[#e6f0d6] rounded-xl p-6 lg:p-10 mb-6">
-                    <h3 class="text-xl lg:text-2xl font-bold text-[#3a5a0a] mb-2 text-center">Why Kids Love Super Birdy!</h3>
-                    <p class="text-sm text-[#5a6a30] text-center mb-8 max-w-2xl mx-auto">A fun, functional lunch box that makes mealtime exciting — designed for kids who deserve the best.</p>
-                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
-                        <div class="bg-white/80 backdrop-blur rounded-xl p-4 text-center shadow-sm">
-                            <div class="text-3xl mb-2">🍱</div>
-                            <h4 class="font-semibold text-[#3a5a0a] text-sm mb-1">3 Compartments</h4>
-                            <p class="text-xs text-[#5a6a30]">Keeps roti, rice, sabzi & snacks neatly separated</p>
-                        </div>
-                        <div class="bg-white/80 backdrop-blur rounded-xl p-4 text-center shadow-sm">
-                            <div class="text-3xl mb-2">💧</div>
-                            <h4 class="font-semibold text-[#3a5a0a] text-sm mb-1">Leak-Proof</h4>
-                            <p class="text-xs text-[#5a6a30]">Secure clip-lock lid with silicone seal — zero spills</p>
-                        </div>
-                        <div class="bg-white/80 backdrop-blur rounded-xl p-4 text-center shadow-sm">
-                            <div class="text-3xl mb-2">🌿</div>
-                            <h4 class="font-semibold text-[#3a5a0a] text-sm mb-1">BPA-Free</h4>
-                            <p class="text-xs text-[#5a6a30]">Food-grade PP plastic, 100% safe for children</p>
-                        </div>
-                        <div class="bg-white/80 backdrop-blur rounded-xl p-4 text-center shadow-sm">
-                            <div class="text-3xl mb-2">🥄</div>
-                            <h4 class="font-semibold text-[#3a5a0a] text-sm mb-1">Spoon & Fork Included</h4>
-                            <p class="text-xs text-[#5a6a30]">Built-in cutlery tray — everything your child needs</p>
-                        </div>
-                    </div>
-                </div>
-                @endif
-
-                {{-- A+ Content: Diamond Coffee Mug Set Highlights --}}
-                @if($product->slug === 'diamond-coffee-mug-set')
-                <div class="bg-gradient-to-br from-[#fce4ec] to-[#f8bbd0] rounded-xl p-6 lg:p-10 mb-6">
-                    <h3 class="text-xl lg:text-2xl font-bold text-[#880e4f] mb-2 text-center">The Perfect Sip, Every Time</h3>
-                    <p class="text-sm text-[#ad1457] text-center mb-8 max-w-2xl mx-auto">Premium stainless steel mugs with diamond-textured grip and double-wall insulation — crafted for coffee lovers who value style and function.</p>
-                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
-                        <div class="bg-white/80 backdrop-blur rounded-xl p-4 text-center shadow-sm">
-                            <div class="text-3xl mb-2">☕</div>
-                            <h4 class="font-semibold text-[#880e4f] text-sm mb-1">Pack of 2</h4>
-                            <p class="text-xs text-[#ad1457]">Two matching mugs in a premium gift-ready box</p>
-                        </div>
-                        <div class="bg-white/80 backdrop-blur rounded-xl p-4 text-center shadow-sm">
-                            <div class="text-3xl mb-2">🔥</div>
-                            <h4 class="font-semibold text-[#880e4f] text-sm mb-1">Double Wall</h4>
-                            <p class="text-xs text-[#ad1457]">Keeps hot drinks hot & cold drinks cold longer</p>
-                        </div>
-                        <div class="bg-white/80 backdrop-blur rounded-xl p-4 text-center shadow-sm">
-                            <div class="text-3xl mb-2">💎</div>
-                            <h4 class="font-semibold text-[#880e4f] text-sm mb-1">Diamond Grip</h4>
-                            <p class="text-xs text-[#ad1457]">Textured exterior for premium grip & cool-touch body</p>
-                        </div>
-                        <div class="bg-white/80 backdrop-blur rounded-xl p-4 text-center shadow-sm">
-                            <div class="text-3xl mb-2">🎁</div>
-                            <h4 class="font-semibold text-[#880e4f] text-sm mb-1">Gift Ready</h4>
-                            <p class="text-xs text-[#ad1457]">Beautifully packaged — perfect for any occasion</p>
-                        </div>
-                    </div>
                 </div>
                 @endif
 
@@ -584,124 +499,53 @@
                 {{-- A+ Lifestyle --}}
                 @if(file_exists(public_path($aplusPath . '/lifestyle.jpg')))
                 <div class="rounded-xl overflow-hidden mb-6">
-                    <img src="{{ asset($aplusPath . '/lifestyle.jpg') }}" alt="{{ $product->name }} - Perfect for Office, Yoga & Gym" class="w-full h-auto" loading="lazy">
+                    <img src="{{ asset($aplusPath . '/lifestyle.jpg') }}" alt="{{ $product->name }} - Lifestyle" class="w-full h-auto" loading="lazy">
                 </div>
                 @endif
 
-                {{-- A+ Content: Specifications Highlights --}}
-                @if($product->slug === 'temprature-coffee-mug')
-                <div class="bg-[#1a1a1a] rounded-xl p-6 lg:p-10 mb-6 text-white">
-                    <h3 class="text-xl lg:text-2xl font-bold mb-6 text-center">Built to Last. Designed to Impress.</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div class="text-center">
-                            <div class="w-16 h-16 mx-auto mb-3 rounded-full bg-white/10 flex items-center justify-center">
-                                <svg class="w-8 h-8 text-[#F8931D]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-                            </div>
-                            <h4 class="font-semibold text-sm mb-1">304 Stainless Steel</h4>
-                            <p class="text-xs text-white/60">Premium food-grade material, rust-resistant & durable</p>
-                        </div>
-                        <div class="text-center">
-                            <div class="w-16 h-16 mx-auto mb-3 rounded-full bg-white/10 flex items-center justify-center">
-                                <svg class="w-8 h-8 text-[#F8931D]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-                            </div>
-                            <h4 class="font-semibold text-sm mb-1">Reusable & Eco-Friendly</h4>
-                            <p class="text-xs text-white/60">Reduce single-use cups — better for you & the planet</p>
-                        </div>
-                        <div class="text-center">
-                            <div class="w-16 h-16 mx-auto mb-3 rounded-full bg-white/10 flex items-center justify-center">
-                                <svg class="w-8 h-8 text-[#F8931D]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-                            </div>
-                            <h4 class="font-semibold text-sm mb-1">Anti-Slip Base</h4>
-                            <p class="text-xs text-white/60">Fits all standard car cup holders, stable on any surface</p>
-                        </div>
-                    </div>
-                </div>
-
-                {{-- A+ FAQ/Use Cases --}}
-                <div class="bg-white border border-[#E3E6E6] rounded-xl p-6 lg:p-10 mb-6">
-                    <h3 class="text-lg font-bold text-[#0F1111] mb-4 text-center">Frequently Asked Questions</h3>
-                    <div class="max-w-2xl mx-auto divide-y divide-[#E3E6E6]" x-data="{ open: null }">
-                        <div class="py-3">
-                            <button @click="open = open === 1 ? null : 1" class="flex items-center justify-between w-full text-left">
-                                <span class="text-sm font-medium text-[#0F1111]">How does the temperature display work?</span>
-                                <svg class="w-4 h-4 text-[#565959] transition-transform" :class="open === 1 && 'rotate-180'" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-                            </button>
-                            <div x-show="open === 1" x-collapse class="text-sm text-[#565959] mt-2">The smart lid has a built-in LED sensor that activates when you touch the top. It displays the current liquid temperature in real-time, so you know exactly when your coffee or tea is at the perfect drinking temperature.</div>
-                        </div>
-                        <div class="py-3">
-                            <button @click="open = open === 2 ? null : 2" class="flex items-center justify-between w-full text-left">
-                                <span class="text-sm font-medium text-[#0F1111]">Is this mug dishwasher safe?</span>
-                                <svg class="w-4 h-4 text-[#565959] transition-transform" :class="open === 2 && 'rotate-180'" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-                            </button>
-                            <div x-show="open === 2" x-collapse class="text-sm text-[#565959] mt-2">We recommend hand washing the mug to preserve the vacuum seal and LED display. Simply rinse with warm soapy water. The lid can be disassembled for thorough cleaning.</div>
-                        </div>
-                        <div class="py-3">
-                            <button @click="open = open === 3 ? null : 3" class="flex items-center justify-between w-full text-left">
-                                <span class="text-sm font-medium text-[#0F1111]">What is the capacity?</span>
-                                <svg class="w-4 h-4 text-[#565959] transition-transform" :class="open === 3 && 'rotate-180'" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-                            </button>
-                            <div x-show="open === 3" x-collapse class="text-sm text-[#565959] mt-2">The JIKRA Temperature Coffee Mug holds approximately 510ml (17oz) — the perfect size for your morning coffee, evening tea, or cold beverages throughout the day.</div>
-                        </div>
-                        <div class="py-3">
-                            <button @click="open = open === 4 ? null : 4" class="flex items-center justify-between w-full text-left">
-                                <span class="text-sm font-medium text-[#0F1111]">Can I use it for cold drinks?</span>
-                                <svg class="w-4 h-4 text-[#565959] transition-transform" :class="open === 4 && 'rotate-180'" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-                            </button>
-                            <div x-show="open === 4" x-collapse class="text-sm text-[#565959] mt-2">Absolutely! The double-wall vacuum insulation works both ways — keeps hot drinks hot for 4+ hours and cold drinks chilled for 12+ hours. Perfect for iced coffee, smoothies, juices, and cold water.</div>
-                        </div>
-                        <div class="py-3">
-                            <button @click="open = open === 5 ? null : 5" class="flex items-center justify-between w-full text-left">
-                                <span class="text-sm font-medium text-[#0F1111]">Does it fit in a car cup holder?</span>
-                                <svg class="w-4 h-4 text-[#565959] transition-transform" :class="open === 5 && 'rotate-180'" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-                            </button>
-                            <div x-show="open === 5" x-collapse class="text-sm text-[#565959] mt-2">Yes! The slim, ergonomic design fits perfectly in all standard car cup holders. The anti-slip base ensures it stays stable while driving.</div>
-                        </div>
-                    </div>
-                </div>
-                @endif
             </section>
         @endif
 
         <!-- Specifications -->
         @if($product->sku || $product->weight || $product->dimensions || $product->brand || ($product->attributes && count($product->attributes)))
-            <section class="mt-6 border-t border-[#E3E6E6] pt-6">
-                <h2 class="text-lg font-bold text-[#0F1111] mb-4">Product Information</h2>
+            <section class="mt-6 border-t border-[#efefef] pt-6">
+                <h2 class="text-lg font-bold text-[#222222] mb-4">Product Information</h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-0">
                     @if($product->sku)
-                        <div class="flex border-b border-[#E3E6E6] py-2.5">
-                            <span class="w-1/3 text-sm text-[#565959] font-medium">SKU</span>
-                            <span class="w-2/3 text-sm text-[#0F1111]">{{ $product->sku }}</span>
+                        <div class="flex border-b border-[#efefef] py-2.5">
+                            <span class="w-1/3 text-sm text-[#555555] font-medium">SKU</span>
+                            <span class="w-2/3 text-sm text-[#222222]">{{ $product->sku }}</span>
                         </div>
                     @endif
                     @if($product->brand)
-                        <div class="flex border-b border-[#E3E6E6] py-2.5">
-                            <span class="w-1/3 text-sm text-[#565959] font-medium">Brand</span>
-                            <span class="w-2/3 text-sm text-[#0F1111]">{{ $product->brand->name }}</span>
+                        <div class="flex border-b border-[#efefef] py-2.5">
+                            <span class="w-1/3 text-sm text-[#555555] font-medium">Brand</span>
+                            <span class="w-2/3 text-sm text-[#222222]">{{ $product->brand->name }}</span>
                         </div>
                     @endif
                     @if($product->weight)
-                        <div class="flex border-b border-[#E3E6E6] py-2.5">
-                            <span class="w-1/3 text-sm text-[#565959] font-medium">Weight</span>
-                            <span class="w-2/3 text-sm text-[#0F1111]">{{ $product->weight }} kg</span>
+                        <div class="flex border-b border-[#efefef] py-2.5">
+                            <span class="w-1/3 text-sm text-[#555555] font-medium">Weight</span>
+                            <span class="w-2/3 text-sm text-[#222222]">{{ $product->weight }} kg</span>
                         </div>
                     @endif
                     @if($product->dimensions)
-                        <div class="flex border-b border-[#E3E6E6] py-2.5">
-                            <span class="w-1/3 text-sm text-[#565959] font-medium">Dimensions</span>
-                            <span class="w-2/3 text-sm text-[#0F1111]">{{ $product->dimensions }}</span>
+                        <div class="flex border-b border-[#efefef] py-2.5">
+                            <span class="w-1/3 text-sm text-[#555555] font-medium">Dimensions</span>
+                            <span class="w-2/3 text-sm text-[#222222]">{{ $product->dimensions }}</span>
                         </div>
                     @endif
                     @if($product->category)
-                        <div class="flex border-b border-[#E3E6E6] py-2.5">
-                            <span class="w-1/3 text-sm text-[#565959] font-medium">Category</span>
-                            <span class="w-2/3 text-sm text-[#0F1111]">{{ $product->category->name }}</span>
+                        <div class="flex border-b border-[#efefef] py-2.5">
+                            <span class="w-1/3 text-sm text-[#555555] font-medium">Category</span>
+                            <span class="w-2/3 text-sm text-[#222222]">{{ $product->category->name }}</span>
                         </div>
                     @endif
                     @if(is_array($product->specifications) && count($product->specifications))
                         @foreach($product->specifications as $specName => $specValue)
-                            <div class="flex border-b border-[#E3E6E6] py-2.5">
-                                <span class="w-1/3 text-sm text-[#565959] font-medium">{{ $specName }}</span>
-                                <span class="w-2/3 text-sm text-[#0F1111]">{{ $specValue }}</span>
+                            <div class="flex border-b border-[#efefef] py-2.5">
+                                <span class="w-1/3 text-sm text-[#555555] font-medium">{{ $specName }}</span>
+                                <span class="w-2/3 text-sm text-[#222222]">{{ $specValue }}</span>
                             </div>
                         @endforeach
                     @endif
@@ -711,57 +555,57 @@
 
         <!-- Frequently Bought Together -->
         @if(isset($frequentlyBought) && $frequentlyBought->count())
-            <section class="mt-8 border-t border-[#E3E6E6] pt-6" x-data="frequentlyBought()">
-                <h2 class="text-lg font-bold text-[#0F1111] mb-4">Frequently Bought Together</h2>
+            <section class="mt-8 border-t border-[#efefef] pt-6" x-data="frequentlyBought()">
+                <h2 class="text-lg font-bold text-[#222222] mb-4">Frequently Bought Together</h2>
                 <div class="flex flex-col lg:flex-row gap-6">
                     {{-- Products with checkboxes --}}
                     <div class="flex items-center gap-2 flex-wrap">
                         {{-- Current product (always selected) --}}
                         <div class="flex flex-col items-center w-[130px] shrink-0">
                             <div class="relative">
-                                <img src="{{ $product->primary_image_url }}" alt="{{ $product->name }}" class="w-[100px] h-[100px] object-contain rounded border border-[#E3E6E6] bg-white p-1">
-                                <span class="absolute -top-1 -left-1 w-5 h-5 bg-[#205258] rounded flex items-center justify-center">
+                                <img src="{{ $product->primary_image_url }}" alt="{{ $product->name }}" class="w-[100px] h-[100px] object-contain rounded border border-[#efefef] bg-white p-1">
+                                <span class="absolute -top-1 -left-1 w-5 h-5 bg-[#B76E79] rounded flex items-center justify-center">
                                     <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
                                 </span>
                             </div>
-                            <p class="text-[10px] text-[#0F1111] text-center mt-1.5 line-clamp-2 leading-tight">{{ Str::limit($product->name, 40) }}</p>
-                            <p class="text-xs font-bold text-[#0F1111] mt-0.5">@price($product->price)</p>
+                            <p class="text-[10px] text-[#222222] text-center mt-1.5 line-clamp-2 leading-tight">{{ Str::limit($product->name, 40) }}</p>
+                            <p class="text-xs font-bold text-[#222222] mt-0.5">@price($product->price)</p>
                         </div>
 
                         @foreach($frequentlyBought as $idx => $fbProduct)
-                            <span class="text-xl text-[#565959] font-light mx-1">+</span>
+                            <span class="text-xl text-[#555555] font-light mx-1">+</span>
                             <div class="flex flex-col items-center w-[130px] shrink-0">
                                 <label class="relative cursor-pointer">
                                     <input type="checkbox" class="sr-only peer" checked
                                            x-model="selected" value="{{ $fbProduct->id }}"
                                            @change="recalculate()">
                                     <img src="{{ $fbProduct->primary_image_url }}" alt="{{ $fbProduct->name }}"
-                                         class="w-[100px] h-[100px] object-contain rounded border-2 bg-white p-1 transition-all peer-checked:border-[#205258] border-[#E3E6E6] opacity-60 peer-checked:opacity-100">
-                                    <span class="absolute -top-1 -left-1 w-5 h-5 rounded flex items-center justify-center transition-colors peer-checked:bg-[#205258] bg-[#D5D9D9]">
+                                         class="w-[100px] h-[100px] object-contain rounded border-2 bg-white p-1 transition-all peer-checked:border-[#B76E79] border-[#efefef] opacity-60 peer-checked:opacity-100">
+                                    <span class="absolute -top-1 -left-1 w-5 h-5 rounded flex items-center justify-center transition-colors peer-checked:bg-[#B76E79] bg-[#efefef]">
                                         <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
                                     </span>
                                 </label>
-                                <a href="{{ route('product.show', $fbProduct) }}" class="text-[10px] text-[#007185] hover:text-[#C7511F] text-center mt-1.5 line-clamp-2 leading-tight hover:underline">{{ Str::limit($fbProduct->name, 40) }}</a>
-                                <p class="text-xs font-bold text-[#0F1111] mt-0.5">@price($fbProduct->price)</p>
+                                <a href="{{ route('product.show', $fbProduct) }}" class="text-[10px] text-[#B76E79] hover:text-[#c29958] text-center mt-1.5 line-clamp-2 leading-tight hover:underline">{{ Str::limit($fbProduct->name, 40) }}</a>
+                                <p class="text-xs font-bold text-[#222222] mt-0.5">@price($fbProduct->price)</p>
                             </div>
                         @endforeach
                     </div>
 
                     {{-- Total + Add All button --}}
-                    <div class="flex flex-col justify-center items-start lg:items-center gap-3 lg:min-w-[200px] lg:border-l lg:border-[#E3E6E6] lg:pl-6">
+                    <div class="flex flex-col justify-center items-start lg:items-center gap-3 lg:min-w-[200px] lg:border-l lg:border-[#efefef] lg:pl-6">
                         <div>
-                            <p class="text-sm text-[#565959]">Total price for selected items:</p>
-                            <p class="text-xl font-bold text-[#0F1111]" x-text="'₹' + totalPrice.toFixed(2)"></p>
+                            <p class="text-sm text-[#555555]">Total price for selected items:</p>
+                            <p class="text-xl font-bold text-[#222222]" x-text="'₹' + totalPrice.toFixed(2)"></p>
                             @php
                                 $fbtTotalMrp = $product->mrp + $frequentlyBought->sum('mrp');
                                 $fbtTotalPrice = $product->price + $frequentlyBought->sum('price');
                             @endphp
                             <template x-if="totalSaving > 0">
-                                <p class="text-xs text-green-700 font-semibold" x-text="'You save ₹' + totalSaving.toFixed(2)"></p>
+                                <p class="text-xs text-[#B76E79] font-semibold" x-text="'You save ₹' + totalSaving.toFixed(2)"></p>
                             </template>
                         </div>
                         <button @click="addAllToCart()" :disabled="adding"
-                                class="bg-[#F8931D] hover:bg-[#E07E0A] text-white font-medium py-2.5 px-6 rounded-full text-sm transition-colors shadow-sm disabled:opacity-60">
+                                class="bg-[#B76E79] hover:bg-[#222222] text-white font-medium py-2.5 px-6 rounded-full text-sm transition-colors shadow-sm disabled:opacity-60">
                             <span x-text="adding ? 'Adding...' : 'Add all to Cart'"></span>
                         </button>
                     </div>
@@ -812,76 +656,76 @@
 
         <!-- Compare with similar items -->
         @if(isset($compareProducts) && $compareProducts->count())
-            <section class="mt-8 border-t border-[#E3E6E6] pt-6">
-                <h2 class="text-lg font-bold text-[#0F1111] mb-4">Compare with similar items</h2>
+            <section class="mt-8 border-t border-[#efefef] pt-6">
+                <h2 class="text-lg font-bold text-[#222222] mb-4">Compare with similar items</h2>
                 <div class="overflow-x-auto">
                     <table class="w-full border-collapse min-w-[600px]">
                         <thead>
                             <tr>
                                 <td class="p-3 w-32"></td>
-                                <td class="p-3 text-center border-l border-[#E3E6E6]">
+                                <td class="p-3 text-center border-l border-[#efefef]">
                                     <a href="{{ route('product.show', $product) }}" class="block">
                                         <img src="{{ $product->primary_image_url }}" alt="{{ $product->name }}" class="w-24 h-24 object-contain mx-auto mb-2">
-                                        <p class="text-xs text-[#007185] line-clamp-3 hover:text-[#C7511F]">{{ Str::limit($product->name, 80) }}</p>
+                                        <p class="text-xs text-[#B76E79] line-clamp-3 hover:text-[#c29958]">{{ Str::limit($product->name, 80) }}</p>
                                     </a>
                                 </td>
                                 @foreach($compareProducts as $cp)
-                                    <td class="p-3 text-center border-l border-[#E3E6E6]">
+                                    <td class="p-3 text-center border-l border-[#efefef]">
                                         <a href="{{ route('product.show', $cp) }}" class="block">
                                             <img src="{{ $cp->primary_image_url }}" alt="{{ $cp->name }}" class="w-24 h-24 object-contain mx-auto mb-2">
-                                            <p class="text-xs text-[#007185] line-clamp-3 hover:text-[#C7511F]">{{ Str::limit($cp->name, 80) }}</p>
+                                            <p class="text-xs text-[#B76E79] line-clamp-3 hover:text-[#c29958]">{{ Str::limit($cp->name, 80) }}</p>
                                         </a>
                                     </td>
                                 @endforeach
                             </tr>
                         </thead>
                         <tbody>
-                            <tr class="border-t border-[#E3E6E6]">
-                                <td class="p-3 text-sm font-medium text-[#0F1111]">Customer Rating</td>
-                                <td class="p-3 text-center border-l border-[#E3E6E6]">
+                            <tr class="border-t border-[#efefef]">
+                                <td class="p-3 text-sm font-medium text-[#222222]">Customer Rating</td>
+                                <td class="p-3 text-center border-l border-[#efefef]">
                                     <div class="flex items-center justify-center gap-1">
                                         <span class="text-sm">{{ number_format($product->rating, 1) }}</span>
-                                        <svg class="w-4 h-4 text-[#205258]" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                                        <svg class="w-4 h-4 text-[#B76E79]" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
                                     </div>
-                                    <p class="text-xs text-[#007185]">{{ $product->review_count }}</p>
+                                    <p class="text-xs text-[#B76E79]">{{ $product->review_count }}</p>
                                 </td>
                                 @foreach($compareProducts as $cp)
-                                    <td class="p-3 text-center border-l border-[#E3E6E6]">
+                                    <td class="p-3 text-center border-l border-[#efefef]">
                                         <div class="flex items-center justify-center gap-1">
                                             <span class="text-sm">{{ number_format($cp->rating ?? 0, 1) }}</span>
-                                            <svg class="w-4 h-4 text-[#205258]" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                                            <svg class="w-4 h-4 text-[#B76E79]" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
                                         </div>
-                                        <p class="text-xs text-[#007185]">{{ $cp->review_count ?? 0 }}</p>
+                                        <p class="text-xs text-[#B76E79]">{{ $cp->review_count ?? 0 }}</p>
                                     </td>
                                 @endforeach
                             </tr>
-                            <tr class="border-t border-[#E3E6E6]">
-                                <td class="p-3 text-sm font-medium text-[#0F1111]">Price</td>
-                                <td class="p-3 text-center border-l border-[#E3E6E6] text-sm font-medium text-[#0F1111]">@price($product->price)</td>
+                            <tr class="border-t border-[#efefef]">
+                                <td class="p-3 text-sm font-medium text-[#222222]">Price</td>
+                                <td class="p-3 text-center border-l border-[#efefef] text-sm font-medium text-[#222222]">@price($product->price)</td>
                                 @foreach($compareProducts as $cp)
-                                    <td class="p-3 text-center border-l border-[#E3E6E6] text-sm font-medium text-[#0F1111]">@price($cp->price)</td>
+                                    <td class="p-3 text-center border-l border-[#efefef] text-sm font-medium text-[#222222]">@price($cp->price)</td>
                                 @endforeach
                             </tr>
-                            <tr class="border-t border-[#E3E6E6]">
-                                <td class="p-3 text-sm font-medium text-[#0F1111]">Brand</td>
-                                <td class="p-3 text-center border-l border-[#E3E6E6] text-sm text-[#0F1111]">{{ $product->brand?->name ?? '-' }}</td>
+                            <tr class="border-t border-[#efefef]">
+                                <td class="p-3 text-sm font-medium text-[#222222]">Brand</td>
+                                <td class="p-3 text-center border-l border-[#efefef] text-sm text-[#222222]">{{ $product->brand?->name ?? '-' }}</td>
                                 @foreach($compareProducts as $cp)
-                                    <td class="p-3 text-center border-l border-[#E3E6E6] text-sm text-[#0F1111]">{{ $cp->brand?->name ?? '-' }}</td>
+                                    <td class="p-3 text-center border-l border-[#efefef] text-sm text-[#222222]">{{ $cp->brand?->name ?? '-' }}</td>
                                 @endforeach
                             </tr>
-                            <tr class="border-t border-[#E3E6E6]">
-                                <td class="p-3 text-sm font-medium text-[#0F1111]">Availability</td>
-                                <td class="p-3 text-center border-l border-[#E3E6E6] text-sm {{ $product->stock_quantity > 0 ? 'text-[#007600]' : 'text-[#B12704]' }}">{{ $product->stock_quantity > 0 ? 'In Stock' : 'Out of Stock' }}</td>
+                            <tr class="border-t border-[#efefef]">
+                                <td class="p-3 text-sm font-medium text-[#222222]">Availability</td>
+                                <td class="p-3 text-center border-l border-[#efefef] text-sm {{ $product->stock_quantity > 0 ? 'text-[#B76E79]' : 'text-[#CC0C39]' }}">{{ $product->stock_quantity > 0 ? 'In Stock' : 'Out of Stock' }}</td>
                                 @foreach($compareProducts as $cp)
-                                    <td class="p-3 text-center border-l border-[#E3E6E6] text-sm {{ $cp->stock_quantity > 0 ? 'text-[#007600]' : 'text-[#B12704]' }}">{{ $cp->stock_quantity > 0 ? 'In Stock' : 'Out of Stock' }}</td>
+                                    <td class="p-3 text-center border-l border-[#efefef] text-sm {{ $cp->stock_quantity > 0 ? 'text-[#B76E79]' : 'text-[#CC0C39]' }}">{{ $cp->stock_quantity > 0 ? 'In Stock' : 'Out of Stock' }}</td>
                                 @endforeach
                             </tr>
-                            <tr class="border-t border-[#E3E6E6] bg-[#F7F8FA]">
+                            <tr class="border-t border-[#efefef] bg-[#f7f7f7]">
                                 <td class="p-3"></td>
-                                <td class="p-3 text-center border-l border-[#E3E6E6] text-sm font-medium text-[#0F1111] italic">This product</td>
+                                <td class="p-3 text-center border-l border-[#efefef] text-sm font-medium text-[#222222] italic">This product</td>
                                 @foreach($compareProducts as $cp)
-                                    <td class="p-3 text-center border-l border-[#E3E6E6]">
-                                        <a href="{{ route('product.show', $cp) }}" class="text-sm text-[#007185] hover:text-[#C7511F] hover:underline">View details →</a>
+                                    <td class="p-3 text-center border-l border-[#efefef]">
+                                        <a href="{{ route('product.show', $cp) }}" class="text-sm text-[#B76E79] hover:text-[#c29958] hover:underline">View details →</a>
                                     </td>
                                 @endforeach
                             </tr>
@@ -892,22 +736,22 @@
         @endif
 
         <!-- Customer Reviews Section -->
-        <section class="mt-8 border-t border-[#E3E6E6] pt-6" id="customer-reviews">
+        <section class="mt-8 border-t border-[#efefef] pt-6" id="customer-reviews">
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
                 <!-- Left: Rating Summary -->
                 <div class="lg:col-span-4">
-                    <h2 class="text-lg font-bold text-[#0F1111] mb-3">Customer Reviews</h2>
+                    <h2 class="text-lg font-bold text-[#222222] mb-3">Customer Reviews</h2>
                     <div class="flex items-center gap-2 mb-2">
                         <div class="flex items-center">
                             @for($i = 1; $i <= 5; $i++)
-                                <svg class="w-5 h-5 {{ $i <= round($product->rating) ? 'text-[#205258]' : 'text-[#E0E0E0]' }}" fill="currentColor" viewBox="0 0 20 20">
+                                <svg class="w-5 h-5 {{ $i <= round($product->rating) ? 'text-[#B76E79]' : 'text-[#E0E0E0]' }}" fill="currentColor" viewBox="0 0 20 20">
                                     <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
                                 </svg>
                             @endfor
                         </div>
-                        <span class="text-sm text-[#0F1111]">{{ number_format($product->rating, 1) }} out of 5</span>
+                        <span class="text-sm text-[#222222]">{{ number_format($product->rating, 1) }} out of 5</span>
                     </div>
-                    <p class="text-sm text-[#565959] mb-4">{{ number_format($product->review_count) }} global ratings</p>
+                    <p class="text-sm text-[#555555] mb-4">{{ number_format($product->review_count) }} global ratings</p>
 
                     <!-- Rating Bars -->
                     @php $totalReviews = max($product->review_count, 1); @endphp
@@ -915,53 +759,53 @@
                         @for($star = 5; $star >= 1; $star--)
                             @php $pct = $totalReviews > 0 ? round(($ratingDistribution[$star] / $totalReviews) * 100) : 0; @endphp
                             <div class="flex items-center gap-2">
-                                <a href="#" class="text-sm text-[#007185] hover:underline whitespace-nowrap w-14">{{ $star }} star</a>
-                                <div class="flex-1 h-5 bg-[#F0F2F2] rounded-sm overflow-hidden">
-                                    <div class="h-full bg-[#FFA41C] rounded-sm" style="width: {{ $pct }}%"></div>
+                                <a href="#" class="text-sm text-[#555555] hover:underline whitespace-nowrap w-14">{{ $star }} star</a>
+                                <div class="flex-1 h-5 bg-neutral-100 rounded-sm overflow-hidden">
+                                    <div class="h-full bg-[#c29958] rounded-sm" style="width: {{ $pct }}%"></div>
                                 </div>
-                                <span class="text-sm text-[#007185] w-10 text-right">{{ $pct }}%</span>
+                                <span class="text-sm text-[#555555] w-10 text-right">{{ $pct }}%</span>
                             </div>
                         @endfor
                     </div>
 
-                    <hr class="border-[#E3E6E6] my-4">
+                    <hr class="border-[#efefef] my-4">
 
                     <!-- Write a Review CTA -->
-                    <h3 class="text-base font-bold text-[#0F1111] mb-1">Review this product</h3>
-                    <p class="text-sm text-[#565959] mb-3">Share your thoughts with other customers</p>
+                    <h3 class="text-base font-bold text-[#222222] mb-1">Review this product</h3>
+                    <p class="text-sm text-[#555555] mb-3">Share your thoughts with other customers</p>
                     @auth
                         <a href="{{ route('account.reviews.create', $product) }}"
-                           class="block w-full text-center py-1.5 text-sm font-medium text-[#0F1111] bg-white rounded-full hover:bg-[#F7FAFA] shadow-sm transition-colors">
+                           class="block w-full text-center py-1.5 text-sm font-medium text-[#222222] bg-white border border-[#efefef] rounded-full hover:bg-[#f7f7f7] shadow-sm transition-colors">
                             Write a customer review
                         </a>
                     @else
                         <div x-data="{ showForm: false }">
                             <button @click="showForm = !showForm"
-                                    class="w-full text-center py-1.5 text-sm font-medium text-[#0F1111] bg-white rounded-full hover:bg-[#F7FAFA] shadow-sm transition-colors">
+                                    class="w-full text-center py-1.5 text-sm font-medium text-[#222222] bg-white border border-[#efefef] rounded-full hover:bg-[#f7f7f7] shadow-sm transition-colors">
                                 Write a customer review
                             </button>
 
-                            <form x-show="showForm" x-cloak method="POST" action="{{ route('product.guest-review', $product) }}" class="mt-4 space-y-3 bg-[#F7F8FA] rounded-lg p-4 border border-[#E3E6E6]">
+                            <form x-show="showForm" x-cloak method="POST" action="{{ route('product.guest-review', $product) }}" class="mt-4 space-y-3 bg-[#f7f7f7] rounded-lg p-4 border border-[#efefef]">
                                 @csrf
                                 <input type="text" name="honeypot" class="hidden" value="" tabindex="-1" autocomplete="off">
 
                                 <div>
-                                    <label class="block text-sm font-medium text-[#0F1111] mb-1">Your Name</label>
-                                    <input type="text" name="guest_name" required class="w-full  rounded-lg px-3 py-2 text-sm focus:ring-[#007185] focus:border-[#007185]" placeholder="e.g. Priya S.">
+                                    <label class="block text-sm font-medium text-[#222222] mb-1">Your Name</label>
+                                    <input type="text" name="guest_name" required class="w-full border border-[#efefef] rounded-lg px-3 py-2 text-sm focus:ring-[#B76E79] focus:border-[#B76E79]" placeholder="e.g. Priya S.">
                                 </div>
 
                                 <div>
-                                    <label class="block text-sm font-medium text-[#0F1111] mb-1">Email Address</label>
-                                    <input type="email" name="guest_email" required class="w-full  rounded-lg px-3 py-2 text-sm focus:ring-[#007185] focus:border-[#007185]" placeholder="your@email.com">
-                                    <p class="text-[11px] text-[#565959] mt-1">We will send you a discount code as a thank you!</p>
+                                    <label class="block text-sm font-medium text-[#222222] mb-1">Email Address</label>
+                                    <input type="email" name="guest_email" required class="w-full border border-[#efefef] rounded-lg px-3 py-2 text-sm focus:ring-[#B76E79] focus:border-[#B76E79]" placeholder="your@email.com">
+                                    <p class="text-[11px] text-[#555555] mt-1">We will send you a discount code as a thank you!</p>
                                 </div>
 
                                 <div>
-                                    <label class="block text-sm font-medium text-[#0F1111] mb-1">Rating</label>
+                                    <label class="block text-sm font-medium text-[#222222] mb-1">Rating</label>
                                     <div x-data="{ rating: 0, hover: 0 }" class="flex gap-0.5">
                                         @for($i = 1; $i <= 5; $i++)
                                             <button type="button" @click="rating = {{ $i }}" @mouseenter="hover = {{ $i }}" @mouseleave="hover = 0">
-                                                <svg class="w-7 h-7 cursor-pointer transition-colors" :class="(hover || rating) >= {{ $i }} ? 'text-[#205258]' : 'text-[#E0E0E0]'" fill="currentColor" viewBox="0 0 20 20">
+                                                <svg class="w-7 h-7 cursor-pointer transition-colors" :class="(hover || rating) >= {{ $i }} ? 'text-[#B76E79]' : 'text-[#E0E0E0]'" fill="currentColor" viewBox="0 0 20 20">
                                                     <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
                                                 </svg>
                                             </button>
@@ -971,16 +815,16 @@
                                 </div>
 
                                 <div>
-                                    <label class="block text-sm font-medium text-[#0F1111] mb-1">Title <span class="text-[#565959]">(optional)</span></label>
-                                    <input type="text" name="title" class="w-full  rounded-lg px-3 py-2 text-sm focus:ring-[#007185] focus:border-[#007185]" placeholder="Sum up your experience">
+                                    <label class="block text-sm font-medium text-[#222222] mb-1">Title <span class="text-[#555555]">(optional)</span></label>
+                                    <input type="text" name="title" class="w-full border border-[#efefef] rounded-lg px-3 py-2 text-sm focus:ring-[#B76E79] focus:border-[#B76E79]" placeholder="Sum up your experience">
                                 </div>
 
                                 <div>
-                                    <label class="block text-sm font-medium text-[#0F1111] mb-1">Your Review</label>
-                                    <textarea name="content" required rows="4" minlength="20" class="w-full  rounded-lg px-3 py-2 text-sm focus:ring-[#007185] focus:border-[#007185]" placeholder="What did you like or dislike?"></textarea>
+                                    <label class="block text-sm font-medium text-[#222222] mb-1">Your Review</label>
+                                    <textarea name="content" required rows="4" minlength="20" class="w-full border border-[#efefef] rounded-lg px-3 py-2 text-sm focus:ring-[#B76E79] focus:border-[#B76E79]" placeholder="What did you like or dislike?"></textarea>
                                 </div>
 
-                                <button type="submit" class="bg-[#F8931D] hover:bg-[#E07E0A] text-white font-medium py-2 px-6 rounded-full text-sm  shadow-sm transition-colors">
+                                <button type="submit" class="bg-[#B76E79] hover:bg-[#222222] text-white font-medium py-2 px-6 rounded-full text-sm shadow-sm transition-colors">
                                     Submit Review
                                 </button>
                             </form>
@@ -990,52 +834,52 @@
 
                 <!-- Right: Reviews List -->
                 <div class="lg:col-span-8">
-                    <h3 class="text-base font-bold text-[#0F1111] mb-4">Top Reviews</h3>
+                    <h3 class="text-base font-bold text-[#222222] mb-4">Top Reviews</h3>
 
                     @if($displayReviews->count())
                         <div class="space-y-6">
                             @foreach($displayReviews as $review)
-                                <div class="border-b border-[#E3E6E6] pb-5">
+                                <div class="border-b border-[#efefef] pb-5">
                                     <!-- Reviewer -->
                                     <div class="flex items-center gap-2 mb-1.5">
-                                        <div class="w-8 h-8 bg-[#F0F2F2] rounded-full flex items-center justify-center">
-                                            <span class="text-xs font-medium text-[#565959]">{{ $review->reviewer_initial }}</span>
+                                        <div class="w-8 h-8 bg-[#f2f2f2] rounded-full flex items-center justify-center">
+                                            <span class="text-xs font-medium text-[#555555]">{{ $review->reviewer_initial }}</span>
                                         </div>
-                                        <span class="text-sm text-[#0F1111]">{{ $review->reviewer_name }}</span>
+                                        <span class="text-sm text-[#222222]">{{ $review->reviewer_name }}</span>
                                     </div>
 
                                     <!-- Stars + Title -->
                                     <div class="flex items-center gap-2 mb-1">
                                         <div class="flex">
                                             @for($i = 1; $i <= 5; $i++)
-                                                <svg class="w-4 h-4 {{ $i <= $review->rating ? 'text-[#205258]' : 'text-[#E0E0E0]' }}" fill="currentColor" viewBox="0 0 20 20">
+                                                <svg class="w-4 h-4 {{ $i <= $review->rating ? 'text-[#B76E79]' : 'text-[#E0E0E0]' }}" fill="currentColor" viewBox="0 0 20 20">
                                                     <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
                                                 </svg>
                                             @endfor
                                         </div>
                                         @if($review->title)
-                                            <span class="text-sm font-bold text-[#0F1111]">{{ $review->title }}</span>
+                                            <span class="text-sm font-bold text-[#222222]">{{ $review->title }}</span>
                                         @endif
                                     </div>
 
                                     <!-- Date + Verified -->
                                     <div class="flex items-center gap-2 mb-2">
-                                        <span class="text-xs text-[#565959]">Reviewed on {{ $review->created_at->format('j F Y') }}</span>
+                                        <span class="text-xs text-[#555555]">Reviewed on {{ $review->created_at->format('j F Y') }}</span>
                                         @if($review->is_verified_purchase)
                                             <span class="text-xs font-bold text-[#C45500]">Verified Purchase</span>
                                         @else
-                                            <span class="text-xs text-[#565959]">Unverified</span>
+                                            <span class="text-xs text-[#555555]">Unverified</span>
                                         @endif
                                     </div>
 
                                     <!-- Content -->
-                                    <p class="text-sm text-[#0F1111] leading-relaxed">{{ $review->content }}</p>
+                                    <p class="text-sm text-[#222222] leading-relaxed">{{ $review->content }}</p>
 
                                     <!-- Pros/Cons -->
                                     @if($review->pros && count($review->pros))
                                         <div class="mt-2 flex flex-wrap gap-1.5">
                                             @foreach($review->pros as $pro)
-                                                <span class="inline-flex items-center gap-1 text-xs bg-[#F0FFF4] text-[#007600] px-2 py-0.5 rounded-full border border-[#C6F6D5]">
+                                                <span class="inline-flex items-center gap-1 text-xs bg-[#F0FFF4] text-[#B76E79] px-2 py-0.5 rounded-full border border-[#C6F6D5]">
                                                     <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
                                                     {{ $pro }}
                                                 </span>
@@ -1045,7 +889,7 @@
                                     @if($review->cons && count($review->cons))
                                         <div class="mt-1 flex flex-wrap gap-1.5">
                                             @foreach($review->cons as $con)
-                                                <span class="inline-flex items-center gap-1 text-xs bg-[#FFF5F5] text-[#B12704] px-2 py-0.5 rounded-full border border-[#FED7D7]">
+                                                <span class="inline-flex items-center gap-1 text-xs bg-[#FFF5F5] text-[#CC0C39] px-2 py-0.5 rounded-full border border-[#FED7D7]">
                                                     <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                                                     {{ $con }}
                                                 </span>
@@ -1055,21 +899,21 @@
 
                                     <!-- Helpful -->
                                     <div class="mt-3 flex items-center gap-3">
-                                        <span class="text-xs text-[#565959]">{{ $review->helpful_count ?? 0 }} {{ ($review->helpful_count ?? 0) == 1 ? 'person' : 'people' }} found this helpful</span>
+                                        <span class="text-xs text-[#555555]">{{ $review->helpful_count ?? 0 }} {{ ($review->helpful_count ?? 0) == 1 ? 'person' : 'people' }} found this helpful</span>
                                     </div>
                                 </div>
                             @endforeach
                         </div>
 
                         @if($product->review_count > 10)
-                            <p class="mt-4 text-sm text-[#007185]">
+                            <p class="mt-4 text-sm text-[#B76E79]">
                                 Showing {{ $displayReviews->count() }} of {{ number_format($product->review_count) }} reviews
                             </p>
                         @endif
                     @else
-                        <div class="text-center py-8 bg-[#F7F8FA] rounded-lg border border-[#E3E6E6]">
-                            <p class="text-sm text-[#565959] mb-2">No reviews yet.</p>
-                            <p class="text-sm text-[#0F1111]">Be the first to review this product!</p>
+                        <div class="text-center py-8 bg-[#f7f7f7] rounded-lg border border-[#efefef]">
+                            <p class="text-sm text-[#555555] mb-2">No reviews yet.</p>
+                            <p class="text-sm text-[#222222]">Be the first to review this product!</p>
                         </div>
                     @endif
                 </div>
@@ -1081,8 +925,8 @@
 
         <!-- Related Products -->
         @if($relatedProducts->count())
-            <section class="mt-8 border-t border-[#E3E6E6] pt-6">
-                <h2 class="text-lg font-bold text-[#0F1111] mb-4">Products related to this item</h2>
+            <section class="mt-8 border-t border-[#efefef] pt-6">
+                <h2 class="text-lg font-bold text-[#222222] mb-4">Products related to this item</h2>
                 <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 lg:gap-4">
                     @foreach($relatedProducts as $relatedProduct)
                         <x-product-card :product="$relatedProduct" />
@@ -1110,18 +954,18 @@
              x-transition:leave-start="translate-y-0"
              x-transition:leave-end="translate-y-full"
              x-cloak
-             class="fixed bottom-16 lg:hidden left-0 right-0 z-40 bg-white border-t border-[#D5D9D9] shadow-lg px-4 py-3">
+             class="fixed bottom-16 lg:hidden left-0 right-0 z-40 bg-white border-t border-[#efefef] shadow-lg px-4 py-3">
             <div class="flex items-center gap-3">
                 <div class="flex-1 min-w-0">
                     <div class="flex items-baseline gap-1.5">
-                        <span class="text-base font-medium text-[#0F1111]">@price($product->price)</span>
+                        <span class="text-base font-medium text-[#222222]">@price($product->price)</span>
                         @if($product->mrp > $product->price)
-                            <span class="text-[11px] text-[#565959] line-through">@price($product->mrp)</span>
+                            <span class="text-[11px] text-[#555555] line-through">@price($product->mrp)</span>
                         @endif
                     </div>
                 </div>
                 <button @click="$store.cart.add({{ $product->id }})"
-                        class="shrink-0 bg-[#F8931D] hover:bg-[#E07E0A] text-white font-medium py-2 px-4 rounded-full text-sm transition-colors shadow-sm">
+                        class="shrink-0 bg-[#B76E79] hover:bg-[#222222] text-white font-medium py-2 px-4 rounded-full text-sm transition-colors shadow-sm">
                     Add to Cart
                 </button>
             </div>

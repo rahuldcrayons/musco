@@ -114,7 +114,7 @@
                     @endif
                 </div>
                 <div class="hidden md:block text-left">
-                    <div class="text-sm font-medium text-neutral-900">{{ auth()->user()->seller?->business_name ?? 'Jikra' }}</div>
+                    <div class="text-sm font-medium text-neutral-900">{{ auth()->user()->seller?->business_name ?? 'MusCo' }}</div>
                     <div class="text-xs text-neutral-600">Seller</div>
                 </div>
                 <svg class="w-4 h-4 text-neutral-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -125,7 +125,7 @@
             <div x-show="open" x-transition @click.away="open = false"
                  class="absolute right-0 mt-2 w-56 bg-white border border-neutral-200 rounded-lg shadow-lg z-50">
                 <div class="px-4 py-3 border-b border-neutral-100">
-                    <div class="text-sm font-medium text-neutral-900">{{ auth()->user()->seller?->business_name ?? 'Jikra' }}</div>
+                    <div class="text-sm font-medium text-neutral-900">{{ auth()->user()->seller?->business_name ?? 'MusCo' }}</div>
                     <div class="text-xs text-neutral-600">{{ auth()->user()->email }}</div>
                 </div>
                 <a href="{{ route('seller.settings.index') }}" class="flex items-center gap-2 px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-50">

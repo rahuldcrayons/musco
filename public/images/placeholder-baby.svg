@@ -1,15 +1,18 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400">
   <defs>
-    <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#F8931D"/>
-      <stop offset="100%" stop-color="#E07E0A"/>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FDF6F0"/>
+      <stop offset="100%" stop-color="#F5EDE6"/>
     </linearGradient>
   </defs>
-  <rect width="400" height="400" fill="url(#g)"/>
-  <g transform="translate(200,185)" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M-35,35 L-45,-15 L45,-15 L35,35 Z"/>
-    <path d="M-18,-15 L-18,-32 C-18,-50 18,-50 18,-32 L18,-15"/>
-    <line x1="-5" y1="5" x2="-5" y2="15"/>
-    <line x1="5" y1="5" x2="5" y2="15"/>
+  <rect width="400" height="400" fill="url(#bg)"/>
+  <g transform="translate(200,175)" fill="none" stroke="#C9A96E" stroke-width="1.8" opacity="0.5">
+    <circle cx="0" cy="-5" r="18"/>
+    <path d="M-30,25 C-30,-5 30,-5 30,25"/>
+    <circle cx="-8" cy="-8" r="2" fill="#C9A96E"/>
+    <circle cx="8" cy="-8" r="2" fill="#C9A96E"/>
+    <path d="M-5,0 C-2,5 2,5 5,0" stroke-width="1.5"/>
+    <circle cx="0" cy="-30" r="5" fill="#B76E79" opacity="0.2" stroke="#B76E79"/>
   </g>
+  <text x="200" y="235" text-anchor="middle" fill="#C9A96E" opacity="0.5" font-family="Georgia,serif" font-size="13">Kids Jewellery</text>
 </svg>

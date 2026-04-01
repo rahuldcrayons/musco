@@ -159,18 +159,18 @@
                             <template x-if="true">
                                 <div>
                                     <template x-if="subtotal < {{ $freeShipThreshold }}">
-                                        <div style="background:#FFF3E0;border:1px solid #FFB74D;border-radius:6px;padding:10px 14px;margin-bottom:12px;">
-                                            <p style="font-size:12px;color:#E65100;font-weight:600;margin:0 0 6px;">
+                                        <div class="bg-[#B76E79]/10 border border-[#B76E79]/20 rounded-md px-3.5 py-2.5 mb-3">
+                                            <p class="text-xs text-[#B76E79] font-semibold mb-1.5">
                                                 Add <span x-text="fp({{ $freeShipThreshold }} - subtotal)"></span> more for FREE shipping!
                                             </p>
-                                            <div style="background:#FFE0B2;border-radius:4px;height:6px;overflow:hidden;">
-                                                <div style="background:#F8931D;height:100%;border-radius:4px;transition:width 0.3s;" :style="'width:' + Math.min(100, (subtotal / {{ $freeShipThreshold }}) * 100) + '%'"></div>
+                                            <div class="bg-[#B76E79]/15 rounded h-1.5 overflow-hidden">
+                                                <div class="bg-[#B76E79] h-full rounded transition-all duration-300" :style="'width:' + Math.min(100, (subtotal / {{ $freeShipThreshold }}) * 100) + '%'"></div>
                                             </div>
                                         </div>
                                     </template>
                                     <template x-if="subtotal >= {{ $freeShipThreshold }}">
-                                        <div style="background:#E8F5E9;border-radius:6px;padding:8px 14px;margin-bottom:12px;">
-                                            <p style="font-size:12px;color:#2E7D32;font-weight:600;margin:0;">&#10003; You qualify for FREE shipping!</p>
+                                        <div class="bg-[#B76E79]/5 rounded-md px-3.5 py-2 mb-3">
+                                            <p class="text-xs text-[#B76E79] font-semibold">&#10003; You qualify for FREE shipping!</p>
                                         </div>
                                     </template>
                                 </div>
@@ -318,7 +318,7 @@
                                              loading="lazy"
                                              onerror="this.src='{{ asset('images/placeholder-product.svg') }}'">
                                         @if($rec['has_discount'] && $rec['discount_pct'] > 0)
-                                            <span class="absolute top-2 left-2 bg-[#F8931D] text-white text-[10px] font-bold px-1.5 py-0.5 rounded">{{ $rec['discount_pct'] }}% Off</span>
+                                            <span class="absolute top-2 left-2 bg-[#B76E79] text-white text-[10px] font-bold px-1.5 py-0.5 rounded">{{ $rec['discount_pct'] }}% Off</span>
                                         @endif
                                     </div>
                                 </a>
@@ -327,7 +327,7 @@
                                         <p class="text-[10px] text-neutral-500 uppercase tracking-wide mb-0.5">{{ $rec['brand'] }}</p>
                                     @endif
                                     <a href="{{ $rec['url'] }}" class="block">
-                                        <h3 class="text-xs font-medium text-neutral-800 line-clamp-2 leading-snug mb-1.5 group-hover:text-[#205258]">{{ $rec['name'] }}</h3>
+                                        <h3 class="text-xs font-medium text-neutral-800 line-clamp-2 leading-snug mb-1.5 group-hover:text-[#c29958]">{{ $rec['name'] }}</h3>
                                     </a>
                                     @if($rec['rating'] > 0)
                                         <div class="flex items-center gap-1 mb-1">
@@ -344,7 +344,7 @@
                                         @endif
                                     </div>
                                     <button @click="$store.cart.add({{ $rec['id'] }})"
-                                            class="w-full py-2 text-[11px] font-semibold text-white bg-[#205258] rounded-md hover:bg-[#1b454a] transition-colors">
+                                            class="w-full py-2 text-[11px] font-semibold text-white bg-[#B76E79] rounded-md hover:bg-[#222222] transition-colors">
                                         Add to Bag
                                     </button>
                                 </div>
@@ -357,15 +357,15 @@
             <template x-if="items.length === 0">
                 <!-- Empty Cart -->
                 <div class="flex flex-col items-center justify-center bg-white rounded-xl border border-neutral-100 py-20 px-6 mt-4">
-                    <div class="w-24 h-24 mb-6 bg-[#205258]/5 rounded-full flex items-center justify-center">
-                        <svg class="w-12 h-12 text-[#205258]/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div class="w-24 h-24 mb-6 bg-[#B76E79]/5 rounded-full flex items-center justify-center">
+                        <svg class="w-12 h-12 text-[#B76E79]/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
                         </svg>
                     </div>
                     <h2 class="text-xl font-bold text-neutral-800 mb-2">Your bag is empty</h2>
                     <p class="text-sm text-neutral-600 mb-8 max-w-sm text-center leading-relaxed">There is nothing in your bag. Let's add some items.</p>
                     <a href="{{ route('products.index') }}"
-                       class="inline-flex items-center gap-2 bg-[#F8931D] hover:bg-[#E07E0A] text-white text-sm font-semibold px-10 py-2 rounded-lg transition-colors shadow-md shadow-[#F8931D]/20">
+                       class="inline-flex items-center gap-2 bg-[#B76E79] hover:bg-[#222222] text-white text-sm font-semibold px-10 py-2 rounded-lg transition-colors shadow-md shadow-[#B76E79]/20">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
                         Start Shopping
                     </a>

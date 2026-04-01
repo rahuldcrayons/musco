@@ -20,19 +20,19 @@
                             {{-- Header --}}
                             <div class="px-4 py-3 flex flex-wrap items-center justify-between gap-3 border-b border-neutral-100">
                                 <div class="flex items-center gap-3">
-                                    <a href="{{ route('account.returns.show', $return) }}" class="text-sm font-bold text-neutral-900 hover:text-[#205258] transition-colors">
+                                    <a href="{{ route('account.returns.show', $return) }}" class="text-sm font-bold text-neutral-900 hover:text-[#c29958] transition-colors">
                                         {{ $return->return_number }}
                                     </a>
                                     @php
                                         $statusColors = [
-                                            'requested' => 'bg-amber-50 text-amber-700 border-amber-200',
-                                            'approved' => 'bg-emerald-50 text-emerald-700 border-emerald-200',
-                                            'rejected' => 'bg-red-50 text-red-700 border-red-200',
-                                            'pickup_scheduled' => 'bg-[#205258]/5 text-[#1b454a] border-[#205258]/30',
-                                            'picked_up' => 'bg-[#205258]/15 text-[#15383c] border-[#205258]/40',
-                                            'received' => 'bg-[#205258]/5 text-[#1b454a] border-[#205258]/30',
-                                            'processed' => 'bg-cyan-50 text-cyan-700 border-cyan-200',
-                                            'completed' => 'bg-emerald-50 text-emerald-700 border-emerald-200',
+                                            'requested' => 'bg-[#c29958]/10 text-[#c29958] border-[#c29958]/20',
+                                            'approved' => 'bg-[#B76E79]/5 text-[#B76E79] border-[#B76E79]/20',
+                                            'rejected' => 'bg-neutral-100 text-neutral-700 border-neutral-200',
+                                            'pickup_scheduled' => 'bg-[#B76E79]/5 text-[#222222] border-[#B76E79]/30',
+                                            'picked_up' => 'bg-[#B76E79]/15 text-[#15383c] border-[#B76E79]/40',
+                                            'received' => 'bg-[#B76E79]/5 text-[#222222] border-[#B76E79]/30',
+                                            'processed' => 'bg-neutral-50 text-neutral-700 border-neutral-200',
+                                            'completed' => 'bg-[#B76E79]/5 text-[#B76E79] border-[#B76E79]/20',
                                         ];
                                         $color = $statusColors[$return->status] ?? 'bg-neutral-50 text-neutral-600 border-neutral-200';
                                     @endphp
@@ -58,7 +58,7 @@
                             <div class="px-4 py-3">
                                 <div class="flex items-center gap-2 mb-2">
                                     <span class="text-xs text-neutral-600">Order</span>
-                                    <a href="{{ route('account.orders.show', $return->order) }}" class="text-xs font-medium text-[#205258] hover:text-[#1b454a]">
+                                    <a href="{{ route('account.orders.show', $return->order) }}" class="text-xs font-medium text-[#B76E79] hover:text-[#222222]">
                                         {{ $return->order->order_number }}
                                     </a>
                                 </div>
@@ -78,11 +78,11 @@
                             {{-- Footer --}}
                             <div class="px-4 py-2.5 bg-neutral-50 border-t border-neutral-100 flex items-center justify-between">
                                 @if($return->refund_amount)
-                                    <span class="text-xs text-neutral-600">Refund: <span class="font-semibold text-emerald-600">{{ format_price($return->refund_amount) }}</span></span>
+                                    <span class="text-xs text-neutral-600">Refund: <span class="font-semibold text-[#B76E79]">{{ format_price($return->refund_amount) }}</span></span>
                                 @else
                                     <span></span>
                                 @endif
-                                <a href="{{ route('account.returns.show', $return) }}" class="text-xs font-semibold text-[#205258] hover:text-[#1b454a] inline-flex items-center gap-1">
+                                <a href="{{ route('account.returns.show', $return) }}" class="text-xs font-semibold text-[#B76E79] hover:text-[#222222] inline-flex items-center gap-1">
                                     View Details
                                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                                 </a>
@@ -97,7 +97,7 @@
                             </div>
                             <h3 class="text-base font-semibold text-neutral-900 mb-1">No returns yet</h3>
                             <p class="text-sm text-neutral-600 mb-5">You haven't submitted any return requests.</p>
-                            <a href="{{ route('account.orders.index') }}" class="inline-flex items-center gap-2 bg-[#F8931D] hover:bg-[#E07E0A] text-white text-sm font-semibold px-3 py-1.5 rounded-lg transition-colors">
+                            <a href="{{ route('account.orders.index') }}" class="inline-flex items-center gap-2 bg-[#B76E79] hover:bg-[#222222] text-white text-sm font-semibold px-3 py-1.5 rounded-lg transition-colors">
                                 View Orders
                             </a>
                         </div>

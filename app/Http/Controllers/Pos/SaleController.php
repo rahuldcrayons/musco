@@ -220,7 +220,7 @@ class SaleController extends Controller
         }
 
         return response()->json([
-            'store_name'     => $store->name ?? 'Jikra',
+            'store_name'     => $store->name ?? 'MusCo',
             'store_address'  => $store->address ?? '',
             'store_phone'    => $store->phone ?? '',
             'gstin'          => $store->gstin ?? '',

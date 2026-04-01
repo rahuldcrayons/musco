@@ -12,7 +12,7 @@
        :style="'top:0; transition: transform 0.3s ease; transform: translateY(' + (visible ? '0' : '-100%') + ')'">
     <!-- Announcement Bar -->
     @if($announcement)
-    <div class="bg-[#205258] text-white text-center py-1.5 text-[11px] sm:text-xs font-medium tracking-wide">
+    <div class="bg-[#222222] text-white text-center py-1.5 text-[11px] sm:text-xs font-medium tracking-wide">
         {{ $announcement }}
     </div>
     @endif
@@ -22,7 +22,7 @@
             <!-- Left: Mobile menu + Desktop Nav -->
             <div class="flex items-center gap-3 lg:gap-0 flex-1">
                 <!-- Mobile menu button -->
-                <button @click="$dispatch('toggle-mobile-nav')" class="lg:hidden p-1.5 -ml-1.5 text-neutral-700 hover:text-[#205258]" aria-label="Open menu">
+                <button @click="$dispatch('toggle-mobile-nav')" class="lg:hidden p-1.5 -ml-1.5 text-neutral-700 hover:text-[#c29958]" aria-label="Open menu">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16"/>
                     </svg>
@@ -30,10 +30,10 @@
 
                 <!-- Desktop Navigation (Left side) -->
                 <nav class="hidden lg:flex items-center gap-1">
-                    <a href="{{ route('new-arrivals') }}" class="px-3 py-2 text-[13px] text-[#222] hover:text-[#205258] font-medium transition-colors tracking-wide uppercase">New Arrival</a>
-                    <a href="{{ route('categories.index') }}" class="px-3 py-2 text-[13px] text-[#222] hover:text-[#205258] font-medium transition-colors tracking-wide uppercase">Categories</a>
-                    <a href="{{ route('bestsellers') }}" class="px-3 py-2 text-[13px] text-[#222] hover:text-[#205258] font-medium transition-colors tracking-wide uppercase">Bestsellers</a>
-                    <a href="{{ route('deals') }}" class="px-3 py-2 text-[13px] text-[#F8931D] hover:text-[#E07E0A] font-semibold transition-colors tracking-wide uppercase">Sale</a>
+                    <a href="{{ route('new-arrivals') }}" class="px-3 py-2 text-[13px] text-[#222] hover:text-[#c29958] font-medium transition-colors tracking-wide uppercase">New Arrival</a>
+                    <a href="{{ route('categories.index') }}" class="px-3 py-2 text-[13px] text-[#222] hover:text-[#c29958] font-medium transition-colors tracking-wide uppercase">Categories</a>
+                    <a href="{{ route('bestsellers') }}" class="px-3 py-2 text-[13px] text-[#222] hover:text-[#c29958] font-medium transition-colors tracking-wide uppercase">Bestsellers</a>
+                    <a href="{{ route('deals') }}" class="px-3 py-2 text-[13px] text-[#c29958] hover:text-[#c29958] font-semibold transition-colors tracking-wide uppercase">Sale</a>
                 </nav>
             </div>
 
@@ -43,7 +43,7 @@
                 @if($siteLogo)
                     <img src="{{ asset('storage/' . $siteLogo) }}" alt="{{ config('app.name') }}" class="h-auto w-32 lg:w-40">
                 @else
-                    <img src="{{ asset('images/jikra-logo.png') }}" alt="Jikra" class="h-auto w-32 lg:w-40">
+                    <img src="{{ asset('images/musco-logo.svg') }}" alt="{{ config('app.name') }}" class="h-auto w-32 lg:w-40">
                 @endif
             </a>
 
@@ -53,12 +53,12 @@
                 <!-- Desktop Navigation (Right side) -->
                 <nav class="hidden lg:flex items-center gap-1 mr-2">
                     @if(config('app.wholesale_enabled'))
-                        <a href="{{ route('wholesale') }}" class="px-3 py-2 text-[13px] text-[#222] hover:text-[#205258] font-medium transition-colors tracking-wide uppercase">Wholesale</a>
+                        <a href="{{ route('wholesale') }}" class="px-3 py-2 text-[13px] text-[#222] hover:text-[#c29958] font-medium transition-colors tracking-wide uppercase">Wholesale</a>
                     @endif
                 </nav>
 
                 <!-- Mobile search icon (shown below sm, links to search page) -->
-                <a href="{{ route('search') }}" class="sm:hidden p-2 text-neutral-600 hover:text-[#205258] transition-colors" aria-label="Search">
+                <a href="{{ route('search') }}" class="sm:hidden p-2 text-neutral-600 hover:text-[#c29958] transition-colors" aria-label="Search">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                     </svg>
@@ -84,7 +84,7 @@
                                @blur="if(!query) startTypewriter()"
                                @keydown.escape="showResults = false; $refs.searchInput.blur()"
                                :placeholder="currentPlaceholder"
-                               class="w-full pl-8 pr-16 py-2 text-base bg-neutral-50 border border-neutral-200 rounded-full placeholder-neutral-400 focus:bg-white focus:border-[#205258] transition-all"
+                               class="w-full pl-8 pr-16 py-2 text-base bg-neutral-50 border border-neutral-200 rounded-full placeholder-neutral-400 focus:bg-white focus:border-[#B76E79] transition-all"
                                style="outline:none !important; box-shadow:none !important; font-size:16px;"
                                autocomplete="off">
 
@@ -93,7 +93,7 @@
                                 type="button"
                                 @click.prevent="toggleMic()"
                                 class="absolute right-8 p-1 transition-colors z-10"
-                                :class="listening ? 'text-red-500 animate-pulse' : 'text-neutral-600 hover:text-[#205258]'"
+                                :class="listening ? 'text-[#CC0C39] animate-pulse' : 'text-neutral-600 hover:text-[#c29958]'"
                                 :title="listening ? 'Stop listening' : 'Voice search'"
                                 aria-label="Voice search">
                             <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
@@ -103,7 +103,7 @@
                         </button>
 
                         <!-- Submit button -->
-                        <button type="submit" class="absolute right-2 p-1 text-neutral-600 hover:text-[#205258] transition-colors" aria-label="Search">
+                        <button type="submit" class="absolute right-2 p-1 text-neutral-600 hover:text-[#c29958] transition-colors" aria-label="Search">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
                             </svg>
@@ -141,7 +141,7 @@
                 </div>
 
                 <!-- Wishlist -->
-                <a href="{{ route('wishlist') }}" class="relative p-2 text-neutral-600 hover:text-[#205258] transition-colors hidden sm:flex" aria-label="Wishlist">
+                <a href="{{ route('wishlist') }}" class="relative p-2 text-neutral-600 hover:text-[#c29958] transition-colors hidden sm:flex" aria-label="Wishlist">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
                     </svg>
@@ -154,7 +154,7 @@
 
                 <!-- User account - desktop -->
                 <div class="relative hidden lg:block" x-data="dropdown()">
-                    <button @click="toggle()" class="p-2 text-neutral-600 hover:text-[#205258] transition-colors" aria-label="Account">
+                    <button @click="toggle()" class="p-2 text-neutral-600 hover:text-[#c29958] transition-colors" aria-label="Account">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
                         </svg>
@@ -162,31 +162,31 @@
 
                     <div x-cloak x-show="open" x-transition @click.outside="close()" class="absolute right-0 mt-1 w-48 bg-white border border-neutral-200 rounded-lg shadow-dropdown z-50 overflow-hidden">
                         @guest
-                            <a href="{{ route('login') }}" class="block px-4 py-2 text-sm text-neutral-700 hover:text-[#205258]">Login</a>
-                            <a href="{{ route('register') }}" class="block px-4 py-2 text-sm text-neutral-700 hover:text-[#205258]">Register</a>
+                            <a href="{{ route('login') }}" class="block px-4 py-2 text-sm text-neutral-700 hover:text-[#c29958]">Login</a>
+                            <a href="{{ route('register') }}" class="block px-4 py-2 text-sm text-neutral-700 hover:text-[#c29958]">Register</a>
                         @else
                             <div class="px-4 py-2 border-b border-neutral-100">
                                 <div class="text-sm font-medium text-neutral-900">{{ auth()->user()->full_name }}</div>
                                 <div class="text-xs text-neutral-600">{{ auth()->user()->email }}</div>
                             </div>
-                            <a href="{{ route('account.dashboard') }}" class="block px-4 py-2 text-sm text-neutral-700 hover:text-[#205258]">Dashboard</a>
-                            <a href="{{ route('account.orders.index') }}" class="block px-4 py-2 text-sm text-neutral-700 hover:text-[#205258]">My Orders</a>
-                            <a href="{{ route('account.profile') }}" class="block px-4 py-2 text-sm text-neutral-700 hover:text-[#205258]">Profile Settings</a>
+                            <a href="{{ route('account.dashboard') }}" class="block px-4 py-2 text-sm text-neutral-700 hover:text-[#c29958]">Dashboard</a>
+                            <a href="{{ route('account.orders.index') }}" class="block px-4 py-2 text-sm text-neutral-700 hover:text-[#c29958]">My Orders</a>
+                            <a href="{{ route('account.profile') }}" class="block px-4 py-2 text-sm text-neutral-700 hover:text-[#c29958]">Profile Settings</a>
                             @if(auth()->user()->deliveryPartner)
-                                <a href="{{ route('delivery.login') }}" class="block px-4 py-2 text-sm text-[#205258] hover:text-[#1b454a] font-medium">Delivery Panel</a>
+                                <a href="{{ route('delivery.login') }}" class="block px-4 py-2 text-sm text-[#B76E79] hover:text-[#222222] font-medium">Delivery Panel</a>
                             @else
-                                <a href="{{ route('account.become-delivery-partner') }}" class="block px-4 py-2 text-sm text-[#205258] hover:text-[#1b454a] font-medium">Become a Delivery Partner</a>
+                                <a href="{{ route('account.become-delivery-partner') }}" class="block px-4 py-2 text-sm text-[#B76E79] hover:text-[#222222] font-medium">Become a Delivery Partner</a>
                             @endif
                             <form action="{{ route('logout') }}" method="POST">
                                 @csrf
-                                <button type="submit" class="w-full text-left px-4 py-2 text-sm text-neutral-700 hover:text-[#205258]">Logout</button>
+                                <button type="submit" class="w-full text-left px-4 py-2 text-sm text-neutral-700 hover:text-[#c29958]">Logout</button>
                             </form>
                         @endguest
                     </div>
                 </div>
 
                 <!-- Cart -->
-                <a href="{{ route('cart.index') }}" class="relative p-2 text-neutral-700 hover:text-[#205258] transition-colors" aria-label="Cart">
+                <a href="{{ route('cart.index') }}" class="relative p-2 text-neutral-700 hover:text-[#c29958] transition-colors" aria-label="Cart">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
                     </svg>

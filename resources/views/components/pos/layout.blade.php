@@ -18,8 +18,8 @@
             --pos-bg: #F5F5F7;
             --pos-sidebar: #1E293B;
             --pos-card: #FFFFFF;
-            --pos-primary: #205258;
-            --pos-primary-dark: #1b454a;
+            --pos-primary: #B76E79;
+            --pos-primary-dark: #222222;
             --pos-success: #15803D;
             --pos-warning: #B45309;
             --pos-danger: #B91C1C;
@@ -35,7 +35,7 @@
         * { box-sizing: border-box; }
 
         body {
-            font-family: 'Poppins', sans-serif;
+            font-family: 'DM Sans', sans-serif;
             background: var(--pos-bg);
             color: var(--pos-text);
             margin: 0;

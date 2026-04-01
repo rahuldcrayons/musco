@@ -34,8 +34,8 @@ Review Your Purchase
 
 If anything is not quite right with your order, please do not hesitate to reach out to our support team. We are always here to help!
 
-Thank you for choosing Jikra!
+Thank you for choosing MusCo!
 
 Warm regards,
-**Jikra**
+**MusCo**
 @endcomponent

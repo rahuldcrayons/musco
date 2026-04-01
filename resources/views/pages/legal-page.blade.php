@@ -16,17 +16,21 @@
 
     @php
         $iconBg = match($page->slug) {
-            'privacy-policy'   => 'bg-[#205258]/5',
+            'privacy-policy'   => 'bg-[#B76E79]/5',
             'terms-of-service' => 'bg-neutral-100',
-            'cookie-policy'    => 'bg-amber-50',
+            'cookie-policy'    => 'bg-[#c29958]/10',
             'gdpr'             => 'bg-primary-50',
+            'returns-policy'   => 'bg-warning-50',
+            'shipping-policy'  => 'bg-[#B76E79]/5',
             default            => 'bg-neutral-100',
         };
         $iconColor = match($page->slug) {
-            'privacy-policy'   => 'text-[#205258]',
+            'privacy-policy'   => 'text-[#B76E79]',
             'terms-of-service' => 'text-neutral-600',
-            'cookie-policy'    => 'text-amber-600',
+            'cookie-policy'    => 'text-[#c29958]',
             'gdpr'             => 'text-primary-600',
+            'returns-policy'   => 'text-warning-600',
+            'shipping-policy'  => 'text-[#B76E79]',
             default            => 'text-neutral-600',
         };
 
@@ -60,6 +64,14 @@
                     @elseif($page->slug === 'gdpr')
                         <svg class="w-7 h-7 {{ $iconColor }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                        </svg>
+                    @elseif($page->slug === 'returns-policy')
+                        <svg class="w-7 h-7 {{ $iconColor }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                        </svg>
+                    @elseif($page->slug === 'shipping-policy')
+                        <svg class="w-7 h-7 {{ $iconColor }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0"/>
                         </svg>
                     @else
                         <svg class="w-7 h-7 {{ $iconColor }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">

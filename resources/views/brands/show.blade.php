@@ -74,7 +74,7 @@
                 </div>
                 <div x-ref="sentinel" class="h-4"></div>
                 <div x-show="loading" x-cloak class="flex justify-center py-8">
-                    <svg class="animate-spin h-6 w-6 text-[#205258]" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
+                    <svg class="animate-spin h-6 w-6 text-[#B76E79]" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
                 </div>
             </div>
         @else
@@ -84,7 +84,7 @@
                 </svg>
                 <h3 class="text-lg font-medium text-neutral-900 mb-2">No products found</h3>
                 <p class="text-neutral-600 mb-4">This brand doesn't have any products yet.</p>
-                <a href="{{ route('brands.index') }}" class="btn-primary">View All Brands</a>
+                <a href="{{ route('brands.index') }}" class="btn btn-primary">View All Brands</a>
             </div>
         @endif
     </div>

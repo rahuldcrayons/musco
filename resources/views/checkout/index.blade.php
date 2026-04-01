@@ -62,7 +62,7 @@
     </script>
     @endif
 
-    <div class="bg-[#F7F8FA] min-h-screen">
+    <div class="bg-[#f7f7f7] min-h-screen">
         <div class="container mx-auto px-3 py-3">
             <x-breadcrumb :items="[['label' => 'Cart', 'url' => route('cart.index')], ['label' => 'Checkout', 'url' => null]]" />
         </div>
@@ -71,15 +71,15 @@
             {{-- Header with back + user info + logout --}}
             <div class="flex items-center justify-between mb-3">
                 <div class="flex items-center gap-3">
-                    <a href="{{ route('cart.index') }}" class="text-xs text-[#007185] hover:text-[#C7511F] font-medium flex items-center gap-1">
+                    <a href="{{ route('cart.index') }}" class="text-xs text-[#B76E79] hover:text-[#c29958] font-medium flex items-center gap-1">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
                         Cart
                     </a>
-                    <h1 class="text-base font-bold text-[#0F1111]">Checkout</h1>
+                    <h1 class="text-base font-bold text-[#222222]">Checkout</h1>
                 </div>
                 @auth
                 <div class="flex items-center gap-2">
-                    <span class="text-xs text-[#565959]">{{ auth()->user()->name }}</span>
+                    <span class="text-xs text-[#555555]">{{ auth()->user()->name }}</span>
                     <form method="POST" action="{{ route('logout') }}" class="inline">
                         @csrf
                         <button type="submit" class="text-xs text-[#CC0C39] hover:underline font-medium">Logout</button>
@@ -90,7 +90,7 @@
 
             {{-- Express Checkout Banner (for returning users with saved preferences) --}}
             @if(!empty($oneClickReady) && $defaultAddress)
-            <div class="bg-gradient-to-r from-[#205258] to-[#1b454a] rounded-lg p-3 mb-3 text-white" x-data="{ expressLoading: false }">
+            <div class="bg-gradient-to-r from-[#B76E79] to-[#222222] rounded-lg p-3 mb-3 text-white" x-data="{ expressLoading: false }">
                 <div class="flex items-center justify-between">
                     <div class="flex-1 min-w-0">
                         <p class="text-xs font-bold">Express Checkout</p>
@@ -103,7 +103,7 @@
                         <input type="hidden" name="payment_method" value="{{ $checkoutPreference->default_payment_method ?? 'cod' }}">
                         <input type="hidden" name="express_checkout" value="1">
                         <button type="submit" :disabled="expressLoading"
-                                class="px-4 py-2 bg-[#F8931D] hover:bg-[#E07E0A] text-white text-xs font-bold rounded-lg transition-colors whitespace-nowrap disabled:opacity-50">
+                                class="px-4 py-2 bg-[#B76E79] hover:bg-[#222222] text-white text-xs font-bold rounded-lg transition-colors whitespace-nowrap disabled:opacity-50">
                             <span x-show="!expressLoading">Place Order</span>
                             <span x-show="expressLoading">Processing...</span>
                         </button>
@@ -130,10 +130,10 @@
                     <div id="checkout-left" class="space-y-3">
 
                         {{-- ── Section 1: Contact + Shipping (merged for guests, just shipping for auth) ── --}}
-                        <div class="bg-white rounded border border-[#E3E6E6]">
-                            <div class="flex items-center gap-2 px-3 py-2.5 border-b border-[#E3E6E6] bg-[#F7F8FA]">
-                                <div class="w-5 h-5 rounded-full bg-[#205258] text-white text-[10px] font-bold flex items-center justify-center">1</div>
-                                <h2 class="text-xs font-bold text-[#0F1111] uppercase tracking-wide">
+                        <div class="bg-white rounded border border-[#efefef]">
+                            <div class="flex items-center gap-2 px-3 py-2.5 border-b border-[#efefef] bg-[#f7f7f7]">
+                                <div class="w-5 h-5 rounded-full bg-[#B76E79] text-white text-[10px] font-bold flex items-center justify-center">1</div>
+                                <h2 class="text-xs font-bold text-[#222222] uppercase tracking-wide">
                                     @if($isGuest) Contact & Shipping @else Shipping Address @endif
                                 </h2>
                             </div>
@@ -141,80 +141,80 @@
                             <div class="p-3">
                                 @if($isGuest)
                                 {{-- Guest: contact + address in one compact block --}}
-                                <p class="text-[11px] text-[#565959] mb-2">Have an account? <a href="{{ route('login') }}" class="text-[#007185] hover:text-[#C7511F] font-medium">Log in</a> for faster checkout.</p>
+                                <p class="text-[11px] text-[#555555] mb-2">Have an account? <a href="{{ route('login') }}" class="text-[#B76E79] hover:text-[#c29958] font-medium">Log in</a> for faster checkout.</p>
 
                                 <div class="space-y-2 mb-2">
                                     <div>
-                                        <label class="block text-[10px] font-semibold text-[#565959] mb-0.5">Phone *</label>
+                                        <label class="block text-[10px] font-semibold text-[#555555] mb-0.5">Phone *</label>
                                         <input type="tel" name="guest_phone" id="guest_phone" value="{{ old('guest_phone') }}" required autocomplete="tel" autofocus
-                                               class="w-full text-sm border border-[#E3E6E6] rounded px-2.5 py-2 focus:border-[#007185] focus:outline-none" placeholder="+91 98765 43210"
+                                               class="w-full text-sm border border-[#efefef] rounded px-2.5 py-2 focus:border-[#B76E79] focus:outline-none" placeholder="+91 98765 43210"
                                                @input="captureAbandoned(false)" @blur="captureAbandoned(true)">
                                         @error('guest_phone') <p class="text-[10px] text-[#CC0C39] mt-0.5">{{ $message }}</p> @enderror
                                     </div>
                                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
                                         <div>
-                                            <label class="block text-[10px] font-semibold text-[#565959] mb-0.5">Name *</label>
+                                            <label class="block text-[10px] font-semibold text-[#555555] mb-0.5">Name *</label>
                                             <input type="text" name="guest_name" value="{{ old('guest_name') }}" required autocomplete="name"
-                                                   class="w-full text-sm border border-[#E3E6E6] rounded px-2.5 py-2 focus:border-[#007185] focus:outline-none" placeholder="Full name"
+                                                   class="w-full text-sm border border-[#efefef] rounded px-2.5 py-2 focus:border-[#B76E79] focus:outline-none" placeholder="Full name"
                                                    @input="captureAbandoned(false)" @blur="captureAbandoned(true)">
                                             @error('guest_name') <p class="text-[10px] text-[#CC0C39] mt-0.5">{{ $message }}</p> @enderror
                                         </div>
                                         <div>
-                                            <label class="block text-[10px] font-semibold text-[#565959] mb-0.5">Email *</label>
+                                            <label class="block text-[10px] font-semibold text-[#555555] mb-0.5">Email *</label>
                                             <input type="email" name="guest_email" value="{{ old('guest_email') }}" required autocomplete="email"
-                                                   class="w-full text-sm border border-[#E3E6E6] rounded px-2.5 py-2 focus:border-[#007185] focus:outline-none" placeholder="email@example.com"
+                                                   class="w-full text-sm border border-[#efefef] rounded px-2.5 py-2 focus:border-[#B76E79] focus:outline-none" placeholder="email@example.com"
                                                    @input="captureAbandoned(false)" @blur="captureAbandoned(true)">
                                             @error('guest_email') <p class="text-[10px] text-[#CC0C39] mt-0.5">{{ $message }}</p> @enderror
                                         </div>
                                     </div>
                                 </div>
 
-                                <div class="border-t border-dashed border-[#E3E6E6] my-2"></div>
+                                <div class="border-t border-dashed border-[#efefef] my-2"></div>
 
                                 {{-- Shipping fields with PIN autocomplete --}}
                                 <div class="space-y-2" x-data="pinLookup()">
                                     <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
                                         <div>
-                                            <label class="block text-[10px] font-semibold text-[#565959] mb-0.5">PIN Code *</label>
+                                            <label class="block text-[10px] font-semibold text-[#555555] mb-0.5">PIN Code *</label>
                                             <input type="text" name="shipping_postal_code" x-model="pin" @input="fetchPinData()" value="{{ old('shipping_postal_code') }}" required maxlength="6" autocomplete="postal-code"
-                                                   class="w-full text-sm border border-[#E3E6E6] rounded px-2.5 py-2 focus:border-[#007185] focus:outline-none" placeholder="400001">
+                                                   class="w-full text-sm border border-[#efefef] rounded px-2.5 py-2 focus:border-[#B76E79] focus:outline-none" placeholder="400001">
                                             <p x-show="pinError" x-text="pinError" class="text-[10px] text-[#CC0C39] mt-0.5" x-cloak></p>
-                                            <p x-show="pinServiceable === true" class="text-[10px] text-[#067D62] mt-0.5 flex items-center gap-0.5" x-cloak>
+                                            <p x-show="pinServiceable === true" class="text-[10px] text-[#555555] mt-0.5 flex items-center gap-0.5" x-cloak>
                                                 <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
                                                 Delivery available
                                             </p>
                                             @error('shipping_postal_code') <p class="text-[10px] text-[#CC0C39] mt-0.5">{{ $message }}</p> @enderror
                                         </div>
                                         <div>
-                                            <label class="block text-[10px] font-semibold text-[#565959] mb-0.5">City *</label>
+                                            <label class="block text-[10px] font-semibold text-[#555555] mb-0.5">City *</label>
                                             <input type="text" name="shipping_city" x-model="city" value="{{ old('shipping_city') }}" required autocomplete="address-level2"
-                                                   class="w-full text-sm border border-[#E3E6E6] rounded px-2.5 py-2 focus:border-[#007185] focus:outline-none" placeholder="City">
+                                                   class="w-full text-sm border border-[#efefef] rounded px-2.5 py-2 focus:border-[#B76E79] focus:outline-none" placeholder="City">
                                             @error('shipping_city') <p class="text-[10px] text-[#CC0C39] mt-0.5">{{ $message }}</p> @enderror
                                         </div>
                                         <div>
-                                            <label class="block text-[10px] font-semibold text-[#565959] mb-0.5">State *</label>
+                                            <label class="block text-[10px] font-semibold text-[#555555] mb-0.5">State *</label>
                                             <input type="text" name="shipping_state" x-model="state" value="{{ old('shipping_state') }}" required autocomplete="address-level1"
-                                                   class="w-full text-sm border border-[#E3E6E6] rounded px-2.5 py-2 focus:border-[#007185] focus:outline-none" placeholder="State">
+                                                   class="w-full text-sm border border-[#efefef] rounded px-2.5 py-2 focus:border-[#B76E79] focus:outline-none" placeholder="State">
                                             @error('shipping_state') <p class="text-[10px] text-[#CC0C39] mt-0.5">{{ $message }}</p> @enderror
                                         </div>
                                         <div>
-                                            <label class="block text-[10px] font-semibold text-[#565959] mb-0.5">Recipient Name *</label>
+                                            <label class="block text-[10px] font-semibold text-[#555555] mb-0.5">Recipient Name *</label>
                                             <input type="text" name="shipping_name" value="{{ old('shipping_name') }}" required autocomplete="shipping name"
-                                                   class="w-full text-sm border border-[#E3E6E6] rounded px-2.5 py-2 focus:border-[#007185] focus:outline-none" placeholder="Recipient name">
+                                                   class="w-full text-sm border border-[#efefef] rounded px-2.5 py-2 focus:border-[#B76E79] focus:outline-none" placeholder="Recipient name">
                                             @error('shipping_name') <p class="text-[10px] text-[#CC0C39] mt-0.5">{{ $message }}</p> @enderror
                                         </div>
                                     </div>
                                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
                                         <div>
-                                            <label class="block text-[10px] font-semibold text-[#565959] mb-0.5">Address Line 2</label>
+                                            <label class="block text-[10px] font-semibold text-[#555555] mb-0.5">Address Line 2</label>
                                             <input type="text" name="shipping_address_line_2" value="{{ old('shipping_address_line_2') }}" autocomplete="address-line2"
-                                                   class="w-full text-sm border border-[#E3E6E6] rounded px-2.5 py-2 focus:border-[#007185] focus:outline-none" placeholder="Area, Landmark (optional)">
+                                                   class="w-full text-sm border border-[#efefef] rounded px-2.5 py-2 focus:border-[#B76E79] focus:outline-none" placeholder="Area, Landmark (optional)">
                                         </div>
                                     </div>
                                     <div>
-                                        <label class="block text-[10px] font-semibold text-[#565959] mb-0.5">Address *</label>
+                                        <label class="block text-[10px] font-semibold text-[#555555] mb-0.5">Address *</label>
                                         <input type="text" name="shipping_address_line_1" value="{{ old('shipping_address_line_1') }}" required autocomplete="address-line1"
-                                               class="w-full text-sm border border-[#E3E6E6] rounded px-2.5 py-2 focus:border-[#007185] focus:outline-none" placeholder="House no., Building, Street">
+                                               class="w-full text-sm border border-[#efefef] rounded px-2.5 py-2 focus:border-[#B76E79] focus:outline-none" placeholder="House no., Building, Street">
                                         @error('shipping_address_line_1') <p class="text-[10px] text-[#CC0C39] mt-0.5">{{ $message }}</p> @enderror
                                     </div>
                                 </div>
@@ -225,18 +225,18 @@
                                     <div class="space-y-2">
                                         @foreach($addresses as $address)
                                             <label class="flex items-start gap-2.5 p-2.5 border rounded cursor-pointer transition-colors
-                                                {{ $address->id === $defaultAddress?->id ? 'border-[#205258] bg-[#205258]/5' : 'border-[#E3E6E6] hover:border-[#007185]' }}">
+                                                {{ $address->id === $defaultAddress?->id ? 'border-[#B76E79] bg-[#B76E79]/5' : 'border-[#efefef] hover:border-[#B76E79]' }}">
                                                 <input type="radio" name="shipping_address_id" value="{{ $address->id }}"
                                                        {{ $address->id === $defaultAddress?->id ? 'checked' : '' }}
-                                                       class="mt-0.5 text-[#205258] focus:ring-[#205258]">
+                                                       class="mt-0.5 text-[#B76E79] focus:ring-[#B76E79]">
                                                 <div class="flex-1 min-w-0">
                                                     <div class="flex items-center gap-1.5">
-                                                        <span class="text-xs font-semibold text-[#0F1111]">{{ $address->name }}</span>
+                                                        <span class="text-xs font-semibold text-[#222222]">{{ $address->name }}</span>
                                                         @if($address->is_default)
-                                                            <span class="text-[9px] font-medium text-[#205258] bg-[#205258]/10 px-1 py-px rounded">Default</span>
+                                                            <span class="text-[9px] font-medium text-[#B76E79] bg-[#B76E79]/10 px-1 py-px rounded">Default</span>
                                                         @endif
                                                     </div>
-                                                    <p class="text-[11px] text-[#565959] leading-relaxed">
+                                                    <p class="text-[11px] text-[#555555] leading-relaxed">
                                                         {{ $address->address_line_1 }}{{ $address->address_line_2 ? ', ' . $address->address_line_2 : '' }},
                                                         {{ $address->city }}, {{ $address->state }} {{ $address->postal_code }}
                                                         &middot; {{ $address->phone }}
@@ -246,14 +246,14 @@
                                         @endforeach
                                     </div>
 
-                                    <button type="button" @click="showAddressForm = !showAddressForm" class="inline-flex items-center gap-1 mt-2 text-[11px] font-medium text-[#007185] hover:text-[#C7511F]">
+                                    <button type="button" @click="showAddressForm = !showAddressForm" class="inline-flex items-center gap-1 mt-2 text-[11px] font-medium text-[#B76E79] hover:text-[#c29958]">
                                         <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                                         <span x-text="showAddressForm ? 'Cancel' : 'Add New Address'"></span>
                                     </button>
                                 @else
                                     <div class="text-center py-4" x-show="!showAddressForm">
-                                        <p class="text-xs text-[#565959] mb-2">No saved addresses found.</p>
-                                        <button type="button" @click="showAddressForm = true" class="inline-flex items-center gap-1 text-xs font-semibold text-white bg-[#205258] hover:bg-[#205258]/90 px-3 py-1.5 rounded transition-colors">
+                                        <p class="text-xs text-[#555555] mb-2">No saved addresses found.</p>
+                                        <button type="button" @click="showAddressForm = true" class="inline-flex items-center gap-1 text-xs font-semibold text-white bg-[#B76E79] hover:bg-[#c29958]/90 px-3 py-1.5 rounded transition-colors">
                                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                                             Add Address
                                         </button>
@@ -261,42 +261,42 @@
                                 @endif
 
                                 {{-- Inline Add Address Form with PIN autocomplete --}}
-                                <div x-show="showAddressForm" x-collapse x-cloak class="mt-2 p-3 bg-[#F7F8FA] rounded border border-[#E3E6E6] space-y-2" x-data="pinLookup()">
-                                    <h3 class="text-xs font-bold text-[#0F1111]">New Address</h3>
+                                <div x-show="showAddressForm" x-collapse x-cloak class="mt-2 p-3 bg-[#f7f7f7] rounded border border-[#efefef] space-y-2" x-data="pinLookup()">
+                                    <h3 class="text-xs font-bold text-[#222222]">New Address</h3>
                                     <div class="grid grid-cols-2 gap-2">
                                         <div>
-                                            <label class="block text-[10px] font-semibold text-[#565959] mb-0.5">Full Name *</label>
-                                            <input type="text" id="new_addr_name" class="w-full text-xs border border-[#E3E6E6] rounded px-2.5 py-2 focus:border-[#007185] focus:outline-none" placeholder="Full name">
+                                            <label class="block text-[10px] font-semibold text-[#555555] mb-0.5">Full Name *</label>
+                                            <input type="text" id="new_addr_name" class="w-full text-xs border border-[#efefef] rounded px-2.5 py-2 focus:border-[#B76E79] focus:outline-none" placeholder="Full name">
                                         </div>
                                         <div>
-                                            <label class="block text-[10px] font-semibold text-[#565959] mb-0.5">Phone *</label>
-                                            <input type="tel" id="new_addr_phone" class="w-full text-xs border border-[#E3E6E6] rounded px-2.5 py-2 focus:border-[#007185] focus:outline-none" placeholder="+91 98765 43210">
+                                            <label class="block text-[10px] font-semibold text-[#555555] mb-0.5">Phone *</label>
+                                            <input type="tel" id="new_addr_phone" class="w-full text-xs border border-[#efefef] rounded px-2.5 py-2 focus:border-[#B76E79] focus:outline-none" placeholder="+91 98765 43210">
                                         </div>
                                     </div>
                                     <div>
-                                        <label class="block text-[10px] font-semibold text-[#565959] mb-0.5">Address *</label>
-                                        <input type="text" id="new_addr_line1" class="w-full text-xs border border-[#E3E6E6] rounded px-2.5 py-2 focus:border-[#007185] focus:outline-none" placeholder="House no., Building, Street">
+                                        <label class="block text-[10px] font-semibold text-[#555555] mb-0.5">Address *</label>
+                                        <input type="text" id="new_addr_line1" class="w-full text-xs border border-[#efefef] rounded px-2.5 py-2 focus:border-[#B76E79] focus:outline-none" placeholder="House no., Building, Street">
                                     </div>
                                     <div>
-                                        <label class="block text-[10px] font-semibold text-[#565959] mb-0.5">Area / Landmark</label>
-                                        <input type="text" id="new_addr_line2" class="w-full text-xs border border-[#E3E6E6] rounded px-2.5 py-2 focus:border-[#007185] focus:outline-none" placeholder="Optional">
+                                        <label class="block text-[10px] font-semibold text-[#555555] mb-0.5">Area / Landmark</label>
+                                        <input type="text" id="new_addr_line2" class="w-full text-xs border border-[#efefef] rounded px-2.5 py-2 focus:border-[#B76E79] focus:outline-none" placeholder="Optional">
                                     </div>
                                     <div class="grid grid-cols-3 gap-2">
                                         <div>
-                                            <label class="block text-[10px] font-semibold text-[#565959] mb-0.5">PIN Code *</label>
+                                            <label class="block text-[10px] font-semibold text-[#555555] mb-0.5">PIN Code *</label>
                                             <input type="text" id="new_addr_pincode" x-model="pin" @input="fetchPinData()" maxlength="6"
-                                                   class="w-full text-xs border border-[#E3E6E6] rounded px-2.5 py-2 focus:border-[#007185] focus:outline-none" placeholder="400001">
+                                                   class="w-full text-xs border border-[#efefef] rounded px-2.5 py-2 focus:border-[#B76E79] focus:outline-none" placeholder="400001">
                                             <p x-show="pinError" x-text="pinError" class="text-[10px] text-[#CC0C39] mt-0.5" x-cloak></p>
                                         </div>
                                         <div>
-                                            <label class="block text-[10px] font-semibold text-[#565959] mb-0.5">City *</label>
+                                            <label class="block text-[10px] font-semibold text-[#555555] mb-0.5">City *</label>
                                             <input type="text" id="new_addr_city" x-model="city"
-                                                   class="w-full text-xs border border-[#E3E6E6] rounded px-2.5 py-2 focus:border-[#007185] focus:outline-none" placeholder="City">
+                                                   class="w-full text-xs border border-[#efefef] rounded px-2.5 py-2 focus:border-[#B76E79] focus:outline-none" placeholder="City">
                                         </div>
                                         <div>
-                                            <label class="block text-[10px] font-semibold text-[#565959] mb-0.5">State *</label>
+                                            <label class="block text-[10px] font-semibold text-[#555555] mb-0.5">State *</label>
                                             <input type="text" id="new_addr_state" x-model="state"
-                                                   class="w-full text-xs border border-[#E3E6E6] rounded px-2.5 py-2 focus:border-[#007185] focus:outline-none" placeholder="State">
+                                                   class="w-full text-xs border border-[#efefef] rounded px-2.5 py-2 focus:border-[#B76E79] focus:outline-none" placeholder="State">
                                         </div>
                                     </div>
                                     <div id="new_addr_error" class="hidden text-[10px] text-[#CC0C39]"></div>
@@ -330,14 +330,14 @@
                                                         }
                                                     }).catch(() => { savingAddress = false; errEl.textContent = 'Something went wrong.'; errEl.classList.remove('hidden'); });
                                                 "
-                                                class="px-3 py-1.5 text-xs font-semibold text-white bg-[#205258] hover:bg-[#205258]/90 rounded transition-colors disabled:opacity-50">
+                                                class="px-3 py-1.5 text-xs font-semibold text-white bg-[#B76E79] hover:bg-[#c29958]/90 rounded transition-colors disabled:opacity-50">
                                             <span x-show="!savingAddress">Save</span>
                                             <span x-show="savingAddress" class="inline-flex items-center gap-1">
                                                 <svg class="w-3 h-3 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
                                                 Saving...
                                             </span>
                                         </button>
-                                        <button type="button" @click="showAddressForm = false" class="px-3 py-1.5 text-xs font-medium text-[#565959] border border-[#E3E6E6] rounded hover:bg-[#F7F8FA] transition-colors">Cancel</button>
+                                        <button type="button" @click="showAddressForm = false" class="px-3 py-1.5 text-xs font-medium text-[#555555] border border-[#efefef] rounded hover:bg-[#f7f7f7] transition-colors">Cancel</button>
                                     </div>
                                 </div>
 
@@ -350,24 +350,24 @@
 
                         {{-- ── Section 2: Billing (auth only, collapsed by default) ── --}}
                         @if(!$isGuest)
-                        <div class="bg-white rounded border border-[#E3E6E6]">
+                        <div class="bg-white rounded border border-[#efefef]">
                             <div class="px-3 py-2.5">
                                 <label class="flex items-center gap-2 cursor-pointer">
                                     <input type="checkbox" name="same_billing_address" value="1" x-model="sameBilling"
-                                           class="rounded border-[#E3E6E6] text-[#205258] focus:ring-[#205258] w-3.5 h-3.5">
-                                    <span class="text-xs text-[#0F1111] font-medium">Billing same as shipping</span>
+                                           class="rounded border-[#efefef] text-[#B76E79] focus:ring-[#B76E79] w-3.5 h-3.5">
+                                    <span class="text-xs text-[#222222] font-medium">Billing same as shipping</span>
                                 </label>
 
-                                <div x-show="!sameBilling" x-collapse class="mt-2 pt-2 border-t border-[#E3E6E6]">
+                                <div x-show="!sameBilling" x-collapse class="mt-2 pt-2 border-t border-[#efefef]">
                                     @if($addresses->count())
                                         <div class="space-y-1.5">
                                             @foreach($addresses as $address)
-                                                <label class="flex items-start gap-2 p-2 border border-[#E3E6E6] rounded cursor-pointer hover:border-[#007185] transition-colors">
+                                                <label class="flex items-start gap-2 p-2 border border-[#efefef] rounded cursor-pointer hover:border-[#B76E79] transition-colors">
                                                     <input type="radio" name="billing_address_id" value="{{ $address->id }}"
-                                                           class="mt-0.5 text-[#205258] focus:ring-[#205258]">
+                                                           class="mt-0.5 text-[#B76E79] focus:ring-[#B76E79]">
                                                     <div class="flex-1 min-w-0">
-                                                        <span class="text-[11px] font-semibold text-[#0F1111]">{{ $address->name }}</span>
-                                                        <p class="text-[10px] text-[#565959]">{{ $address->address_line_1 }}, {{ $address->city }}, {{ $address->state }}</p>
+                                                        <span class="text-[11px] font-semibold text-[#222222]">{{ $address->name }}</span>
+                                                        <p class="text-[10px] text-[#555555]">{{ $address->address_line_1 }}, {{ $address->city }}, {{ $address->state }}</p>
                                                     </div>
                                                 </label>
                                             @endforeach
@@ -379,25 +379,25 @@
                         @endif
 
                         {{-- ── Section 3: Payment Method (Razorpay + COD only) ── --}}
-                        <div class="bg-white rounded border border-[#E3E6E6]">
-                            <div class="flex items-center gap-2 px-3 py-2.5 border-b border-[#E3E6E6] bg-[#F7F8FA]">
-                                <div class="w-5 h-5 rounded-full bg-[#205258] text-white text-[10px] font-bold flex items-center justify-center">{{ $isGuest ? '2' : '2' }}</div>
-                                <h2 class="text-xs font-bold text-[#0F1111] uppercase tracking-wide">Payment</h2>
+                        <div class="bg-white rounded border border-[#efefef]">
+                            <div class="flex items-center gap-2 px-3 py-2.5 border-b border-[#efefef] bg-[#f7f7f7]">
+                                <div class="w-5 h-5 rounded-full bg-[#B76E79] text-white text-[10px] font-bold flex items-center justify-center">{{ $isGuest ? '2' : '2' }}</div>
+                                <h2 class="text-xs font-bold text-[#222222] uppercase tracking-wide">Payment</h2>
                             </div>
                             <div class="p-3 space-y-2">
                                 {{-- Razorpay --}}
                                 @if(($paymentSettings['razorpay_enabled'] ?? '1') === '1')
                                 <div @click="paymentMethod = 'razorpay'"
-                                     :class="paymentMethod === 'razorpay' ? 'border-[#205258] bg-[#205258]/5 ring-1 ring-[#205258]/20' : 'border-[#E3E6E6] hover:border-[#007185]'"
+                                     :class="paymentMethod === 'razorpay' ? 'border-[#B76E79] bg-[#B76E79]/5 ring-1 ring-[#B76E79]/20' : 'border-[#efefef] hover:border-[#B76E79]'"
                                      class="border rounded cursor-pointer transition-all">
                                     <div class="flex items-center gap-2.5 p-2.5">
                                         <input type="radio" name="payment_method" value="razorpay" x-model="paymentMethod"
-                                               class="text-[#205258] focus:ring-[#205258]">
+                                               class="text-[#B76E79] focus:ring-[#B76E79]">
                                         <div class="flex items-center gap-2 flex-1">
                                             {{-- Razorpay Logo --}}
                                             <img src="{{ asset('images/razorpay.png') }}" alt="Razorpay" class="h-5 w-auto shrink-0">
                                             <div>
-                                                <p class="text-[10px] text-[#565959]">Cards, UPI, Net Banking & more</p>
+                                                <p class="text-[10px] text-[#555555]">Cards, UPI, Net Banking & more</p>
                                             </div>
                                         </div>
                                     </div>
@@ -407,29 +407,29 @@
                                 {{-- Partial Pay (₹100 advance + rest COD) - only for orders >= ₹199 --}}
                                 @if(($paymentSettings['cod_enabled'] ?? '1') === '1' && $cart->subtotal >= 199)
                                 <div @click="paymentMethod = 'cod'"
-                                     :class="paymentMethod === 'cod' ? 'border-[#205258] bg-[#205258]/5 ring-1 ring-[#205258]/20' : 'border-[#E3E6E6] hover:border-[#007185]'"
+                                     :class="paymentMethod === 'cod' ? 'border-[#B76E79] bg-[#B76E79]/5 ring-1 ring-[#B76E79]/20' : 'border-[#efefef] hover:border-[#B76E79]'"
                                      class="border rounded cursor-pointer transition-all">
                                     <div class="flex items-center gap-2.5 p-2.5">
                                         <input type="radio" name="payment_method" value="cod" x-model="paymentMethod"
-                                               class="text-[#205258] focus:ring-[#205258]">
+                                               class="text-[#B76E79] focus:ring-[#B76E79]">
                                         <div class="flex items-center gap-2 flex-1">
                                             <div class="w-7 h-7 rounded flex items-center justify-center shrink-0"
-                                                 :class="paymentMethod === 'cod' ? 'bg-[#F8931D]/15 text-[#F8931D]' : 'bg-[#F7F8FA] text-[#565959]'">
+                                                 :class="paymentMethod === 'cod' ? 'bg-[#B76E79]/15 text-[#B76E79]' : 'bg-[#f7f7f7] text-[#555555]'">
                                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 003 15h-.75M15 10.5a3 3 0 11-6 0 3 3 0 016 0zm3 0h.008v.008H18V10.5zm-12 0h.008v.008H6V10.5z"/>
                                                 </svg>
                                             </div>
                                             <div>
-                                                <span class="text-xs font-medium text-[#0F1111]">Partial Pay</span>
-                                                <p class="text-[10px] text-[#565959]">Pay {{ currency_symbol() }}{{ \App\Models\Setting::get('cod_advance_amount', 100) }} now, rest on delivery</p>
+                                                <span class="text-xs font-medium text-[#222222]">Partial Pay</span>
+                                                <p class="text-[10px] text-[#555555]">Pay {{ currency_symbol() }}{{ \App\Models\Setting::get('cod_advance_amount', 100) }} now, rest on delivery</p>
                                             </div>
                                         </div>
                                     </div>
                                     <div x-show="paymentMethod === 'cod'" x-collapse>
                                         <div class="px-2.5 pb-2.5 pt-0">
-                                            <div class="flex items-center gap-1.5 p-2 bg-[#205258]/5 border border-[#205258]/15 rounded text-[10px] text-[#0F1111]">
-                                                <svg class="w-3.5 h-3.5 text-[#205258] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-                                                <span>Pay <strong class="text-[#205258]">@price(\App\Models\Setting::get('cod_advance_amount', 100))</strong> advance via Razorpay to confirm. <strong>@price($cart->total - \App\Models\Setting::get('cod_advance_amount', 100) > 0 ? $cart->total - \App\Models\Setting::get('cod_advance_amount', 100) : 0)</strong> on delivery.</span>
+                                            <div class="flex items-center gap-1.5 p-2 bg-[#B76E79]/5 border border-[#B76E79]/15 rounded text-[10px] text-[#222222]">
+                                                <svg class="w-3.5 h-3.5 text-[#B76E79] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                                                <span>Pay <strong class="text-[#B76E79]">@price(\App\Models\Setting::get('cod_advance_amount', 100))</strong> advance via Razorpay to confirm. <strong>@price($cart->total - \App\Models\Setting::get('cod_advance_amount', 100) > 0 ? $cart->total - \App\Models\Setting::get('cod_advance_amount', 100) : 0)</strong> on delivery.</span>
                                             </div>
                                         </div>
                                     </div>
@@ -453,10 +453,10 @@
                         @endif
 
                         {{-- Order Notes (compact) --}}
-                        <div class="bg-white rounded border border-[#E3E6E6]">
+                        <div class="bg-white rounded border border-[#efefef]">
                             <div class="p-3">
-                                <label class="block text-[10px] font-semibold text-[#565959] mb-1">Order Notes (optional)</label>
-                                <textarea name="notes" rows="2" class="w-full text-xs border border-[#E3E6E6] rounded px-2.5 py-2 focus:border-[#007185] focus:outline-none resize-none"
+                                <label class="block text-[10px] font-semibold text-[#555555] mb-1">Order Notes (optional)</label>
+                                <textarea name="notes" rows="2" class="w-full text-xs border border-[#efefef] rounded px-2.5 py-2 focus:border-[#B76E79] focus:outline-none resize-none"
                                           placeholder="Special delivery instructions...">{{ old('notes') }}</textarea>
                             </div>
                         </div>
@@ -471,37 +471,37 @@
                             $shippingRemaining = max(0, $freeShipThreshold - $cartSubtotal);
                         @endphp
                         @if($shippingRemaining > 0)
-                            <div style="background:#FFF3E0;border:1px solid #FFB74D;border-radius:6px;padding:10px 14px;margin-bottom:12px;">
-                                <p style="font-size:12px;color:#E65100;font-weight:600;margin:0 0 6px;">Add @price($shippingRemaining) more for FREE shipping!</p>
-                                <div style="background:#FFE0B2;border-radius:4px;height:6px;overflow:hidden;">
-                                    <div style="background:#F8931D;height:100%;width:{{ min(100, ($cartSubtotal / $freeShipThreshold) * 100) }}%;border-radius:4px;"></div>
+                            <div class="bg-[#B76E79]/10 border border-[#B76E79]/20 rounded-md px-3.5 py-2.5 mb-3">
+                                <p class="text-xs text-[#B76E79] font-semibold mb-1.5">Add @price($shippingRemaining) more for FREE shipping!</p>
+                                <div class="bg-[#B76E79]/15 rounded h-1.5 overflow-hidden">
+                                    <div class="bg-[#B76E79] h-full rounded" style="width:{{ min(100, ($cartSubtotal / $freeShipThreshold) * 100) }}%"></div>
                                 </div>
                             </div>
                         @else
-                            <div style="background:#E8F5E9;border-radius:6px;padding:8px 14px;margin-bottom:12px;">
-                                <p style="font-size:12px;color:#2E7D32;font-weight:600;margin:0;">&#10003; You qualify for FREE shipping!</p>
+                            <div class="bg-[#B76E79]/5 rounded-md px-3.5 py-2 mb-3">
+                                <p class="text-xs text-[#B76E79] font-semibold">&#10003; You qualify for FREE shipping!</p>
                             </div>
                         @endif
 
-                        <div class="bg-white rounded border border-[#E3E6E6] lg:sticky lg:top-20">
+                        <div class="bg-white rounded border border-[#efefef] lg:sticky lg:top-20">
 
                             {{-- Coupons Carousel (horizontal scroll) --}}
                             @if($availableCoupons->count())
-                            <div class="p-3 border-b border-[#E3E6E6]" x-data="{ applying: false }">
+                            <div class="p-3 border-b border-[#efefef]" x-data="{ applying: false }">
                                 <div class="flex items-center gap-1.5 mb-2">
-                                    <svg class="w-3.5 h-3.5 text-[#FFA41C]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/></svg>
-                                    <span class="text-[10px] font-bold text-[#0F1111] uppercase tracking-wider">Coupons</span>
+                                    <svg class="w-3.5 h-3.5 text-[#c29958]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/></svg>
+                                    <span class="text-[10px] font-bold text-[#222222] uppercase tracking-wider">Coupons</span>
                                 </div>
                                 <div class="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1 scrollbar-thin">
                                     @foreach($availableCoupons as $coupon)
-                                        <div class="flex-shrink-0 w-44 border border-dashed {{ $cart->coupon_id === $coupon->id ? 'border-[#205258] bg-[#205258]/5' : 'border-[#E3E6E6]' }} rounded p-2">
+                                        <div class="flex-shrink-0 w-44 border border-dashed {{ $cart->coupon_id === $coupon->id ? 'border-[#B76E79] bg-[#B76E79]/5' : 'border-[#efefef]' }} rounded p-2">
                                             <div class="flex items-center justify-between mb-1">
-                                                <span class="text-[10px] font-bold text-[#205258] bg-[#205258]/10 px-1.5 py-0.5 rounded font-mono">{{ $coupon->code }}</span>
+                                                <span class="text-[10px] font-bold text-[#B76E79] bg-[#B76E79]/10 px-1.5 py-0.5 rounded font-mono">{{ $coupon->code }}</span>
                                                 @if($cart->coupon_id === $coupon->id)
-                                                    <span class="text-[9px] font-medium text-green-700 bg-green-50 px-1 py-px rounded">Applied</span>
+                                                    <span class="text-[9px] font-medium text-[#B76E79] bg-[#B76E79]/5 px-1 py-px rounded">Applied</span>
                                                 @endif
                                             </div>
-                                            <p class="text-[10px] text-[#565959] leading-snug mb-1.5 line-clamp-2">{{ $coupon->name }}</p>
+                                            <p class="text-[10px] text-[#555555] leading-snug mb-1.5 line-clamp-2">{{ $coupon->name }}</p>
                                             @if($cart->coupon_id !== $coupon->id)
                                                 <button type="button" :disabled="applying"
                                                         @click="
@@ -515,7 +515,7 @@
                                                                 else { return r.json().then(d => { alert(d.error || 'Could not apply coupon'); applying = false; }); }
                                                             }).catch(() => { alert('Something went wrong'); applying = false; })
                                                         "
-                                                        class="w-full text-[10px] font-semibold text-[#007185] hover:text-white border border-[#007185] hover:bg-[#007185] rounded py-1 transition-colors">
+                                                        class="w-full text-[10px] font-semibold text-[#B76E79] hover:text-white border border-[#B76E79] hover:bg-[#B76E79] rounded py-1 transition-colors">
                                                     Apply
                                                 </button>
                                             @else
@@ -536,14 +536,14 @@
 
                             {{-- Applied Coupon Badge --}}
                             @if($cart->coupon)
-                                <div class="px-3 py-2 border-b border-[#E3E6E6] bg-green-50/50">
+                                <div class="px-3 py-2 border-b border-[#efefef] bg-[#B76E79]/5">
                                     <div class="flex items-center justify-between">
                                         <div class="flex items-center gap-1.5">
-                                            <span class="text-[10px] font-bold text-green-700 bg-green-100 px-1.5 py-0.5 rounded font-mono">{{ $cart->coupon->code }}</span>
+                                            <span class="text-[10px] font-bold text-[#B76E79] bg-[#B76E79]/10 px-1.5 py-0.5 rounded font-mono">{{ $cart->coupon->code }}</span>
                                             @if($cart->coupon->auto_apply)
-                                                <span class="text-[9px] text-[#205258] bg-[#205258]/10 px-1 py-px rounded font-medium">Auto</span>
+                                                <span class="text-[9px] text-[#B76E79] bg-[#B76E79]/10 px-1 py-px rounded font-medium">Auto</span>
                                             @endif
-                                            <span class="text-[10px] text-green-600 font-medium">
+                                            <span class="text-[10px] text-[#c29958] font-medium">
                                                 @if($cart->coupon->type === 'percentage')
                                                     {{ intval($cart->coupon->value) }}% off
                                                 @elseif($cart->coupon->type === 'fixed')
@@ -553,31 +553,31 @@
                                                 @endif
                                             </span>
                                         </div>
-                                        <span class="text-xs font-bold text-green-700">-@price($cart->discount)</span>
+                                        <span class="text-xs font-bold text-[#c29958]">-@price($cart->discount)</span>
                                     </div>
                                 </div>
                             @endif
 
                             {{-- Order Items --}}
-                            <div class="p-3 border-b border-[#E3E6E6]">
-                                <h3 class="text-[10px] font-bold text-[#565959] uppercase tracking-wider mb-2">
+                            <div class="p-3 border-b border-[#efefef]">
+                                <h3 class="text-[10px] font-bold text-[#555555] uppercase tracking-wider mb-2">
                                     {{ $cart->items->sum('quantity') }} {{ $cart->items->sum('quantity') === 1 ? 'Item' : 'Items' }}
                                 </h3>
                                 <div class="space-y-2 max-h-40 overflow-y-auto">
                                     @foreach($cart->items as $item)
                                         <div class="flex gap-2">
                                             <img src="{{ $item->product->primary_image_url }}" alt="{{ $item->product->name }}"
-                                                 class="w-10 h-10 rounded border border-[#E3E6E6] bg-white object-contain shrink-0">
+                                                 class="w-10 h-10 rounded border border-[#efefef] bg-white object-contain shrink-0">
                                             <div class="flex-1 min-w-0">
-                                                <p class="text-[11px] font-medium text-[#0F1111] line-clamp-1">{{ $item->product->name }}</p>
+                                                <p class="text-[11px] font-medium text-[#222222] line-clamp-1">{{ $item->product->name }}</p>
                                                 <div class="flex items-center justify-between">
-                                                    <span class="text-[10px] text-[#565959] flex items-center gap-1">
-                                                        <button type="button" class="w-5 h-5 rounded bg-gray-100 hover:bg-gray-200 text-xs flex items-center justify-center border" onclick="fetch('/cart/{{ $item->id }}',{method:'PUT',headers:{'Content-Type':'application/json','X-XSRF-TOKEN':decodeURIComponent(document.cookie.match(/XSRF-TOKEN=([^;]+)/)?.[1]||''),'Accept':'application/json'},body:JSON.stringify({quantity:{{ max(1,$item->quantity-1) }}})}).then(()=>location.reload())">-</button>
-                                                        <span class="font-semibold text-[#0F1111] px-1">{{ $item->quantity }}</span>
-                                                        <button type="button" class="w-5 h-5 rounded bg-gray-100 hover:bg-gray-200 text-xs flex items-center justify-center border" onclick="fetch('/cart/{{ $item->id }}',{method:'PUT',headers:{'Content-Type':'application/json','X-XSRF-TOKEN':decodeURIComponent(document.cookie.match(/XSRF-TOKEN=([^;]+)/)?.[1]||''),'Accept':'application/json'},body:JSON.stringify({quantity:{{ $item->quantity+1 }}})}).then(()=>location.reload())">+</button>
+                                                    <span class="text-[10px] text-[#555555] flex items-center gap-1">
+                                                        <button type="button" class="w-5 h-5 rounded bg-neutral-100 hover:bg-neutral-200 text-xs flex items-center justify-center border" onclick="fetch('/cart/{{ $item->id }}',{method:'PUT',headers:{'Content-Type':'application/json','X-XSRF-TOKEN':decodeURIComponent(document.cookie.match(/XSRF-TOKEN=([^;]+)/)?.[1]||''),'Accept':'application/json'},body:JSON.stringify({quantity:{{ max(1,$item->quantity-1) }}})}).then(()=>location.reload())">-</button>
+                                                        <span class="font-semibold text-[#222222] px-1">{{ $item->quantity }}</span>
+                                                        <button type="button" class="w-5 h-5 rounded bg-neutral-100 hover:bg-neutral-200 text-xs flex items-center justify-center border" onclick="fetch('/cart/{{ $item->id }}',{method:'PUT',headers:{'Content-Type':'application/json','X-XSRF-TOKEN':decodeURIComponent(document.cookie.match(/XSRF-TOKEN=([^;]+)/)?.[1]||''),'Accept':'application/json'},body:JSON.stringify({quantity:{{ $item->quantity+1 }}})}).then(()=>location.reload())">+</button>
                                                         <button type="button" class="ml-1 text-[9px] text-[#CC0C39] hover:underline" onclick="if(confirm('Remove this item?'))fetch('/cart/{{ $item->id }}',{method:'DELETE',headers:{'X-XSRF-TOKEN':decodeURIComponent(document.cookie.match(/XSRF-TOKEN=([^;]+)/)?.[1]||''),'Accept':'application/json'}}).then(()=>location.reload())">Remove</button>
                                                     </span>
-                                                    <span class="text-[11px] font-semibold text-[#0F1111]">@price($item->price * $item->quantity)</span>
+                                                    <span class="text-[11px] font-semibold text-[#222222]">@price($item->price * $item->quantity)</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -589,14 +589,14 @@
                             <div class="p-3">
                                 <div class="space-y-1.5">
                                     <div class="flex items-center justify-between text-[11px]">
-                                        <span class="text-[#565959]">Subtotal</span>
-                                        <span class="text-[#0F1111] font-medium">@price($cart->subtotal)</span>
+                                        <span class="text-[#555555]">Subtotal</span>
+                                        <span class="text-[#222222] font-medium">@price($cart->subtotal)</span>
                                     </div>
 
                                     @if($cart->discount > 0)
                                         <div class="flex items-center justify-between text-[11px]">
-                                            <span class="text-[#565959]">Coupon Discount</span>
-                                            <span class="text-green-600 font-medium">-@price($cart->discount)</span>
+                                            <span class="text-[#555555]">Coupon Discount</span>
+                                            <span class="text-[#c29958] font-medium">-@price($cart->discount)</span>
                                         </div>
                                     @endif
 
@@ -613,29 +613,29 @@
                                         $shipFee = $afterCoupon >= $freeShipThreshold ? 0 : 50;
                                     @endphp
                                     <div class="flex items-center justify-between text-[11px]">
-                                        <span class="text-[#565959]">Shipping</span>
+                                        <span class="text-[#555555]">Shipping</span>
                                         @if($shipFee > 0)
-                                            <span class="text-[#0F1111] font-medium">@price($shipFee)</span>
+                                            <span class="text-[#222222] font-medium">@price($shipFee)</span>
                                         @else
-                                            <span class="text-green-600 font-semibold">FREE</span>
+                                            <span class="text-[#B76E79] font-semibold">FREE</span>
                                         @endif
                                     </div>
                                     @if($shipFee > 0)
-                                        <p class="text-[9px] text-[#565959]">Free shipping on orders above @price($freeShipThreshold)</p>
+                                        <p class="text-[9px] text-[#555555]">Free shipping on orders above @price($freeShipThreshold)</p>
                                     @endif
 
                                     {{-- Loyalty Points Redemption --}}
                                     @if(!empty($loyaltyPoints) && $loyaltyPoints > 0)
-                                        <div class="flex items-center justify-between text-[11px] pt-1 border-t border-dashed border-[#E3E6E6]"
+                                        <div class="flex items-center justify-between text-[11px] pt-1 border-t border-dashed border-[#efefef]"
                                              x-data="{ usePoints: false, pointsToUse: {{ min($loyaltyPoints, (int) ceil(($cart->subtotal - $cart->discount) / 0.25)) }} }">
                                             <div class="flex items-center gap-1.5">
                                                 <input type="checkbox" name="use_loyalty_points" value="1" x-model="usePoints"
-                                                       class="w-3 h-3 rounded border-gray-300 text-amber-600 focus:ring-amber-500">
-                                                <span class="text-amber-700 font-medium">Use {{ number_format($loyaltyPoints) }} points</span>
-                                                <span class="text-[9px] text-[#565959]">(worth @price($loyaltyValue))</span>
+                                                       class="w-3 h-3 rounded border-neutral-300 text-[#c29958] focus:ring-[#c29958]">
+                                                <span class="text-[#c29958] font-medium">Use {{ number_format($loyaltyPoints) }} points</span>
+                                                <span class="text-[9px] text-[#555555]">(worth @price($loyaltyValue))</span>
                                             </div>
                                             <template x-if="usePoints">
-                                                <span class="text-amber-600 font-semibold">-@price($loyaltyValue)</span>
+                                                <span class="text-[#c29958] font-semibold">-@price($loyaltyValue)</span>
                                             </template>
                                             <input type="hidden" name="loyalty_points_used" :value="usePoints ? {{ $loyaltyPoints }} : 0">
                                         </div>
@@ -643,13 +643,13 @@
 
                                     @if($cart->tax > 0)
                                         <div class="flex items-center justify-between text-[11px]">
-                                            <span class="text-[#565959]">GST (incl.)</span>
-                                            <span class="text-[#067D62] font-medium text-[10px]">incl. @price($cart->tax)</span>
+                                            <span class="text-[#555555]">GST (incl.)</span>
+                                            <span class="text-[#555555] font-medium text-[10px]">incl. @price($cart->tax)</span>
                                         </div>
                                     @endif
                                 </div>
 
-                                <div class="border-t border-dashed border-[#E3E6E6] my-2"></div>
+                                <div class="border-t border-dashed border-[#efefef] my-2"></div>
 
                                 @php
                                     $displayTotal = $cart->total + $shipFee;
@@ -664,13 +664,13 @@
                                 @endphp
 
                                 <div class="flex items-center justify-between">
-                                    <span class="text-sm font-bold text-[#0F1111]">Total</span>
+                                    <span class="text-sm font-bold text-[#222222]">Total</span>
                                     <span class="text-sm font-bold text-[#CC0C39]">@price($displayTotal)</span>
                                 </div>
-                                <p class="text-[9px] text-[#565959] text-center mt-0.5">Inclusive of all taxes</p>
+                                <p class="text-[9px] text-[#555555] text-center mt-0.5">Inclusive of all taxes</p>
 
                                 @if($totalSavings > 0)
-                                    <p class="text-[10px] font-medium text-green-700 text-center mt-1.5 bg-green-50 rounded py-1">
+                                    <p class="text-[10px] font-medium text-[#c29958] text-center mt-1.5 bg-[#c29958]/10 rounded py-1">
                                         You save @price($totalSavings) on this order
                                     </p>
                                 @endif
@@ -685,7 +685,7 @@
                             {{-- Place Order Button --}}
                             <div class="p-3 pt-0">
                                 <button type="submit" :disabled="processing"
-                                        class="block w-full py-2.5 bg-[#F8931D] hover:bg-[#E8850F] text-white text-xs font-bold text-center rounded transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed uppercase tracking-wide">
+                                        class="block w-full py-2.5 bg-[#B76E79] hover:bg-[#956060] text-white text-xs font-bold text-center rounded transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed uppercase tracking-wide">
                                     <span x-show="!processing">
                                         <template x-if="paymentMethod === 'razorpay'">
                                             <span>Pay Now &middot; @price($displayTotal)</span>
@@ -707,16 +707,16 @@
 
                             {{-- Trust Badges --}}
                             <div class="px-3 pb-3">
-                                <div class="flex items-center justify-center gap-3 pt-2 border-t border-[#E3E6E6]">
-                                    <div class="flex items-center gap-1 text-[#565959]">
+                                <div class="flex items-center justify-center gap-3 pt-2 border-t border-[#efefef]">
+                                    <div class="flex items-center gap-1 text-[#555555]">
                                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
                                         <span class="text-[9px] font-medium">Secure</span>
                                     </div>
-                                    <div class="flex items-center gap-1 text-[#565959]">
+                                    <div class="flex items-center gap-1 text-[#555555]">
                                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
                                         <span class="text-[9px] font-medium">Genuine</span>
                                     </div>
-                                    <div class="flex items-center gap-1 text-[#565959]">
+                                    <div class="flex items-center gap-1 text-[#555555]">
                                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
                                         <span class="text-[9px] font-medium">Easy Returns</span>
                                     </div>
@@ -725,10 +725,10 @@
 
                             {{-- Terms --}}
                             <div class="px-3 pb-2.5">
-                                <p class="text-[9px] text-[#565959] text-center leading-relaxed">
+                                <p class="text-[9px] text-[#555555] text-center leading-relaxed">
                                     By placing your order, you agree to our
-                                    <a href="{{ route('terms') }}" class="text-[#007185] hover:text-[#C7511F]">Terms</a> &
-                                    <a href="{{ route('privacy') }}" class="text-[#007185] hover:text-[#C7511F]">Privacy Policy</a>.
+                                    <a href="{{ route('terms') }}" class="text-[#B76E79] hover:text-[#c29958]">Terms</a> &
+                                    <a href="{{ route('privacy') }}" class="text-[#B76E79] hover:text-[#c29958]">Privacy Policy</a>.
                                 </p>
                             </div>
                         </div>
@@ -879,7 +879,7 @@
                             order_id: orderData.order_id,
                             prefill: orderData.prefill,
                             theme: {
-                                color: '#205258',
+                                color: '#B76E79',
                                 backdrop_color: 'rgba(0, 0, 0, 0.5)',
                             },
                             modal: {

@@ -378,6 +378,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
                 Route::put('/testimonials/{testimonial}/toggle', [App\Http\Controllers\Admin\HomepageController::class, 'toggleTestimonial'])->name('testimonials.toggle');
                 Route::delete('/testimonials/{testimonial}', [App\Http\Controllers\Admin\HomepageController::class, 'deleteTestimonial'])->name('testimonials.destroy');
 
+                // About Page Settings
+                Route::get('/about-settings', [App\Http\Controllers\Admin\HomepageController::class, 'aboutSettings'])->name('about-settings');
+                Route::put('/about-settings', [App\Http\Controllers\Admin\HomepageController::class, 'updateAboutSettings'])->name('about-settings.update');
+
                 // Navigation
                 Route::get('/navigation', [App\Http\Controllers\Admin\HomepageController::class, 'navigation'])->name('navigation');
                 Route::post('/navigation', [App\Http\Controllers\Admin\HomepageController::class, 'storeNavItem'])->name('navigation.store');

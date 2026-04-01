@@ -52,7 +52,7 @@ class SendAbandonedCartReminders extends Command
                         'cartTotal' => $checkout->cart_total,
                     ], function ($m) use ($checkout) {
                         $m->to($checkout->email)
-                          ->from('jikra@jikra.in', 'Jikra')
+                          ->from('info@musco.com', 'MusCo')
                           ->subject('You left something behind! Here is 5% off just for you');
                     });
                 }
@@ -70,7 +70,7 @@ class SendAbandonedCartReminders extends Command
                             'to' => $cleanPhone,
                             'type' => 'text',
                             'text' => [
-                                'body' => "Hi {$customerName}! You left items in your Jikra cart.\n\nUse code *{$discountCode}* for 5% OFF (valid for 1 hour only!)\n\nComplete your order: {$cartUrl}\n\nHurry, your cart is waiting!"
+                                'body' => "Hi {$customerName}! You left items in your MusCo cart.\n\nUse code *{$discountCode}* for 5% OFF (valid for 1 hour only!)\n\nComplete your order: {$cartUrl}\n\nHurry, your cart is waiting!"
                             ],
                         ]);
                     }

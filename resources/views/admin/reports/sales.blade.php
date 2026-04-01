@@ -46,7 +46,7 @@
                     <div>
                         <p class="text-2xl font-semibold text-neutral-900 leading-none">@price($stats['total_revenue'])</p>
                         @if($stats['revenue_change'] != 0)
-                            <p class="text-xs mt-1 {{ $stats['revenue_change'] > 0 ? 'text-green-600' : 'text-red-600' }}">
+                            <p class="text-xs mt-1 {{ $stats['revenue_change'] > 0 ? 'text-[#B76E79]' : 'text-[#CC0C39]' }}">
                                 {{ $stats['revenue_change'] > 0 ? '+' : '' }}{{ number_format($stats['revenue_change'], 1) }}% vs prev
                             </p>
                         @endif

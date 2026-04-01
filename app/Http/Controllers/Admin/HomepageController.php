@@ -28,7 +28,7 @@ class HomepageController extends Controller
     {
         $settings = [
             'site_logo' => Setting::get('site_logo', ''),
-            'site_name' => Setting::get('site_name', 'Jikra'),
+            'site_name' => Setting::get('site_name', 'MusCo'),
             'site_tagline' => Setting::get('site_tagline', 'Unlock Your Natural Beauty'),
             'site_description' => Setting::get('site_description', ''),
             'footer_about' => Setting::get('footer_about', ''),
@@ -96,6 +96,86 @@ class HomepageController extends Controller
         Cache::flush();
 
         return back()->with('success', 'Site settings updated successfully.');
+    }
+
+    // About Page Settings
+    public function aboutSettings()
+    {
+        $settings = [
+            'about_image' => Setting::get('about_image', ''),
+            'about_heading' => Setting::get('about_heading', ''),
+            'about_paragraph_1' => Setting::get('about_paragraph_1', ''),
+            'about_paragraph_2' => Setting::get('about_paragraph_2', ''),
+            'about_usp_1_title' => Setting::get('about_usp_1_title', ''),
+            'about_usp_1_desc' => Setting::get('about_usp_1_desc', ''),
+            'about_usp_2_title' => Setting::get('about_usp_2_title', ''),
+            'about_usp_2_desc' => Setting::get('about_usp_2_desc', ''),
+            'about_usp_3_title' => Setting::get('about_usp_3_title', ''),
+            'about_usp_3_desc' => Setting::get('about_usp_3_desc', ''),
+            'about_card_1_title' => Setting::get('about_card_1_title', ''),
+            'about_card_1_desc' => Setting::get('about_card_1_desc', ''),
+            'about_card_1_image' => Setting::get('about_card_1_image', ''),
+            'about_card_2_title' => Setting::get('about_card_2_title', ''),
+            'about_card_2_desc' => Setting::get('about_card_2_desc', ''),
+            'about_card_2_image' => Setting::get('about_card_2_image', ''),
+            'about_card_3_title' => Setting::get('about_card_3_title', ''),
+            'about_card_3_desc' => Setting::get('about_card_3_desc', ''),
+            'about_card_3_image' => Setting::get('about_card_3_image', ''),
+            'about_why_subtitle' => Setting::get('about_why_subtitle', ''),
+            'about_faq_1_title' => Setting::get('about_faq_1_title', ''),
+            'about_faq_1_content' => Setting::get('about_faq_1_content', ''),
+            'about_faq_2_title' => Setting::get('about_faq_2_title', ''),
+            'about_faq_2_content' => Setting::get('about_faq_2_content', ''),
+            'about_faq_3_title' => Setting::get('about_faq_3_title', ''),
+            'about_faq_3_content' => Setting::get('about_faq_3_content', ''),
+            'about_faq_4_title' => Setting::get('about_faq_4_title', ''),
+            'about_faq_4_content' => Setting::get('about_faq_4_content', ''),
+        ];
+
+        return view('admin.homepage.about-settings', compact('settings'));
+    }
+
+    public function updateAboutSettings(Request $request)
+    {
+        $fields = [
+            'about_heading', 'about_paragraph_1', 'about_paragraph_2',
+            'about_usp_1_title', 'about_usp_1_desc',
+            'about_usp_2_title', 'about_usp_2_desc',
+            'about_usp_3_title', 'about_usp_3_desc',
+            'about_card_1_title', 'about_card_1_desc',
+            'about_card_2_title', 'about_card_2_desc',
+            'about_card_3_title', 'about_card_3_desc',
+            'about_why_subtitle',
+            'about_faq_1_title', 'about_faq_1_content',
+            'about_faq_2_title', 'about_faq_2_content',
+            'about_faq_3_title', 'about_faq_3_content',
+            'about_faq_4_title', 'about_faq_4_content',
+        ];
+
+        foreach ($fields as $field) {
+            if ($request->has($field)) {
+                Setting::set($field, $request->input($field), 'string', 'homepage');
+            }
+        }
+
+        // File uploads
+        $imageFields = [
+            'about_image' => 'about',
+            'about_card_1_image' => 'about',
+            'about_card_2_image' => 'about',
+            'about_card_3_image' => 'about',
+        ];
+
+        foreach ($imageFields as $field => $folder) {
+            if ($request->hasFile($field)) {
+                $path = $request->file($field)->store($folder, 'public');
+                Setting::set($field, $path, 'string', 'homepage');
+            }
+        }
+
+        Cache::flush();
+
+        return back()->with('success', 'About page settings updated successfully.');
     }
 
     // Hero Banners

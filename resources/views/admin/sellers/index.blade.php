@@ -105,20 +105,20 @@
                             <td class="px-4 py-3">
                                 @switch($seller->status)
                                     @case('approved')
-                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 text-xs font-medium rounded-full bg-green-50 text-green-700">
-                                            <span class="w-1.5 h-1.5 rounded-full bg-green-600"></span>
+                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 text-xs font-medium rounded-full bg-[#B76E79]/5 text-[#B76E79]">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-[#B76E79]"></span>
                                             Active
                                         </span>
                                         @break
                                     @case('pending')
-                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 text-xs font-medium rounded-full bg-yellow-50 text-yellow-700">
-                                            <span class="w-1.5 h-1.5 rounded-full bg-yellow-500"></span>
+                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 text-xs font-medium rounded-full bg-[#c29958]/10 text-[#c29958]">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-[#c29958]"></span>
                                             Pending
                                         </span>
                                         @break
                                     @case('suspended')
-                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 text-xs font-medium rounded-full bg-red-50 text-red-700">
-                                            <span class="w-1.5 h-1.5 rounded-full bg-red-600"></span>
+                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 text-xs font-medium rounded-full bg-[#CC0C39]/10 text-[#CC0C39]">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-[#CC0C39]"></span>
                                             Suspended
                                         </span>
                                         @break

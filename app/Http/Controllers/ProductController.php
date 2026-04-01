@@ -60,6 +60,23 @@ class ProductController extends Controller
             $query->whereNotNull('mrp')->whereColumn('price', '<', 'mrp');
         }
 
+        // Jewellery filters
+        if ($request->filled('metal_type')) {
+            $query->whereIn('metal_type', (array) $request->metal_type);
+        }
+        if ($request->filled('metal_purity')) {
+            $query->whereIn('metal_purity', (array) $request->metal_purity);
+        }
+        if ($request->filled('stone_type')) {
+            $query->whereIn('stone_type', (array) $request->stone_type);
+        }
+        if ($request->filled('occasion')) {
+            $query->whereIn('occasion', (array) $request->occasion);
+        }
+        if ($request->filled('certification_type')) {
+            $query->whereIn('certification_type', (array) $request->certification_type);
+        }
+
         // Sorting
         $sortBy = $request->get('sort', 'newest');
         match ($sortBy) {

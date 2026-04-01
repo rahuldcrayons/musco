@@ -7,8 +7,8 @@
 
                 <!-- Failed Header -->
                 <div class="text-center mb-8">
-                    <div class="w-16 h-16 mx-auto rounded-full bg-red-100 flex items-center justify-center mb-4">
-                        <svg class="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div class="w-16 h-16 mx-auto rounded-full bg-neutral-200 flex items-center justify-center mb-4">
+                        <svg class="w-8 h-8 text-neutral-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                         </svg>
                     </div>
@@ -44,7 +44,7 @@
                 <!-- Actions -->
                 <div class="flex flex-col sm:flex-row gap-3">
                     <a href="{{ route('checkout.index') }}"
-                       class="flex-1 inline-flex items-center justify-center gap-2 py-2 px-4 bg-[#F8931D] hover:bg-[#E07E0A] text-white text-sm font-semibold rounded-xl transition-colors">
+                       class="flex-1 inline-flex items-center justify-center gap-2 py-2 px-4 bg-[#B76E79] hover:bg-[#222222] text-white text-sm font-semibold rounded-xl transition-colors">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
                         </svg>
@@ -62,7 +62,7 @@
                 <!-- Help Section -->
                 <div class="mt-8 text-center">
                     <p class="text-xs text-neutral-600">
-                        Need help? <a href="{{ route('contact') }}" class="text-[#205258] hover:underline">Contact our support team</a>
+                        Need help? <a href="{{ route('contact') }}" class="text-[#B76E79] hover:underline">Contact our support team</a>
                     </p>
                 </div>
 

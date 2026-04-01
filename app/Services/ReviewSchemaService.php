@@ -11,7 +11,7 @@ class ReviewSchemaService
     {
         $description = strip_tags($product->short_description ?? $product->description ?? '');
         if (empty($description)) {
-            $description = $product->name . ' - Available at ' . config('app.name', 'Jikra');
+            $description = $product->name . ' - Available at ' . config('app.name', 'MusCo');
         }
 
         // Truncate description to avoid Google warnings (max ~5000 chars)
@@ -44,7 +44,7 @@ class ReviewSchemaService
         } else {
             $schema['brand'] = [
                 '@type' => 'Brand',
-                'name' => config('app.name', 'Jikra'),
+                'name' => config('app.name', 'MusCo'),
             ];
         }
 
@@ -66,7 +66,7 @@ class ReviewSchemaService
                 : 'https://schema.org/OutOfStock',
             'seller' => [
                 '@type' => 'Organization',
-                'name' => config('app.name', 'Jikra'),
+                'name' => config('app.name', 'MusCo'),
             ],
         ];
 

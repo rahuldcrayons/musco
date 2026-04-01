@@ -5,8 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\BlogPost;
 use App\Models\Brand;
 use App\Models\Enquiry;
+use App\Models\Faq;
+use App\Models\JobPosition;
 use App\Models\Notification;
 use App\Models\Page;
+use App\Models\Testimonial;
 use App\Models\User;
 use App\Services\AnalyticsService;
 use Illuminate\Http\RedirectResponse;
@@ -23,7 +26,10 @@ class PageController extends Controller
             ->limit(12)
             ->get();
 
-        return view('pages.about', compact('brands'));
+        $page = Page::where('slug', 'about-us')->first();
+        $testimonials = Testimonial::active()->ordered()->get();
+
+        return view('pages.about', compact('brands', 'page', 'testimonials'));
     }
 
     public function contact(): View
@@ -69,7 +75,9 @@ class PageController extends Controller
 
     public function faq(): View
     {
-        return view('pages.faq');
+        $faqs = Faq::active()->ordered()->get()->groupBy('category');
+
+        return view('pages.faq', compact('faqs'));
     }
 
     public function sitemap(): View
@@ -117,7 +125,10 @@ class PageController extends Controller
 
     public function careers(): View
     {
-        return view('pages.careers');
+        $page = Page::where('slug', 'careers')->first();
+        $positions = JobPosition::active()->ordered()->get();
+
+        return view('pages.careers', compact('page', 'positions'));
     }
 
     public function help(): View
@@ -127,11 +138,23 @@ class PageController extends Controller
 
     public function returns(): View
     {
+        $page = Page::where('slug', 'returns-policy')->first();
+
+        if ($page) {
+            return view('pages.legal-page', compact('page'));
+        }
+
         return view('pages.returns');
     }
 
     public function shipping(): View
     {
+        $page = Page::where('slug', 'shipping-policy')->first();
+
+        if ($page) {
+            return view('pages.legal-page', compact('page'));
+        }
+
         return view('pages.shipping');
     }
 

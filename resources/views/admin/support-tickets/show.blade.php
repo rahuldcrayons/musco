@@ -36,7 +36,7 @@
     </x-slot>
 
     @if(session('success'))
-        <div class="mb-4 p-4 bg-green-50 border border-green-200 rounded-lg text-sm text-green-700">
+        <div class="mb-4 p-4 bg-[#B76E79]/5 border border-[#B76E79]/20 rounded-lg text-sm text-[#B76E79]">
             {{ session('success') }}
         </div>
     @endif

@@ -16,7 +16,7 @@ class InstagramCallbackController extends Controller
     {
         return response()->json([
             'url' => url('/privacy-policy'),
-            'confirmation_code' => 'jikra_' . now()->timestamp,
+            'confirmation_code' => 'musco_' . now()->timestamp,
         ]);
     }
 }

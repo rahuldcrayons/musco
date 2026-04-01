@@ -15,8 +15,8 @@
         .toolbar-left strong { color: #111827; }
         .toolbar-actions { display: flex; gap: 8px; }
         .btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 18px; border: none; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; text-decoration: none; transition: all 0.15s; }
-        .btn-primary { background: #4f46e5; color: #fff; }
-        .btn-primary:hover { background: #4338ca; }
+        .btn-primary { background: #B76E79; color: #fff; }
+        .btn-primary:hover { background: #956060; }
         /* Header */
         .header { display: flex; justify-content: space-between; align-items: flex-start; padding-bottom: 28px; border-bottom: 1px solid #e5e7eb; margin-bottom: 28px; }
         .header-left { display: flex; align-items: center; gap: 20px; }
@@ -28,13 +28,13 @@
 
         /* Status badges */
         .badge { display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; border-radius: 100px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
-        .badge-success { background: #d1fae5; color: #065f46; }
-        .badge-warning { background: #fef3c7; color: #92400e; }
-        .badge-error { background: #fee2e2; color: #991b1b; }
+        .badge-success { background: rgba(183,110,121,0.1); color: #B76E79; }
+        .badge-warning { background: rgba(194,153,88,0.1); color: #c29958; }
+        .badge-error { background: rgba(204,12,57,0.1); color: #CC0C39; }
         .badge-dot { width: 6px; height: 6px; border-radius: 50%; display: inline-block; }
-        .badge-success .badge-dot { background: #059669; }
-        .badge-warning .badge-dot { background: #d97706; }
-        .badge-error .badge-dot { background: #dc2626; }
+        .badge-success .badge-dot { background: #B76E79; }
+        .badge-warning .badge-dot { background: #c29958; }
+        .badge-error .badge-dot { background: #CC0C39; }
 
         /* Addresses */
         .addresses { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 28px; }
@@ -112,7 +112,7 @@
         {{-- Header --}}
         <div class="header">
             <div class="header-left">
-                <img src="/images/jikra-logo.png" alt="Jikra" height="55" style="flex-shrink: 0;">
+                <span style="font-family:Outfit,sans-serif; color:#B76E79; font-size:32px; font-weight:700; letter-spacing:-0.02em; flex-shrink:0;">Mus<span style="color:#2b2b2b;">Co</span></span>
                 <div>
                     <div class="invoice-title">Tax Invoice</div>
                     <div class="invoice-number">{{ $order->invoice_number ?? $order->order_number }}</div>
@@ -313,7 +313,7 @@
 
         {{-- Footer --}}
         <div class="footer">
-            <div class="footer-thanks">Thank you for shopping with Jikra!</div>
+            <div class="footer-thanks">Thank you for shopping with MusCo!</div>
             <div class="footer-url">{{ config('app.url') }}</div>
         </div>
     </div>

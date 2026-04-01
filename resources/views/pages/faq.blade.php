@@ -12,80 +12,23 @@
         <meta name="twitter:title" content="FAQ - {{ config('app.name') }}">
         <meta name="twitter:description" content="Find answers about shipping, returns, sizing, orders, and more at {{ config('app.name') }}.">
 
-        <script type="application/ld+json">
-        @verbatim
-        {
-            "@context": "https://schema.org",
-            "@type": "FAQPage",
-            "mainEntity": [
-                {
-                    "@type": "Question",
-                    "name": "How do I place an order?",
-                    "acceptedAnswer": {
-                        "@type": "Answer",
-                        "text": "Simply browse our products, add items to your cart, and proceed to checkout. You'll need to create an account or sign in, enter your shipping details, and complete the payment. You'll receive an order confirmation email once your order is placed."
-                    }
-                },
-                {
-                    "@type": "Question",
-                    "name": "What payment methods do you accept?",
-                    "acceptedAnswer": {
-                        "@type": "Answer",
-                        "text": "We accept all major credit cards (Visa, MasterCard, American Express), PayPal, and bank transfers. All payments are processed securely through our payment partners."
-                    }
-                },
-                {
-                    "@type": "Question",
-                    "name": "How can I track my order?",
-                    "acceptedAnswer": {
-                        "@type": "Answer",
-                        "text": "Once your order ships, you'll receive an email with tracking information. You can also track your order by logging into your account and visiting the Orders section, or by using our order tracking page."
-                    }
-                },
-                {
-                    "@type": "Question",
-                    "name": "How long does shipping take?",
-                    "acceptedAnswer": {
-                        "@type": "Answer",
-                        "text": "Shipping times vary depending on your location and chosen shipping method. Standard shipping typically takes 5-7 business days, while express shipping takes 2-3 business days. International shipping may take 7-14 business days."
-                    }
-                },
-                {
-                    "@type": "Question",
-                    "name": "Do you ship internationally?",
-                    "acceptedAnswer": {
-                        "@type": "Answer",
-                        "text": "Yes, we ship to over 100 countries worldwide. Shipping costs and delivery times vary by destination. You can see the exact shipping costs at checkout."
-                    }
-                },
-                {
-                    "@type": "Question",
-                    "name": "What is your return policy?",
-                    "acceptedAnswer": {
-                        "@type": "Answer",
-                        "text": "We offer a 7-day return policy for most items. Products must be unused and in their original packaging."
-                    }
-                },
-                {
-                    "@type": "Question",
-                    "name": "How do I request a refund?",
-                    "acceptedAnswer": {
-                        "@type": "Answer",
-                        "text": "To request a refund, log into your account, go to your Orders, and select the order you wish to return. Click Request Return and follow the instructions. Once we receive and inspect the returned item, your refund will be processed within 5-7 business days."
-                    }
-                },
-                {
-                    "@type": "Question",
-                    "name": "How do I create an account?",
-                    "acceptedAnswer": {
-                        "@type": "Answer",
-                        "text": "Click the Sign Up button at the top of the page and fill in your details. You can also create an account during checkout. Having an account allows you to track orders, save addresses, and earn rewards."
-                    }
-                }
-            ]
-        }
-        @endverbatim
-        </script>
+        @if($faqs->isNotEmpty())
+            @php
+                $faqSchema = [
+                    '@context' => 'https://schema.org',
+                    '@type' => 'FAQPage',
+                    'mainEntity' => $faqs->flatten()->map(fn($faq) => [
+                        '@type' => 'Question',
+                        'name' => $faq->question,
+                        'acceptedAnswer' => [
+                            '@type' => 'Answer',
+                            'text' => $faq->answer,
+                        ],
+                    ])->values()->toArray(),
+                ];
+            @endphp
+            <script type="application/ld+json">{!! json_encode($faqSchema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}</script>
+        @endif
     @endpush
 
     <!-- Breadcrumb -->
@@ -100,8 +43,8 @@
 
             <!-- Header -->
             <div class="text-center mb-8 sm:mb-10">
-                <div class="w-14 h-14 mx-auto rounded-full bg-[#205258]/5 flex items-center justify-center mb-4">
-                    <svg class="w-6 h-6 text-[#205258]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="w-14 h-14 mx-auto rounded-full bg-[#B76E79]/5 flex items-center justify-center mb-4">
+                    <svg class="w-6 h-6 text-[#B76E79]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                     </svg>
                 </div>
@@ -109,153 +52,49 @@
                 <p class="text-[13px] text-neutral-600">Find answers to common questions about shopping with us.</p>
             </div>
 
-            <!-- FAQ Accordion -->
-            <div x-data="{ open: null }" class="space-y-3">
+            @if($faqs->isNotEmpty())
+                <!-- FAQ Accordion -->
+                <div x-data="{ open: null }" class="space-y-3">
+                    @php $counter = 0; @endphp
+                    @foreach($faqs as $category => $items)
+                        <p class="text-xs font-semibold text-[#B76E79] uppercase tracking-wider {{ $loop->first ? 'pt-2' : 'pt-4' }} pb-1">{{ $category }}</p>
 
-                <!-- Section: Ordering -->
-                <p class="text-xs font-semibold text-[#205258] uppercase tracking-wider pt-2 pb-1">Ordering</p>
-
-                <div class="bg-white border border-neutral-100 rounded-xl overflow-hidden">
-                    <button @click="open = open === 1 ? null : 1"
-                            class="w-full px-5 py-3.5 flex items-center justify-between text-left gap-3 hover:bg-neutral-50/50 transition-colors">
-                        <span class="text-sm font-medium text-neutral-900">How do I place an order?</span>
-                        <svg class="w-4 h-4 text-neutral-600 shrink-0 transition-transform duration-200" :class="{ 'rotate-180': open === 1 }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-                        </svg>
-                    </button>
-                    <div x-show="open === 1" x-collapse>
-                        <div class="px-5 pb-4 text-[13px] text-neutral-600 leading-relaxed border-t border-neutral-50">
-                            <p class="pt-3">Simply browse our products, add items to your cart, and proceed to checkout. You'll need to create an account or sign in, enter your shipping details, and complete the payment. You'll receive an order confirmation email once your order is placed.</p>
-                        </div>
-                    </div>
+                        @foreach($items as $faq)
+                            @php $counter++; @endphp
+                            <div class="bg-white border border-neutral-100 rounded-xl overflow-hidden">
+                                <button @click="open = open === {{ $counter }} ? null : {{ $counter }}"
+                                        class="w-full px-5 py-3.5 flex items-center justify-between text-left gap-3 hover:bg-neutral-50/50 transition-colors">
+                                    <span class="text-sm font-medium text-neutral-900">{{ $faq->question }}</span>
+                                    <svg class="w-4 h-4 text-neutral-600 shrink-0 transition-transform duration-200" :class="{ 'rotate-180': open === {{ $counter }} }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                                    </svg>
+                                </button>
+                                <div x-show="open === {{ $counter }}" x-collapse>
+                                    <div class="px-5 pb-4 text-[13px] text-neutral-600 leading-relaxed border-t border-neutral-50">
+                                        <div class="pt-3">{!! nl2br(e($faq->answer)) !!}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
+                    @endforeach
                 </div>
-
-                <div class="bg-white border border-neutral-100 rounded-xl overflow-hidden">
-                    <button @click="open = open === 2 ? null : 2"
-                            class="w-full px-5 py-3.5 flex items-center justify-between text-left gap-3 hover:bg-neutral-50/50 transition-colors">
-                        <span class="text-sm font-medium text-neutral-900">What payment methods do you accept?</span>
-                        <svg class="w-4 h-4 text-neutral-600 shrink-0 transition-transform duration-200" :class="{ 'rotate-180': open === 2 }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-                        </svg>
-                    </button>
-                    <div x-show="open === 2" x-collapse>
-                        <div class="px-5 pb-4 text-[13px] text-neutral-600 leading-relaxed border-t border-neutral-50">
-                            <p class="pt-3">We accept all major credit cards (Visa, MasterCard, American Express), PayPal, and bank transfers. All payments are processed securely through our payment partners.</p>
-                        </div>
-                    </div>
+            @else
+                <div class="bg-white border border-neutral-100 rounded-xl p-8 text-center">
+                    <p class="text-sm text-neutral-600">No FAQs available yet. Please check back later.</p>
                 </div>
-
-                <div class="bg-white border border-neutral-100 rounded-xl overflow-hidden">
-                    <button @click="open = open === 3 ? null : 3"
-                            class="w-full px-5 py-3.5 flex items-center justify-between text-left gap-3 hover:bg-neutral-50/50 transition-colors">
-                        <span class="text-sm font-medium text-neutral-900">How can I track my order?</span>
-                        <svg class="w-4 h-4 text-neutral-600 shrink-0 transition-transform duration-200" :class="{ 'rotate-180': open === 3 }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-                        </svg>
-                    </button>
-                    <div x-show="open === 3" x-collapse>
-                        <div class="px-5 pb-4 text-[13px] text-neutral-600 leading-relaxed border-t border-neutral-50">
-                            <p class="pt-3">Once your order ships, you'll receive an email with tracking information. You can also track your order by logging into your account and visiting the Orders section, or by using our <a href="{{ route('track-order') }}" class="text-[#205258] hover:text-[#1b454a] font-medium">order tracking page</a>.</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Section: Shipping -->
-                <p class="text-xs font-semibold text-[#205258] uppercase tracking-wider pt-4 pb-1">Shipping</p>
-
-                <div class="bg-white border border-neutral-100 rounded-xl overflow-hidden">
-                    <button @click="open = open === 4 ? null : 4"
-                            class="w-full px-5 py-3.5 flex items-center justify-between text-left gap-3 hover:bg-neutral-50/50 transition-colors">
-                        <span class="text-sm font-medium text-neutral-900">How long does shipping take?</span>
-                        <svg class="w-4 h-4 text-neutral-600 shrink-0 transition-transform duration-200" :class="{ 'rotate-180': open === 4 }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-                        </svg>
-                    </button>
-                    <div x-show="open === 4" x-collapse>
-                        <div class="px-5 pb-4 text-[13px] text-neutral-600 leading-relaxed border-t border-neutral-50">
-                            <p class="pt-3">Shipping times vary depending on your location and chosen shipping method. Standard shipping typically takes 5-7 business days, while express shipping takes 2-3 business days. International shipping may take 7-14 business days.</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-white border border-neutral-100 rounded-xl overflow-hidden">
-                    <button @click="open = open === 5 ? null : 5"
-                            class="w-full px-5 py-3.5 flex items-center justify-between text-left gap-3 hover:bg-neutral-50/50 transition-colors">
-                        <span class="text-sm font-medium text-neutral-900">Do you ship internationally?</span>
-                        <svg class="w-4 h-4 text-neutral-600 shrink-0 transition-transform duration-200" :class="{ 'rotate-180': open === 5 }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-                        </svg>
-                    </button>
-                    <div x-show="open === 5" x-collapse>
-                        <div class="px-5 pb-4 text-[13px] text-neutral-600 leading-relaxed border-t border-neutral-50">
-                            <p class="pt-3">Yes, we ship to over 100 countries worldwide. Shipping costs and delivery times vary by destination. You can see the exact shipping costs at checkout.</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Section: Returns & Refunds -->
-                <p class="text-xs font-semibold text-[#205258] uppercase tracking-wider pt-4 pb-1">Returns & Refunds</p>
-
-                <div class="bg-white border border-neutral-100 rounded-xl overflow-hidden">
-                    <button @click="open = open === 6 ? null : 6"
-                            class="w-full px-5 py-3.5 flex items-center justify-between text-left gap-3 hover:bg-neutral-50/50 transition-colors">
-                        <span class="text-sm font-medium text-neutral-900">What is your return policy?</span>
-                        <svg class="w-4 h-4 text-neutral-600 shrink-0 transition-transform duration-200" :class="{ 'rotate-180': open === 6 }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-                        </svg>
-                    </button>
-                    <div x-show="open === 6" x-collapse>
-                        <div class="px-5 pb-4 text-[13px] text-neutral-600 leading-relaxed border-t border-neutral-50">
-                            <p class="pt-3">We offer a 7-day return policy for most items. Products must be unused and in their original packaging. Please visit our <a href="{{ route('returns') }}" class="text-[#205258] hover:text-[#1b454a] font-medium">Returns Policy</a> page for full details.</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-white border border-neutral-100 rounded-xl overflow-hidden">
-                    <button @click="open = open === 7 ? null : 7"
-                            class="w-full px-5 py-3.5 flex items-center justify-between text-left gap-3 hover:bg-neutral-50/50 transition-colors">
-                        <span class="text-sm font-medium text-neutral-900">How do I request a refund?</span>
-                        <svg class="w-4 h-4 text-neutral-600 shrink-0 transition-transform duration-200" :class="{ 'rotate-180': open === 7 }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-                        </svg>
-                    </button>
-                    <div x-show="open === 7" x-collapse>
-                        <div class="px-5 pb-4 text-[13px] text-neutral-600 leading-relaxed border-t border-neutral-50">
-                            <p class="pt-3">To request a refund, log into your account, go to your Orders, and select the order you wish to return. Click "Request Return" and follow the instructions. Once we receive and inspect the returned item, your refund will be processed within 5-7 business days.</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Section: Account -->
-                <p class="text-xs font-semibold text-[#205258] uppercase tracking-wider pt-4 pb-1">Account</p>
-
-                <div class="bg-white border border-neutral-100 rounded-xl overflow-hidden">
-                    <button @click="open = open === 8 ? null : 8"
-                            class="w-full px-5 py-3.5 flex items-center justify-between text-left gap-3 hover:bg-neutral-50/50 transition-colors">
-                        <span class="text-sm font-medium text-neutral-900">How do I create an account?</span>
-                        <svg class="w-4 h-4 text-neutral-600 shrink-0 transition-transform duration-200" :class="{ 'rotate-180': open === 8 }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-                        </svg>
-                    </button>
-                    <div x-show="open === 8" x-collapse>
-                        <div class="px-5 pb-4 text-[13px] text-neutral-600 leading-relaxed border-t border-neutral-50">
-                            <p class="pt-3">Click the "Sign Up" button at the top of the page and fill in your details. You can also create an account during checkout. Having an account allows you to track orders, save addresses, and earn rewards.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            @endif
 
             <!-- Still Need Help -->
             <div class="mt-10 bg-white border border-neutral-100 rounded-xl p-6 sm:p-8 text-center">
-                <div class="w-11 h-11 mx-auto rounded-full bg-[#205258]/5 flex items-center justify-center mb-3">
-                    <svg class="w-5 h-5 text-[#205258]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="w-11 h-11 mx-auto rounded-full bg-[#B76E79]/5 flex items-center justify-center mb-3">
+                    <svg class="w-5 h-5 text-[#B76E79]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
                     </svg>
                 </div>
                 <h3 class="text-[15px] font-bold text-neutral-900 mb-1">Still have questions?</h3>
                 <p class="text-[13px] text-neutral-600 mb-4">Can't find what you're looking for? We're here to help.</p>
                 <a href="{{ route('contact') }}"
-                   class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-[#F8931D] via-[#F8931D] to-[#E07E0A] hover:from-[#E07E0A] hover:via-[#E07E0A] hover:to-[#D47200] text-white text-sm font-semibold rounded-xl shadow-lg shadow-[#F8931D]/25 hover:shadow-[#F8931D]/40 transition-all duration-300 transform hover:-translate-y-0.5 active:translate-y-0">
+                   class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-[#B76E79] via-[#B76E79] to-[#222222] hover:from-[#222222] hover:via-[#222222] hover:to-[#D47200] text-white text-sm font-semibold rounded-xl shadow-lg shadow-[#B76E79]/25 hover:shadow-[#B76E79]/40 transition-all duration-300 transform hover:-translate-y-0.5 active:translate-y-0">
                     Contact Us
                 </a>
             </div>

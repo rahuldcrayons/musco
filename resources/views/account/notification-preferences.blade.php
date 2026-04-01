@@ -10,7 +10,7 @@
                     <h1 class="text-xl font-bold text-neutral-900 mb-5">Notification Preferences</h1>
 
                     @if(session('success'))
-                        <div class="mb-4 p-3 bg-emerald-50 border border-emerald-200 rounded-lg text-emerald-700 text-sm flex items-center gap-2">
+                        <div class="mb-4 p-3 bg-[#B76E79]/5 border border-[#B76E79]/20 rounded-lg text-[#B76E79] text-sm flex items-center gap-2">
                             <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
                             {{ session('success') }}
                         </div>
@@ -285,7 +285,7 @@
                         </div>
 
                         <button type="submit"
-                                class="inline-flex items-center gap-2 bg-[#F8931D] hover:bg-[#E07E0A] text-white text-sm font-semibold px-3 py-1.5 rounded-lg transition-colors">
+                                class="inline-flex items-center gap-2 bg-[#B76E79] hover:bg-[#222222] text-white text-sm font-semibold px-3 py-1.5 rounded-lg transition-colors">
                             Save Preferences
                         </button>
                     </form>

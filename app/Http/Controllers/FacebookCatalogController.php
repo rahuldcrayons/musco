@@ -20,7 +20,7 @@ class FacebookCatalogController extends Controller
             ->get();
 
         $appUrl = rtrim(config('app.url'), '/');
-        $appName = config('app.name', 'Jikra');
+        $appName = config('app.name', 'MusCo');
 
         $xml = '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
         $xml .= '<rss xmlns:g="http://base.google.com/ns/1.0" version="2.0">' . "\n";

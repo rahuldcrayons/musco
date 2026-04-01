@@ -25,7 +25,7 @@
                        @blur="if(!query) startTypewriter()"
                        @keydown.escape="showResults = false; $refs.searchInput.blur()"
                        :placeholder="currentPlaceholder"
-                       class="w-full pl-10 pr-20 py-3 text-base bg-white border border-neutral-200 rounded-lg focus:outline-none focus:border-[#205258] focus:ring-1 focus:ring-[#205258]"
+                       class="w-full pl-10 pr-20 py-3 text-base bg-white border border-neutral-200 rounded-lg focus:outline-none focus:border-[#B76E79] focus:ring-1 focus:ring-[#B76E79]"
                        style="font-size:16px;"
                        autocomplete="off"
                        autofocus>
@@ -35,7 +35,7 @@
                         type="button"
                         @click.prevent="toggleMic()"
                         class="absolute right-12 p-1.5 transition-colors z-10"
-                        :class="listening ? 'text-red-500 animate-pulse' : 'text-neutral-600 hover:text-[#205258]'"
+                        :class="listening ? 'text-[#CC0C39] animate-pulse' : 'text-neutral-600 hover:text-[#c29958]'"
                         :title="listening ? 'Stop listening' : 'Voice search'"
                         aria-label="Voice search">
                     <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -45,7 +45,7 @@
                 </button>
 
                 {{-- Submit button --}}
-                <button type="submit" class="absolute right-3 p-1.5 text-neutral-600 hover:text-[#205258] transition-colors" aria-label="Search">
+                <button type="submit" class="absolute right-3 p-1.5 text-neutral-600 hover:text-[#c29958] transition-colors" aria-label="Search">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
                     </svg>
@@ -213,7 +213,7 @@
                             </div>
                             <div x-ref="sentinel" class="h-4"></div>
                             <div x-show="loading" x-cloak class="flex justify-center py-8">
-                                <svg class="animate-spin h-6 w-6 text-[#205258]" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
+                                <svg class="animate-spin h-6 w-6 text-[#B76E79]" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
                             </div>
                         </div>
                     @else

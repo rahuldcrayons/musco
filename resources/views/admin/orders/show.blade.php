@@ -287,8 +287,8 @@
                     <div class="p-5">
                         @if($order->tracking_number && $order->carrier === 'Delhivery')
                             <div class="flex items-center gap-3 mb-3">
-                                <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                                    <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                <div class="w-8 h-8 bg-[#B76E79]/10 rounded-full flex items-center justify-center">
+                                    <svg class="w-4 h-4 text-[#B76E79]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
                                 </div>
                                 <div>
                                     <p class="text-sm font-medium text-neutral-900">Shipment Booked</p>
@@ -302,7 +302,7 @@
                             </div>
                             <form action="{{ route('admin.delivery.cancel', $order) }}" method="POST" class="mt-2" onsubmit="return confirm('Cancel Delhivery shipment?')">
                                 @csrf
-                                <button type="submit" class="text-xs text-red-500 hover:underline">Cancel Shipment</button>
+                                <button type="submit" class="text-xs text-[#CC0C39] hover:underline">Cancel Shipment</button>
                             </form>
                         @elseif(!$order->tracking_number)
                             <form action="{{ route('admin.delivery.book', $order) }}" method="POST" onsubmit="return confirm('Book Delhivery shipment for this order?')">

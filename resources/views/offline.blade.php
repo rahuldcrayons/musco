@@ -3,8 +3,8 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <meta name="theme-color" content="#205258">
-    <title>Offline - Jikra</title>
+    <meta name="theme-color" content="#B76E79">
+    <title>Offline - MusCo</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -22,16 +22,16 @@
             background: rgba(32,82,88,0.08); border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
         }
-        .offline-icon svg { width: 36px; height: 36px; color: #205258; }
-        h1 { font-size: 22px; font-weight: 600; color: #205258; margin-bottom: 8px; }
+        .offline-icon svg { width: 36px; height: 36px; color: #B76E79; }
+        h1 { font-size: 22px; font-weight: 600; color: #B76E79; margin-bottom: 8px; }
         p { font-size: 14px; color: #666; line-height: 1.6; margin-bottom: 24px; }
         .retry-btn {
             display: inline-flex; align-items: center; gap: 8px;
-            padding: 12px 28px; background: #205258; color: #fff;
+            padding: 12px 28px; background: #B76E79; color: #fff;
             border: none; border-radius: 30px; font-size: 14px; font-weight: 600;
             cursor: pointer; transition: background 0.2s;
         }
-        .retry-btn:hover { background: #1b454a; }
+        .retry-btn:hover { background: #222222; }
         .retry-btn:active { transform: scale(0.97); }
     </style>
 </head>

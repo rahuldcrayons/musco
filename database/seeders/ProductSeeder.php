@@ -14,86 +14,94 @@ class ProductSeeder extends Seeder
     public function run(): void
     {
         $sellers = Seller::all();
-        $categories = Category::whereNotNull('parent_id')->get();
+        $categories = Category::whereNotNull('parent_id')->get()->keyBy('slug');
         $brands = Brand::all();
 
         if ($sellers->isEmpty() || $categories->isEmpty()) {
-            $this->command->warn('Please run SellerSeeder and CategorySeeder first.');
+            $this->command->warn('Please run SellerSeeder and JewelleryCategorySeeder first.');
             return;
         }
 
         $products = [
-            // Electronics
-            ['name' => 'iPhone 15 Pro Max', 'mrp' => 1199.99, 'price' => 1099.99, 'stock' => 50],
-            ['name' => 'Samsung Galaxy S24 Ultra', 'mrp' => 1299.99, 'price' => 1199.99, 'stock' => 45],
-            ['name' => 'MacBook Pro 16"', 'mrp' => 2499.99, 'price' => 2399.99, 'stock' => 25],
-            ['name' => 'Dell XPS 15', 'mrp' => 1799.99, 'price' => 1599.99, 'stock' => 30],
-            ['name' => 'Sony WH-1000XM5 Headphones', 'mrp' => 399.99, 'price' => 349.99, 'stock' => 100],
-            ['name' => 'AirPods Pro 2nd Gen', 'mrp' => 249.99, 'price' => 229.99, 'stock' => 150],
-            ['name' => 'iPad Pro 12.9"', 'mrp' => 1099.99, 'price' => 999.99, 'stock' => 40],
-            ['name' => 'Samsung 65" OLED TV', 'mrp' => 2199.99, 'price' => 1899.99, 'stock' => 15],
+            // Rings
+            ['name' => 'Solitaire Diamond Ring', 'mrp' => 12999, 'price' => 8999, 'stock' => 25, 'cat' => 'engagement-rings'],
+            ['name' => 'Gold Band Ring 22K', 'mrp' => 8499, 'price' => 6999, 'stock' => 40, 'cat' => 'wedding-bands'],
+            ['name' => 'Emerald Statement Ring', 'mrp' => 15999, 'price' => 11999, 'stock' => 15, 'cat' => 'cocktail-rings'],
+            ['name' => 'Silver Oxidised Ring', 'mrp' => 1299, 'price' => 799, 'stock' => 100, 'cat' => 'silver-rings'],
+            ['name' => 'Rose Gold Infinity Ring', 'mrp' => 5999, 'price' => 3999, 'stock' => 35, 'cat' => 'fashion-rings'],
 
-            // Fashion
-            ['name' => 'Nike Air Max 270', 'mrp' => 159.99, 'price' => 129.99, 'stock' => 200],
-            ['name' => 'Adidas Ultraboost 23', 'mrp' => 189.99, 'price' => 159.99, 'stock' => 180],
-            ['name' => 'Levi\'s 501 Original Jeans', 'mrp' => 79.99, 'price' => 59.99, 'stock' => 300],
-            ['name' => 'North Face Puffer Jacket', 'mrp' => 299.99, 'price' => 249.99, 'stock' => 75],
-            ['name' => 'Ray-Ban Aviator Sunglasses', 'mrp' => 179.99, 'price' => 149.99, 'stock' => 120],
-            ['name' => 'Michael Kors Handbag', 'mrp' => 298.00, 'price' => 248.00, 'stock' => 50],
+            // Necklaces & Pendants
+            ['name' => 'Pearl Drop Necklace', 'mrp' => 6999, 'price' => 4499, 'stock' => 30, 'cat' => 'pendants'],
+            ['name' => 'Gold Chain 22K - 18 inch', 'mrp' => 24999, 'price' => 21999, 'stock' => 20, 'cat' => 'chains'],
+            ['name' => 'Diamond Pendant with Chain', 'mrp' => 18999, 'price' => 14999, 'stock' => 18, 'cat' => 'pendant-sets'],
+            ['name' => 'Ruby Pendant Necklace', 'mrp' => 9999, 'price' => 7499, 'stock' => 22, 'cat' => 'pendants'],
+            ['name' => 'Layered Chain Necklace', 'mrp' => 3499, 'price' => 2299, 'stock' => 50, 'cat' => 'layered-necklaces'],
 
-            // Home & Living
-            ['name' => 'Dyson V15 Vacuum', 'mrp' => 749.99, 'price' => 649.99, 'stock' => 40],
-            ['name' => 'Instant Pot Duo 7-in-1', 'mrp' => 119.99, 'price' => 89.99, 'stock' => 150],
-            ['name' => 'Nespresso Vertuo Coffee Machine', 'mrp' => 199.99, 'price' => 159.99, 'stock' => 80],
-            ['name' => 'Egyptian Cotton Sheet Set', 'mrp' => 149.99, 'price' => 119.99, 'stock' => 200],
-            ['name' => 'Memory Foam Pillow Set', 'mrp' => 79.99, 'price' => 59.99, 'stock' => 250],
+            // Earrings
+            ['name' => 'Gold Hoop Earrings', 'mrp' => 4999, 'price' => 3499, 'stock' => 45, 'cat' => 'hoops'],
+            ['name' => 'Diamond Stud Earrings', 'mrp' => 11999, 'price' => 8999, 'stock' => 20, 'cat' => 'studs'],
+            ['name' => 'Pearl Stud Earrings', 'mrp' => 2999, 'price' => 1999, 'stock' => 60, 'cat' => 'studs'],
+            ['name' => 'Jhumka Earrings - Gold Plated', 'mrp' => 2499, 'price' => 1599, 'stock' => 55, 'cat' => 'jhumkas'],
 
-            // Sports
-            ['name' => 'Peloton Bike+', 'mrp' => 2495.00, 'price' => 2295.00, 'stock' => 20],
-            ['name' => 'Bowflex Adjustable Dumbbells', 'mrp' => 549.99, 'price' => 449.99, 'stock' => 60],
-            ['name' => 'Yoga Mat Premium', 'mrp' => 69.99, 'price' => 49.99, 'stock' => 300],
-            ['name' => 'Wilson Tennis Racket Pro', 'mrp' => 249.99, 'price' => 199.99, 'stock' => 45],
-            ['name' => 'Garmin Fenix 7X Watch', 'mrp' => 899.99, 'price' => 799.99, 'stock' => 35],
+            // Bangles & Bracelets
+            ['name' => 'Gold Bangle Set - 22K', 'mrp' => 32999, 'price' => 28999, 'stock' => 12, 'cat' => 'gold-bangles'],
+            ['name' => 'Diamond Tennis Bracelet', 'mrp' => 19999, 'price' => 15999, 'stock' => 10, 'cat' => 'tennis-bracelets'],
+            ['name' => 'Silver Charm Bracelet', 'mrp' => 2999, 'price' => 1999, 'stock' => 70, 'cat' => 'charm-bracelets'],
+            ['name' => 'Cubic Zirconia Bracelet', 'mrp' => 3499, 'price' => 2499, 'stock' => 40, 'cat' => 'bracelets'],
 
-            // Beauty
-            ['name' => 'La Mer Moisturizing Cream', 'mrp' => 380.00, 'price' => 350.00, 'stock' => 40],
-            ['name' => 'Dyson Airwrap Complete', 'mrp' => 599.99, 'price' => 549.99, 'stock' => 30],
-            ['name' => 'Charlotte Tilbury Pillow Talk Set', 'mrp' => 75.00, 'price' => 65.00, 'stock' => 100],
-            ['name' => 'Olaplex Hair Repair Set', 'mrp' => 84.00, 'price' => 72.00, 'stock' => 150],
+            // Wedding & Traditional
+            ['name' => 'Bridal Gold Necklace Set', 'mrp' => 49999, 'price' => 44999, 'stock' => 8, 'cat' => 'bridal-sets'],
+            ['name' => 'Gold Mangalsutra with Diamond', 'mrp' => 14999, 'price' => 11999, 'stock' => 25, 'cat' => 'mangalsutra'],
+            ['name' => 'Temple Jewellery Set', 'mrp' => 8999, 'price' => 6499, 'stock' => 15, 'cat' => 'bridal-sets'],
+
+            // Nose Pins & Others
+            ['name' => 'Diamond Nose Pin', 'mrp' => 4999, 'price' => 3499, 'stock' => 50, 'cat' => 'nose-pins'],
+            ['name' => 'Gold Nose Ring - Traditional', 'mrp' => 2999, 'price' => 1999, 'stock' => 35, 'cat' => 'nose-rings'],
+            ['name' => 'Silver Anklet Pair', 'mrp' => 1999, 'price' => 1299, 'stock' => 45, 'cat' => 'anklets'],
+
+            // Men's Jewellery
+            ['name' => 'Men\'s Gold Bracelet - 22K', 'mrp' => 18999, 'price' => 15999, 'stock' => 20, 'cat' => 'mens-bracelets'],
+            ['name' => 'Silver Men\'s Ring - Oxidised', 'mrp' => 1499, 'price' => 999, 'stock' => 80, 'cat' => 'mens-rings'],
+
+            // Gold & Silver Coins
+            ['name' => 'Gold Coin 10g - 24K', 'mrp' => 62999, 'price' => 61499, 'stock' => 30, 'cat' => 'gold-coins'],
+            ['name' => 'Silver Coin 50g - 999 Purity', 'mrp' => 4999, 'price' => 4499, 'stock' => 50, 'cat' => 'silver-coins'],
         ];
 
-        foreach ($products as $index => $productData) {
-            $seller = $sellers->random();
-            $category = $categories->random();
-            $brand = $brands->isNotEmpty() ? $brands->random() : null;
+        $defaultSeller = $sellers->first();
 
-            Product::create([
-                'uuid' => Str::uuid(),
-                'seller_id' => $seller->id,
-                'category_id' => $category->id,
-                'brand_id' => $brand?->id,
-                'name' => $productData['name'],
-                'slug' => Str::slug($productData['name']),
-                'short_description' => 'High-quality ' . strtolower($productData['name']) . ' with premium features.',
-                'description' => '<p>Experience excellence with our ' . $productData['name'] . '. This premium product offers outstanding quality and performance that exceeds expectations.</p><p>Features include premium materials, expert craftsmanship, and attention to detail that sets it apart from the competition.</p>',
-                'sku' => 'SKU-' . strtoupper(Str::random(8)),
-                'mrp' => $productData['mrp'],
-                'price' => $productData['price'],
-                'cost_price' => $productData['price'] * 0.6,
-                'stock_quantity' => $productData['stock'],
-                'low_stock_threshold' => 10,
-                'stock_status' => 'in_stock',
-                'is_active' => true,
-                'is_featured' => $index < 8,
-                'is_taxable' => true,
-                'tax_rate' => 10,
-                'rating' => rand(35, 50) / 10,
-                'review_count' => rand(10, 500),
-                'view_count' => rand(100, 5000),
-                'sales_count' => rand(20, 1000),
-                'status' => 'approved',
-                'published_at' => now()->subDays(rand(1, 90)),
-            ]);
+        foreach ($products as $index => $productData) {
+            $category = $categories->get($productData['cat']) ?? $categories->first();
+
+            Product::updateOrCreate(
+                ['slug' => Str::slug($productData['name'])],
+                [
+                    'uuid' => Str::uuid(),
+                    'seller_id' => $defaultSeller->id,
+                    'category_id' => $category->id,
+                    'brand_id' => $brands->isNotEmpty() ? $brands->random()->id : null,
+                    'name' => $productData['name'],
+                    'short_description' => 'Exquisite ' . $productData['name'] . ' crafted with premium quality materials.',
+                    'description' => '<p>Discover the elegance of our ' . $productData['name'] . '. Meticulously crafted with the finest materials, this piece combines timeless design with exceptional craftsmanship.</p><p>Each piece is BIS hallmarked and comes with a certificate of authenticity, ensuring you receive only the best quality jewellery.</p>',
+                    'sku' => 'MUS-' . strtoupper(Str::random(8)),
+                    'mrp' => $productData['mrp'],
+                    'price' => $productData['price'],
+                    'cost_price' => $productData['price'] * 0.6,
+                    'stock_quantity' => $productData['stock'],
+                    'low_stock_threshold' => 5,
+                    'stock_status' => 'in_stock',
+                    'is_active' => true,
+                    'is_featured' => $index < 10,
+                    'is_taxable' => true,
+                    'tax_rate' => 3,
+                    'rating' => rand(40, 50) / 10,
+                    'review_count' => rand(20, 500),
+                    'view_count' => rand(200, 8000),
+                    'sales_count' => rand(30, 800),
+                    'status' => 'approved',
+                    'published_at' => now()->subDays(rand(1, 60)),
+                ]
+            );
         }
     }
 }

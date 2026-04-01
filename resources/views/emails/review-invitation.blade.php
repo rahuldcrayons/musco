@@ -30,5 +30,5 @@ Review Your Purchases
 Your feedback helps other shoppers make the best choices.
 
 Warm regards,
-**{{ config('app.name', 'Jikra') }}**
+**{{ config('app.name', 'MusCo') }}**
 @endcomponent

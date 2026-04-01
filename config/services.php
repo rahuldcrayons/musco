@@ -72,11 +72,11 @@ return [
         'phone_number_id' => env('WHATSAPP_PHONE_NUMBER_ID', '979502275251082'),
         'business_id'     => env('WHATSAPP_BUSINESS_ID', '1402828184654681'),
         'token'           => env('WHATSAPP_API_TOKEN'),
-        'verify_token'    => env('WHATSAPP_VERIFY_TOKEN', 'jikra_whatsapp_verify_2026'),
+        'verify_token'    => env('WHATSAPP_VERIFY_TOKEN', 'musco_whatsapp_verify_2026'),
     ],
 
     'instagram' => [
-        'handle' => env('INSTAGRAM_HANDLE', '@jikra.in'),
+        'handle' => env('INSTAGRAM_HANDLE', '@musco'),
         'user_id' => env('INSTAGRAM_USER_ID'),
         'access_token' => env('INSTAGRAM_ACCESS_TOKEN'),
     ],

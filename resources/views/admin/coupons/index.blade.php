@@ -11,7 +11,7 @@
     </div>
 
     @if(session('success'))
-        <div class="mb-4 px-4 py-3 bg-green-50 border border-green-200 text-green-700 text-sm rounded-lg">
+        <div class="mb-4 px-4 py-3 bg-[#B76E79]/5 border border-[#B76E79]/20 text-[#B76E79] text-sm rounded-lg">
             {{ session('success') }}
         </div>
     @endif
@@ -113,9 +113,9 @@
                             </td>
                             <td class="px-4 py-3">
                                 @if($coupon->isValid())
-                                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">Active</span>
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-[#B76E79]/10 text-[#B76E79]">Active</span>
                                 @elseif($coupon->expires_at?->isPast())
-                                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">Expired</span>
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-[#CC0C39]/10 text-[#CC0C39]">Expired</span>
                                 @else
                                     <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">Inactive</span>
                                 @endif

@@ -9,9 +9,9 @@
     <link href="https://fonts.bunny.net/css?family=poppins:300,400,500,600,700&display=swap" rel="stylesheet" />
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
-        body { font-family: 'Poppins', sans-serif; }
+        body { font-family: 'DM Sans', sans-serif; }
         .form-input { display: block; width: 100%; padding: 10px 14px; font-size: 14px; border: 1px solid #d1d5db; border-radius: 10px; outline: none; transition: border-color 0.2s; background: #fff; }
-        .form-input:focus { border-color: #205258; box-shadow: 0 0 0 3px rgba(32,82,88,0.08); }
+        .form-input:focus { border-color: #B76E79; box-shadow: 0 0 0 3px rgba(32,82,88,0.08); }
         .form-input.error { border-color: #ef4444; }
     </style>
 </head>
@@ -24,13 +24,13 @@
     </header>
 
     {{-- Hero --}}
-    <section style="background: linear-gradient(135deg, #205258 0%, #1a3f44 100%); padding:48px 20px; text-align:center; position:relative; overflow:hidden;">
+    <section style="background: linear-gradient(135deg, #B76E79 0%, #1a3f44 100%); padding:48px 20px; text-align:center; position:relative; overflow:hidden;">
         <div style="position:absolute; top:-40px; right:-40px; width:200px; height:200px; background:rgba(255,255,255,0.03); border-radius:50%;"></div>
         <div style="position:absolute; bottom:-60px; left:-30px; width:160px; height:160px; background:rgba(255,255,255,0.03); border-radius:50%;"></div>
         <div style="max-width:600px; margin:0 auto; position:relative; z-index:1;">
-            <p style="color:#F8931D; font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:2px; margin:0 0 8px;">Partner with us</p>
-            <h1 style="color:#fff; font-size:32px; font-weight:700; margin:0 0 12px; line-height:1.2;">Earn Money with Jikra</h1>
-            <p style="color:rgba(255,255,255,0.7); font-size:15px; margin:0;">Get <span style="color:#F8931D; font-weight:700;">{{ config('affiliate.default_commission_rate', 5) }}% commission</span> on every sale you refer. No limits.</p>
+            <p style="color:#B76E79; font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:2px; margin:0 0 8px;">Partner with us</p>
+            <h1 style="color:#fff; font-size:32px; font-weight:700; margin:0 0 12px; line-height:1.2;">Earn Money with MusCo</h1>
+            <p style="color:rgba(255,255,255,0.7); font-size:15px; margin:0;">Get <span style="color:#B76E79; font-weight:700;">{{ config('affiliate.default_commission_rate', 5) }}% commission</span> on every sale you refer. No limits.</p>
         </div>
     </section>
 
@@ -44,8 +44,8 @@
             ] as $step)
                 <div style="background:#fff; border-radius:16px; padding:24px 20px; text-align:center; box-shadow:0 2px 12px rgba(0,0,0,0.06);">
                     <div style="font-size:28px; margin-bottom:10px;">{{ $step['icon'] }}</div>
-                    <h3 style="font-size:14px; font-weight:600; color:#0F1111; margin:0 0 6px;">{{ $step['title'] }}</h3>
-                    <p style="font-size:12px; color:#565959; margin:0; line-height:1.5;">{{ $step['desc'] }}</p>
+                    <h3 style="font-size:14px; font-weight:600; color:#222222; margin:0 0 6px;">{{ $step['title'] }}</h3>
+                    <p style="font-size:12px; color:#555555; margin:0; line-height:1.5;">{{ $step['desc'] }}</p>
                 </div>
             @endforeach
         </div>
@@ -54,11 +54,11 @@
     {{-- Sign Up Form --}}
     <section style="max-width:520px; margin:40px auto; padding:0 20px;">
         <div style="background:#fff; border-radius:20px; padding:32px 28px; box-shadow:0 4px 20px rgba(0,0,0,0.06);">
-            <h2 style="font-size:20px; font-weight:700; color:#0F1111; margin:0 0 4px;">Create your account</h2>
-            <p style="font-size:13px; color:#565959; margin:0 0 24px;">Free to join. Start earning today.</p>
+            <h2 style="font-size:20px; font-weight:700; color:#222222; margin:0 0 4px;">Create your account</h2>
+            <p style="font-size:13px; color:#555555; margin:0 0 24px;">Free to join. Start earning today.</p>
 
             @if(session('success'))
-                <div style="margin-bottom:20px; padding:12px 16px; background:#ecfdf5; border:1px solid #a7f3d0; color:#065f46; border-radius:10px; font-size:13px;">
+                <div style="margin-bottom:20px; padding:12px 16px; background:rgba(183,110,121,0.05); border:1px solid rgba(183,110,121,0.2); color:#B76E79; border-radius:10px; font-size:13px;">
                     {{ session('success') }}
                 </div>
             @endif
@@ -128,21 +128,21 @@
                 </div>
 
                 <label style="display:flex; align-items:flex-start; gap:8px; margin-bottom:20px; cursor:pointer;">
-                    <input type="checkbox" name="terms" required style="margin-top:2px; accent-color:#205258;">
-                    <span style="font-size:11px; color:#565959; line-height:1.5;">
-                        By signing up, I agree to the <a href="{{ url('/terms') }}" target="_blank" style="color:#205258; text-decoration:underline;">Terms</a>
-                        and <a href="{{ url('/privacy') }}" target="_blank" style="color:#205258; text-decoration:underline;">Privacy Policy</a>.
+                    <input type="checkbox" name="terms" required style="margin-top:2px; accent-color:#B76E79;">
+                    <span style="font-size:11px; color:#555555; line-height:1.5;">
+                        By signing up, I agree to the <a href="{{ url('/terms') }}" target="_blank" style="color:#B76E79; text-decoration:underline;">Terms</a>
+                        and <a href="{{ url('/privacy') }}" target="_blank" style="color:#B76E79; text-decoration:underline;">Privacy Policy</a>.
                     </span>
                 </label>
                 @error('terms')<p style="font-size:11px; color:#ef4444; margin:-14px 0 14px;">{{ $message }}</p>@enderror
 
-                <button type="submit" style="width:100%; padding:12px; background:#F8931D; color:#fff; font-size:14px; font-weight:600; border:none; border-radius:50px; cursor:pointer; transition:all 0.2s;">
+                <button type="submit" style="width:100%; padding:12px; background:#B76E79; color:#fff; font-size:14px; font-weight:600; border:none; border-radius:50px; cursor:pointer; transition:all 0.2s;">
                     Create Affiliate Account
                 </button>
             </form>
 
-            <p style="text-align:center; font-size:12px; color:#565959; margin:16px 0 0;">
-                Already have an account? <a href="{{ route('affiliate.login') }}" style="color:#205258; font-weight:600; text-decoration:none;">Sign in</a>
+            <p style="text-align:center; font-size:12px; color:#555555; margin:16px 0 0;">
+                Already have an account? <a href="{{ route('affiliate.login') }}" style="color:#B76E79; font-weight:600; text-decoration:none;">Sign in</a>
             </p>
         </div>
     </section>

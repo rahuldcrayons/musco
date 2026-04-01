@@ -11,7 +11,7 @@
 
         {{-- JSON-LD ItemList for video gallery --}}
         <?php
-            $fallbackThumb = asset('images/jikra-banner.png');
+            $fallbackThumb = asset('images/musco-banner.png');
             $reelsSchema = [
                 '@context' => 'https://schema.org',
                 '@type' => 'CollectionPage',
@@ -55,7 +55,7 @@
 
     <div class="bg-[#f8f6f3] min-h-screen">
         {{-- Header --}}
-        <div class="bg-[#205258] py-8 lg:py-12">
+        <div class="bg-[#B76E79] py-8 lg:py-12">
             <div class="container mx-auto px-4 text-center">
                 <h1 class="text-2xl lg:text-3xl font-bold text-white mb-2">Instagram Feed</h1>
                 <p class="text-white/70 text-sm max-w-md mx-auto">Watch our latest videos and explore our products</p>
@@ -74,7 +74,7 @@
                                     <img src="{{ $reel['thumbnail_url'] }}" alt="{{ Str::limit($reel['caption'], 60) }}" loading="lazy"
                                          class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105">
                                 @else
-                                    <div class="w-full h-full bg-gradient-to-br from-[#205258] to-[#1b454a]"></div>
+                                    <div class="w-full h-full bg-gradient-to-br from-[#B76E79] to-[#222222]"></div>
                                 @endif
 
                                 {{-- Play overlay (only for videos) --}}
@@ -100,20 +100,20 @@
                                 {{-- Hover badge --}}
                                 <div class="absolute bottom-3 left-3 right-3">
                                     <div class="bg-white/95 backdrop-blur rounded-lg px-3 py-2 flex items-center justify-between opacity-0 group-hover:opacity-100 transition-opacity translate-y-2 group-hover:translate-y-0">
-                                        <span class="text-xs font-semibold text-[#205258]">{{ $isVideo ? 'Watch & Shop' : 'View & Shop' }}</span>
-                                        <svg class="w-4 h-4 text-[#205258]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                                        <span class="text-xs font-semibold text-[#B76E79]">{{ $isVideo ? 'Watch & Shop' : 'View & Shop' }}</span>
+                                        <svg class="w-4 h-4 text-[#B76E79]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                                     </div>
                                 </div>
                             </div>
                             @if($reel['caption'])
-                                <p class="mt-2 text-xs text-[#565959] line-clamp-2">{{ Str::limit($reel['caption'], 60) }}</p>
+                                <p class="mt-2 text-xs text-[#555555] line-clamp-2">{{ Str::limit($reel['caption'], 60) }}</p>
                             @endif
                         </a>
                     @endforeach
                 </div>
             @else
                 <div class="text-center py-16">
-                    <p class="text-[#565959]">No reels available at the moment. Check back soon!</p>
+                    <p class="text-[#555555]">No reels available at the moment. Check back soon!</p>
                 </div>
             @endif
         </div>

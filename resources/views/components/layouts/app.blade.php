@@ -8,13 +8,13 @@
     <title>{{ $title ?? config('app.name', 'Laravel') }}</title>
 
     <!-- PWA Meta Tags -->
-    <meta name="theme-color" content="#205258">
+    <meta name="theme-color" content="#B76E79">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Jikra">
-    <meta name="application-name" content="Jikra">
-    <meta name="msapplication-TileColor" content="#205258">
+    <meta name="apple-mobile-web-app-title" content="MusCo">
+    <meta name="application-name" content="MusCo">
+    <meta name="msapplication-TileColor" content="#B76E79">
     <meta name="format-detection" content="telephone=no">
     <link rel="manifest" href="/manifest.json">
     <link rel="icon" type="image/png" href="/images/icons/favicon.png?v=2">
@@ -39,7 +39,7 @@
     <link rel="preconnect" href="https://fonts.bunny.net" crossorigin>
 
     <!-- Fonts (display=swap for fast first paint) -->
-    <link href="https://fonts.bunny.net/css?family=poppins:400,500,600|inter:400,500&display=swap" rel="stylesheet" />
+    <link href="https://fonts.bunny.net/css?family=playfair-display:400,600,700|poppins:400,500,600|inter:400,500&display=swap" rel="stylesheet" />
 
     <!-- Critical CSS first to prevent flash -->
     @vite(['resources/css/critical.css'])
@@ -60,7 +60,7 @@
             }
         }
         :focus-visible {
-            outline: 2px solid #205258;
+            outline: 2px solid #B76E79;
             outline-offset: 2px;
         }
     </style>
@@ -162,7 +162,7 @@
 
             {{-- Logo --}}
             <div class="pt-6 pb-2 px-6 text-center">
-                <img src="{{ asset('images/jikra-logo.png') }}" alt="Jikra" class="h-10 mx-auto mb-3 object-contain">
+                <img src="{{ asset('images/musco-logo.svg') }}" alt="{{ config('app.name') }}" class="h-10 mx-auto mb-3 object-contain">
                 <h2 class="text-2xl font-bold text-neutral-900"
                     x-text="$store.authModal.mode === 'login' ? 'Login or Signup' : 'Create Account'"></h2>
             </div>
@@ -180,7 +180,7 @@
                     <div>
                         <label class="block text-sm font-medium text-neutral-700 mb-1.5">Email Address</label>
                         <input type="email" x-model="email" required autofocus
-                               class="w-full px-3 py-2.5 bg-neutral-50 border border-neutral-300 rounded-lg text-sm text-neutral-900 placeholder-neutral-400 focus:outline-none focus:border-[#205258] focus:ring-0 transition-colors"
+                               class="w-full px-3 py-2.5 bg-neutral-50 border border-neutral-300 rounded-lg text-sm text-neutral-900 placeholder-neutral-400 focus:outline-none focus:border-[#B76E79] focus:ring-0 transition-colors"
                                placeholder="you@example.com">
                         <template x-if="$store.authModal.errors.email">
                             <p class="mt-1 text-xs text-error-600" x-text="$store.authModal.errors.email[0]"></p>
@@ -190,11 +190,11 @@
                     <div>
                         <div class="flex items-center justify-between mb-1">
                             <label class="text-sm font-medium text-neutral-700">Password</label>
-                            <a href="{{ route('password.request') }}" class="text-xs text-[#205258] hover:text-[#1b454a]">Forgot password?</a>
+                            <a href="{{ route('password.request') }}" class="text-xs text-[#B76E79] hover:text-[#222222]">Forgot password?</a>
                         </div>
                         <div class="relative" x-data="{ show: false }">
                             <input :type="show ? 'text' : 'password'" x-model="password" required
-                                   class="w-full px-3 py-2.5 pr-10 bg-neutral-50 border border-neutral-300 rounded-lg text-sm text-neutral-900 placeholder-neutral-400 focus:outline-none focus:border-[#205258] focus:ring-0 transition-colors"
+                                   class="w-full px-3 py-2.5 pr-10 bg-neutral-50 border border-neutral-300 rounded-lg text-sm text-neutral-900 placeholder-neutral-400 focus:outline-none focus:border-[#B76E79] focus:ring-0 transition-colors"
                                    placeholder="Enter your password">
                             <button type="button" @click="show = !show" class="absolute inset-y-0 right-0 pr-3 flex items-center text-neutral-600 hover:text-neutral-600">
                                 <svg x-show="!show" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
@@ -207,7 +207,7 @@
                     </div>
 
                     <label class="flex items-center gap-2 cursor-pointer">
-                        <input type="checkbox" x-model="remember" class="w-4 h-4 rounded border-neutral-300 text-[#205258] focus:ring-0">
+                        <input type="checkbox" x-model="remember" class="w-4 h-4 rounded border-neutral-300 text-[#B76E79] focus:ring-0">
                         <span class="text-sm text-neutral-600">Keep me signed in</span>
                     </label>
 
@@ -223,8 +223,8 @@
                 </form>
 
                 <p class="mt-4 text-center text-sm text-neutral-600">
-                    New to Jikra?
-                    <button @click="$store.authModal.switchMode('register')" class="font-semibold text-[#205258] hover:text-[#1b454a]">Create an account</button>
+                    New to MusCo?
+                    <button @click="$store.authModal.switchMode('register')" class="font-semibold text-[#B76E79] hover:text-[#222222]">Create an account</button>
                 </p>
             </div>
 
@@ -236,7 +236,7 @@
                     <div>
                         <label class="block text-sm font-medium text-neutral-700 mb-1.5">Full Name</label>
                         <input type="text" x-model="name" required
-                               class="w-full px-3 py-2.5 bg-neutral-50 border border-neutral-300 rounded-lg text-sm text-neutral-900 placeholder-neutral-400 focus:outline-none focus:border-[#205258] focus:ring-0 transition-colors"
+                               class="w-full px-3 py-2.5 bg-neutral-50 border border-neutral-300 rounded-lg text-sm text-neutral-900 placeholder-neutral-400 focus:outline-none focus:border-[#B76E79] focus:ring-0 transition-colors"
                                placeholder="Enter your full name">
                         <template x-if="$store.authModal.errors.full_name">
                             <p class="mt-1 text-xs text-error-600" x-text="$store.authModal.errors.full_name[0]"></p>
@@ -246,7 +246,7 @@
                     <div>
                         <label class="block text-sm font-medium text-neutral-700 mb-1.5">Email Address</label>
                         <input type="email" x-model="email" required
-                               class="w-full px-3 py-2.5 bg-neutral-50 border border-neutral-300 rounded-lg text-sm text-neutral-900 placeholder-neutral-400 focus:outline-none focus:border-[#205258] focus:ring-0 transition-colors"
+                               class="w-full px-3 py-2.5 bg-neutral-50 border border-neutral-300 rounded-lg text-sm text-neutral-900 placeholder-neutral-400 focus:outline-none focus:border-[#B76E79] focus:ring-0 transition-colors"
                                placeholder="you@example.com">
                         <template x-if="$store.authModal.errors.email">
                             <p class="mt-1 text-xs text-error-600" x-text="$store.authModal.errors.email[0]"></p>
@@ -256,7 +256,7 @@
                     <div>
                         <label class="block text-sm font-medium text-neutral-700 mb-1.5">Password</label>
                         <input type="password" x-model="password" required
-                               class="w-full px-3 py-2.5 bg-neutral-50 border border-neutral-300 rounded-lg text-sm text-neutral-900 placeholder-neutral-400 focus:outline-none focus:border-[#205258] focus:ring-0 transition-colors"
+                               class="w-full px-3 py-2.5 bg-neutral-50 border border-neutral-300 rounded-lg text-sm text-neutral-900 placeholder-neutral-400 focus:outline-none focus:border-[#B76E79] focus:ring-0 transition-colors"
                                placeholder="Min 8 characters">
                         <template x-if="$store.authModal.errors.password">
                             <p class="mt-1 text-xs text-error-600" x-text="$store.authModal.errors.password[0]"></p>
@@ -266,7 +266,7 @@
                     <div>
                         <label class="block text-sm font-medium text-neutral-700 mb-1.5">Confirm Password</label>
                         <input type="password" x-model="password_confirmation" required
-                               class="w-full px-3 py-2.5 bg-neutral-50 border border-neutral-300 rounded-lg text-sm text-neutral-900 placeholder-neutral-400 focus:outline-none focus:border-[#205258] focus:ring-0 transition-colors"
+                               class="w-full px-3 py-2.5 bg-neutral-50 border border-neutral-300 rounded-lg text-sm text-neutral-900 placeholder-neutral-400 focus:outline-none focus:border-[#B76E79] focus:ring-0 transition-colors"
                                placeholder="Repeat password">
                     </div>
 
@@ -283,14 +283,14 @@
 
                 <p class="mt-4 text-center text-sm text-neutral-600">
                     Already have an account?
-                    <button @click="$store.authModal.switchMode('login')" class="font-semibold text-[#205258] hover:text-[#1b454a]">Sign in</button>
+                    <button @click="$store.authModal.switchMode('login')" class="font-semibold text-[#B76E79] hover:text-[#222222]">Sign in</button>
                 </p>
             </div>
 
             {{-- Footer --}}
             <div class="px-6 pb-5 pt-2 text-center">
                 <p class="text-[11px] text-neutral-600 leading-relaxed">
-                    By continuing, I agree to Jikra's
+                    By continuing, I agree to MusCo's
                     <a href="{{ route('terms') }}" class="text-neutral-600 underline">T&C</a>,
                     <a href="{{ route('privacy') }}" class="text-neutral-600 underline">Privacy Policy</a>
                 </p>
@@ -300,7 +300,7 @@
     @endguest
 
     <!-- Skip to main content (AAA Accessibility) -->
-    <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] focus:bg-[#205258] focus:text-white focus:px-4 focus:py-2 focus:rounded-lg focus:text-sm focus:font-medium focus:shadow-lg">
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] focus:bg-[#B76E79] focus:text-white focus:px-4 focus:py-2 focus:rounded-lg focus:text-sm focus:font-medium focus:shadow-lg">
         Skip to main content
     </a>
 
@@ -330,7 +330,7 @@
                 x-transition:leave-start="opacity-100 translate-y-0"
                 x-transition:leave-end="opacity-0 translate-y-4"
                 @click="window.scrollTo({ top: 0, behavior: 'smooth' })"
-                class="fixed bottom-20 lg:bottom-6 right-4 z-40 w-10 h-10 bg-[#205258] hover:bg-[#1b454a] text-white rounded-full shadow-lg flex items-center justify-center transition-colors"
+                class="fixed bottom-36 lg:bottom-6 right-4 z-40 w-10 h-10 bg-[#B76E79] hover:bg-[#c29958] text-white rounded-full shadow-lg flex items-center justify-center transition-colors"
                 aria-label="Back to top">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"/></svg>
         </button>
@@ -381,7 +381,7 @@
 
             {{-- Loading State --}}
             <div x-show="loading" class="flex items-center justify-center py-20">
-                <svg class="w-8 h-8 animate-spin text-[#205258]" fill="none" viewBox="0 0 24 24">
+                <svg class="w-8 h-8 animate-spin text-[#B76E79]" fill="none" viewBox="0 0 24 24">
                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
                     <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
                 </svg>
@@ -400,7 +400,7 @@
                                 <template x-for="(img, i) in product.images.slice(0, 5)" :key="i">
                                     <button @click="activeImageIndex = i"
                                             class="w-10 h-10 rounded border-2 overflow-hidden bg-white transition-colors"
-                                            :class="activeImageIndex === i ? 'border-[#205258]' : 'border-white/80'">
+                                            :class="activeImageIndex === i ? 'border-[#B76E79]' : 'border-white/80'">
                                         <img :src="img" class="w-full h-full object-cover">
                                     </button>
                                 </template>
@@ -466,7 +466,7 @@
                                 </button>
                             </template>
                             <a :href="product?.url"
-                               class="block w-full py-1.5 text-center text-sm font-medium text-[#205258] rounded-lg hover:bg-[#205258]/5 transition-colors">
+                               class="block w-full py-1.5 text-center text-sm font-medium text-[#B76E79] rounded-lg hover:bg-[#c29958]/5 transition-colors">
                                 View Full Details
                             </a>
                         </div>
@@ -487,26 +487,16 @@
                 recognition: null,
                 currentPlaceholder: '',
                 placeholders: [
-                    'Search for Hair Trimmers...',
-                    'Search for Massage Guns...',
-                    'Search for Mini Fans...',
-                    'Search for Kitchen Chopper...',
-                    'Search for LED Lamps...',
-                    'Search for Air Coolers...',
-                    'Search for Cleaning Tools...',
-                    'Search for Travel Bags...',
-                    'Search for Backpacks...',
-                    'Search for Fitness Equipment...',
-                    'Search for Bathroom Accessories...',
-                    'Search for Personal Care...',
-                    'Search for Electronics Accessories...',
-                    'Search for Toys & Games...',
-                    'Search for Office Supplies...',
-                    'Search for Books...',
-                    'Search for Home Lighting...',
-                    'Search for Duffel Bags...',
-                    'Search for Tools & Hardware...',
-                    'Search for Creative Arts...',
+                    'Search for Diamond Rings...',
+                    'Search for Gold Necklaces...',
+                    'Search for Silver Earrings...',
+                    'Search for Bracelets...',
+                    'Search for Mangalsutra...',
+                    'Search for Pendants...',
+                    'Search for Anklets...',
+                    'Search for Bangles...',
+                    'Search for Hair Pins...',
+                    'Search for Nose Rings...',
                 ],
                 placeholderIndex: 0,
                 charIndex: 0,
@@ -698,7 +688,7 @@
             {{-- Header --}}
             <div class="flex items-center justify-between px-5 py-4 border-b border-neutral-100">
                 <h2 class="text-lg font-bold text-neutral-900 flex items-center gap-2">
-                    <svg class="w-5 h-5 text-[#205258]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-5 h-5 text-[#B76E79]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
                     </svg>
                     Shopping Bag
@@ -713,7 +703,7 @@
 
             {{-- Loading --}}
             <div x-show="$store.cart.isLoading && $store.cart.items.length === 0" class="flex-1 flex items-center justify-center">
-                <svg class="w-8 h-8 animate-spin text-[#205258]" fill="none" viewBox="0 0 24 24">
+                <svg class="w-8 h-8 animate-spin text-[#B76E79]" fill="none" viewBox="0 0 24 24">
                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
                     <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
                 </svg>
@@ -728,7 +718,7 @@
                 </div>
                 <p class="text-neutral-600 font-medium mb-1">Your bag is empty</p>
                 <p class="text-sm text-neutral-400 mb-5">Add items to get started</p>
-                <button @click="$store.cart.close()" class="text-sm font-semibold text-[#205258] hover:text-[#1b454a] transition-colors">Continue Shopping</button>
+                <button @click="$store.cart.close()" class="text-sm font-semibold text-[#B76E79] hover:text-[#222222] transition-colors">Continue Shopping</button>
             </div>
 
             {{-- Items List --}}
@@ -742,7 +732,7 @@
 
                         {{-- Details --}}
                         <div class="flex-1 min-w-0">
-                            <a :href="item.url || '#'" class="text-sm font-medium text-neutral-900 line-clamp-2 hover:text-[#205258] transition-colors" x-text="item.name"></a>
+                            <a :href="item.url || '#'" class="text-sm font-medium text-neutral-900 line-clamp-2 hover:text-[#c29958] transition-colors" x-text="item.name"></a>
                             <div class="flex items-baseline gap-1.5 mt-1">
                                 <span class="text-sm font-bold text-neutral-900" x-text="formatCurrency(item.price)"></span>
                                 <template x-if="item.mrp && item.mrp > item.price">
@@ -763,7 +753,7 @@
                                         <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                                     </button>
                                 </div>
-                                <button @click="$store.cart.remove(item.id)" class="ml-auto text-neutral-400 hover:text-red-500 transition-colors" aria-label="Remove item">
+                                <button @click="$store.cart.remove(item.id)" class="ml-auto text-neutral-400 hover:text-[#CC0C39] transition-colors" aria-label="Remove item">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                                 </button>
                             </div>
@@ -790,7 +780,7 @@
                                 </div>
                             </a>
                             <button @click="$store.cart.add(rec.id)"
-                                    class="w-full mt-1.5 py-1 text-[10px] font-semibold text-[#205258] rounded-md hover:bg-[#205258] hover:text-white transition-colors">
+                                    class="w-full mt-1.5 py-1 text-[10px] font-semibold text-[#B76E79] rounded-md hover:bg-[#c29958] hover:text-white transition-colors">
                                 Add to Bag
                             </button>
                         </div>
@@ -811,7 +801,7 @@
                         Checkout
                     </a>
                     <a href="{{ route('cart.index') }}" @click="$store.cart.close()"
-                       class="w-full py-1.5 text-center text-sm font-medium text-[#205258] rounded-lg hover:bg-[#205258]/5 transition-colors">
+                       class="w-full py-1.5 text-center text-sm font-medium text-[#B76E79] rounded-lg hover:bg-[#c29958]/5 transition-colors">
                         View Bag
                     </a>
                 </div>
@@ -827,25 +817,25 @@
          x-transition:leave="transition ease-in duration-200"
          x-transition:leave-start="opacity-100 translate-y-0"
          x-transition:leave-end="opacity-0 translate-y-full"
-         class="fixed bottom-20 lg:bottom-4 left-3 z-50 bg-white rounded-lg shadow-lg border border-[#E3E6E6] px-3 py-2.5 w-56">
+         class="fixed bottom-20 lg:bottom-4 left-3 z-50 bg-white rounded-lg shadow-lg border border-[#efefef] px-3 py-2.5 w-56">
         <div class="flex items-center gap-2">
-            <div class="w-7 h-7 rounded bg-[#205258] flex items-center justify-center shrink-0">
+            <div class="w-7 h-7 rounded bg-[#B76E79] flex items-center justify-center shrink-0">
                 <svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
                 </svg>
             </div>
             <div class="flex-1 min-w-0">
-                <p class="text-[11px] font-semibold text-[#0F1111] leading-tight">Add Jikra to Home Screen</p>
+                <p class="text-[11px] font-semibold text-[#222222] leading-tight">Add MusCo to Home Screen</p>
             </div>
-            <button @click="dismiss()" class="shrink-0 text-[#565959] hover:text-[#0F1111]" aria-label="Dismiss">
+            <button @click="dismiss()" class="shrink-0 text-[#555555] hover:text-[#222222]" aria-label="Dismiss">
                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                 </svg>
             </button>
         </div>
         <div class="flex gap-1.5 mt-2">
-            <button @click="dismiss()" class="flex-1 py-1 text-[10px] font-medium text-[#565959] bg-[#F7F8FA] rounded hover:bg-[#E3E6E6] transition-colors">Later</button>
-            <button @click="install()" class="flex-1 py-1 text-[10px] font-medium text-white bg-[#205258] rounded hover:bg-[#1b454a] transition-colors">Install</button>
+            <button @click="dismiss()" class="flex-1 py-1 text-[10px] font-medium text-[#555555] bg-[#f7f7f7] rounded hover:bg-[#efefef] transition-colors">Later</button>
+            <button @click="install()" class="flex-1 py-1 text-[10px] font-medium text-white bg-[#B76E79] rounded hover:bg-[#222222] transition-colors">Install</button>
         </div>
     </div>
 

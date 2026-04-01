@@ -7,7 +7,7 @@
     </div>
 
     @if(session('success'))
-    <div class="mb-4 p-3 rounded-lg bg-green-50 border border-green-200 text-green-800 text-sm">{{ session('success') }}</div>
+    <div class="mb-4 p-3 rounded-lg bg-[#B76E79]/5 border border-[#B76E79]/20 text-[#B76E79] text-sm">{{ session('success') }}</div>
     @endif
 
     {{-- Tabs --}}
@@ -43,11 +43,11 @@
                     <input type="hidden" name="ids[]" :value="id">
                 </template>
                 <button type="submit" name="action" value="delete" onclick="return confirm('Delete selected entries?')"
-                        class="px-3 py-1 text-xs font-medium text-red-600 bg-white border border-gray-300 rounded-md hover:bg-red-50 transition">
+                        class="px-3 py-1 text-xs font-medium text-[#CC0C39] bg-white border border-gray-300 rounded-md hover:bg-[#CC0C39]/10 transition">
                     Delete selected
                 </button>
                 <button type="submit" name="action" value="remind" onclick="return confirm('Send reminders to entries with contact info?')"
-                        class="px-3 py-1 text-xs font-medium text-blue-600 bg-white border border-gray-300 rounded-md hover:bg-blue-50 transition ml-1">
+                        class="px-3 py-1 text-xs font-medium text-[#B76E79] bg-white border border-gray-300 rounded-md hover:bg-[#B76E79]/5 transition ml-1">
                     Send reminder
                 </button>
             </form>
@@ -73,7 +73,7 @@
                         <input type="checkbox" class="rounded border-gray-300" value="{{ $item->id }}" x-model="selected">
                     </td>
                     <td class="px-4 py-3">
-                        <button @click="showItems = !showItems" class="text-blue-600 hover:text-blue-800 font-medium text-sm hover:underline">
+                        <button @click="showItems = !showItems" class="text-[#B76E79] hover:text-[#B76E79]/80 font-medium text-sm hover:underline">
                             #{{ $item->id }}
                         </button>
                         <span class="text-gray-400 text-xs ml-1">{{ $item->items_count ?? ($item->cart_snapshot ? count($item->cart_snapshot) : 0) }} {{ Str::plural('item', $item->items_count ?? 1) }}</span>
@@ -94,15 +94,15 @@
                     <td class="px-4 py-3 text-right font-medium text-gray-900">{{ config('app.currency_symbol', '₹') }}{{ number_format($item->cart_total, 0) }}</td>
                     <td class="px-4 py-3">
                         @if($item->recovered && $item->order_id)
-                            <a href="{{ route('admin.orders.show', $item->order_id) }}" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-green-50 text-green-700 hover:bg-green-100 transition">
+                            <a href="{{ route('admin.orders.show', $item->order_id) }}" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-[#B76E79]/5 text-[#B76E79] hover:bg-[#B76E79]/10 transition">
                                 Recovered
                             </a>
                         @elseif($item->recovered)
-                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-50 text-green-700">Recovered</span>
+                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-[#B76E79]/5 text-[#B76E79]">Recovered</span>
                         @elseif($item->notified_at)
-                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-yellow-50 text-yellow-700">Reminded {{ $item->notified_at->diffForHumans() }}</span>
+                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-[#c29958]/10 text-[#c29958]">Reminded {{ $item->notified_at->diffForHumans() }}</span>
                         @else
-                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-50 text-red-600">Not recovered</span>
+                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-[#CC0C39]/10 text-[#CC0C39]">Not recovered</span>
                         @endif
                     </td>
                 </tr>

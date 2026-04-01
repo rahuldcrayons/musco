@@ -11,9 +11,9 @@ class SettingSeeder extends Seeder
     {
         $settings = [
             // General Settings
-            ['group' => 'general', 'key' => 'site_name', 'value' => 'Jikra', 'type' => 'string'],
-            ['group' => 'general', 'key' => 'site_tagline', 'value' => 'Your Go-To Store for Mobile Accessories', 'type' => 'string'],
-            ['group' => 'general', 'key' => 'site_email', 'value' => 'support@jikra.in', 'type' => 'string'],
+            ['group' => 'general', 'key' => 'site_name', 'value' => 'MusCo', 'type' => 'string'],
+            ['group' => 'general', 'key' => 'site_tagline', 'value' => 'Exquisite Jewellery for Every Occasion', 'type' => 'string'],
+            ['group' => 'general', 'key' => 'site_email', 'value' => 'support@musco.com', 'type' => 'string'],
             ['group' => 'general', 'key' => 'site_phone', 'value' => '+91 98765 43210', 'type' => 'string'],
             ['group' => 'general', 'key' => 'site_address', 'value' => 'Mumbai, Maharashtra, India', 'type' => 'string'],
             ['group' => 'general', 'key' => 'timezone', 'value' => 'Asia/Kolkata', 'type' => 'string'],
@@ -21,8 +21,8 @@ class SettingSeeder extends Seeder
             ['group' => 'general', 'key' => 'currency', 'value' => 'INR', 'type' => 'string'],
             ['group' => 'general', 'key' => 'currency_symbol', 'value' => '₹', 'type' => 'string'],
             ['group' => 'general', 'key' => 'currency_position', 'value' => 'before', 'type' => 'string'],
-            ['group' => 'general', 'key' => 'announcement_text', 'value' => 'Free Shipping on Orders Above ₹499 | COD Available | 7-Day Easy Returns', 'type' => 'string'],
-            ['group' => 'general', 'key' => 'footer_about', 'value' => 'Your one-stop shop for mobile accessories, Bluetooth speakers, earphones, chargers, and more. Quality tech accessories at great prices.', 'type' => 'string'],
+            ['group' => 'general', 'key' => 'announcement_text', 'value' => 'Free Shipping on Orders Above ₹999 | BIS Hallmarked Jewellery | 15-Day Easy Returns', 'type' => 'string'],
+            ['group' => 'general', 'key' => 'footer_about', 'value' => 'Your trusted destination for certified gold, diamond & silver jewellery. Hallmarked collections, exquisite craftsmanship, and timeless designs for every occasion.', 'type' => 'string'],
 
             // Payment Settings
             ['group' => 'payment', 'key' => 'stripe_enabled', 'value' => '0', 'type' => 'boolean'],
@@ -47,19 +47,47 @@ class SettingSeeder extends Seeder
 
             // Email Settings
             ['group' => 'email', 'key' => 'mail_driver', 'value' => 'smtp', 'type' => 'string'],
-            ['group' => 'email', 'key' => 'mail_from_address', 'value' => 'noreply@jikra.in', 'type' => 'string'],
-            ['group' => 'email', 'key' => 'mail_from_name', 'value' => 'Jikra', 'type' => 'string'],
+            ['group' => 'email', 'key' => 'mail_from_address', 'value' => 'noreply@musco.com', 'type' => 'string'],
+            ['group' => 'email', 'key' => 'mail_from_name', 'value' => 'MusCo', 'type' => 'string'],
 
             // SEO Settings
-            ['group' => 'seo', 'key' => 'meta_title', 'value' => 'Jikra - Your Go-To Store for Mobile Accessories', 'type' => 'string'],
-            ['group' => 'seo', 'key' => 'meta_description', 'value' => 'Shop mobile accessories, Bluetooth speakers, earphones, chargers, power banks, phone cases and more at Jikra. Best prices with fast shipping across India.', 'type' => 'string'],
-            ['group' => 'seo', 'key' => 'meta_keywords', 'value' => 'mobile accessories, bluetooth speakers, earphones, phone cases, chargers, power banks, headphones, smartwatch, India', 'type' => 'string'],
+            ['group' => 'seo', 'key' => 'meta_title', 'value' => 'MusCo - Exquisite Jewellery for Every Occasion', 'type' => 'string'],
+            ['group' => 'seo', 'key' => 'meta_description', 'value' => 'Shop certified gold, diamond & silver jewellery at MusCo. Rings, necklaces, earrings, bangles & more. BIS hallmarked with free shipping across India.', 'type' => 'string'],
+            ['group' => 'seo', 'key' => 'meta_keywords', 'value' => 'gold jewellery, diamond rings, silver jewellery, necklaces, earrings, bangles, engagement rings, wedding jewellery, hallmarked, India', 'type' => 'string'],
 
             // Social
             ['group' => 'social', 'key' => 'social_facebook', 'value' => '#', 'type' => 'string'],
             ['group' => 'social', 'key' => 'social_instagram', 'value' => '#', 'type' => 'string'],
             ['group' => 'social', 'key' => 'social_twitter', 'value' => '#', 'type' => 'string'],
             ['group' => 'social', 'key' => 'social_youtube', 'value' => '#', 'type' => 'string'],
+
+            // Business Hours & WhatsApp
+            ['group' => 'general', 'key' => 'business_hours', 'value' => 'Mon - Sat: 10AM - 7PM', 'type' => 'string'],
+            ['group' => 'general', 'key' => 'whatsapp_number', 'value' => '919354567705', 'type' => 'string'],
+            ['group' => 'general', 'key' => 'whatsapp_message', 'value' => 'Hi MusCo! I have a question about your products.', 'type' => 'string'],
+            ['group' => 'general', 'key' => 'whatsapp_status_text', 'value' => 'Typically replies instantly', 'type' => 'string'],
+
+            // Trust Badges
+            ['group' => 'storefront', 'key' => 'dispatch_time', 'value' => '24 hours', 'type' => 'string'],
+            ['group' => 'storefront', 'key' => 'return_policy_days', 'value' => '7', 'type' => 'integer'],
+            ['group' => 'storefront', 'key' => 'trust_badge_1_title', 'value' => '24 hours Dispatch', 'type' => 'string'],
+            ['group' => 'storefront', 'key' => 'trust_badge_1_desc', 'value' => 'Fast shipping', 'type' => 'string'],
+            ['group' => 'storefront', 'key' => 'trust_badge_2_title', 'value' => 'Easy Returns', 'type' => 'string'],
+            ['group' => 'storefront', 'key' => 'trust_badge_2_desc', 'value' => '7-day hassle-free', 'type' => 'string'],
+            ['group' => 'storefront', 'key' => 'trust_badge_3_title', 'value' => 'Secure Payment', 'type' => 'string'],
+            ['group' => 'storefront', 'key' => 'trust_badge_3_desc', 'value' => '100% safe & encrypted', 'type' => 'string'],
+            ['group' => 'storefront', 'key' => 'trust_badge_4_title', 'value' => 'Quality Assured', 'type' => 'string'],
+            ['group' => 'storefront', 'key' => 'trust_badge_4_desc', 'value' => '100% genuine products', 'type' => 'string'],
+
+            // Exit Intent Popup
+            ['group' => 'storefront', 'key' => 'exit_popup_discount', 'value' => '10', 'type' => 'string'],
+            ['group' => 'storefront', 'key' => 'exit_popup_headline', 'value' => "Wait! Don't leave yet", 'type' => 'string'],
+            ['group' => 'storefront', 'key' => 'exit_popup_button_text', 'value' => 'GET 10% OFF', 'type' => 'string'],
+            ['group' => 'storefront', 'key' => 'exit_popup_success_message', 'value' => 'Check your email! Your 10% discount code is on its way.', 'type' => 'string'],
+
+            // Chatbot Widget
+            ['group' => 'storefront', 'key' => 'chatbot_greeting', 'value' => 'Hi there! 👋', 'type' => 'string'],
+            ['group' => 'storefront', 'key' => 'chatbot_welcome_message', 'value' => "I'm your shopping assistant. Ask me about products, orders, sizes, offers, or anything about the store!", 'type' => 'string'],
         ];
 
         foreach ($settings as $settingData) {

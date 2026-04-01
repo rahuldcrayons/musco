@@ -320,8 +320,8 @@ class RazorpayWebhookController extends Controller
         }
 
         $message = match ($status) {
-            'authorized', 'captured' => "Hi {$name}! ✅ Payment of ₹{$payment->amount} received for your Jikra order #{$order->order_number}. Thank you for shopping with us! Track your order at: " . url("/orders/{$order->id}"),
-            'failed' => "Hi {$name}, ❌ Payment for your Jikra order #{$order->order_number} failed. Please retry at: " . url("/orders/{$order->id}") . " or contact our support team for help.",
+            'authorized', 'captured' => "Hi {$name}! ✅ Payment of ₹{$payment->amount} received for your MusCo order #{$order->order_number}. Thank you for shopping with us! Track your order at: " . url("/orders/{$order->id}"),
+            'failed' => "Hi {$name}, ❌ Payment for your MusCo order #{$order->order_number} failed. Please retry at: " . url("/orders/{$order->id}") . " or contact our support team for help.",
             default => null,
         };
 

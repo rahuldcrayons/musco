@@ -117,7 +117,7 @@
 
     {{-- Print Button (screen only) --}}
     <div class="center no-print" style="margin-top: 20px;">
-        <button onclick="window.print()" style="padding: 8px 24px; font-size: 14px; cursor: pointer; background: #205258; color: white; border: none; border-radius: 6px;">
+        <button onclick="window.print()" style="padding: 8px 24px; font-size: 14px; cursor: pointer; background: #B76E79; color: white; border: none; border-radius: 6px;">
             Print Receipt
         </button>
         <button onclick="window.close()" style="padding: 8px 24px; font-size: 14px; cursor: pointer; background: #E2E8F0; color: #333; border: none; border-radius: 6px; margin-left: 8px;">

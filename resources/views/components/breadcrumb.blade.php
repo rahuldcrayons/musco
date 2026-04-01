@@ -3,7 +3,7 @@
 <nav {{ $attributes->merge(['class' => 'text-[13px]']) }} aria-label="Breadcrumb">
     <ol class="flex items-center flex-wrap gap-1.5" itemscope itemtype="https://schema.org/BreadcrumbList">
         <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
-            <a href="{{ url('/') }}" itemprop="item" class="inline-flex items-center gap-1 text-neutral-600 hover:text-primary-600 transition-colors">
+            <a href="{{ url('/') }}" itemprop="item" class="inline-flex items-center gap-1 text-current opacity-70 hover:opacity-100 transition-opacity">
                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
                 </svg>
@@ -14,13 +14,13 @@
 
         @foreach($items as $index => $item)
             <li class="flex items-center gap-1.5" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
-                <svg class="w-3 h-3 text-neutral-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="w-3 h-3 text-current opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/>
                 </svg>
                 @if($loop->last)
-                    <span itemprop="name" class="text-neutral-800 font-medium">{{ $item['label'] }}</span>
+                    <span itemprop="name" class="text-current font-medium">{{ $item['label'] }}</span>
                 @else
-                    <a href="{{ $item['url'] }}" itemprop="item" class="text-neutral-600 hover:text-primary-600 transition-colors">
+                    <a href="{{ $item['url'] }}" itemprop="item" class="text-current opacity-70 hover:opacity-100 transition-opacity">
                         <span itemprop="name">{{ $item['label'] }}</span>
                     </a>
                 @endif

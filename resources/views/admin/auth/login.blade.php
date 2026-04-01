@@ -7,28 +7,28 @@
     <meta name="robots" content="noindex, nofollow">
     <title>Sign In - {{ config('app.name') }}</title>
     <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=poppins:400,500,600,700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.bunny.net/css?family=poppins:400,500,600,700|playfair-display:600,700&display=swap" rel="stylesheet" />
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Poppins', sans-serif; background: #f0f2f2; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        body { font-family: 'DM Sans', sans-serif; background: #F5F0EE; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         .logo { margin-bottom: 20px; text-align: center; }
         .logo img { height: 36px; }
         .card { background: #fff; border: 1px solid #ddd; border-radius: 8px; padding: 24px 28px; width: 100%; max-width: 360px; }
-        .card h1 { font-size: 22px; font-weight: 600; color: #0F1111; margin-bottom: 20px; }
+        .card h1 { font-family: 'Playfair Display', Georgia, serif; font-size: 24px; font-weight: 600; color: #2D2D2D; margin-bottom: 20px; }
         .form-group { margin-bottom: 16px; }
-        .form-group label { display: block; font-size: 13px; font-weight: 600; color: #0F1111; margin-bottom: 4px; }
-        .form-group input { width: 100%; padding: 8px 10px; font-size: 14px; border: 1px solid #a6a6a6; border-radius: 4px; outline: none; font-family: 'Poppins', sans-serif; }
-        .form-group input:focus { border-color: #e77600; box-shadow: 0 0 0 3px rgba(228,121,17,0.15); }
+        .form-group label { display: block; font-size: 13px; font-weight: 600; color: #222222; margin-bottom: 4px; }
+        .form-group input { width: 100%; padding: 8px 10px; font-size: 14px; border: 1px solid #a6a6a6; border-radius: 4px; outline: none; font-family: 'DM Sans', sans-serif; }
+        .form-group input:focus { border-color: #B76E79; box-shadow: 0 0 0 3px rgba(183,110,121,0.15); }
         .form-group .error { font-size: 12px; color: #c40000; margin-top: 4px; }
         .remember { display: flex; align-items: center; gap: 6px; margin-top: 12px; }
-        .remember input { width: 14px; height: 14px; accent-color: #e77600; }
-        .remember label { font-size: 13px; color: #0F1111; cursor: pointer; }
-        .btn-submit { width: 100%; padding: 10px; background: linear-gradient(to bottom, #f7dfa5, #f0c14b); border: 1px solid #a88734; border-radius: 4px; font-size: 14px; font-weight: 500; color: #0F1111; cursor: pointer; font-family: 'Poppins', sans-serif; }
-        .btn-submit:hover { background: linear-gradient(to bottom, #f5d78e, #eeb933); }
-        .btn-submit:active { background: #f0c14b; box-shadow: 0 0 0 3px rgba(228,121,17,0.2); }
+        .remember input { width: 14px; height: 14px; accent-color: #B76E79; }
+        .remember label { font-size: 13px; color: #222222; cursor: pointer; }
+        .btn-submit { width: 100%; padding: 10px; background: #B76E79; border: 1px solid #222222; border-radius: 4px; font-size: 14px; font-weight: 500; color: #fff; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: background 0.2s; }
+        .btn-submit:hover { background: #222222; }
+        .btn-submit:active { background: #7d4f4f; box-shadow: 0 0 0 3px rgba(183,110,121,0.2); }
         .back-link { text-align: center; margin-top: 20px; }
-        .back-link a { font-size: 13px; color: #0066c0; text-decoration: none; }
-        .back-link a:hover { text-decoration: underline; color: #c45500; }
+        .back-link a { font-size: 13px; color: #B76E79; text-decoration: none; }
+        .back-link a:hover { text-decoration: underline; color: #222222; }
         .alert { padding: 10px 12px; background: #fef2f2; border: 1px solid #fca5a5; border-radius: 4px; font-size: 13px; color: #991b1b; margin-bottom: 16px; }
         .pw-wrap { position: relative; }
         .pw-wrap input { padding-right: 40px; }
@@ -38,7 +38,7 @@
 <body>
     <div class="logo">
         <a href="{{ url('/') }}">
-            <img src="{{ asset('images/jikra-logo.png') }}" alt="{{ config('app.name') }}">
+            <span style="font-family:'Outfit',sans-serif; color:#B76E79; font-size:32px; font-weight:700; letter-spacing:-0.02em;">Mus<span style="color:#2b2b2b;">Co</span></span>
         </a>
     </div>
 
@@ -54,7 +54,7 @@
 
             <div class="form-group">
                 <label for="email">Email</label>
-                <input type="email" name="email" id="email" value="{{ old('email') }}" required autofocus placeholder="admin@jikra.in">
+                <input type="email" name="email" id="email" value="{{ old('email') }}" required autofocus placeholder="admin@musco.com">
                 @error('email')
                     <div class="error">{{ $message }}</div>
                 @enderror

@@ -93,8 +93,8 @@
                         <div>
                             <label class="form-label">Background Color</label>
                             <div class="flex items-center gap-2">
-                                <input type="color" name="background_color" value="{{ $section->background_color ?? '#205258' }}" class="w-10 h-10 rounded border border-neutral-200 cursor-pointer">
-                                <input type="text" value="{{ $section->background_color ?? '#205258' }}" class="form-input flex-1" readonly>
+                                <input type="color" name="background_color" value="{{ $section->background_color ?? '#B76E79' }}" class="w-10 h-10 rounded border border-neutral-200 cursor-pointer">
+                                <input type="text" value="{{ $section->background_color ?? '#B76E79' }}" class="form-input flex-1" readonly>
                             </div>
                             <p class="form-help">Used when no background image is set</p>
                         </div>
@@ -121,7 +121,7 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4" x-data="{ items: {{ json_encode($section->content ?? []) }} }">
                         <template x-for="(item, index) in items" :key="index">
                             <div class="p-4 bg-neutral-50 rounded-lg relative">
-                                <button type="button" @click="items.splice(index, 1)" class="absolute top-2 right-2 text-red-400 hover:text-red-600 transition-colors" title="Remove item">
+                                <button type="button" @click="items.splice(index, 1)" class="absolute top-2 right-2 text-[#CC0C39]/70 hover:text-[#CC0C39] transition-colors" title="Remove item">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                                 </button>
                                 <div class="space-y-2 pr-6">

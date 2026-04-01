@@ -100,10 +100,10 @@
                             <td class="px-4 py-3">
                                 @switch($ticket->priority)
                                     @case('high')
-                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-50 text-red-700">High</span>
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-[#CC0C39]/10 text-[#CC0C39]">High</span>
                                         @break
                                     @case('normal')
-                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700">Normal</span>
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-[#B76E79]/5 text-[#B76E79]">Normal</span>
                                         @break
                                     @case('low')
                                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600">Low</span>
@@ -113,14 +113,14 @@
                             <td class="px-4 py-3">
                                 @switch($ticket->status)
                                     @case('open')
-                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-50 text-amber-700">
-                                            <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-[#c29958]/10 text-[#c29958]">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-[#c29958]"></span>
                                             Open
                                         </span>
                                         @break
                                     @case('answered')
-                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700">
-                                            <span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
+                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-[#B76E79]/5 text-[#B76E79]">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-[#B76E79]"></span>
                                             In Progress
                                         </span>
                                         @break

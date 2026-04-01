@@ -1,8 +1,8 @@
 <x-layouts.app>
-    <x-slot name="title">Size Guide - {{ config('app.name') }}</x-slot>
+    <x-slot name="title">Jewellery Size Guide - {{ config('app.name') }}</x-slot>
 
     @push('meta')
-        <meta name="description" content="Product size guide at {{ config('app.name') }}. Find the perfect size with our sizing charts.">
+        <meta name="description" content="Jewellery size guide at {{ config('app.name') }}. Find your perfect ring size, bangle size, necklace length and bracelet fit.">
         <link rel="canonical" href="{{ url('/size-guide') }}">
     @endpush
 
@@ -19,82 +19,220 @@
 
                 <!-- Header -->
                 <div class="text-center mb-10">
-                    <h1 class="text-2xl sm:text-3xl font-bold text-neutral-900 mb-3">Product Size Guide</h1>
-                    <p class="text-sm text-neutral-600 max-w-xl mx-auto">Find the perfect fit with our sizing chart. Use the table below to match measurements with our size numbers.</p>
+                    <h1 class="text-2xl sm:text-3xl font-bold text-neutral-900 mb-3">Jewellery Size Guide</h1>
+                    <p class="text-sm text-neutral-600 max-w-xl mx-auto">Find your perfect fit. Use the charts below to determine your ring size, bangle size, necklace length and more.</p>
                 </div>
 
-                <!-- Size Chart -->
-                <div class="bg-white rounded-xl border border-neutral-100 overflow-hidden mb-10">
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-sm">
-                            <thead>
-                                <tr class="bg-neutral-50">
-                                    <th class="px-4 py-3 text-left font-semibold text-neutral-700">Size</th>
-                                    <th class="px-4 py-3 text-left font-semibold text-neutral-700">Age</th>
-                                    <th class="px-4 py-3 text-left font-semibold text-neutral-700">Height (cm)</th>
-                                    <th class="px-4 py-3 text-left font-semibold text-neutral-700">Chest (cm)</th>
-                                    <th class="px-4 py-3 text-left font-semibold text-neutral-700">Waist (cm)</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-neutral-100">
-                                <tr class="hover:bg-neutral-50/50"><td class="px-4 py-2.5 font-medium text-neutral-900">18</td><td class="px-4 py-2.5 text-neutral-600">0 – 3 months</td><td class="px-4 py-2.5 text-neutral-600">50 – 56</td><td class="px-4 py-2.5 text-neutral-600">36 – 38</td><td class="px-4 py-2.5 text-neutral-600">36 – 38</td></tr>
-                                <tr class="hover:bg-neutral-50/50"><td class="px-4 py-2.5 font-medium text-neutral-900">20</td><td class="px-4 py-2.5 text-neutral-600">3 – 6 months</td><td class="px-4 py-2.5 text-neutral-600">56 – 62</td><td class="px-4 py-2.5 text-neutral-600">38 – 40</td><td class="px-4 py-2.5 text-neutral-600">38 – 40</td></tr>
-                                <tr class="hover:bg-neutral-50/50"><td class="px-4 py-2.5 font-medium text-neutral-900">22</td><td class="px-4 py-2.5 text-neutral-600">6 – 9 months</td><td class="px-4 py-2.5 text-neutral-600">62 – 68</td><td class="px-4 py-2.5 text-neutral-600">40 – 42</td><td class="px-4 py-2.5 text-neutral-600">40 – 42</td></tr>
-                                <tr class="hover:bg-neutral-50/50"><td class="px-4 py-2.5 font-medium text-neutral-900">24</td><td class="px-4 py-2.5 text-neutral-600">9 – 12 months</td><td class="px-4 py-2.5 text-neutral-600">68 – 74</td><td class="px-4 py-2.5 text-neutral-600">42 – 44</td><td class="px-4 py-2.5 text-neutral-600">42 – 44</td></tr>
-                                <tr class="hover:bg-neutral-50/50"><td class="px-4 py-2.5 font-medium text-neutral-900">26</td><td class="px-4 py-2.5 text-neutral-600">1 – 1.5 years</td><td class="px-4 py-2.5 text-neutral-600">74 – 80</td><td class="px-4 py-2.5 text-neutral-600">44 – 46</td><td class="px-4 py-2.5 text-neutral-600">44 – 45</td></tr>
-                                <tr class="hover:bg-neutral-50/50"><td class="px-4 py-2.5 font-medium text-neutral-900">28</td><td class="px-4 py-2.5 text-neutral-600">1.5 – 2 years</td><td class="px-4 py-2.5 text-neutral-600">80 – 86</td><td class="px-4 py-2.5 text-neutral-600">46 – 48</td><td class="px-4 py-2.5 text-neutral-600">45 – 47</td></tr>
-                                <tr class="hover:bg-neutral-50/50"><td class="px-4 py-2.5 font-medium text-neutral-900">30</td><td class="px-4 py-2.5 text-neutral-600">2 – 3 years</td><td class="px-4 py-2.5 text-neutral-600">86 – 92</td><td class="px-4 py-2.5 text-neutral-600">48 – 50</td><td class="px-4 py-2.5 text-neutral-600">47 – 48</td></tr>
-                                <tr class="hover:bg-neutral-50/50"><td class="px-4 py-2.5 font-medium text-neutral-900">32</td><td class="px-4 py-2.5 text-neutral-600">3 – 4 years</td><td class="px-4 py-2.5 text-neutral-600">92 – 98</td><td class="px-4 py-2.5 text-neutral-600">50 – 52</td><td class="px-4 py-2.5 text-neutral-600">48 – 50</td></tr>
-                                <tr class="hover:bg-neutral-50/50"><td class="px-4 py-2.5 font-medium text-neutral-900">34</td><td class="px-4 py-2.5 text-neutral-600">4 – 5 years</td><td class="px-4 py-2.5 text-neutral-600">98 – 104</td><td class="px-4 py-2.5 text-neutral-600">52 – 54</td><td class="px-4 py-2.5 text-neutral-600">50 – 52</td></tr>
-                                <tr class="hover:bg-neutral-50/50"><td class="px-4 py-2.5 font-medium text-neutral-900">36</td><td class="px-4 py-2.5 text-neutral-600">5 – 6 years</td><td class="px-4 py-2.5 text-neutral-600">104 – 110</td><td class="px-4 py-2.5 text-neutral-600">54 – 56</td><td class="px-4 py-2.5 text-neutral-600">52 – 53</td></tr>
-                                <tr class="hover:bg-neutral-50/50"><td class="px-4 py-2.5 font-medium text-neutral-900">38</td><td class="px-4 py-2.5 text-neutral-600">6 – 7 years</td><td class="px-4 py-2.5 text-neutral-600">110 – 116</td><td class="px-4 py-2.5 text-neutral-600">56 – 58</td><td class="px-4 py-2.5 text-neutral-600">53 – 55</td></tr>
-                                <tr class="hover:bg-neutral-50/50"><td class="px-4 py-2.5 font-medium text-neutral-900">40</td><td class="px-4 py-2.5 text-neutral-600">7 – 8 years</td><td class="px-4 py-2.5 text-neutral-600">116 – 122</td><td class="px-4 py-2.5 text-neutral-600">58 – 61</td><td class="px-4 py-2.5 text-neutral-600">55 – 57</td></tr>
-                                <tr class="hover:bg-neutral-50/50"><td class="px-4 py-2.5 font-medium text-neutral-900">42</td><td class="px-4 py-2.5 text-neutral-600">8 – 9 years</td><td class="px-4 py-2.5 text-neutral-600">122 – 128</td><td class="px-4 py-2.5 text-neutral-600">61 – 64</td><td class="px-4 py-2.5 text-neutral-600">57 – 59</td></tr>
-                                <tr class="hover:bg-neutral-50/50"><td class="px-4 py-2.5 font-medium text-neutral-900">44</td><td class="px-4 py-2.5 text-neutral-600">9 – 10 years</td><td class="px-4 py-2.5 text-neutral-600">128 – 134</td><td class="px-4 py-2.5 text-neutral-600">64 – 67</td><td class="px-4 py-2.5 text-neutral-600">59 – 61</td></tr>
-                                <tr class="hover:bg-neutral-50/50"><td class="px-4 py-2.5 font-medium text-neutral-900">46</td><td class="px-4 py-2.5 text-neutral-600">10 – 12 years</td><td class="px-4 py-2.5 text-neutral-600">134 – 146</td><td class="px-4 py-2.5 text-neutral-600">67 – 72</td><td class="px-4 py-2.5 text-neutral-600">61 – 64</td></tr>
-                                <tr class="hover:bg-neutral-50/50"><td class="px-4 py-2.5 font-medium text-neutral-900">48</td><td class="px-4 py-2.5 text-neutral-600">12 – 13 years</td><td class="px-4 py-2.5 text-neutral-600">146 – 152</td><td class="px-4 py-2.5 text-neutral-600">72 – 76</td><td class="px-4 py-2.5 text-neutral-600">64 – 66</td></tr>
-                                <tr class="hover:bg-neutral-50/50"><td class="px-4 py-2.5 font-medium text-neutral-900">50</td><td class="px-4 py-2.5 text-neutral-600">13 – 14 years</td><td class="px-4 py-2.5 text-neutral-600">152 – 158</td><td class="px-4 py-2.5 text-neutral-600">76 – 80</td><td class="px-4 py-2.5 text-neutral-600">66 – 68</td></tr>
-                            </tbody>
-                        </table>
+                <!-- Tab Navigation -->
+                <div x-data="{ activeTab: 'rings' }" class="space-y-8">
+                    <div class="flex flex-wrap justify-center gap-2 sm:gap-3">
+                        <button @click="activeTab = 'rings'" :class="activeTab === 'rings' ? 'bg-[#B76E79] text-white shadow-lg shadow-[#B76E79]/25' : 'bg-white text-neutral-600 hover:bg-neutral-50 border border-neutral-200'" class="px-4 py-2 text-sm font-medium rounded-lg transition-all">
+                            Rings
+                        </button>
+                        <button @click="activeTab = 'bangles'" :class="activeTab === 'bangles' ? 'bg-[#B76E79] text-white shadow-lg shadow-[#B76E79]/25' : 'bg-white text-neutral-600 hover:bg-neutral-50 border border-neutral-200'" class="px-4 py-2 text-sm font-medium rounded-lg transition-all">
+                            Bangles
+                        </button>
+                        <button @click="activeTab = 'necklaces'" :class="activeTab === 'necklaces' ? 'bg-[#B76E79] text-white shadow-lg shadow-[#B76E79]/25' : 'bg-white text-neutral-600 hover:bg-neutral-50 border border-neutral-200'" class="px-4 py-2 text-sm font-medium rounded-lg transition-all">
+                            Necklaces
+                        </button>
+                        <button @click="activeTab = 'bracelets'" :class="activeTab === 'bracelets' ? 'bg-[#B76E79] text-white shadow-lg shadow-[#B76E79]/25' : 'bg-white text-neutral-600 hover:bg-neutral-50 border border-neutral-200'" class="px-4 py-2 text-sm font-medium rounded-lg transition-all">
+                            Bracelets
+                        </button>
+                    </div>
+
+                    <!-- Ring Size Chart -->
+                    <div x-show="activeTab === 'rings'" x-transition>
+                        <div class="bg-white rounded-xl border border-neutral-100 overflow-hidden mb-6">
+                            <div class="px-5 py-4 border-b border-neutral-100">
+                                <h2 class="text-lg font-bold text-neutral-900">Ring Size Chart (Indian Standard)</h2>
+                                <p class="text-xs text-neutral-500 mt-1">Measure the inner diameter of a ring that fits you, or use a string around your finger.</p>
+                            </div>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-sm">
+                                    <thead>
+                                        <tr class="bg-neutral-50">
+                                            <th class="px-4 py-3 text-left font-semibold text-neutral-700">Indian Size</th>
+                                            <th class="px-4 py-3 text-left font-semibold text-neutral-700">US Size</th>
+                                            <th class="px-4 py-3 text-left font-semibold text-neutral-700">Inner Diameter (mm)</th>
+                                            <th class="px-4 py-3 text-left font-semibold text-neutral-700">Inner Circumference (mm)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-neutral-100">
+                                        <tr class="hover:bg-neutral-50/50"><td class="px-4 py-2.5 font-medium text-neutral-900">5</td><td class="px-4 py-2.5 text-neutral-600">3</td><td class="px-4 py-2.5 text-neutral-600">14.0</td><td class="px-4 py-2.5 text-neutral-600">44.0</td></tr>
+                                        <tr class="hover:bg-neutral-50/50"><td class="px-4 py-2.5 font-medium text-neutral-900">6</td><td class="px-4 py-2.5 text-neutral-600">3.5</td><td class="px-4 py-2.5 text-neutral-600">14.4</td><td class="px-4 py-2.5 text-neutral-600">45.2</td></tr>
+                                        <tr class="hover:bg-neutral-50/50"><td class="px-4 py-2.5 font-medium text-neutral-900">7</td><td class="px-4 py-2.5 text-neutral-600">4</td><td class="px-4 py-2.5 text-neutral-600">14.8</td><td class="px-4 py-2.5 text-neutral-600">46.5</td></tr>
+                                        <tr class="hover:bg-neutral-50/50"><td class="px-4 py-2.5 font-medium text-neutral-900">8</td><td class="px-4 py-2.5 text-neutral-600">4.5</td><td class="px-4 py-2.5 text-neutral-600">15.2</td><td class="px-4 py-2.5 text-neutral-600">47.8</td></tr>
+                                        <tr class="hover:bg-neutral-50/50"><td class="px-4 py-2.5 font-medium text-neutral-900">9</td><td class="px-4 py-2.5 text-neutral-600">5</td><td class="px-4 py-2.5 text-neutral-600">15.6</td><td class="px-4 py-2.5 text-neutral-600">49.0</td></tr>
+                                        <tr class="hover:bg-neutral-50/50"><td class="px-4 py-2.5 font-medium text-neutral-900">10</td><td class="px-4 py-2.5 text-neutral-600">5.5</td><td class="px-4 py-2.5 text-neutral-600">16.0</td><td class="px-4 py-2.5 text-neutral-600">50.3</td></tr>
+                                        <tr class="hover:bg-neutral-50/50"><td class="px-4 py-2.5 font-medium text-neutral-900">11</td><td class="px-4 py-2.5 text-neutral-600">6</td><td class="px-4 py-2.5 text-neutral-600">16.5</td><td class="px-4 py-2.5 text-neutral-600">51.8</td></tr>
+                                        <tr class="hover:bg-neutral-50/50"><td class="px-4 py-2.5 font-medium text-neutral-900">12</td><td class="px-4 py-2.5 text-neutral-600">6.5</td><td class="px-4 py-2.5 text-neutral-600">16.9</td><td class="px-4 py-2.5 text-neutral-600">53.1</td></tr>
+                                        <tr class="hover:bg-neutral-50/50"><td class="px-4 py-2.5 font-medium text-neutral-900">13</td><td class="px-4 py-2.5 text-neutral-600">7</td><td class="px-4 py-2.5 text-neutral-600">17.3</td><td class="px-4 py-2.5 text-neutral-600">54.4</td></tr>
+                                        <tr class="hover:bg-neutral-50/50"><td class="px-4 py-2.5 font-medium text-neutral-900">14</td><td class="px-4 py-2.5 text-neutral-600">7.5</td><td class="px-4 py-2.5 text-neutral-600">17.7</td><td class="px-4 py-2.5 text-neutral-600">55.6</td></tr>
+                                        <tr class="hover:bg-neutral-50/50"><td class="px-4 py-2.5 font-medium text-neutral-900">15</td><td class="px-4 py-2.5 text-neutral-600">8</td><td class="px-4 py-2.5 text-neutral-600">18.1</td><td class="px-4 py-2.5 text-neutral-600">56.9</td></tr>
+                                        <tr class="hover:bg-neutral-50/50"><td class="px-4 py-2.5 font-medium text-neutral-900">16</td><td class="px-4 py-2.5 text-neutral-600">8.5</td><td class="px-4 py-2.5 text-neutral-600">18.5</td><td class="px-4 py-2.5 text-neutral-600">58.1</td></tr>
+                                        <tr class="hover:bg-neutral-50/50"><td class="px-4 py-2.5 font-medium text-neutral-900">17</td><td class="px-4 py-2.5 text-neutral-600">9</td><td class="px-4 py-2.5 text-neutral-600">18.9</td><td class="px-4 py-2.5 text-neutral-600">59.4</td></tr>
+                                        <tr class="hover:bg-neutral-50/50"><td class="px-4 py-2.5 font-medium text-neutral-900">18</td><td class="px-4 py-2.5 text-neutral-600">9.5</td><td class="px-4 py-2.5 text-neutral-600">19.4</td><td class="px-4 py-2.5 text-neutral-600">60.9</td></tr>
+                                        <tr class="hover:bg-neutral-50/50"><td class="px-4 py-2.5 font-medium text-neutral-900">19</td><td class="px-4 py-2.5 text-neutral-600">10</td><td class="px-4 py-2.5 text-neutral-600">19.8</td><td class="px-4 py-2.5 text-neutral-600">62.2</td></tr>
+                                        <tr class="hover:bg-neutral-50/50"><td class="px-4 py-2.5 font-medium text-neutral-900">20</td><td class="px-4 py-2.5 text-neutral-600">10.5</td><td class="px-4 py-2.5 text-neutral-600">20.2</td><td class="px-4 py-2.5 text-neutral-600">63.5</td></tr>
+                                        <tr class="hover:bg-neutral-50/50"><td class="px-4 py-2.5 font-medium text-neutral-900">21</td><td class="px-4 py-2.5 text-neutral-600">11</td><td class="px-4 py-2.5 text-neutral-600">20.6</td><td class="px-4 py-2.5 text-neutral-600">64.7</td></tr>
+                                        <tr class="hover:bg-neutral-50/50"><td class="px-4 py-2.5 font-medium text-neutral-900">22</td><td class="px-4 py-2.5 text-neutral-600">11.5</td><td class="px-4 py-2.5 text-neutral-600">21.0</td><td class="px-4 py-2.5 text-neutral-600">66.0</td></tr>
+                                        <tr class="hover:bg-neutral-50/50"><td class="px-4 py-2.5 font-medium text-neutral-900">23</td><td class="px-4 py-2.5 text-neutral-600">12</td><td class="px-4 py-2.5 text-neutral-600">21.4</td><td class="px-4 py-2.5 text-neutral-600">67.2</td></tr>
+                                        <tr class="hover:bg-neutral-50/50"><td class="px-4 py-2.5 font-medium text-neutral-900">24</td><td class="px-4 py-2.5 text-neutral-600">12.5</td><td class="px-4 py-2.5 text-neutral-600">21.8</td><td class="px-4 py-2.5 text-neutral-600">68.5</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- How to Measure Ring Size -->
+                        <div class="bg-white rounded-xl border border-neutral-100 p-6">
+                            <h3 class="text-base font-bold text-neutral-900 mb-4">How to Measure Your Ring Size</h3>
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
+                                <div>
+                                    <div class="w-8 h-8 rounded-lg bg-[#B76E79]/10 flex items-center justify-center mb-2 text-sm font-bold text-[#B76E79]">1</div>
+                                    <h4 class="text-sm font-semibold text-neutral-900 mb-1">String Method</h4>
+                                    <p class="text-xs text-neutral-600 leading-relaxed">Wrap a thin string or paper strip around the base of your finger. Mark where it overlaps, then measure the length in mm.</p>
+                                </div>
+                                <div>
+                                    <div class="w-8 h-8 rounded-lg bg-[#B76E79]/10 flex items-center justify-center mb-2 text-sm font-bold text-[#B76E79]">2</div>
+                                    <h4 class="text-sm font-semibold text-neutral-900 mb-1">Existing Ring</h4>
+                                    <p class="text-xs text-neutral-600 leading-relaxed">Place a ring that fits well on a ruler. Measure the inner diameter in mm and match it with the chart above.</p>
+                                </div>
+                                <div>
+                                    <div class="w-8 h-8 rounded-lg bg-[#B76E79]/10 flex items-center justify-center mb-2 text-sm font-bold text-[#B76E79]">3</div>
+                                    <h4 class="text-sm font-semibold text-neutral-900 mb-1">Best Practices</h4>
+                                    <p class="text-xs text-neutral-600 leading-relaxed">Measure at the end of the day when fingers are slightly larger. Avoid measuring when cold. If between sizes, choose the larger one.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bangle Size Chart -->
+                    <div x-show="activeTab === 'bangles'" x-transition>
+                        <div class="bg-white rounded-xl border border-neutral-100 overflow-hidden mb-6">
+                            <div class="px-5 py-4 border-b border-neutral-100">
+                                <h2 class="text-lg font-bold text-neutral-900">Bangle Size Chart (Indian Standard)</h2>
+                                <p class="text-xs text-neutral-500 mt-1">Bangle sizes in India are measured by the inner diameter in inches.</p>
+                            </div>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-sm">
+                                    <thead>
+                                        <tr class="bg-neutral-50">
+                                            <th class="px-4 py-3 text-left font-semibold text-neutral-700">Indian Size</th>
+                                            <th class="px-4 py-3 text-left font-semibold text-neutral-700">Inner Diameter (inches)</th>
+                                            <th class="px-4 py-3 text-left font-semibold text-neutral-700">Inner Diameter (mm)</th>
+                                            <th class="px-4 py-3 text-left font-semibold text-neutral-700">Typical Fit</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-neutral-100">
+                                        <tr class="hover:bg-neutral-50/50"><td class="px-4 py-2.5 font-medium text-neutral-900">2.2</td><td class="px-4 py-2.5 text-neutral-600">2.125</td><td class="px-4 py-2.5 text-neutral-600">54</td><td class="px-4 py-2.5 text-neutral-600">Extra Small</td></tr>
+                                        <tr class="hover:bg-neutral-50/50"><td class="px-4 py-2.5 font-medium text-neutral-900">2.4</td><td class="px-4 py-2.5 text-neutral-600">2.250</td><td class="px-4 py-2.5 text-neutral-600">57</td><td class="px-4 py-2.5 text-neutral-600">Small</td></tr>
+                                        <tr class="hover:bg-neutral-50/50"><td class="px-4 py-2.5 font-medium text-neutral-900">2.6</td><td class="px-4 py-2.5 text-neutral-600">2.375</td><td class="px-4 py-2.5 text-neutral-600">60</td><td class="px-4 py-2.5 text-neutral-600">Medium</td></tr>
+                                        <tr class="hover:bg-neutral-50/50"><td class="px-4 py-2.5 font-medium text-neutral-900">2.8</td><td class="px-4 py-2.5 text-neutral-600">2.500</td><td class="px-4 py-2.5 text-neutral-600">64</td><td class="px-4 py-2.5 text-neutral-600">Large</td></tr>
+                                        <tr class="hover:bg-neutral-50/50"><td class="px-4 py-2.5 font-medium text-neutral-900">2.10</td><td class="px-4 py-2.5 text-neutral-600">2.625</td><td class="px-4 py-2.5 text-neutral-600">67</td><td class="px-4 py-2.5 text-neutral-600">Extra Large</td></tr>
+                                        <tr class="hover:bg-neutral-50/50"><td class="px-4 py-2.5 font-medium text-neutral-900">2.12</td><td class="px-4 py-2.5 text-neutral-600">2.750</td><td class="px-4 py-2.5 text-neutral-600">70</td><td class="px-4 py-2.5 text-neutral-600">XXL</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="bg-white rounded-xl border border-neutral-100 p-6">
+                            <h3 class="text-base font-bold text-neutral-900 mb-4">How to Measure Your Bangle Size</h3>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                                <div>
+                                    <div class="w-8 h-8 rounded-lg bg-[#B76E79]/10 flex items-center justify-center mb-2 text-sm font-bold text-[#B76E79]">1</div>
+                                    <h4 class="text-sm font-semibold text-neutral-900 mb-1">Ruler Method</h4>
+                                    <p class="text-xs text-neutral-600 leading-relaxed">Close your fingers together and bring your thumb to your little finger. Measure the widest part of your hand across the knuckles with a ruler.</p>
+                                </div>
+                                <div>
+                                    <div class="w-8 h-8 rounded-lg bg-[#B76E79]/10 flex items-center justify-center mb-2 text-sm font-bold text-[#B76E79]">2</div>
+                                    <h4 class="text-sm font-semibold text-neutral-900 mb-1">Existing Bangle</h4>
+                                    <p class="text-xs text-neutral-600 leading-relaxed">Place a well-fitting bangle on a flat surface. Measure the inner diameter with a ruler and match with the chart.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Necklace Length Chart -->
+                    <div x-show="activeTab === 'necklaces'" x-transition>
+                        <div class="bg-white rounded-xl border border-neutral-100 overflow-hidden mb-6">
+                            <div class="px-5 py-4 border-b border-neutral-100">
+                                <h2 class="text-lg font-bold text-neutral-900">Necklace Length Guide</h2>
+                                <p class="text-xs text-neutral-500 mt-1">Choose the right necklace length based on where you want it to sit.</p>
+                            </div>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-sm">
+                                    <thead>
+                                        <tr class="bg-neutral-50">
+                                            <th class="px-4 py-3 text-left font-semibold text-neutral-700">Length</th>
+                                            <th class="px-4 py-3 text-left font-semibold text-neutral-700">Style Name</th>
+                                            <th class="px-4 py-3 text-left font-semibold text-neutral-700">Sits At</th>
+                                            <th class="px-4 py-3 text-left font-semibold text-neutral-700">Best For</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-neutral-100">
+                                        <tr class="hover:bg-neutral-50/50"><td class="px-4 py-2.5 font-medium text-neutral-900">14"</td><td class="px-4 py-2.5 text-neutral-600">Collar</td><td class="px-4 py-2.5 text-neutral-600">Tight around the neck</td><td class="px-4 py-2.5 text-neutral-600">Off-shoulder, strapless tops</td></tr>
+                                        <tr class="hover:bg-neutral-50/50"><td class="px-4 py-2.5 font-medium text-neutral-900">16"</td><td class="px-4 py-2.5 text-neutral-600">Choker</td><td class="px-4 py-2.5 text-neutral-600">Base of the neck</td><td class="px-4 py-2.5 text-neutral-600">Crew necks, casual wear</td></tr>
+                                        <tr class="hover:bg-neutral-50/50"><td class="px-4 py-2.5 font-medium text-neutral-900">18"</td><td class="px-4 py-2.5 text-neutral-600">Princess</td><td class="px-4 py-2.5 text-neutral-600">Just below the collarbone</td><td class="px-4 py-2.5 text-neutral-600">Most versatile — works with everything</td></tr>
+                                        <tr class="hover:bg-neutral-50/50"><td class="px-4 py-2.5 font-medium text-neutral-900">20"</td><td class="px-4 py-2.5 text-neutral-600">Matinee</td><td class="px-4 py-2.5 text-neutral-600">Above the bust</td><td class="px-4 py-2.5 text-neutral-600">Business and casual wear</td></tr>
+                                        <tr class="hover:bg-neutral-50/50"><td class="px-4 py-2.5 font-medium text-neutral-900">22"</td><td class="px-4 py-2.5 text-neutral-600">Matinee</td><td class="px-4 py-2.5 text-neutral-600">Top of the bust</td><td class="px-4 py-2.5 text-neutral-600">Pendants and layering</td></tr>
+                                        <tr class="hover:bg-neutral-50/50"><td class="px-4 py-2.5 font-medium text-neutral-900">24"</td><td class="px-4 py-2.5 text-neutral-600">Opera</td><td class="px-4 py-2.5 text-neutral-600">Centre of the bust</td><td class="px-4 py-2.5 text-neutral-600">High necklines, formal wear</td></tr>
+                                        <tr class="hover:bg-neutral-50/50"><td class="px-4 py-2.5 font-medium text-neutral-900">30"</td><td class="px-4 py-2.5 text-neutral-600">Rope</td><td class="px-4 py-2.5 text-neutral-600">Below the bust</td><td class="px-4 py-2.5 text-neutral-600">Layering, can be doubled up</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="bg-white rounded-xl border border-neutral-100 p-6">
+                            <h3 class="text-base font-bold text-neutral-900 mb-3">How to Choose</h3>
+                            <p class="text-xs text-neutral-600 leading-relaxed">Measure an existing necklace you like, or use a string around your neck to your desired length. For pendants, add 2-4 inches to your usual chain length so the pendant sits nicely.</p>
+                        </div>
+                    </div>
+
+                    <!-- Bracelet Size Chart -->
+                    <div x-show="activeTab === 'bracelets'" x-transition>
+                        <div class="bg-white rounded-xl border border-neutral-100 overflow-hidden mb-6">
+                            <div class="px-5 py-4 border-b border-neutral-100">
+                                <h2 class="text-lg font-bold text-neutral-900">Bracelet Size Guide</h2>
+                                <p class="text-xs text-neutral-500 mt-1">Measure your wrist to find the right bracelet size.</p>
+                            </div>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-sm">
+                                    <thead>
+                                        <tr class="bg-neutral-50">
+                                            <th class="px-4 py-3 text-left font-semibold text-neutral-700">Wrist Size (inches)</th>
+                                            <th class="px-4 py-3 text-left font-semibold text-neutral-700">Wrist Size (cm)</th>
+                                            <th class="px-4 py-3 text-left font-semibold text-neutral-700">Bracelet Length</th>
+                                            <th class="px-4 py-3 text-left font-semibold text-neutral-700">Fit</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-neutral-100">
+                                        <tr class="hover:bg-neutral-50/50"><td class="px-4 py-2.5 font-medium text-neutral-900">5.5" - 6"</td><td class="px-4 py-2.5 text-neutral-600">14 - 15.2</td><td class="px-4 py-2.5 text-neutral-600">6.5" - 7"</td><td class="px-4 py-2.5 text-neutral-600">Small</td></tr>
+                                        <tr class="hover:bg-neutral-50/50"><td class="px-4 py-2.5 font-medium text-neutral-900">6" - 6.5"</td><td class="px-4 py-2.5 text-neutral-600">15.2 - 16.5</td><td class="px-4 py-2.5 text-neutral-600">7" - 7.5"</td><td class="px-4 py-2.5 text-neutral-600">Medium</td></tr>
+                                        <tr class="hover:bg-neutral-50/50"><td class="px-4 py-2.5 font-medium text-neutral-900">6.5" - 7"</td><td class="px-4 py-2.5 text-neutral-600">16.5 - 17.8</td><td class="px-4 py-2.5 text-neutral-600">7.5" - 8"</td><td class="px-4 py-2.5 text-neutral-600">Large</td></tr>
+                                        <tr class="hover:bg-neutral-50/50"><td class="px-4 py-2.5 font-medium text-neutral-900">7" - 7.5"</td><td class="px-4 py-2.5 text-neutral-600">17.8 - 19</td><td class="px-4 py-2.5 text-neutral-600">8" - 8.5"</td><td class="px-4 py-2.5 text-neutral-600">Extra Large</td></tr>
+                                        <tr class="hover:bg-neutral-50/50"><td class="px-4 py-2.5 font-medium text-neutral-900">7.5" - 8"</td><td class="px-4 py-2.5 text-neutral-600">19 - 20.3</td><td class="px-4 py-2.5 text-neutral-600">8.5" - 9"</td><td class="px-4 py-2.5 text-neutral-600">XXL</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="bg-white rounded-xl border border-neutral-100 p-6">
+                            <h3 class="text-base font-bold text-neutral-900 mb-3">How to Measure Your Wrist</h3>
+                            <p class="text-xs text-neutral-600 leading-relaxed">Wrap a flexible tape measure (or string) snugly around your wrist just below the wrist bone. Add 0.5" to 1" for a comfortable fit. For a loose fit, add 1" to 1.5".</p>
+                        </div>
                     </div>
                 </div>
 
-                <!-- How to Measure -->
-                <div class="bg-white rounded-xl border border-neutral-100 p-6 sm:p-8">
-                    <h2 class="text-lg font-bold text-neutral-900 mb-5">How to Measure</h2>
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
-                        <div>
-                            <div class="w-10 h-10 rounded-lg bg-[#205258]/10 flex items-center justify-center mb-3">
-                                <svg class="w-5 h-5 text-[#205258]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/>
-                                </svg>
-                            </div>
-                            <h3 class="text-sm font-semibold text-neutral-900 mb-1">Height</h3>
-                            <p class="text-sm text-neutral-600 leading-relaxed">Stand your child against a wall without shoes. Measure from the top of the head to the floor.</p>
-                        </div>
-                        <div>
-                            <div class="w-10 h-10 rounded-lg bg-[#F8931D]/10 flex items-center justify-center mb-3">
-                                <svg class="w-5 h-5 text-[#F8931D]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
-                                </svg>
-                            </div>
-                            <h3 class="text-sm font-semibold text-neutral-900 mb-1">Chest</h3>
-                            <p class="text-sm text-neutral-600 leading-relaxed">Wrap a measuring tape around the fullest part of the chest, keeping it level under the arms.</p>
-                        </div>
-                        <div>
-                            <div class="w-10 h-10 rounded-lg bg-[#205258]/10 flex items-center justify-center mb-3">
-                                <svg class="w-5 h-5 text-[#205258]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-                                </svg>
-                            </div>
-                            <h3 class="text-sm font-semibold text-neutral-900 mb-1">Waist</h3>
-                            <p class="text-sm text-neutral-600 leading-relaxed">Measure around the natural waistline (the narrowest point), keeping the tape snug but not tight.</p>
-                        </div>
-                    </div>
-
-                    <div class="mt-6 p-4 bg-amber-50 rounded-lg border border-amber-100">
-                        <p class="text-sm text-amber-800"><strong>Tip:</strong> If your child's measurements fall between two sizes, we recommend choosing the larger size for a more comfortable fit and room to grow.</p>
-                    </div>
+                <!-- General Tips -->
+                <div class="mt-10 bg-[#c29958]/10 rounded-xl border border-[#c29958]/20 p-6">
+                    <h3 class="text-sm font-bold text-[#c29958] mb-2">Sizing Tips</h3>
+                    <ul class="text-xs text-[#c29958] space-y-1.5 leading-relaxed">
+                        <li>Finger sizes can vary by up to half a size throughout the day — measure in the evening for the most accurate reading.</li>
+                        <li>Temperature affects finger size: fingers swell in heat and shrink in cold.</li>
+                        <li>If you're between two sizes, choose the larger size for comfort.</li>
+                        <li>For wider bands (6mm+), go up half a size from your standard measurement.</li>
+                        <li>Not sure about your size? Our team is happy to help — <a href="{{ route('contact') }}" class="underline font-medium hover:text-[#c29958]">contact us</a> for assistance.</li>
+                    </ul>
                 </div>
 
             </div>

@@ -27,8 +27,8 @@
     </div>
 
     <!-- Category Header -->
-    <div class="relative overflow-hidden" style="background: linear-gradient(135deg, #205258 0%, #15383c 100%); height: 224px;">
-        <div class="absolute inset-0 w-full h-full" style="background: linear-gradient(135deg, #205258 0%, #1b454a 50%, #0f2a2e 100%); opacity: 0.6;"></div>
+    <div class="relative overflow-hidden" style="background: linear-gradient(135deg, #B76E79 0%, #15383c 100%); height: 224px;">
+        <div class="absolute inset-0 w-full h-full" style="background: linear-gradient(135deg, #B76E79 0%, #222222 50%, #0f2a2e 100%); opacity: 0.6;"></div>
         <div class="absolute inset-0 bg-gradient-to-r from-black/50 via-black/20 to-transparent"></div>
         <div class="relative container mx-auto px-4 h-full flex flex-col justify-center">
             <h1 class="text-2xl md:text-3xl font-bold text-white mb-1">{{ $category->name }}</h1>
@@ -45,7 +45,7 @@
             <div class="container mx-auto px-4">
                 <div class="flex gap-1 overflow-x-auto py-2.5 scrollbar-hide">
                     <a href="{{ route('category.show', $category) }}"
-                       class="shrink-0 px-4 py-1.5 rounded-full text-sm font-medium transition-colors {{ !request('subcategory') ? 'bg-[#205258] text-white shadow-sm' : 'bg-neutral-100 text-neutral-600 hover:bg-neutral-200' }}">
+                       class="shrink-0 px-4 py-1.5 rounded-full text-sm font-medium transition-colors {{ !request('subcategory') ? 'bg-[#B76E79] text-white shadow-sm' : 'bg-neutral-100 text-neutral-600 hover:bg-neutral-200' }}">
                         All
                     </a>
                     @foreach($subcategories as $sub)
@@ -68,24 +68,24 @@
                     @foreach((array) request('subcategory') as $subSlug)
                         @php $subName = $filterSubcategories->firstWhere('slug', $subSlug)?->name ?? $subSlug; @endphp
                         <a href="{{ request()->fullUrlWithoutQuery('subcategory') }}"
-                           class="inline-flex items-center gap-1 px-2.5 py-1 bg-[#205258]/5 text-[#1b454a] text-xs font-medium rounded-full border border-[#205258]/30 hover:bg-[#205258]/10 transition-colors">
+                           class="inline-flex items-center gap-1 px-2.5 py-1 bg-[#B76E79]/5 text-[#222222] text-xs font-medium rounded-full border border-[#B76E79]/30 hover:bg-[#c29958]/10 transition-colors">
                             {{ $subName }}
                             <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                         </a>
                     @endforeach
                 @endif
                 @if(request('min_price') || request('max_price'))
-                    <span class="inline-flex items-center gap-1 px-2.5 py-1 bg-[#205258]/5 text-[#1b454a] text-xs font-medium rounded-full border border-[#205258]/30">
+                    <span class="inline-flex items-center gap-1 px-2.5 py-1 bg-[#B76E79]/5 text-[#222222] text-xs font-medium rounded-full border border-[#B76E79]/30">
                         @price(request('min_price', 0)) - @price(request('max_price', '...'))
                     </span>
                 @endif
                 @if(request('in_stock'))
-                    <span class="inline-flex items-center px-2.5 py-1 bg-[#205258]/5 text-[#1b454a] text-xs font-medium rounded-full border border-[#205258]/30">In Stock</span>
+                    <span class="inline-flex items-center px-2.5 py-1 bg-[#B76E79]/5 text-[#222222] text-xs font-medium rounded-full border border-[#B76E79]/30">In Stock</span>
                 @endif
                 @if(request('on_sale'))
-                    <span class="inline-flex items-center px-2.5 py-1 bg-[#205258]/5 text-[#1b454a] text-xs font-medium rounded-full border border-[#205258]/30">On Sale</span>
+                    <span class="inline-flex items-center px-2.5 py-1 bg-[#B76E79]/5 text-[#222222] text-xs font-medium rounded-full border border-[#B76E79]/30">On Sale</span>
                 @endif
-                <a href="{{ route('category.show', $category) }}" class="text-xs text-neutral-600 hover:text-[#205258] underline ml-1">Clear all</a>
+                <a href="{{ route('category.show', $category) }}" class="text-xs text-neutral-600 hover:text-[#c29958] underline ml-1">Clear all</a>
             </div>
         @endif
 
@@ -100,7 +100,7 @@
                     </svg>
                     Filters
                     @if(request()->hasAny(['brand', 'min_price', 'max_price', 'in_stock', 'on_sale']))
-                        <span class="w-5 h-5 bg-[#F8931D] text-white text-[10px] font-bold rounded-full flex items-center justify-center">
+                        <span class="w-5 h-5 bg-[#B76E79] text-white text-[10px] font-bold rounded-full flex items-center justify-center">
                             {{ count(array_filter([request('brand'), request('min_price'), request('max_price'), request('in_stock'), request('on_sale')])) }}
                         </span>
                     @endif
@@ -143,7 +143,7 @@
                     <div class="flex items-center gap-2">
                         <label class="text-xs text-neutral-600 hidden sm:inline">Sort by:</label>
                         <select onchange="window.location.href = '{{ route('category.show', $category) }}?' + new URLSearchParams({...Object.fromEntries(new URLSearchParams(window.location.search)), sort: this.value})"
-                                class="text-sm py-1.5 pl-3 pr-8 border border-neutral-200 rounded-lg bg-white text-neutral-700 focus:outline-none focus:border-[#205258] cursor-pointer">
+                                class="text-sm py-1.5 pl-3 pr-8 border border-neutral-200 rounded-lg bg-white text-neutral-700 focus:outline-none focus:border-[#B76E79] cursor-pointer">
                             <option value="newest" {{ request('sort') === 'newest' ? 'selected' : '' }}>Newest</option>
                             <option value="price_asc" {{ request('sort') === 'price_asc' ? 'selected' : '' }}>Price: Low to High</option>
                             <option value="price_desc" {{ request('sort') === 'price_desc' ? 'selected' : '' }}>Price: High to Low</option>
@@ -181,7 +181,7 @@
                         </div>
                         <div x-ref="sentinel" class="h-4"></div>
                         <div x-show="loading" x-cloak class="flex justify-center py-8">
-                            <svg class="animate-spin h-6 w-6 text-[#205258]" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
+                            <svg class="animate-spin h-6 w-6 text-[#B76E79]" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
                         </div>
                     </div>
                 @else
@@ -193,7 +193,7 @@
                         </div>
                         <h3 class="text-lg font-semibold text-neutral-900 mb-1">No products found</h3>
                         <p class="text-sm text-neutral-600 mb-5">Try adjusting your filters or browse all products.</p>
-                        <a href="{{ route('category.show', $category) }}" class="inline-flex items-center gap-2 px-3 py-1.5 bg-[#F8931D] hover:bg-[#E07E0A] text-white text-sm font-semibold rounded-lg transition-colors">
+                        <a href="{{ route('category.show', $category) }}" class="inline-flex items-center gap-2 px-3 py-1.5 bg-[#B76E79] hover:bg-[#222222] text-white text-sm font-semibold rounded-lg transition-colors">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                             Clear All Filters
                         </a>

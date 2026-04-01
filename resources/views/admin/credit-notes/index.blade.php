@@ -96,7 +96,7 @@
                                 </span>
                             </td>
                             <td class="px-4 py-3">
-                                <span class="text-sm {{ $note->expires_at?->isPast() ? 'text-red-500' : 'text-neutral-600' }}">
+                                <span class="text-sm {{ $note->expires_at?->isPast() ? 'text-[#CC0C39]' : 'text-neutral-600' }}">
                                     {{ $note->expires_at ? $note->expires_at->format('M d, Y') : 'Never' }}
                                 </span>
                             </td>

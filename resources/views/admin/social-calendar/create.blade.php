@@ -15,15 +15,15 @@
             <div class="lg:col-span-2 space-y-6">
                 <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5 space-y-4">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Title <span class="text-red-500">*</span></label>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Title <span class="text-[#CC0C39]">*</span></label>
                         <input type="text" name="title" value="{{ old('title') }}" required
                                class="w-full rounded-lg border-gray-300 text-sm focus:ring-gray-900 focus:border-gray-900"
                                placeholder="Internal title (not shown publicly)">
-                        @error('title') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                        @error('title') <p class="text-[#CC0C39] text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
 
                     <div x-data="{ count: 0 }">
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Caption <span class="text-red-500">*</span></label>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Caption <span class="text-[#CC0C39]">*</span></label>
                         <textarea name="caption" rows="8" required maxlength="2200"
                                   x-on:input="count = $el.value.length"
                                   class="w-full rounded-lg border-gray-300 text-sm focus:ring-gray-900 focus:border-gray-900"
@@ -32,18 +32,18 @@
                             <span>Tip: Keep under 2200 chars for Instagram</span>
                             <span x-text="count + '/2200'"></span>
                         </div>
-                        @error('caption') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                        @error('caption') <p class="text-[#CC0C39] text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
 
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Hashtags</label>
                         <input type="text" name="hashtags" value="{{ old('hashtags') }}"
                                class="w-full rounded-lg border-gray-300 text-sm focus:ring-gray-900 focus:border-gray-900"
-                               placeholder="#CoffeeMug #JIKRA #ShopNow (space or comma separated)">
+                               placeholder="#GoldJewellery #MusCo #ShopNow (space or comma separated)">
                     </div>
 
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Media Type <span class="text-red-500">*</span></label>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Media Type <span class="text-[#CC0C39]">*</span></label>
                         <select name="media_type" x-model="mediaType"
                                 class="w-full rounded-lg border-gray-300 text-sm focus:ring-gray-900 focus:border-gray-900">
                             <option value="image">Single Image</option>
@@ -56,16 +56,16 @@
                         <label class="block text-sm font-medium text-gray-700 mb-1">Media URLs</label>
                         <textarea name="media_urls" rows="4"
                                   class="w-full rounded-lg border-gray-300 text-sm font-mono focus:ring-gray-900 focus:border-gray-900"
-                                  placeholder="One URL per line (must be publicly accessible)&#10;https://jikra.in/images/social/...&#10;https://jikra.in/videos/...">{{ old('media_urls') }}</textarea>
+                                  placeholder="One URL per line (must be publicly accessible)&#10;https://musco.com/images/social/...&#10;https://musco.com/videos/...">{{ old('media_urls') }}</textarea>
                         <p class="text-xs text-gray-400 mt-1">Public URLs that Meta API can access. Upload to server first.</p>
-                        @error('media_urls') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                        @error('media_urls') <p class="text-[#CC0C39] text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
 
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Product Link</label>
                         <input type="url" name="link" value="{{ old('link') }}"
                                class="w-full rounded-lg border-gray-300 text-sm focus:ring-gray-900 focus:border-gray-900"
-                               placeholder="https://jikra.in/product/...">
+                               placeholder="https://musco.com/product/...">
                     </div>
                 </div>
             </div>
@@ -74,13 +74,13 @@
             <div class="space-y-6">
                 {{-- Platforms --}}
                 <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5">
-                    <h3 class="font-medium text-gray-900 mb-3">Platforms <span class="text-red-500">*</span></h3>
+                    <h3 class="font-medium text-gray-900 mb-3">Platforms <span class="text-[#CC0C39]">*</span></h3>
                     <div class="space-y-2">
                         <p class="text-xs text-gray-500 font-medium uppercase tracking-wide">Instagram</p>
                         @foreach(['ig_post' => 'Post', 'ig_reel' => 'Reel', 'ig_story' => 'Story'] as $key => $label)
                         <label class="flex items-center gap-2 text-sm">
                             <input type="checkbox" name="platforms[]" value="{{ $key }}"
-                                   class="rounded border-gray-300 text-pink-600 focus:ring-pink-500"
+                                   class="rounded border-gray-300 text-[#B76E79] focus:ring-[#B76E79]"
                                    {{ in_array($key, old('platforms', [])) ? 'checked' : '' }}>
                             {{ $label }}
                         </label>
@@ -90,13 +90,13 @@
                         @foreach(['fb_post' => 'Post', 'fb_reel' => 'Reel', 'fb_story' => 'Story'] as $key => $label)
                         <label class="flex items-center gap-2 text-sm">
                             <input type="checkbox" name="platforms[]" value="{{ $key }}"
-                                   class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                                   class="rounded border-gray-300 text-[#B76E79] focus:ring-[#B76E79]"
                                    {{ in_array($key, old('platforms', [])) ? 'checked' : '' }}>
                             {{ $label }}
                         </label>
                         @endforeach
                     </div>
-                    @error('platforms') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                    @error('platforms') <p class="text-[#CC0C39] text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
 
                 {{-- Product --}}
@@ -133,11 +133,11 @@
                 {{-- Actions --}}
                 <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5 space-y-2">
                     <button type="submit" name="action" value="publish_now"
-                            class="w-full px-4 py-2 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700">
+                            class="w-full px-4 py-2 bg-[#B76E79] text-white text-sm font-medium rounded-lg hover:bg-[#B76E79]/90">
                         Publish Now
                     </button>
                     <button type="submit" name="action" value="schedule"
-                            class="w-full px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700">
+                            class="w-full px-4 py-2 bg-[#B76E79]/80 text-white text-sm font-medium rounded-lg hover:bg-[#B76E79]/70">
                         Schedule Post
                     </button>
                     <button type="submit" name="action" value="draft"

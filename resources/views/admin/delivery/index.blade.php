@@ -13,32 +13,32 @@
     </div>
 
     @if(session('success'))
-        <div class="mb-4 px-4 py-3 bg-green-50 border border-green-200 text-green-700 text-sm rounded-lg">{{ session('success') }}</div>
+        <div class="mb-4 px-4 py-3 bg-[#B76E79]/5 border border-[#B76E79]/20 text-[#B76E79] text-sm rounded-lg">{{ session('success') }}</div>
     @endif
     @if(session('error'))
-        <div class="mb-4 px-4 py-3 bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg">{{ session('error') }}</div>
+        <div class="mb-4 px-4 py-3 bg-[#CC0C39]/10 border border-[#CC0C39]/20 text-[#CC0C39] text-sm rounded-lg">{{ session('error') }}</div>
     @endif
 
     {{-- Stats --}}
     <div class="grid grid-cols-2 md:grid-cols-5 gap-3 mb-6">
         <div class="bg-white rounded-xl border border-gray-200 p-4 text-center">
-            <div class="text-2xl font-bold text-amber-600">{{ $stats['pending'] }}</div>
+            <div class="text-2xl font-bold text-[#c29958]">{{ $stats['pending'] }}</div>
             <div class="text-xs text-gray-600">Pending Booking</div>
         </div>
         <div class="bg-white rounded-xl border border-gray-200 p-4 text-center">
-            <div class="text-2xl font-bold text-blue-600">{{ $stats['shipped'] }}</div>
+            <div class="text-2xl font-bold text-[#B76E79]">{{ $stats['shipped'] }}</div>
             <div class="text-xs text-gray-600">In Transit</div>
         </div>
         <div class="bg-white rounded-xl border border-gray-200 p-4 text-center">
-            <div class="text-2xl font-bold text-purple-600">{{ $stats['out_for_delivery'] }}</div>
+            <div class="text-2xl font-bold text-neutral-700">{{ $stats['out_for_delivery'] }}</div>
             <div class="text-xs text-gray-600">Out for Delivery</div>
         </div>
         <div class="bg-white rounded-xl border border-gray-200 p-4 text-center">
-            <div class="text-2xl font-bold text-green-600">{{ $stats['delivered'] }}</div>
+            <div class="text-2xl font-bold text-[#B76E79]">{{ $stats['delivered'] }}</div>
             <div class="text-xs text-gray-600">Delivered (7d)</div>
         </div>
         <div class="bg-white rounded-xl border border-gray-200 p-4 text-center">
-            <div class="text-2xl font-bold text-red-600">{{ $stats['rto'] }}</div>
+            <div class="text-2xl font-bold text-[#CC0C39]">{{ $stats['rto'] }}</div>
             <div class="text-xs text-gray-600">RTO (30d)</div>
         </div>
     </div>
@@ -52,11 +52,11 @@
         </div>
         <div class="bg-white rounded-xl border border-gray-200 p-4">
             <div class="text-xs text-gray-500 mb-1">Delivery Rate</div>
-            <div class="text-xl font-bold {{ $analytics['delivery_rate'] >= 90 ? 'text-green-600' : ($analytics['delivery_rate'] >= 75 ? 'text-amber-600' : 'text-red-600') }}">{{ $analytics['delivery_rate'] }}%</div>
+            <div class="text-xl font-bold {{ $analytics['delivery_rate'] >= 90 ? 'text-[#B76E79]' : ($analytics['delivery_rate'] >= 75 ? 'text-[#c29958]' : 'text-[#CC0C39]') }}">{{ $analytics['delivery_rate'] }}%</div>
         </div>
         <div class="bg-white rounded-xl border border-gray-200 p-4">
             <div class="text-xs text-gray-500 mb-1">RTO Rate</div>
-            <div class="text-xl font-bold {{ $analytics['rto_rate'] <= 5 ? 'text-green-600' : ($analytics['rto_rate'] <= 15 ? 'text-amber-600' : 'text-red-600') }}">{{ $analytics['rto_rate'] }}%</div>
+            <div class="text-xl font-bold {{ $analytics['rto_rate'] <= 5 ? 'text-[#B76E79]' : ($analytics['rto_rate'] <= 15 ? 'text-[#c29958]' : 'text-[#CC0C39]') }}">{{ $analytics['rto_rate'] }}%</div>
         </div>
         <div class="bg-white rounded-xl border border-gray-200 p-4">
             <div class="text-xs text-gray-500 mb-1">Avg Delivery Days</div>
@@ -90,20 +90,20 @@
             </button>
         </div>
 
-        <div x-show="result" x-cloak class="mt-3 p-3 rounded-lg" :class="result?.serviceable ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'">
+        <div x-show="result" x-cloak class="mt-3 p-3 rounded-lg" :class="result?.serviceable ? 'bg-[#B76E79]/5 border border-[#B76E79]/20' : 'bg-[#CC0C39]/10 border border-[#CC0C39]/20'">
             <template x-if="result?.serviceable">
                 <div class="text-sm">
-                    <p class="font-medium text-green-700">Serviceable - <span x-text="result.city"></span>, <span x-text="result.state_code"></span></p>
+                    <p class="font-medium text-[#B76E79]">Serviceable - <span x-text="result.city"></span>, <span x-text="result.state_code"></span></p>
                     <div class="flex gap-4 mt-1 text-xs text-gray-600">
-                        <span>COD: <span x-text="result.cod ? 'Yes' : 'No'" :class="result.cod ? 'text-green-600 font-medium' : 'text-red-600'"></span></span>
-                        <span>Prepaid: <span x-text="result.prepaid ? 'Yes' : 'No'" :class="result.prepaid ? 'text-green-600 font-medium' : 'text-red-600'"></span></span>
+                        <span>COD: <span x-text="result.cod ? 'Yes' : 'No'" :class="result.cod ? 'text-[#B76E79] font-medium' : 'text-[#CC0C39]'"></span></span>
+                        <span>Prepaid: <span x-text="result.prepaid ? 'Yes' : 'No'" :class="result.prepaid ? 'text-[#B76E79] font-medium' : 'text-[#CC0C39]'"></span></span>
                         <span x-show="result.zone">Zone: <span x-text="result.zone" class="font-medium"></span></span>
                         <span x-show="result.estimated_cost">Est. Cost: <span x-text="'₹' + result.estimated_cost" class="font-bold text-gray-900"></span></span>
                     </div>
                 </div>
             </template>
             <template x-if="result && !result.serviceable">
-                <p class="text-sm text-red-700" x-text="result.message || 'Not serviceable'"></p>
+                <p class="text-sm text-[#CC0C39]" x-text="result.message || 'Not serviceable'"></p>
             </template>
         </div>
     </div>
@@ -136,7 +136,7 @@
                         <td class="px-4 py-2 text-gray-600">{{ $order->items->count() }} item(s)</td>
                         <td class="px-4 py-2 font-medium">@price($order->total)</td>
                         <td class="px-4 py-2">
-                            <span class="px-2 py-0.5 text-[10px] font-medium rounded-full {{ $order->payment_method === 'cod' ? 'bg-amber-100 text-amber-700' : 'bg-green-100 text-green-700' }}">
+                            <span class="px-2 py-0.5 text-[10px] font-medium rounded-full {{ $order->payment_method === 'cod' ? 'bg-[#c29958]/10 text-[#c29958]' : 'bg-[#B76E79]/10 text-[#B76E79]' }}">
                                 {{ strtoupper($order->payment_method) }}
                             </span>
                         </td>
@@ -144,7 +144,7 @@
                         <td class="px-4 py-2 text-right">
                             <form action="{{ route('admin.delivery.book', $order) }}" method="POST" class="inline" onsubmit="return confirm('Book Delhivery shipment for {{ $order->order_number }}?')">
                                 @csrf
-                                <button type="submit" class="inline-flex items-center gap-1 px-3 py-1.5 bg-blue-600 text-white text-xs font-medium rounded-lg hover:bg-blue-700">
+                                <button type="submit" class="inline-flex items-center gap-1 px-3 py-1.5 bg-[#B76E79] text-white text-xs font-medium rounded-lg hover:bg-[#B76E79]/90">
                                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25"/></svg>
                                     Book Delivery
                                 </button>
@@ -185,7 +185,7 @@
                         <td class="px-4 py-2 font-mono text-xs text-gray-700">{{ $order->tracking_number }}</td>
                         <td class="px-4 py-2 text-gray-700">{{ $order->customer_name ?? $order->user?->full_name ?? 'Guest' }}</td>
                         <td class="px-4 py-2">
-                            <span class="px-2 py-0.5 text-[10px] font-medium rounded-full {{ $order->status === 'shipped' ? 'bg-blue-100 text-blue-700' : 'bg-purple-100 text-purple-700' }}">
+                            <span class="px-2 py-0.5 text-[10px] font-medium rounded-full {{ $order->status === 'shipped' ? 'bg-[#B76E79]/10 text-[#B76E79]' : 'bg-neutral-100 text-neutral-700' }}">
                                 {{ ucfirst(str_replace('_', ' ', $order->status)) }}
                             </span>
                         </td>
@@ -193,11 +193,11 @@
                         <td class="px-4 py-2 text-right">
                             <div class="flex items-center justify-end gap-2">
                                 <button @click="fetch('{{ route('admin.delivery.track', $order) }}').then(r=>r.json()).then(d=>{tracking=d;showTracking=true})"
-                                        class="text-xs text-blue-600 hover:underline">Track</button>
+                                        class="text-xs text-[#B76E79] hover:underline">Track</button>
                                 <a href="{{ route('admin.delivery.label', $order) }}" class="text-xs text-gray-600 hover:underline">Label</a>
                                 <form action="{{ route('admin.delivery.cancel', $order) }}" method="POST" class="inline" onsubmit="return confirm('Cancel this shipment?')">
                                     @csrf
-                                    <button type="submit" class="text-xs text-red-500 hover:underline">Cancel</button>
+                                    <button type="submit" class="text-xs text-[#CC0C39] hover:underline">Cancel</button>
                                 </form>
                             </div>
                             {{-- Tracking details --}}
@@ -220,7 +220,7 @@
                                     </div>
                                 </template>
                                 <template x-if="tracking && !tracking.success">
-                                    <p class="text-red-600" x-text="tracking.message"></p>
+                                    <p class="text-[#CC0C39]" x-text="tracking.message"></p>
                                 </template>
                             </div>
                         </td>

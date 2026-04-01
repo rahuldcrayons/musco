@@ -2,312 +2,257 @@
     <x-slot name="title">About Us - {{ config('app.name') }}</x-slot>
 
     @push('meta')
-        <meta name="description" content="Learn about {{ config('app.name') }} - your trusted online store for mobile accessories and gadgets. Quality tech accessories at great prices.">
+        <meta name="description" content="Learn about {{ config('app.name') }} - your trusted destination for certified gold, diamond & silver jewellery. Exquisite craftsmanship, hallmarked collections.">
         <link rel="canonical" href="{{ url('/about') }}">
         <meta property="og:title" content="About Us - {{ config('app.name') }}">
-        <meta property="og:description" content="Learn about {{ config('app.name') }} - your trusted online store for mobile accessories and gadgets.">
+        <meta property="og:description" content="Learn about {{ config('app.name') }} - your trusted destination for certified gold, diamond & silver jewellery.">
         <meta property="og:type" content="website">
         <meta property="og:url" content="{{ url('/about') }}">
         <meta name="twitter:card" content="summary">
         <meta name="twitter:title" content="About Us - {{ config('app.name') }}">
-        <meta name="twitter:description" content="Learn about {{ config('app.name') }} - your trusted online store for mobile accessories and gadgets.">
+        <meta name="twitter:description" content="Learn about {{ config('app.name') }} - your trusted destination for certified gold, diamond & silver jewellery.">
     @endpush
 
-    <!-- Breadcrumb -->
-    <div class="bg-neutral-50 border-b border-neutral-100">
-        <div class="container mx-auto px-4 py-3">
-            <x-breadcrumb :items="[['label' => 'About Us', 'url' => null]]" />
-        </div>
-    </div>
-
     <!-- ============================================
-         ABOUT / OUR STORY
+         1. BREADCRUMB HERO (Corano style — light gray)
          ============================================ -->
-    <section class="py-12 sm:py-16 lg:py-20">
-        <div class="container mx-auto px-4">
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center max-w-6xl mx-auto">
-
-                <!-- Image side -->
-                <div class="relative" style="padding: 50px;">
-                    <div class="aspect-[4/3] rounded-2xl overflow-hidden bg-neutral-100 shadow-sm">
-                        <div class="w-full h-full bg-gradient-to-br from-[#205258] to-[#0f2a2e] flex items-center justify-center p-10">
-                            <div class="text-center">
-                                <svg class="w-24 h-24 mx-auto mb-4 text-white/30" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"/>
-                                </svg>
-                                <h3 class="text-2xl font-bold text-white/80 mb-2">Jikra</h3>
-                                <p class="text-sm text-white/50">Your One-Stop Shop</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Content side -->
-                <div>
-                    <span class="inline-block text-xs font-semibold text-[#205258] uppercase tracking-wider mb-3">Our Story</span>
-                    <h2 class="text-xl sm:text-2xl font-bold text-neutral-900 mb-5 leading-snug">
-                        Bringing the Best Mobile Accessories to Your Doorstep
-                    </h2>
-                    <div class="space-y-4 text-[13px] sm:text-sm text-neutral-600 leading-relaxed">
-                        <p>
-                            Founded with a passion for technology and quality, Jikra started with a simple mission — to make reliable, high-quality mobile accessories accessible to everyone.
-                        </p>
-                        <p>
-                            Today, we've grown into a trusted destination for thousands of customers. We partner directly with brands and manufacturers to ensure every product on our platform meets the highest quality and safety standards.
-                        </p>
-                        <p>
-                            From everyday essentials to premium gadgets, our curated collection spans over 200 brands and thousands of products — all delivered with care, competitive pricing, and a satisfaction guarantee.
-                        </p>
-                    </div>
-                </div>
-
+    <section class="bg-[#f2f2f2] py-12 sm:py-16 border-b border-[#efefef]">
+        <div class="container mx-auto px-4 text-center">
+            <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-[#222222] mb-3" style="font-family:'Playfair Display',Georgia,serif;">About Us</h1>
+            <div class="flex items-center justify-center gap-2 text-sm">
+                <a href="{{ url('/') }}" class="text-[#777777] hover:text-[#c29958] transition-colors">Home</a>
+                <span class="text-[#c29958]">></span>
+                <span class="text-[#c29958]">About Us</span>
             </div>
         </div>
     </section>
 
     <!-- ============================================
-         SERVICES / WHY CHOOSE US
+         2. LARGE IMAGE (Corano — centered image block)
          ============================================ -->
-    <section class="py-12 sm:py-16 bg-neutral-50">
+    <section class="py-14 sm:py-20">
         <div class="container mx-auto px-4">
-            <div class="text-center mb-8 sm:mb-10">
-                <span class="inline-block text-xs font-semibold text-[#205258] uppercase tracking-wider mb-2">Why Choose Us</span>
-                <h2 class="text-xl sm:text-2xl font-bold text-neutral-900">What Sets Us Apart</h2>
-                <p class="text-[13px] text-neutral-600 mt-2 max-w-md mx-auto">We go the extra mile to make shopping for mobile accessories a joyful experience.</p>
+            <div class="max-w-5xl mx-auto">
+                @php $aboutImage = \App\Models\Setting::get('about_image', ''); @endphp
+                @if($aboutImage)
+                    <img src="{{ asset('storage/' . $aboutImage) }}" alt="About {{ config('app.name') }}" class="w-full max-h-[400px] object-cover" loading="lazy">
+                @else
+                    <img src="{{ asset('images/about-us-banner1.jpg') }}" alt="About {{ config('app.name') }}" class="w-full max-h-[400px] object-cover" loading="lazy">
+                @endif
             </div>
+        </div>
+    </section>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 max-w-5xl mx-auto">
-                <!-- Authenticity -->
-                <div class="bg-white border border-neutral-100 rounded-xl p-5 hover:border-[#205258]/30 hover:shadow-sm transition-all group">
-                    <div class="w-10 h-10 bg-[#205258]/5 rounded-lg flex items-center justify-center mb-3">
-                        <svg class="w-5 h-5 text-[#205258]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/>
-                        </svg>
-                    </div>
-                    <h3 class="text-sm font-semibold text-neutral-900 mb-1 group-hover:text-[#205258] transition-colors">100% Authentic</h3>
-                    <p class="text-xs text-neutral-600 leading-relaxed">Every product is sourced from authorized distributors and verified for authenticity.</p>
+    <!-- ============================================
+         3. STORY TEXT — Centered (Corano style)
+         ============================================ -->
+    <section class="pb-14 sm:pb-20">
+        <div class="container mx-auto px-4">
+            <div class="max-w-3xl mx-auto text-center">
+                <h2 class="text-xl sm:text-2xl lg:text-3xl font-bold text-[#222222] mb-6 leading-snug" style="font-family:'Playfair Display',Georgia,serif;">
+                    {{ \App\Models\Setting::get('about_heading', 'We Are A Jewellery Brand Focused On Delivering Timeless Elegance And Quality Craftsmanship.') }}
+                </h2>
+                <div class="text-sm text-[#777777] leading-relaxed space-y-4">
+                    @if($page?->content)
+                        {!! $page->content !!}
+                    @else
+                        <p>{{ \App\Models\Setting::get('about_paragraph_1', 'Founded with a passion for fine craftsmanship and timeless design, ' . config('app.name') . ' started with a simple mission — to bring exquisite, certified jewellery to every doorstep across India. We believe that beautiful jewellery should be accessible to everyone.') }}</p>
+                        <p>{{ \App\Models\Setting::get('about_paragraph_2', 'Today, we\'ve grown into a trusted destination for thousands of customers. We partner directly with master artisans and certified manufacturers to ensure every piece meets the highest standards of purity and craftsmanship. From everyday gold essentials to stunning diamond collections.') }}</p>
+                    @endif
                 </div>
-
-                <!-- Free Shipping -->
-                <div class="bg-white border border-neutral-100 rounded-xl p-5 hover:border-info-200 hover:shadow-sm transition-all group">
-                    <div class="w-10 h-10 bg-info-50 rounded-lg flex items-center justify-center mb-3">
-                        <svg class="w-5 h-5 text-info-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12"/>
-                        </svg>
-                    </div>
-                    <h3 class="text-sm font-semibold text-neutral-900 mb-1 group-hover:text-info-600 transition-colors">Free Shipping</h3>
-                    <p class="text-xs text-neutral-600 leading-relaxed">Enjoy free delivery on orders above {{ currency_symbol() }}{{ \App\Models\Setting::get('free_shipping_threshold', 499) }} with fast and reliable shipping partners.</p>
-                </div>
-
-                <!-- Secure Shopping -->
-                <div class="bg-white border border-neutral-100 rounded-xl p-5 hover:border-success-200 hover:shadow-sm transition-all group">
-                    <div class="w-10 h-10 bg-success-50 rounded-lg flex items-center justify-center mb-3">
-                        <svg class="w-5 h-5 text-success-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"/>
-                        </svg>
-                    </div>
-                    <h3 class="text-sm font-semibold text-neutral-900 mb-1 group-hover:text-success-600 transition-colors">Secure Payments</h3>
-                    <p class="text-xs text-neutral-600 leading-relaxed">Shop with confidence. Your data is encrypted and payments are 100% secure.</p>
-                </div>
-
-                <!-- Easy Returns -->
-                <div class="bg-white border border-neutral-100 rounded-xl p-5 hover:border-warning-200 hover:shadow-sm transition-all group">
-                    <div class="w-10 h-10 bg-warning-50 rounded-lg flex items-center justify-center mb-3">
-                        <svg class="w-5 h-5 text-warning-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
-                        </svg>
-                    </div>
-                    <h3 class="text-sm font-semibold text-neutral-900 mb-1 group-hover:text-warning-600 transition-colors">Easy Returns</h3>
-                    <p class="text-xs text-neutral-600 leading-relaxed">Not satisfied? Return your items hassle-free within 7 days of delivery.</p>
+                <!-- Signature / Brand mark -->
+                <div class="mt-8">
+                    <span class="text-2xl text-[#B76E79] italic" style="font-family:'Playfair Display',Georgia,serif;">{{ config('app.name') }}</span>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- ============================================
-         TESTIMONIALS
+         4. THREE SERVICES (Corano — line icons, 3 cols with dividers)
          ============================================ -->
-    <section class="py-12 sm:py-16">
+    <section class="py-14 sm:py-20 border-y border-[#efefef]">
         <div class="container mx-auto px-4">
-            <div class="text-center mb-8 sm:mb-10">
-                <span class="inline-block text-xs font-semibold text-[#205258] uppercase tracking-wider mb-2">Testimonials</span>
-                <h2 class="text-xl sm:text-2xl font-bold text-neutral-900">What Our Customers Say</h2>
-                <p class="text-[13px] text-neutral-600 mt-2">Real reviews from real customers who trust us.</p>
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 max-w-5xl mx-auto">
-                <!-- Testimonial 1 -->
-                <div class="bg-white border border-neutral-100 rounded-xl p-5 sm:p-6">
-                    <!-- Stars -->
-                    <div class="flex items-center gap-0.5 mb-3">
-                        @for($i = 0; $i < 5; $i++)
-                            <svg class="w-4 h-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
-                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
-                            </svg>
-                        @endfor
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-0 max-w-5xl mx-auto">
+                <!-- Service 1 -->
+                <div class="text-center px-6 sm:px-8 py-6 sm:border-r border-[#efefef]">
+                    <div class="mb-5">
+                        <svg class="w-12 h-12 mx-auto text-[#222222]" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9.53 16.122a3 3 0 00-5.78 1.128 2.25 2.25 0 01-2.4 2.245 4.5 4.5 0 008.4-2.245c0-.399-.078-.78-.22-1.128zm0 0a15.998 15.998 0 003.388-1.62m-5.043-.025a15.994 15.994 0 011.622-3.395m3.42 3.42a15.995 15.995 0 004.764-4.648l3.876-5.814a1.151 1.151 0 00-1.597-1.597L14.146 6.32a15.996 15.996 0 00-4.649 4.763m3.42 3.42a6.776 6.776 0 00-3.42-3.42"/>
+                        </svg>
                     </div>
-                    <p class="text-[13px] text-neutral-600 leading-relaxed mb-4">
-                        "Absolutely love shopping here! The clothes are always top quality, packaging is excellent, and delivery is super fast. My go-to store for all my shopping needs."
-                    </p>
-                    <div class="flex items-center gap-3">
-                        <div class="w-9 h-9 rounded-full bg-[#205258]/10 flex items-center justify-center">
-                            <span class="text-sm font-semibold text-[#205258]">P</span>
-                        </div>
-                        <div>
-                            <div class="text-sm font-semibold text-neutral-900">Priya S.</div>
-                            <div class="text-xs text-neutral-600">Verified Buyer</div>
-                        </div>
-                    </div>
+                    <h3 class="text-sm font-bold text-[#222222] mb-3 uppercase tracking-wider">{{ \App\Models\Setting::get('about_usp_1_title', 'Creative Design') }}</h3>
+                    <p class="text-xs text-[#777777] leading-relaxed">{{ \App\Models\Setting::get('about_usp_1_desc', 'Every piece is designed with passion and precision, blending traditional artistry with modern elegance.') }}</p>
                 </div>
-
-                <!-- Testimonial 2 -->
-                <div class="bg-white border border-neutral-100 rounded-xl p-5 sm:p-6">
-                    <div class="flex items-center gap-0.5 mb-3">
-                        @for($i = 0; $i < 5; $i++)
-                            <svg class="w-4 h-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
-                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
-                            </svg>
-                        @endfor
+                <!-- Service 2 -->
+                <div class="text-center px-6 sm:px-8 py-6 sm:border-r border-[#efefef] border-t sm:border-t-0">
+                    <div class="mb-5">
+                        <svg class="w-12 h-12 mx-auto text-[#222222]" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/>
+                        </svg>
                     </div>
-                    <p class="text-[13px] text-neutral-600 leading-relaxed mb-4">
-                        "Best prices I've found for quality products. I've been ordering for 6 months now and never been disappointed. The quality is great, descriptions are accurate, and customer service is outstanding!"
-                    </p>
-                    <div class="flex items-center gap-3">
-                        <div class="w-9 h-9 rounded-full bg-info-100 flex items-center justify-center">
-                            <span class="text-sm font-semibold text-info-600">A</span>
-                        </div>
-                        <div>
-                            <div class="text-sm font-semibold text-neutral-900">Aisha M.</div>
-                            <div class="text-xs text-neutral-600">Verified Buyer</div>
-                        </div>
-                    </div>
+                    <h3 class="text-sm font-bold text-[#222222] mb-3 uppercase tracking-wider">{{ \App\Models\Setting::get('about_usp_2_title', '100% Quality Guarantee') }}</h3>
+                    <p class="text-xs text-[#777777] leading-relaxed">{{ \App\Models\Setting::get('about_usp_2_desc', 'All our jewellery is BIS hallmarked and certified. We stand behind the quality of every piece we sell.') }}</p>
                 </div>
-
-                <!-- Testimonial 3 -->
-                <div class="bg-white border border-neutral-100 rounded-xl p-5 sm:p-6">
-                    <div class="flex items-center gap-0.5 mb-3">
-                        @for($i = 0; $i < 5; $i++)
-                            <svg class="w-4 h-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
-                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
-                            </svg>
-                        @endfor
+                <!-- Service 3 -->
+                <div class="text-center px-6 sm:px-8 py-6 border-t sm:border-t-0">
+                    <div class="mb-5">
+                        <svg class="w-12 h-12 mx-auto text-[#222222]" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z"/>
+                        </svg>
                     </div>
-                    <p class="text-[13px] text-neutral-600 leading-relaxed mb-4">
-                        "I was skeptical at first, but Jikra exceeded my expectations. The packaging was secure, quality was amazing, and arrived within 3 days. Highly recommend!"
-                    </p>
-                    <div class="flex items-center gap-3">
-                        <div class="w-9 h-9 rounded-full bg-success-100 flex items-center justify-center">
-                            <span class="text-sm font-semibold text-success-600">R</span>
-                        </div>
-                        <div>
-                            <div class="text-sm font-semibold text-neutral-900">Rahul K.</div>
-                            <div class="text-xs text-neutral-600">Verified Buyer</div>
-                        </div>
-                    </div>
+                    <h3 class="text-sm font-bold text-[#222222] mb-3 uppercase tracking-wider">{{ \App\Models\Setting::get('about_usp_3_title', 'Online Support 24/7') }}</h3>
+                    <p class="text-xs text-[#777777] leading-relaxed">{{ \App\Models\Setting::get('about_usp_3_desc', 'Our support team is always ready to help. Contact us anytime via WhatsApp, email, or phone.') }}</p>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- ============================================
-         BRANDS / CLIENTS LOGOS
+         5. THREE CARDS — What We Do / Mission / History (Corano style)
          ============================================ -->
-    <section class="py-12 sm:py-16 bg-neutral-50 border-t border-neutral-100">
+    <section class="py-14 sm:py-20 bg-[#f7f7f7]">
         <div class="container mx-auto px-4">
-            <div class="text-center mb-8">
-                <span class="inline-block text-xs font-semibold text-[#205258] uppercase tracking-wider mb-2">Trusted Partners</span>
-                <h2 class="text-xl sm:text-2xl font-bold text-neutral-900">Brands We Carry</h2>
-                <p class="text-[13px] text-neutral-600 mt-2">We partner with the most loved mobile accessories brands.</p>
-            </div>
-
-            <!-- Logo carousel - 2 rows -->
-            @if($brands->count())
-                <style>
-                    @keyframes brand-scroll-left {
-                        0% { transform: translateX(0); }
-                        100% { transform: translateX(-50%); }
-                    }
-                    @keyframes brand-scroll-right {
-                        0% { transform: translateX(-50%); }
-                        100% { transform: translateX(0); }
-                    }
-                    .brand-row-ltr {
-                        animation: brand-scroll-left 25s linear infinite;
-                    }
-                    .brand-row-rtl {
-                        animation: brand-scroll-right 25s linear infinite;
-                    }
-                    .brand-row-ltr:hover,
-                    .brand-row-rtl:hover {
-                        animation-play-state: paused;
-                    }
-                </style>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-5xl mx-auto">
                 @php
-                    $half = ceil($brands->count() / 2);
-                    $row1 = $brands->slice(0, $half);
-                    $row2 = $brands->slice($half);
-                    if ($row2->isEmpty()) $row2 = $row1;
+                    $defaultCardImages = [
+                        'images/dummy/cat-necklace.jpg',
+                        'images/dummy/cat-ring.jpg',
+                        'images/dummy/cat-bracelet.jpg',
+                    ];
+                    $aboutCards = [
+                        [
+                            'title' => \App\Models\Setting::get('about_card_1_title', 'What Do We Do?'),
+                            'desc' => \App\Models\Setting::get('about_card_1_desc', 'We curate and deliver exquisite jewellery that combines traditional Indian craftsmanship with contemporary design. Every piece is handpicked for quality and beauty.'),
+                            'img' => \App\Models\Setting::get('about_card_1_image', ''),
+                        ],
+                        [
+                            'title' => \App\Models\Setting::get('about_card_2_title', 'Our Mission'),
+                            'desc' => \App\Models\Setting::get('about_card_2_desc', 'To make fine jewellery accessible to every woman in India. We believe in transparent pricing, certified quality, and creating pieces that tell your unique story.'),
+                            'img' => \App\Models\Setting::get('about_card_2_image', ''),
+                        ],
+                        [
+                            'title' => \App\Models\Setting::get('about_card_3_title', 'History Of Us'),
+                            'desc' => \App\Models\Setting::get('about_card_3_desc', 'Starting as a small family business, we have grown into a trusted online jewellery destination serving thousands of happy customers across India with hallmarked collections.'),
+                            'img' => \App\Models\Setting::get('about_card_3_image', ''),
+                        ],
+                    ];
                 @endphp
-                <div class="relative overflow-hidden max-w-5xl mx-auto space-y-4 sm:space-y-6">
-                    <!-- Row 1: Left to Right -->
-                    <div class="relative overflow-hidden">
-                        <div class="brand-row-ltr flex items-center gap-8 sm:gap-12 w-max">
-                            @for($i = 0; $i < 2; $i++)
-                                @foreach($row1 as $brand)
-                                    <div class="flex items-center justify-center h-12 sm:h-14 w-24 sm:w-28 shrink-0">
-                                        <img src="{{ Storage::url($brand->logo_url) }}" alt="{{ $brand->name }}" class="max-h-8 sm:max-h-10 w-auto object-contain opacity-50 hover:opacity-100 transition-opacity grayscale hover:grayscale-0">
-                                    </div>
-                                @endforeach
-                            @endfor
+                @foreach($aboutCards as $card)
+                    <div class="bg-white hover:shadow-md transition-shadow duration-300">
+                        <!-- Card Image -->
+                        <div class="overflow-hidden">
+                            @if($card['img'])
+                                <img src="{{ asset('storage/' . $card['img']) }}" alt="{{ $card['title'] }}" class="w-full h-48 sm:h-52 object-cover hover:scale-105 transition-transform duration-500" loading="lazy">
+                            @else
+                                <img src="{{ asset($defaultCardImages[$loop->index]) }}" alt="{{ $card['title'] }}" class="w-full h-48 sm:h-52 object-cover hover:scale-105 transition-transform duration-500" loading="lazy">
+                            @endif
+                        </div>
+                        <!-- Card Content -->
+                        <div class="p-6">
+                            <h3 class="text-base font-bold text-[#222222] mb-3">{{ $card['title'] }}</h3>
+                            <p class="text-xs text-[#777777] leading-relaxed">{{ $card['desc'] }}</p>
                         </div>
                     </div>
-                    <!-- Row 2: Right to Left -->
-                    <div class="relative overflow-hidden">
-                        <div class="brand-row-rtl flex items-center gap-8 sm:gap-12 w-max">
-                            @for($i = 0; $i < 2; $i++)
-                                @foreach($row2 as $brand)
-                                    <div class="flex items-center justify-center h-12 sm:h-14 w-24 sm:w-28 shrink-0">
-                                        <img src="{{ Storage::url($brand->logo_url) }}" alt="{{ $brand->name }}" class="max-h-8 sm:max-h-10 w-auto object-contain opacity-50 hover:opacity-100 transition-opacity grayscale hover:grayscale-0">
-                                    </div>
-                                @endforeach
-                            @endfor
-                        </div>
-                    </div>
-                    <!-- Fade edges -->
-                    <div class="absolute inset-y-0 left-0 w-16 sm:w-20 bg-gradient-to-r from-neutral-50 to-transparent pointer-events-none z-10"></div>
-                    <div class="absolute inset-y-0 right-0 w-16 sm:w-20 bg-gradient-to-l from-neutral-50 to-transparent pointer-events-none z-10"></div>
-                </div>
-            @else
-                <p class="text-center text-sm text-neutral-600">No brands available yet.</p>
-            @endif
+                @endforeach
+            </div>
         </div>
     </section>
 
     <!-- ============================================
-         CTA SECTION
+         6. WHY CHOOSE US (accordion) + TESTIMONIALS (Corano 2-col)
          ============================================ -->
-    <section class="py-12 sm:py-16">
+    <section class="py-14 sm:py-20">
         <div class="container mx-auto px-4">
-            <div class="max-w-3xl mx-auto text-center bg-gradient-to-br from-[#F8931D] via-[#F8931D] to-[#D47200] rounded-2xl p-8 sm:p-12 relative overflow-hidden">
-                <!-- Decorative circles -->
-                <div class="absolute -top-12 -right-12 w-40 h-40 bg-white/5 rounded-full"></div>
-                <div class="absolute -bottom-8 -left-8 w-32 h-32 bg-white/5 rounded-full"></div>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 max-w-5xl mx-auto">
 
-                <div class="relative z-10">
-                    <h2 class="text-xl sm:text-2xl font-bold text-white mb-3">Ready to Find the Perfect Accessories for Your Devices?</h2>
-                    <p class="text-sm text-white mb-6 max-w-md mx-auto">Browse our curated collection of mobile accessories and enjoy free shipping on your first order.</p>
-                    <div class="flex flex-wrap items-center justify-center gap-3">
-                        <a href="{{ route('categories.index') }}" class="inline-flex items-center gap-2 px-3 py-1.5 bg-white text-[#1b454a] text-sm font-semibold rounded-lg hover:bg-[#205258]/5 transition-colors shadow-lg">
-                            Shop Now
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-                            </svg>
-                        </a>
-                        <a href="{{ route('contact') }}" class="inline-flex items-center gap-2 px-3 py-1.5 text-sm font-semibold text-white border border-white/30 rounded-lg hover:bg-white/10 transition-colors">
-                            Contact Us
-                        </a>
+                <!-- LEFT: Why Choose Us — Accordion -->
+                <div>
+                    <h2 class="text-xl sm:text-2xl font-bold text-[#222222] mb-2" style="font-family:'Playfair Display',Georgia,serif;">Why You Choose Us?</h2>
+                    <p class="text-xs text-[#777777] mb-6 leading-relaxed">{{ \App\Models\Setting::get('about_why_subtitle', 'We believe in quality, transparency, and building lasting relationships with our customers.') }}</p>
+
+                    <div x-data="{ open: 1 }" class="space-y-0">
+                        @php
+                            $faqs = [
+                                ['title' => \App\Models\Setting::get('about_faq_1_title', 'Fast Free Delivery'), 'content' => \App\Models\Setting::get('about_faq_1_content', 'We offer free shipping on all orders above ₹499. Your jewellery is carefully packaged and delivered to your doorstep within 3-7 business days across India.')],
+                                ['title' => \App\Models\Setting::get('about_faq_2_title', 'BIS Hallmarked & Certified'), 'content' => \App\Models\Setting::get('about_faq_2_content', 'Every piece of gold jewellery we sell is BIS hallmarked for purity. We provide authenticity certificates with all our products for your peace of mind.')],
+                                ['title' => \App\Models\Setting::get('about_faq_3_title', '100% Anti-Tarnish Quality'), 'content' => \App\Models\Setting::get('about_faq_3_content', 'Our anti-tarnish collections are crafted with premium coatings to maintain their shine and beauty for years. Quality that stands the test of time.')],
+                                ['title' => \App\Models\Setting::get('about_faq_4_title', '7 Days Easy Returns'), 'content' => \App\Models\Setting::get('about_faq_4_content', 'Not satisfied with your purchase? Simply return it within 7 days for a full refund. No questions asked, hassle-free process.')],
+                            ];
+                        @endphp
+                        @foreach($faqs as $i => $faq)
+                            <div class="{{ $loop->first ? 'border-t' : '' }} border-b border-[#efefef]">
+                                <button @click="open = open === {{ $i + 1 }} ? 0 : {{ $i + 1 }}"
+                                        class="w-full flex items-center justify-between px-5 py-3.5 text-left transition-colors duration-300"
+                                        :class="open === {{ $i + 1 }} ? 'bg-[#B76E79] text-white' : 'bg-white text-[#222222] hover:text-[#B76E79]'">
+                                    <span class="text-sm font-semibold">{{ $faq['title'] }}</span>
+                                    <span class="text-lg font-light shrink-0 w-5 text-center" x-text="open === {{ $i + 1 }} ? '−' : '+'"></span>
+                                </button>
+                                <div x-show="open === {{ $i + 1 }}" x-collapse x-cloak class="px-5 py-4 bg-white">
+                                    <p class="text-xs text-[#777777] leading-relaxed">{{ $faq['content'] }}</p>
+                                </div>
+                            </div>
+                        @endforeach
                     </div>
                 </div>
+
+                <!-- RIGHT: What Clients Say — Testimonial Carousel -->
+                <div>
+                    <h2 class="text-xl sm:text-2xl font-bold text-[#222222] mb-6" style="font-family:'Playfair Display',Georgia,serif;">What Clients Say</h2>
+
+                    @php
+                        $testimonialItems = $testimonials->isNotEmpty()
+                            ? $testimonials->map(fn($t) => ['name' => $t->name, 'content' => $t->content, 'title' => $t->title ?? 'Verified Buyer', 'avatar' => $t->avatar_url, 'initial' => strtoupper(substr($t->name, 0, 1))])
+                            : collect([
+                                ['name' => 'Priya Sharma', 'content' => 'Absolutely stunning jewellery! The craftsmanship is exquisite and the quality exceeded my expectations. Will definitely shop again.', 'title' => 'Verified Buyer', 'avatar' => null, 'initial' => 'P'],
+                                ['name' => 'Anita Verma', 'content' => 'I ordered a gold necklace set for my wedding and it was perfect. Beautiful packaging, fast delivery, and the hallmark certificate gave me full confidence.', 'title' => 'Verified Buyer', 'avatar' => null, 'initial' => 'A'],
+                                ['name' => 'Meera Patel', 'content' => 'The best online jewellery shopping experience I have had. The designs are unique, prices are transparent, and customer support is always helpful.', 'title' => 'Verified Buyer', 'avatar' => null, 'initial' => 'M'],
+                            ]);
+                    @endphp
+                    <div x-data="{ current: 0, total: {{ $testimonialItems->count() }} }" x-init="setInterval(() => current = (current + 1) % total, 5000)">
+                        <div class="relative" style="min-height: 320px;">
+                            @foreach($testimonialItems as $ti)
+                                <div x-show="current === {{ $loop->index }}"
+                                     x-transition:enter="transition ease-out duration-300"
+                                     x-transition:enter-start="opacity-0"
+                                     x-transition:enter-end="opacity-100"
+                                     x-transition:leave="transition ease-in duration-200"
+                                     x-transition:leave-start="opacity-100"
+                                     x-transition:leave-end="opacity-0"
+                                     class="absolute inset-x-0 top-0 text-center">
+                                    <!-- Avatar -->
+                                    <div class="mb-4">
+                                        @if($ti['avatar'])
+                                            <img src="{{ Storage::url($ti['avatar']) }}" alt="{{ $ti['name'] }}" class="w-20 h-20 rounded-full object-cover mx-auto shadow-md border-3 border-white">
+                                        @else
+                                            <div class="w-20 h-20 rounded-full bg-[#f2f2f2] flex items-center justify-center mx-auto shadow-md border-3 border-white">
+                                                <span class="text-2xl font-bold text-[#B76E79]">{{ $ti['initial'] }}</span>
+                                            </div>
+                                        @endif
+                                    </div>
+                                    <!-- Quote icon (closing quotes like Corano) -->
+                                    <div class="text-[#c29958] text-3xl mb-3" style="font-family: Georgia, serif; line-height: 1;">&rdquo;</div>
+                                    <!-- Content -->
+                                    <p class="text-sm text-[#555555] leading-relaxed mb-5 max-w-md mx-auto">{{ $ti['content'] }}</p>
+                                    <!-- Name -->
+                                    <p class="text-sm font-semibold text-[#c29958] uppercase tracking-wider">{{ $ti['name'] }}</p>
+                                    <p class="text-xs text-[#777777] mt-1">{{ $ti['title'] }}</p>
+                                </div>
+                            @endforeach
+                        </div>
+                        <!-- Dots (outside the relative container) -->
+                        @if($testimonialItems->count() > 1)
+                            <div class="flex items-center justify-center gap-3 pt-4">
+                                @foreach($testimonialItems as $ti)
+                                    <button @click="current = {{ $loop->index }}"
+                                            class="w-3 h-3 rounded-full transition-colors duration-300"
+                                            :class="current === {{ $loop->index }} ? 'bg-[#333]' : 'bg-[#ccc]'"></button>
+                                @endforeach
+                            </div>
+                        @endif
+                    </div>
+                </div>
+
             </div>
         </div>
     </section>

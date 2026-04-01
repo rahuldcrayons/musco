@@ -17,7 +17,7 @@
                 $statusColors = [
                     'approved' => 'bg-info-50 text-info-700',
                     'pickup_scheduled' => 'bg-warning-50 text-warning-700',
-                    'picked_up' => 'bg-[#205258]/10 text-[#1b454a]',
+                    'picked_up' => 'bg-[#B76E79]/10 text-[#222222]',
                     'received' => 'bg-success-50 text-success-700',
                     'processed' => 'bg-success-50 text-success-700',
                     'completed' => 'bg-success-50 text-success-700',
@@ -57,8 +57,8 @@
                             </form>
                         @elseif($return->status === 'pickup_scheduled')
                             <div class="flex items-center gap-3 mb-3">
-                                <div class="w-10 h-10 rounded-full bg-[#205258]/10 flex items-center justify-center">
-                                    <svg class="w-5 h-5 text-[#205258]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/></svg>
+                                <div class="w-10 h-10 rounded-full bg-[#B76E79]/10 flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-[#B76E79]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/></svg>
                                 </div>
                                 <div>
                                     <p class="font-semibold text-neutral-900">Confirm Pickup</p>
@@ -124,9 +124,9 @@
                                     @if($item->condition)
                                         @php
                                             $conditionColors = [
-                                                'unopened' => 'bg-emerald-50 text-emerald-700',
-                                                'opened' => 'bg-amber-50 text-amber-700',
-                                                'damaged' => 'bg-red-50 text-red-700',
+                                                'unopened' => 'bg-[#B76E79]/5 text-[#B76E79]',
+                                                'opened' => 'bg-[#c29958]/10 text-[#c29958]',
+                                                'damaged' => 'bg-[#CC0C39]/10 text-[#CC0C39]',
                                             ];
                                         @endphp
                                         <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium {{ $conditionColors[$item->condition] ?? 'bg-neutral-50 text-neutral-600' }}">

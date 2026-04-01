@@ -16,4 +16,4 @@ $p = App\Models\Product::create([
 ]);
 
 echo "Created! ID: {$p->id} | Slug: {$p->slug}\n";
-echo "URL: https://jikra.in/product/{$p->slug}\n";
+echo "URL: https://musxco.com/product/{$p->slug}\n";

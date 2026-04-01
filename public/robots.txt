@@ -7,4 +7,4 @@ Disallow: /checkout
 Disallow: /account/
 Disallow: /api/
 
-Sitemap: https://jikra.in/sitemap.xml
+Sitemap: https://musxco.com/sitemap.xml

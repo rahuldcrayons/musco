@@ -72,7 +72,7 @@ class GenerateProductDescriptions extends Command
     {
         $name = $product->name;
         $category = $product->category?->name ?? 'General';
-        $brand = $product->brand?->name ?? 'Jikra';
+        $brand = $product->brand?->name ?? 'MusCo';
         $price = number_format($product->price ?? 0);
         $mrp = number_format($product->mrp ?? 0);
 
@@ -82,11 +82,11 @@ class GenerateProductDescriptions extends Command
         $gender = $this->detectGender($name, $category);
 
         $templates = [
-            "Shop the {$name} from {$brand} — a premium {$type} for your device. Made with high-quality materials for lasting durability, this {$type} is perfect for everyday use. Available at just ₹{$price}" . ($product->mrp > $product->price ? " (MRP ₹{$mrp})" : '') . ". Part of our {$category} collection at Jikra — your one-stop shop for quality mobile accessories.",
+            "Shop the {$name} from {$brand} — a premium {$type} for your device. Made with high-quality materials for lasting durability, this {$type} is perfect for everyday use. Available at just ₹{$price}" . ($product->mrp > $product->price ? " (MRP ₹{$mrp})" : '') . ". Part of our {$category} collection at MusCo — your one-stop shop for quality mobile accessories.",
 
-            "Dress your little one in style with the {$name} by {$brand}. This {$category} piece combines comfort and fashion, crafted from soft, breathable materials ideal for {$ageGroup}. Whether it's playtime, a family outing, or a festive celebration, this {$type} keeps your child looking their best. Priced at ₹{$price}" . ($product->mrp > $product->price ? " (save " . round((($product->mrp - $product->price) / $product->mrp) * 100) . "%!)" : '') . ". Shop now at Jikra for free shipping on orders above ₹500.",
+            "Dress your little one in style with the {$name} by {$brand}. This {$category} piece combines comfort and fashion, crafted from soft, breathable materials ideal for {$ageGroup}. Whether it's playtime, a family outing, or a festive celebration, this {$type} keeps your child looking their best. Priced at ₹{$price}" . ($product->mrp > $product->price ? " (save " . round((($product->mrp - $product->price) / $product->mrp) * 100) . "%!)" : '') . ". Shop now at MusCo for free shipping on orders above ₹500.",
 
-            "Introducing the {$name} from {$brand}'s {$category} range. Designed with {$gender} in mind, this trendy {$type} offers the perfect blend of style, comfort, and durability. The premium fabric ensures all-day comfort while maintaining a fresh, fashionable look. Available at ₹{$price}" . ($product->mrp > $product->price ? " — that's " . round((($product->mrp - $product->price) / $product->mrp) * 100) . "% off the retail price!" : '') . " Browse more {$category} at Jikra.",
+            "Introducing the {$name} from {$brand}'s {$category} range. Designed with {$gender} in mind, this trendy {$type} offers the perfect blend of style, comfort, and durability. The premium fabric ensures all-day comfort while maintaining a fresh, fashionable look. Available at ₹{$price}" . ($product->mrp > $product->price ? " — that's " . round((($product->mrp - $product->price) / $product->mrp) * 100) . "% off the retail price!" : '') . " Browse more {$category} at MusCo.",
         ];
 
         return $templates[crc32($name) % count($templates)];
@@ -95,7 +95,7 @@ class GenerateProductDescriptions extends Command
     private function generateShortDescription(Product $product): string
     {
         $name = $product->name;
-        $brand = $product->brand?->name ?? 'Jikra';
+        $brand = $product->brand?->name ?? 'MusCo';
         $type = $this->detectType($name);
         $gender = $this->detectGender($name, $product->category?->name ?? '');
 

@@ -15,7 +15,7 @@ class ImportProductsFromExcel extends Command
                             {--dry-run : Preview import without writing to database}
                             {--update-stock : Only update stock for existing products}';
 
-    protected $description = 'Import products from Jikra product catalog';
+    protected $description = 'Import products from MusCo product catalog';
 
     // Column indices (0-based) for the stock report
     private const COL_CODE = 0;

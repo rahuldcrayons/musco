@@ -168,9 +168,9 @@
                             <div class="flex items-center gap-2">
                                 <span class="font-semibold text-neutral-900">{{ number_format($step['value']) }}</span>
                                 @if($index > 0 && $dropoff > 0)
-                                    <span class="text-xs font-medium text-red-600 bg-red-50 px-1.5 py-0.5 rounded">-{{ $dropoff }}%</span>
+                                    <span class="text-xs font-medium text-[#CC0C39] bg-[#CC0C39]/10 px-1.5 py-0.5 rounded">-{{ $dropoff }}%</span>
                                 @elseif($index > 0 && $dropoff === 0)
-                                    <span class="text-xs font-medium text-green-600 bg-green-50 px-1.5 py-0.5 rounded">0%</span>
+                                    <span class="text-xs font-medium text-[#B76E79] bg-[#B76E79]/5 px-1.5 py-0.5 rounded">0%</span>
                                 @endif
                             </div>
                         </div>

@@ -2,7 +2,7 @@
 
 return [
     'default_commission_rate' => 5.00,
-    'cookie_name' => 'jikra_ref',
+    'cookie_name' => 'musco_ref',
     'cookie_duration_days' => 30,
     'minimum_redemption' => 500,
     'redemption_processing_days' => 2,

@@ -102,7 +102,7 @@ class ChatbotController extends Controller
 
     private function buildSystemPrompt(array $products, array $orders, array $coupons): string
     {
-        $storeName = Setting::get('site_name', config('app.name', 'Jikra'));
+        $storeName = Setting::get('site_name', config('app.name', 'MusCo'));
 
         $prompt  = "You are the official AI Shopping Assistant for {$storeName}, a multi-product e-commerce store in India.\n\n";
 

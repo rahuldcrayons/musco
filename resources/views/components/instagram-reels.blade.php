@@ -10,8 +10,8 @@
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
                 </div>
                 <div>
-                    <h2 class="section-title" style="margin:0;font-size:22px;">Proud Customers of Jikra</h2>
-                    <p class="text-xs text-[#565959] mt-0.5">Watch, explore, and shop instantly</p>
+                    <h2 class="section-title" style="margin:0;font-size:22px;">Proud Customers of MusCo</h2>
+                    <p class="text-xs text-[#555555] mt-0.5">Watch, explore, and shop instantly</p>
                 </div>
             </div>
             <a x-show="igHandle" :href="'https://instagram.com/' + igHandle.replace('@', '')" target="_blank" rel="noopener" class="view-all-link" style="display:inline-flex;align-items:center;gap:6px;">
@@ -184,7 +184,7 @@ document.addEventListener('alpine:init', function() {
         display: flex; align-items: center; justify-content: center;
         cursor: pointer; z-index: 3; transition: all 0.2s; color: #333;
     }
-    .ig-reels-arrow:hover { background: #205258; color: #fff; border-color: #205258; }
+    .ig-reels-arrow:hover { background: #B76E79; color: #fff; border-color: #B76E79; }
     .ig-reels-arrow--left { left: 8px; }
     .ig-reels-arrow--right { right: 8px; }
 

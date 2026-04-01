@@ -28,7 +28,7 @@
                 <h1 class="text-[22px] font-normal text-[#111] mb-4">Sign in</h1>
 
                 @if(session('success'))
-                    <div class="mb-3 p-3 bg-emerald-50 border border-emerald-200 rounded text-emerald-700 text-sm">{{ session('success') }}</div>
+                    <div class="mb-3 p-3 bg-[#B76E79]/5 border border-[#B76E79]/20 rounded text-[#B76E79] text-sm">{{ session('success') }}</div>
                 @endif
 
                 {{-- Step 1: Enter email or phone --}}
@@ -40,17 +40,17 @@
                                placeholder="Email or mobile number">
                     </div>
                     <button @click="continueLogin()" type="button"
-                            class="w-full py-[7px] px-4 bg-gradient-to-b from-[#f7dfa5] to-[#f0c14b] border border-[#a88734] rounded text-[13px] font-medium text-[#111] hover:from-[#f5d78e] hover:to-[#eeb933] cursor-pointer">
+                            class="w-full py-[7px] px-4 bg-[#B76E79] hover:bg-[#222222] text-white rounded text-[13px] font-medium hover:from-[#f5d78e] hover:to-[#eeb933] cursor-pointer">
                         Continue
                     </button>
-                    <p x-show="error" x-text="error" class="text-xs text-red-600" x-cloak></p>
+                    <p x-show="error" x-text="error" class="text-xs text-[#CC0C39]" x-cloak></p>
                 </div>
 
                 {{-- Step 2a: Password login (email detected) --}}
                 <div x-show="step === 'password'" x-cloak class="space-y-3">
                     <div class="flex items-center justify-between">
                         <p class="text-[13px] text-[#111]"><span x-text="identifier"></span></p>
-                        <button @click="step='identifier';error=''" type="button" class="text-[12px] text-[#0066c0] hover:underline">Change</button>
+                        <button @click="step='identifier';error=''" type="button" class="text-[12px] text-[#B76E79] hover:underline">Change</button>
                     </div>
 
                     <form method="POST" action="{{ route('login') }}" class="space-y-3">
@@ -59,18 +59,18 @@
                         <div>
                             <div class="flex items-center justify-between mb-1">
                                 <label class="block text-[13px] font-bold text-[#111]">Password</label>
-                                <a href="{{ route('password.request') }}" class="text-[12px] text-[#0066c0] hover:text-[#c45500] hover:underline">Forgot?</a>
+                                <a href="{{ route('password.request') }}" class="text-[12px] text-[#B76E79] hover:text-[#222222] hover:underline">Forgot?</a>
                             </div>
                             <input type="password" name="password" required autocomplete="current-password"
                                    class="w-full px-3 py-[7px] border border-neutral-400 rounded text-sm text-[#111] focus:outline-none focus:ring-1 focus:ring-neutral-400 focus:border-neutral-400">
                         </div>
-                        <button type="submit" class="w-full py-[7px] px-4 bg-gradient-to-b from-[#f7dfa5] to-[#f0c14b] border border-[#a88734] rounded text-[13px] font-medium text-[#111] hover:from-[#f5d78e] hover:to-[#eeb933]">
+                        <button type="submit" class="w-full py-[7px] px-4 bg-[#B76E79] hover:bg-[#222222] text-white rounded text-[13px] font-medium hover:from-[#f5d78e] hover:to-[#eeb933]">
                             Sign in
                         </button>
                     </form>
 
                     <div class="text-center">
-                        <button @click="sendOtpForIdentifier()" type="button" class="text-[12px] text-[#0066c0] hover:underline">
+                        <button @click="sendOtpForIdentifier()" type="button" class="text-[12px] text-[#B76E79] hover:underline">
                             Sign in with OTP instead
                         </button>
                     </div>
@@ -80,7 +80,7 @@
                 <div x-show="step === 'otp_sent'" x-cloak class="space-y-3">
                     <div class="flex items-center justify-between">
                         <p class="text-[13px] text-[#111]">OTP sent to <strong x-text="identifier"></strong></p>
-                        <button @click="step='identifier';error=''" type="button" class="text-[12px] text-[#0066c0] hover:underline">Change</button>
+                        <button @click="step='identifier';error=''" type="button" class="text-[12px] text-[#B76E79] hover:underline">Change</button>
                     </div>
 
                     <div>
@@ -90,11 +90,11 @@
                                placeholder="- - - - - -">
                     </div>
                     <button @click="verifyOtp()" :disabled="verifying" type="button"
-                            class="w-full py-[7px] px-4 bg-gradient-to-b from-[#f7dfa5] to-[#f0c14b] border border-[#a88734] rounded text-[13px] font-medium text-[#111] hover:from-[#f5d78e] hover:to-[#eeb933] disabled:opacity-50">
+                            class="w-full py-[7px] px-4 bg-[#B76E79] hover:bg-[#222222] text-white rounded text-[13px] font-medium hover:from-[#f5d78e] hover:to-[#eeb933] disabled:opacity-50">
                         <span x-show="!verifying">Verify & Sign in</span>
                         <span x-show="verifying">Verifying...</span>
                     </button>
-                    <p x-show="error" x-text="error" class="text-xs text-red-600" x-cloak></p>
+                    <p x-show="error" x-text="error" class="text-xs text-[#CC0C39]" x-cloak></p>
                     <p class="text-[10px] text-neutral-500">OTP sent via WhatsApp + Email. Valid 10 min.</p>
                 </div>
 
@@ -104,7 +104,7 @@
                 </div>
 
                 <div class="flex items-center mt-3">
-                    <input type="checkbox" id="remember" class="w-[13px] h-[13px] border-neutral-400 rounded text-[#205258]">
+                    <input type="checkbox" id="remember" class="w-[13px] h-[13px] border-neutral-400 rounded text-[#B76E79]">
                     <label for="remember" class="ml-2 text-[13px] text-[#111]">Keep me signed in.</label>
                 </div>
             </div>
@@ -159,10 +159,10 @@
                     <div>
                         <label for="full_name" class="block text-[13px] font-bold text-[#111] mb-1">Your name</label>
                         <input type="text" name="full_name" id="full_name" value="{{ old('full_name') }}" required autocomplete="name"
-                               class="w-full px-3 py-[7px] border border-neutral-400 rounded text-sm text-[#111] focus:outline-none focus:ring-1 focus:ring-neutral-400 focus:border-neutral-400 @error('full_name') border-red-500 @enderror"
+                               class="w-full px-3 py-[7px] border border-neutral-400 rounded text-sm text-[#111] focus:outline-none focus:ring-1 focus:ring-neutral-400 focus:border-neutral-400 @error('full_name') border-[#CC0C39]/30 @enderror"
                                placeholder="First and last name">
                         @error('full_name')
-                            <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
+                            <p class="mt-1 text-xs text-[#CC0C39]">{{ $message }}</p>
                         @enderror
                     </div>
 
@@ -170,10 +170,10 @@
                     <div>
                         <label for="phone" class="block text-[13px] font-bold text-[#111] mb-1">Mobile number <span class="font-normal text-neutral-500">(optional)</span></label>
                         <input type="tel" name="phone" id="phone" value="{{ old('phone') }}" autocomplete="tel"
-                               class="w-full px-3 py-[7px] border border-neutral-400 rounded text-sm text-[#111] focus:outline-none focus:ring-1 focus:ring-neutral-400 focus:border-neutral-400 @error('phone') border-red-500 @enderror"
+                               class="w-full px-3 py-[7px] border border-neutral-400 rounded text-sm text-[#111] focus:outline-none focus:ring-1 focus:ring-neutral-400 focus:border-neutral-400 @error('phone') border-[#CC0C39]/30 @enderror"
                                placeholder="Mobile number">
                         @error('phone')
-                            <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
+                            <p class="mt-1 text-xs text-[#CC0C39]">{{ $message }}</p>
                         @enderror
                     </div>
 
@@ -181,10 +181,10 @@
                     <div>
                         <label for="reg_email" class="block text-[13px] font-bold text-[#111] mb-1">Email</label>
                         <input type="email" name="email" id="reg_email" value="{{ old('_register') ? old('email') : '' }}" required autocomplete="email"
-                               class="w-full px-3 py-[7px] border border-neutral-400 rounded text-sm text-[#111] focus:outline-none focus:ring-1 focus:ring-neutral-400 focus:border-neutral-400 @if(old('_register')) @error('email') border-red-500 @enderror @endif">
+                               class="w-full px-3 py-[7px] border border-neutral-400 rounded text-sm text-[#111] focus:outline-none focus:ring-1 focus:ring-neutral-400 focus:border-neutral-400 @if(old('_register')) @error('email') border-[#CC0C39]/30 @enderror @endif">
                         @if(old('_register'))
                             @error('email')
-                                <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
+                                <p class="mt-1 text-xs text-[#CC0C39]">{{ $message }}</p>
                             @enderror
                         @endif
                     </div>
@@ -193,12 +193,12 @@
                     <div>
                         <label for="reg_password" class="block text-[13px] font-bold text-[#111] mb-1">Password</label>
                         <input type="password" name="password" id="reg_password" required autocomplete="new-password"
-                               class="w-full px-3 py-[7px] border border-neutral-400 rounded text-sm text-[#111] focus:outline-none focus:ring-1 focus:ring-neutral-400 focus:border-neutral-400 @if(old('_register')) @error('password') border-red-500 @enderror @endif"
+                               class="w-full px-3 py-[7px] border border-neutral-400 rounded text-sm text-[#111] focus:outline-none focus:ring-1 focus:ring-neutral-400 focus:border-neutral-400 @if(old('_register')) @error('password') border-[#CC0C39]/30 @enderror @endif"
                                placeholder="At least 8 characters">
                         <p class="mt-1 text-[12px] text-neutral-600"><span class="font-medium">i</span> Passwords must be at least 8 characters.</p>
                         @if(old('_register'))
                             @error('password')
-                                <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
+                                <p class="mt-1 text-xs text-[#CC0C39]">{{ $message }}</p>
                             @enderror
                         @endif
                     </div>
@@ -212,16 +212,16 @@
 
                     <!-- Submit -->
                     <button type="submit"
-                            class="w-full py-[7px] px-4 bg-gradient-to-b from-[#f7dfa5] to-[#f0c14b] border border-[#a88734] rounded text-[13px] font-normal text-[#111] hover:from-[#f5d78e] hover:to-[#eeb933] focus:outline-none focus:ring-1 focus:ring-neutral-300 cursor-pointer">
+                            class="w-full py-[7px] px-4 bg-[#B76E79] hover:bg-[#222222] text-white rounded text-[13px] font-medium hover:from-[#f5d78e] hover:to-[#eeb933] focus:outline-none focus:ring-1 focus:ring-neutral-300 cursor-pointer">
                         Create your {{ config('app.name') }} account
                     </button>
                 </form>
 
                 <p class="mt-4 text-[12px] text-[#111] leading-relaxed">
                     By creating an account, you agree to {{ config('app.name') }}'s
-                    <a href="{{ route('terms') }}" class="text-[#0066c0] hover:text-[#c45500] hover:underline">Conditions of Use</a>
+                    <a href="{{ route('terms') }}" class="text-[#B76E79] hover:text-[#222222] hover:underline">Conditions of Use</a>
                     and
-                    <a href="{{ route('privacy') }}" class="text-[#0066c0] hover:text-[#c45500] hover:underline">Privacy Notice</a>.
+                    <a href="{{ route('privacy') }}" class="text-[#B76E79] hover:text-[#222222] hover:underline">Privacy Notice</a>.
                 </p>
             </div>
 

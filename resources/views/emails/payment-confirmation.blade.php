@@ -36,5 +36,5 @@ Track Your Order
 Thank you for shopping with us!
 
 Warm regards,
-**Jikra**
+**MusCo**
 @endcomponent

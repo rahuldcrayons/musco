@@ -10,7 +10,7 @@
                     <span class="text-neutral-900 font-semibold">{{ $product->name }}</span>
                 </div>
                 @if($product->is_active)
-                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">Active</span>
+                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-[#B76E79]/10 text-[#B76E79]">Active</span>
                 @else
                     <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-neutral-100 text-neutral-600">Draft</span>
                 @endif
@@ -125,8 +125,8 @@
                                          class="relative w-32 h-32 rounded-lg overflow-hidden ring-2 ring-neutral-300 shrink-0">
                                         <img :src="mainPreview" class="w-full h-full object-cover">
                                         <button type="button" @click="removeNewMainImage()"
-                                                class="absolute top-1.5 right-1.5 w-6 h-6 bg-white/90 hover:bg-red-50 rounded-full flex items-center justify-center">
-                                            <svg class="w-3.5 h-3.5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                class="absolute top-1.5 right-1.5 w-6 h-6 bg-white/90 hover:bg-[#CC0C39]/10 rounded-full flex items-center justify-center">
+                                            <svg class="w-3.5 h-3.5 text-[#CC0C39]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                                             </svg>
                                         </button>
@@ -135,7 +135,7 @@
                                     {{-- Upload zone --}}
                                     <div class="flex-1 border-2 border-dashed border-neutral-300 rounded-lg p-4 text-center hover:border-neutral-400 transition-colors cursor-pointer"
                                          @click="$refs.mainFileInput.click()"
-                                         :class="{ 'border-blue-400 bg-blue-50/50': mainDragOver }"
+                                         :class="{ 'border-[#B76E79]/20 bg-[#B76E79]/5': mainDragOver }"
                                          @dragover.prevent="mainDragOver = true"
                                          @dragleave.prevent="mainDragOver = false"
                                          @drop.prevent="mainDragOver = false; handleMainImage($event.dataTransfer.files[0])">
@@ -171,8 +171,8 @@
                                                 <img src="{{ $image->url }}" alt="{{ $image->alt_text }}" class="w-full aspect-square object-cover">
                                                 <div class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors"></div>
                                                 <button type="button" @click="markForDelete({{ $image->id }})"
-                                                        class="absolute top-1.5 right-1.5 w-6 h-6 bg-white/90 hover:bg-red-50 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity" title="Delete">
-                                                    <svg class="w-3.5 h-3.5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        class="absolute top-1.5 right-1.5 w-6 h-6 bg-white/90 hover:bg-[#CC0C39]/10 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity" title="Delete">
+                                                    <svg class="w-3.5 h-3.5 text-[#CC0C39]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                                                     </svg>
                                                 </button>
@@ -191,7 +191,7 @@
                                      @dragover.prevent="galleryDragOver = true"
                                      @dragleave.prevent="galleryDragOver = false"
                                      @drop.prevent="galleryDragOver = false; handleGalleryFiles($event.dataTransfer.files)"
-                                     :class="{ 'border-blue-400 bg-blue-50/50': galleryDragOver }">
+                                     :class="{ 'border-[#B76E79]/20 bg-[#B76E79]/5': galleryDragOver }">
                                     <input type="file" name="images[]" multiple accept="image/jpeg,image/jpg,image/png,image/webp,image/gif"
                                            x-ref="galleryInput" class="hidden" @change="handleGalleryFiles($event.target.files)">
                                     <div class="flex flex-col items-center py-1">
@@ -209,10 +209,10 @@
                                             <div class="relative group rounded-lg overflow-hidden ring-1 ring-neutral-200">
                                                 <img :src="preview.url" class="w-full aspect-square object-cover">
                                                 <div class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors"></div>
-                                                <span class="absolute top-1.5 left-1.5 px-1.5 py-0.5 bg-green-600 text-white rounded" style="font-size: 10px; font-weight: 600;">New</span>
+                                                <span class="absolute top-1.5 left-1.5 px-1.5 py-0.5 bg-[#B76E79] text-white rounded" style="font-size: 10px; font-weight: 600;">New</span>
                                                 <button type="button" @click="removeGalleryImage(index)"
-                                                        class="absolute top-1.5 right-1.5 w-6 h-6 bg-white/90 hover:bg-red-50 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                                                    <svg class="w-3.5 h-3.5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        class="absolute top-1.5 right-1.5 w-6 h-6 bg-white/90 hover:bg-[#CC0C39]/10 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                                    <svg class="w-3.5 h-3.5 text-[#CC0C39]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                                                     </svg>
                                                 </button>
@@ -327,7 +327,7 @@
                                         <label class="form-label">
                                             {{ $attribute->name }}
                                             @if(isset($productAttrs[$attribute->name]))
-                                                <span class="inline-flex items-center justify-center w-1.5 h-1.5 rounded-full bg-green-500 ml-1"></span>
+                                                <span class="inline-flex items-center justify-center w-1.5 h-1.5 rounded-full bg-[#B76E79] ml-1"></span>
                                             @endif
                                         </label>
                                         @if($attribute->type === 'text')
@@ -366,7 +366,7 @@
                     <div class="card overflow-hidden">
                         <div class="px-5 py-4 flex items-center justify-between">
                             <h2 class="text-sm font-semibold text-neutral-900">Search engine listing</h2>
-                            <button type="button" @click="autoFillSeo()" class="text-xs font-medium text-blue-600 hover:text-blue-800 transition-colors">
+                            <button type="button" @click="autoFillSeo()" class="text-xs font-medium text-[#B76E79] hover:text-[#B76E79]/80 transition-colors">
                                 Auto-generate
                             </button>
                         </div>
@@ -375,8 +375,8 @@
                             <div class="border border-neutral-200 rounded-lg p-4 bg-neutral-50">
                                 <p class="text-xs text-neutral-500 mb-2 font-medium">Search engine preview</p>
                                 <div>
-                                    <p class="text-blue-700 text-base font-medium truncate" style="font-family: Arial, sans-serif;" x-text="seoTitle || '{{ addslashes($product->meta_title ?: $product->name) }}'"></p>
-                                    <p class="text-green-700 text-xs truncate mt-0.5" style="font-family: Arial, sans-serif;">{{ url('/') }}/product/<span x-text="slug || '{{ $product->slug }}'"></span></p>
+                                    <p class="text-[#B76E79] text-base font-medium truncate" style="font-family: Arial, sans-serif;" x-text="seoTitle || '{{ addslashes($product->meta_title ?: $product->name) }}'"></p>
+                                    <p class="text-[#B76E79] text-xs truncate mt-0.5" style="font-family: Arial, sans-serif;">{{ url('/') }}/product/<span x-text="slug || '{{ $product->slug }}'"></span></p>
                                     <p class="text-neutral-600 text-xs mt-1 line-clamp-2" style="font-family: Arial, sans-serif;" x-text="seoDescription || '{{ addslashes($product->meta_description ?: Str::limit(strip_tags($product->description), 160)) }}'"></p>
                                 </div>
                             </div>
@@ -510,9 +510,9 @@
         </form>
 
         {{-- Danger Zone --}}
-        <div class="mt-8 card overflow-hidden" style="border-color: #fca5a5;">
+        <div class="mt-8 card overflow-hidden" style="border-color: rgba(204,12,57,0.3);">
             <div class="px-5 py-4">
-                <h2 class="text-sm font-semibold text-red-700">Danger zone</h2>
+                <h2 class="text-sm font-semibold text-[#CC0C39]">Danger zone</h2>
             </div>
             <div class="px-5 pb-5 flex items-center justify-between">
                 <div>

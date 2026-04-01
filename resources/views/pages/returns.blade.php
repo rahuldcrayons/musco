@@ -26,12 +26,12 @@
                 <p class="text-[13px] text-neutral-600 mt-2">We want you to be completely satisfied with your purchase.</p>
             </div>
 
-            <!-- 30-Day Return Policy -->
+            <!-- Return Policy -->
             <div class="bg-white border border-neutral-100 rounded-xl p-5 sm:p-6 mb-4">
-                <h2 class="text-[15px] font-bold text-neutral-900 mb-2">7-Day Return Policy</h2>
+                <h2 class="text-[15px] font-bold text-neutral-900 mb-2">{{ \App\Models\Setting::get('return_policy_days', 7) }}-Day Return Policy</h2>
                 <p class="text-[13px] text-neutral-600 leading-relaxed">
-                    We offer a 7-day return policy on most items. You can return products within
-                    7 days of delivery for a full refund or exchange.
+                    We offer a {{ \App\Models\Setting::get('return_policy_days', 7) }}-day return policy on most items. You can return products within
+                    {{ \App\Models\Setting::get('return_policy_days', 7) }} days of delivery for a full refund or exchange.
                 </p>
             </div>
 
@@ -134,7 +134,7 @@
                             <span class="text-sm font-bold text-primary-600">3</span>
                         </div>
                         <h3 class="text-sm font-semibold text-neutral-900 mb-1">Get Refund</h3>
-                        <p class="text-xs text-neutral-600 leading-relaxed">Once received and inspected, your refund will be processed within 5-7 days.</p>
+                        <p class="text-xs text-neutral-600 leading-relaxed">Once received and inspected, your refund will be processed within {{ \App\Models\Setting::get('refund_processing_days', '5-7') }} days.</p>
                     </div>
                 </div>
             </div>
@@ -149,7 +149,7 @@
                     </p>
                     <p>
                         If approved, your refund will be processed, and a credit will automatically be
-                        applied to your original payment method within 5-7 business days.
+                        applied to your original payment method within {{ \App\Models\Setting::get('refund_processing_days', '5-7') }} business days.
                     </p>
                 </div>
             </div>
@@ -183,7 +183,7 @@
                     <div>
                         <h2 class="text-[15px] font-bold text-neutral-900 mb-1">Damaged or Defective Items</h2>
                         <p class="text-[13px] text-neutral-600 leading-relaxed">
-                            If you receive a damaged or defective item, please contact us within 48 hours of
+                            If you receive a damaged or defective item, please contact us within {{ \App\Models\Setting::get('damage_report_hours', 48) }} hours of
                             delivery with photos of the damage. We will arrange for a replacement or refund.
                         </p>
                     </div>

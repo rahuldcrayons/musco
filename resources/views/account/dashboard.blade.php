@@ -33,11 +33,11 @@
 
                 <!-- Loyalty Points + Order Stats -->
                 <div class="grid grid-cols-2 md:grid-cols-5 gap-3 sm:gap-4 mb-6">
-                    <div class="bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-200 rounded-xl p-4 text-center md:col-span-1">
-                        <div class="text-2xl font-bold text-amber-600">{{ number_format($user->loyalty_points_balance ?? 0) }}</div>
-                        <div class="text-xs text-amber-700 mt-0.5 font-medium">Reward Points</div>
+                    <div class="bg-gradient-to-br from-[#c29958]/10 to-[#c29958]/5 border border-[#c29958]/20 rounded-xl p-4 text-center md:col-span-1">
+                        <div class="text-2xl font-bold text-[#c29958]">{{ number_format($user->loyalty_points_balance ?? 0) }}</div>
+                        <div class="text-xs text-[#c29958] mt-0.5 font-medium">Reward Points</div>
                         @if(($user->loyalty_points_balance ?? 0) > 0)
-                            <div class="text-[10px] text-amber-600 mt-1">Worth @price(($user->loyalty_points_balance ?? 0) * 0.25)</div>
+                            <div class="text-[10px] text-[#c29958] mt-1">Worth @price(($user->loyalty_points_balance ?? 0) * 0.25)</div>
                         @endif
                     </div>
                     <div class="bg-white border border-neutral-100 rounded-xl p-4 text-center">

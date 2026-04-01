@@ -9,7 +9,7 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: #fafafa;
             min-height: 100vh;
             display: flex;
@@ -76,7 +76,7 @@
             transition: all 0.2s;
         }
         .btn-primary {
-            background: linear-gradient(to right, #F8931D, #E07E0A);
+            background: linear-gradient(to right, #B76E79, #222222);
             color: #fff;
             box-shadow: 0 4px 12px rgba(248, 147, 29, 0.25);
         }
@@ -86,14 +86,14 @@
             color: #555;
             border: 1px solid #ddd;
         }
-        .btn-outline:hover { border-color: #205258; color: #205258; }
+        .btn-outline:hover { border-color: #B76E79; color: #B76E79; }
         .btn svg { width: 1rem; height: 1rem; }
     </style>
 </head>
 <body>
     <div class="header">
         <a href="{{ url('/') }}">
-            <img src="{{ asset('images/jikra-logo.png') }}" alt="{{ config('app.name') }}">
+            <span style="font-family:'Outfit',sans-serif; color:#B76E79; font-size:32px; font-weight:700; letter-spacing:-0.02em;">Mus<span style="color:#2b2b2b;">Co</span></span>
         </a>
     </div>
     <div class="content">

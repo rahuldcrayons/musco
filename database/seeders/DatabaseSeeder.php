@@ -14,8 +14,8 @@ class DatabaseSeeder extends Seeder
         $this->call([
             AdminSeeder::class,
             UserSeeder::class,
-            JikraCategorySeeder::class,
-            JikraBrandSeeder::class,
+            JewelleryCategorySeeder::class,
+            MusCoBrandSeeder::class,
             SellerSeeder::class,
             BannerSeeder::class,
             CouponSeeder::class,
@@ -24,6 +24,7 @@ class DatabaseSeeder extends Seeder
             ReviewSettingsSeeder::class,
             ChatbotSettingsSeeder::class,
             BlogPostSeeder::class,
+            JewelleryAttributeSeeder::class,
         ]);
     }
 }

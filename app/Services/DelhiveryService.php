@@ -17,7 +17,7 @@ class DelhiveryService
     public function __construct()
     {
         $this->token = Setting::get('delhivery_api_token', config('services.delhivery.token', ''));
-        $this->pickupLocation = Setting::get('delhivery_pickup_location', 'Jikra Warehouse');
+        $this->pickupLocation = Setting::get('delhivery_pickup_location', 'MusCo Warehouse');
         $this->originPin = Setting::get('delhivery_origin_pin', '110085');
     }
 
@@ -192,14 +192,14 @@ class DelhiveryService
             'return_add' => Setting::get('delhivery_return_address', 'G-118, Deep Vihar, Rohini Sector 24'),
             'return_state' => Setting::get('delhivery_return_state', 'Delhi'),
             'return_country' => 'India',
-            'return_name' => Setting::get('delhivery_return_name', 'Jikra Returns'),
+            'return_name' => Setting::get('delhivery_return_name', 'MusCo Returns'),
             'products_desc' => $order->items->pluck('product_name')->implode(', '),
             'hsn_code' => '',
             'cod_amount' => $isCod ? (string) $order->total : '0',
             'order_date' => $order->created_at->format('Y-m-d'),
             'total_amount' => (string) $order->total,
             'seller_add' => Setting::get('delhivery_return_address', 'G-118, Deep Vihar, Rohini Sector 24, Delhi'),
-            'seller_name' => config('app.name', 'Jikra'),
+            'seller_name' => config('app.name', 'MusCo'),
             'seller_inv' => $order->invoice_number ?? $order->order_number,
             'quantity' => (string) $order->items->sum('quantity'),
             'waybill' => '',

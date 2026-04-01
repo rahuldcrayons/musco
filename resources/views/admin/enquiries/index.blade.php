@@ -95,20 +95,20 @@
                             <td class="px-4 py-3">
                                 @switch($enquiry->status)
                                     @case('new')
-                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-50 text-amber-700">
-                                            <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-[#c29958]/10 text-[#c29958]">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-[#c29958]"></span>
                                             New
                                         </span>
                                         @break
                                     @case('read')
-                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700">
-                                            <span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
+                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-[#B76E79]/5 text-[#B76E79]">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-[#B76E79]"></span>
                                             Read
                                         </span>
                                         @break
                                     @case('replied')
-                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-50 text-green-700">
-                                            <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>
+                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-[#B76E79]/5 text-[#B76E79]">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-[#B76E79]"></span>
                                             Replied
                                         </span>
                                         @break

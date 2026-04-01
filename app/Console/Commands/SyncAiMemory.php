@@ -17,7 +17,7 @@ class SyncAiMemory extends Command
     {
         $home = getenv('USERPROFILE') ?: getenv('HOME');
         $from = $this->option('from')
-            ?: "{$home}/.claude/projects/d--Projects-jikraofficial/memory";
+            ?: "{$home}/.claude/projects/d--Projects-musxcoofficial/memory";
         $to = $this->option('to') ?: base_path('.ai-memory');
 
         if (!File::isDirectory($from)) {

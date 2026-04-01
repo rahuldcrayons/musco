@@ -31,7 +31,7 @@
                     <div class="flex items-center gap-4 mt-2 text-sm text-neutral-600">
                         @if($seller->rating)
                             <span class="flex items-center gap-1">
-                                <svg class="w-4 h-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+                                <svg class="w-4 h-4 text-[#c29958]" fill="currentColor" viewBox="0 0 20 20">
                                     <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
                                 </svg>
                                 {{ number_format($seller->rating, 1) }} ({{ $seller->total_reviews }} reviews)
@@ -87,7 +87,7 @@
                 </div>
                 <div x-ref="sentinel" class="h-4"></div>
                 <div x-show="loading" x-cloak class="flex justify-center py-8">
-                    <svg class="animate-spin h-6 w-6 text-[#205258]" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
+                    <svg class="animate-spin h-6 w-6 text-[#B76E79]" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
                 </div>
             </div>
         @else
@@ -97,7 +97,7 @@
                 </svg>
                 <h3 class="text-lg font-medium text-neutral-900 mb-2">No products found</h3>
                 <p class="text-neutral-600 mb-4">This seller doesn't have any products yet.</p>
-                <a href="{{ route('home') }}" class="btn-primary">Back to Home</a>
+                <a href="{{ route('home') }}" class="btn btn-primary">Back to Home</a>
             </div>
         @endif
     </div>

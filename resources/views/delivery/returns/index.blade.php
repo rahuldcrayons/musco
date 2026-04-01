@@ -88,7 +88,7 @@
                                 $statusColors = [
                                     'approved' => 'bg-info-50 text-info-700',
                                     'pickup_scheduled' => 'bg-warning-50 text-warning-700',
-                                    'picked_up' => 'bg-[#205258]/10 text-[#1b454a]',
+                                    'picked_up' => 'bg-[#B76E79]/10 text-[#222222]',
                                     'received' => 'bg-success-50 text-success-700',
                                     'processed' => 'bg-success-50 text-success-700',
                                     'completed' => 'bg-success-50 text-success-700',
@@ -143,7 +143,7 @@
                                                 @csrf
                                                 @method('PUT')
                                                 <input type="hidden" name="status" value="picked_up">
-                                                <button type="submit" class="inline-flex items-center px-2.5 py-1.5 text-xs font-medium text-white bg-[#205258] hover:bg-[#1b454a] rounded-md transition-colors">
+                                                <button type="submit" class="inline-flex items-center px-2.5 py-1.5 text-xs font-medium text-white bg-[#B76E79] hover:bg-[#222222] rounded-md transition-colors">
                                                     <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/></svg>
                                                     Picked Up
                                                 </button>

@@ -1,1 +1,1 @@
-<img src="{{ asset('images/jikra-logo.png') }}" alt="{{ config('app.name', 'Jikra') }}" {{ $attributes->merge(['class' => 'object-contain']) }}>
+<span style="font-family:'Outfit',sans-serif; color:#B76E79; font-weight:700; letter-spacing:-0.02em;" {{ $attributes->merge(['class' => 'text-2xl']) }}>Mus<span style="color:#2b2b2b;">Co</span></span>

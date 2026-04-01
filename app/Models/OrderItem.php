@@ -22,6 +22,7 @@ class OrderItem extends Model
         'discount',
         'total',
         'product_snapshot',
+        'customization',
         'status',
     ];
 
@@ -34,6 +35,7 @@ class OrderItem extends Model
             'discount' => 'decimal:2',
             'total' => 'decimal:2',
             'product_snapshot' => 'array',
+            'customization' => 'array',
         ];
     }
 

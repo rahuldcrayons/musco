@@ -102,18 +102,18 @@
                                     $score = $log->risk_score ?? 0;
                                 @endphp
                                 @if($score >= 75)
-                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-50 text-red-700">
-                                        <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-[#CC0C39]/10 text-[#CC0C39]">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-[#CC0C39]"></span>
                                         High ({{ $score }})
                                     </span>
                                 @elseif($score >= 50)
-                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-50 text-amber-700">
-                                        <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-[#c29958]/10 text-[#c29958]">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-[#c29958]"></span>
                                         Medium ({{ $score }})
                                     </span>
                                 @else
-                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-50 text-green-700">
-                                        <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>
+                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-[#B76E79]/5 text-[#B76E79]">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-[#B76E79]"></span>
                                         Low ({{ $score }})
                                     </span>
                                 @endif
@@ -123,13 +123,13 @@
                             </td>
                             <td class="px-4 py-3">
                                 @if($log->reviewed_at)
-                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-50 text-green-700">
-                                        <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>
+                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-[#B76E79]/5 text-[#B76E79]">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-[#B76E79]"></span>
                                         Reviewed
                                     </span>
                                 @else
-                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-50 text-amber-700">
-                                        <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-[#c29958]/10 text-[#c29958]">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-[#c29958]"></span>
                                         Pending
                                     </span>
                                 @endif

@@ -13,28 +13,28 @@ class SellerSeeder extends Seeder
     {
         $sellers = [
             [
-                'store_name' => 'Jikra Store',
-                'business_name' => 'Jikra',
+                'store_name' => 'MusCo Store',
+                'business_name' => 'MusCo',
                 'email' => 'seller1@example.com',
-                'description' => 'Your one-stop shop for the latest electronics and gadgets.',
+                'description' => 'Your trusted destination for certified gold, diamond & silver jewellery.',
             ],
             [
-                'store_name' => 'Fashion Forward',
-                'business_name' => 'Fashion Forward Inc.',
+                'store_name' => 'Gold Heritage',
+                'business_name' => 'Gold Heritage Jewellers',
                 'email' => 'seller2@example.com',
-                'description' => 'Trendy fashion at affordable prices.',
+                'description' => 'Traditional and contemporary gold jewellery with BIS hallmark certification.',
             ],
             [
-                'store_name' => 'Home Essentials',
-                'business_name' => 'Home Essentials Co.',
+                'store_name' => 'Diamond Dreams',
+                'business_name' => 'Diamond Dreams Pvt. Ltd.',
                 'email' => 'seller3@example.com',
-                'description' => 'Quality home products for modern living.',
+                'description' => 'Premium certified diamond jewellery for every occasion.',
             ],
             [
-                'store_name' => 'Sports Zone',
-                'business_name' => 'Sports Zone Trading',
+                'store_name' => 'Silver Craft',
+                'business_name' => 'Silver Craft Trading',
                 'email' => 'seller4@example.com',
-                'description' => 'Premium sports equipment and accessories.',
+                'description' => 'Handcrafted silver jewellery and accessories with 925 purity.',
             ],
         ];
 

@@ -413,24 +413,32 @@ Alpine.data('dropdown', () => ({
 /**
  * Modal component
  */
-Alpine.data('modal', (initialOpen = false) => ({
-    open: initialOpen,
+Alpine.data('modal', (nameOrOpen = false) => ({
+    isOpen: typeof nameOrOpen === 'boolean' ? nameOrOpen : false,
 
-    show() {
-        this.open = true;
+    open() {
+        this.isOpen = true;
         document.body.classList.add('overflow-hidden');
     },
 
-    hide() {
-        this.open = false;
+    show() {
+        this.open();
+    },
+
+    close() {
+        this.isOpen = false;
         document.body.classList.remove('overflow-hidden');
     },
 
+    hide() {
+        this.close();
+    },
+
     toggle() {
-        if (this.open) {
-            this.hide();
+        if (this.isOpen) {
+            this.close();
         } else {
-            this.show();
+            this.open();
         }
     }
 }));

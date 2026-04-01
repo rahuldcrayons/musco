@@ -30,8 +30,8 @@
 
                 <!-- Header -->
                 <div class="mb-5">
-                    <div class="w-12 h-12 bg-[#205258]/10 rounded-xl flex items-center justify-center mb-4">
-                        <svg class="w-6 h-6 text-[#205258]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div class="w-12 h-12 bg-[#B76E79]/10 rounded-xl flex items-center justify-center mb-4">
+                        <svg class="w-6 h-6 text-[#B76E79]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15.75 5.25a3 3 0 013 3m3 0a6 6 0 01-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1121.75 8.25z"/>
                         </svg>
                     </div>
@@ -40,7 +40,7 @@
                 </div>
 
                 @if (session('status'))
-                    <div class="bg-green-50 border border-green-200 text-green-700 rounded-xl p-4 mb-5">
+                    <div class="bg-[#B76E79]/5 border border-[#B76E79]/20 text-[#B76E79] rounded-xl p-4 mb-5">
                         <div class="flex items-center gap-2">
                             <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
@@ -59,9 +59,9 @@
                                    class="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 rounded-xl text-neutral-900 placeholder-neutral-400 focus:outline-none focus:ring-1 focus:ring-neutral-300 focus:border-neutral-300 transition-all"
                                    placeholder="Phone number or email">
                         </div>
-                        <p x-show="error" x-text="error" class="text-sm text-red-600" x-cloak></p>
+                        <p x-show="error" x-text="error" class="text-sm text-[#CC0C39]" x-cloak></p>
                         <button @click="sendOtp()" :disabled="sending" type="button"
-                                class="w-full py-2 px-4 bg-gradient-to-r from-[#F8931D] to-[#E07E0A] hover:from-[#E07E0A] hover:to-[#D47200] text-white font-semibold rounded-xl transition-all disabled:opacity-50">
+                                class="w-full py-2 px-4 bg-gradient-to-r from-[#B76E79] to-[#222222] hover:from-[#222222] hover:to-[#D47200] text-white font-semibold rounded-xl transition-all disabled:opacity-50">
                             <span x-show="!sending">Send OTP</span>
                             <span x-show="sending">Sending...</span>
                         </button>
@@ -77,18 +77,18 @@
                                    class="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 rounded-xl text-neutral-900 text-center text-xl tracking-[8px] font-bold focus:outline-none focus:ring-1 focus:ring-neutral-300 focus:border-neutral-300"
                                    placeholder="------">
                         </div>
-                        <p x-show="error" x-text="error" class="text-sm text-red-600" x-cloak></p>
+                        <p x-show="error" x-text="error" class="text-sm text-[#CC0C39]" x-cloak></p>
                         <button @click="verifyOtp()" :disabled="verifying" type="button"
-                                class="w-full py-2 px-4 bg-gradient-to-r from-[#F8931D] to-[#E07E0A] text-white font-semibold rounded-xl disabled:opacity-50">
+                                class="w-full py-2 px-4 bg-gradient-to-r from-[#B76E79] to-[#222222] text-white font-semibold rounded-xl disabled:opacity-50">
                             <span x-show="!verifying">Verify OTP</span>
                             <span x-show="verifying">Verifying...</span>
                         </button>
-                        <button @click="step=1;otp='';error=''" type="button" class="w-full text-sm text-[#205258] hover:underline">Change number/email</button>
+                        <button @click="step=1;otp='';error=''" type="button" class="w-full text-sm text-[#B76E79] hover:underline">Change number/email</button>
                     </div>
 
                     {{-- Step 3: Set new password --}}
                     <div x-show="step === 3" x-cloak class="space-y-4">
-                        <div class="bg-green-50 border border-green-200 text-green-700 rounded-xl p-3 text-sm">OTP verified! Set your new password.</div>
+                        <div class="bg-[#B76E79]/5 border border-[#B76E79]/20 text-[#B76E79] rounded-xl p-3 text-sm">OTP verified! Set your new password.</div>
                         <div>
                             <label class="block text-sm font-medium text-neutral-700 mb-1">New Password</label>
                             <input type="password" x-model="password" minlength="8"
@@ -101,9 +101,9 @@
                                    class="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-neutral-300 focus:border-neutral-300"
                                    placeholder="Confirm password">
                         </div>
-                        <p x-show="error" x-text="error" class="text-sm text-red-600" x-cloak></p>
+                        <p x-show="error" x-text="error" class="text-sm text-[#CC0C39]" x-cloak></p>
                         <button @click="resetPassword()" :disabled="resetting" type="button"
-                                class="w-full py-2 px-4 bg-gradient-to-r from-[#F8931D] to-[#E07E0A] text-white font-semibold rounded-xl disabled:opacity-50">
+                                class="w-full py-2 px-4 bg-gradient-to-r from-[#B76E79] to-[#222222] text-white font-semibold rounded-xl disabled:opacity-50">
                             <span x-show="!resetting">Reset Password</span>
                             <span x-show="resetting">Resetting...</span>
                         </button>
@@ -113,7 +113,7 @@
                 <!-- Back to Login -->
                 <p class="mt-5 text-center text-sm text-neutral-600">
                     Remember your password?
-                    <a href="{{ route('login') }}" class="font-semibold text-[#205258] hover:text-[#1b454a] transition-colors">Sign in</a>
+                    <a href="{{ route('login') }}" class="font-semibold text-[#B76E79] hover:text-[#222222] transition-colors">Sign in</a>
                 </p>
 
             </div>

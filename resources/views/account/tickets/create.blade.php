@@ -27,9 +27,9 @@
 
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
-                                <label for="category" class="block text-sm font-medium text-neutral-700 mb-1.5">Category <span class="text-red-400">*</span></label>
+                                <label for="category" class="block text-sm font-medium text-neutral-700 mb-1.5">Category <span class="text-[#CC0C39]">*</span></label>
                                 <select name="category" id="category" required
-                                        class="w-full px-4 py-2.5 bg-neutral-50 border border-neutral-200 rounded-xl text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-[#205258]/20 focus:border-[#205258] transition-all @error('category') border-red-300 @enderror">
+                                        class="w-full px-4 py-2.5 bg-neutral-50 border border-neutral-200 rounded-xl text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-[#B76E79]/20 focus:border-[#B76E79] transition-all @error('category') border-[#CC0C39]/30 @enderror">
                                     <option value="">Select category</option>
                                     <option value="general" @selected(old('category') === 'general')>General Inquiry</option>
                                     <option value="order" @selected(old('category') === 'order')>Order Issue</option>
@@ -39,47 +39,47 @@
                                     <option value="other" @selected(old('category') === 'other')>Other</option>
                                 </select>
                                 @error('category')
-                                    <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
+                                    <p class="mt-1 text-xs text-[#CC0C39]">{{ $message }}</p>
                                 @enderror
                             </div>
 
                             <div>
-                                <label for="priority" class="block text-sm font-medium text-neutral-700 mb-1.5">Priority <span class="text-red-400">*</span></label>
+                                <label for="priority" class="block text-sm font-medium text-neutral-700 mb-1.5">Priority <span class="text-[#CC0C39]">*</span></label>
                                 <select name="priority" id="priority" required
-                                        class="w-full px-4 py-2.5 bg-neutral-50 border border-neutral-200 rounded-xl text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-[#205258]/20 focus:border-[#205258] transition-all @error('priority') border-red-300 @enderror">
+                                        class="w-full px-4 py-2.5 bg-neutral-50 border border-neutral-200 rounded-xl text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-[#B76E79]/20 focus:border-[#B76E79] transition-all @error('priority') border-[#CC0C39]/30 @enderror">
                                     <option value="low" @selected(old('priority', 'normal') === 'low')>Low</option>
                                     <option value="normal" @selected(old('priority', 'normal') === 'normal')>Normal</option>
                                     <option value="high" @selected(old('priority') === 'high')>High</option>
                                 </select>
                                 @error('priority')
-                                    <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
+                                    <p class="mt-1 text-xs text-[#CC0C39]">{{ $message }}</p>
                                 @enderror
                             </div>
                         </div>
 
                         <div>
-                            <label for="subject" class="block text-sm font-medium text-neutral-700 mb-1.5">Subject <span class="text-red-400">*</span></label>
+                            <label for="subject" class="block text-sm font-medium text-neutral-700 mb-1.5">Subject <span class="text-[#CC0C39]">*</span></label>
                             <input type="text" name="subject" id="subject" value="{{ old('subject') }}" required
-                                   class="w-full px-4 py-2.5 bg-neutral-50 border border-neutral-200 rounded-xl text-sm text-neutral-900 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-[#205258]/20 focus:border-[#205258] transition-all @error('subject') border-red-300 @enderror"
+                                   class="w-full px-4 py-2.5 bg-neutral-50 border border-neutral-200 rounded-xl text-sm text-neutral-900 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-[#B76E79]/20 focus:border-[#B76E79] transition-all @error('subject') border-[#CC0C39]/30 @enderror"
                                    placeholder="Brief description of your issue">
                             @error('subject')
-                                <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
+                                <p class="mt-1 text-xs text-[#CC0C39]">{{ $message }}</p>
                             @enderror
                         </div>
 
                         <div>
-                            <label for="message" class="block text-sm font-medium text-neutral-700 mb-1.5">Message <span class="text-red-400">*</span></label>
+                            <label for="message" class="block text-sm font-medium text-neutral-700 mb-1.5">Message <span class="text-[#CC0C39]">*</span></label>
                             <textarea name="message" id="message" rows="6" required
-                                      class="w-full px-4 py-2.5 bg-neutral-50 border border-neutral-200 rounded-xl text-sm text-neutral-900 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-[#205258]/20 focus:border-[#205258] transition-all resize-none @error('message') border-red-300 @enderror"
+                                      class="w-full px-4 py-2.5 bg-neutral-50 border border-neutral-200 rounded-xl text-sm text-neutral-900 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-[#B76E79]/20 focus:border-[#B76E79] transition-all resize-none @error('message') border-[#CC0C39]/30 @enderror"
                                       placeholder="Describe your issue in detail...">{{ old('message') }}</textarea>
                             @error('message')
-                                <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
+                                <p class="mt-1 text-xs text-[#CC0C39]">{{ $message }}</p>
                             @enderror
                         </div>
 
                         <div class="flex items-center gap-3 pt-1">
                             <button type="submit"
-                                    class="px-4 py-2 bg-gradient-to-r from-[#F8931D] to-[#E07E0A] hover:from-[#E07E0A] hover:to-[#D47200] text-white text-sm font-semibold rounded-xl shadow-lg shadow-[#F8931D]/25 transition-all">
+                                    class="px-4 py-2 bg-gradient-to-r from-[#B76E79] to-[#222222] hover:from-[#222222] hover:to-[#D47200] text-white text-sm font-semibold rounded-xl shadow-lg shadow-[#B76E79]/25 transition-all">
                                 Submit Ticket
                             </button>
                             <a href="{{ route('account.tickets.index') }}" class="px-3 py-1.5 text-sm text-neutral-600 hover:text-neutral-900">Cancel</a>

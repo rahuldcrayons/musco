@@ -12,17 +12,16 @@
         <meta name="twitter:title" content="Bestsellers - {{ config('app.name') }}">
     @endpush
 
-    <div class="bg-neutral-50 border-b border-neutral-100">
-        <div class="container mx-auto px-4 py-3">
-            <x-breadcrumb :items="[['label' => 'Bestsellers', 'url' => null]]" />
+    <div class="bg-gradient-to-r from-[#B76E79] to-[#222222] text-white">
+        <div class="container mx-auto px-4 py-8 lg:py-12">
+            <x-breadcrumb :items="[['label' => 'Bestsellers', 'url' => null]]" class="text-white/70" />
+            <h1 class="text-3xl lg:text-4xl font-bold mt-3" style="font-family:'Playfair Display',Georgia,serif;">Bestsellers</h1>
+            <p class="text-white/80 mt-1">{{ $products->total() }} products</p>
         </div>
     </div>
 
     <div class="container mx-auto px-4 py-8">
-        <div class="mb-6">
-            <h1 class="text-2xl font-bold text-neutral-900">Bestsellers</h1>
-            <p class="text-neutral-600">{{ $products->total() }} products</p>
-        </div>
+        <div class="mb-6"></div>
 
         @if($products->count())
             <div x-data="{
@@ -52,7 +51,7 @@
                 </div>
                 <div x-ref="sentinel" class="h-4"></div>
                 <div x-show="loading" x-cloak class="flex justify-center py-8">
-                    <svg class="animate-spin h-6 w-6 text-[#205258]" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
+                    <svg class="animate-spin h-6 w-6 text-[#B76E79]" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
                 </div>
             </div>
         @else
@@ -62,7 +61,7 @@
                 </svg>
                 <h3 class="text-lg font-medium text-neutral-900 mb-2">No bestsellers yet</h3>
                 <p class="text-neutral-600 mb-4">Check back soon for popular products.</p>
-                <a href="{{ route('products.index') }}" class="btn-primary">Browse All Products</a>
+                <a href="{{ route('products.index') }}" class="btn btn-primary">Browse All Products</a>
             </div>
         @endif
     </div>

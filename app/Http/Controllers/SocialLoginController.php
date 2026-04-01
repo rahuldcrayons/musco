@@ -75,7 +75,7 @@ class SocialLoginController extends Controller
 
         Auth::login($user);
 
-        return redirect()->route('account.dashboard')->with('success', 'Welcome to Jikra!');
+        return redirect()->route('account.dashboard')->with('success', 'Welcome to MusCo!');
     }
 
     private function validateProvider(string $provider): void

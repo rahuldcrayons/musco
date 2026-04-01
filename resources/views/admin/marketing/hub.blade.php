@@ -10,10 +10,10 @@
 
         {{-- Flash Messages --}}
         @if(session('success'))
-            <div class="bg-green-50 border border-green-200 text-green-800 text-sm px-4 py-3 rounded-lg">{{ session('success') }}</div>
+            <div class="bg-[#B76E79]/5 border border-[#B76E79]/20 text-[#B76E79] text-sm px-4 py-3 rounded-lg">{{ session('success') }}</div>
         @endif
         @if(session('error'))
-            <div class="bg-red-50 border border-red-200 text-red-800 text-sm px-4 py-3 rounded-lg">{{ session('error') }}</div>
+            <div class="bg-[#CC0C39]/10 border border-[#CC0C39]/20 text-[#CC0C39] text-sm px-4 py-3 rounded-lg">{{ session('error') }}</div>
         @endif
 
         {{-- Meta Platforms Card --}}
@@ -33,7 +33,7 @@
                     @if($connections['facebook']['connected'] || $connections['instagram']['connected'])
                         <form action="{{ route('admin.marketing.meta.disconnect') }}" method="POST" onsubmit="return confirm('Disconnect all Meta accounts?')">
                             @csrf @method('DELETE')
-                            <button class="px-4 py-2 text-sm font-medium text-red-600 border border-red-200 rounded-lg hover:bg-red-50 transition-colors">
+                            <button class="px-4 py-2 text-sm font-medium text-[#CC0C39] border border-[#CC0C39]/20 rounded-lg hover:bg-[#CC0C39]/10 transition-colors">
                                 Disconnect
                             </button>
                         </form>

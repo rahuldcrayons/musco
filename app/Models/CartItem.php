@@ -15,6 +15,11 @@ class CartItem extends Model
         'price',
         'total',
         'attributes',
+        'engraving_text',
+        'ring_size',
+        'custom_note',
+        'gift_wrap',
+        'gift_message',
     ];
 
     protected function casts(): array
@@ -23,6 +28,7 @@ class CartItem extends Model
             'price' => 'decimal:2',
             'total' => 'decimal:2',
             'attributes' => 'array',
+            'gift_wrap' => 'boolean',
         ];
     }
 

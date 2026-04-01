@@ -30,7 +30,7 @@
             <div class="bg-white border border-neutral-100 rounded-xl p-5 sm:p-6 mb-4">
                 <h2 class="text-[15px] font-bold text-neutral-900 mb-2">What is GDPR?</h2>
                 <p class="text-[13px] text-neutral-600 leading-relaxed">
-                    The General Data Protection Regulation (GDPR) is a regulation in EU law on data protection and privacy. It gives individuals control over their personal data and simplifies the regulatory environment for international business. {{ \App\Models\Setting::get('site_name', 'Jikra') }} is committed to full compliance with all GDPR obligations.
+                    The General Data Protection Regulation (GDPR) is a regulation in EU law on data protection and privacy. It gives individuals control over their personal data and simplifies the regulatory environment for international business. {{ \App\Models\Setting::get('site_name', 'MusCo') }} is committed to full compliance with all GDPR obligations.
                 </p>
             </div>
 
@@ -70,15 +70,15 @@
                 <h2 class="text-[15px] font-bold text-neutral-900 mb-4">Legal Basis for Processing</h2>
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div class="text-center">
-                        <div class="w-10 h-10 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-3">
-                            <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        <div class="w-10 h-10 bg-[#B76E79]/5 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <svg class="w-5 h-5 text-[#B76E79]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                         </div>
                         <h3 class="text-sm font-semibold text-neutral-900 mb-1">Contract</h3>
                         <p class="text-xs text-neutral-600 leading-relaxed">Processing your orders and managing your account</p>
                     </div>
                     <div class="text-center">
-                        <div class="w-10 h-10 bg-[#205258]/5 rounded-full flex items-center justify-center mx-auto mb-3">
-                            <svg class="w-5 h-5 text-[#205258]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3"/></svg>
+                        <div class="w-10 h-10 bg-[#B76E79]/5 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <svg class="w-5 h-5 text-[#B76E79]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3"/></svg>
                         </div>
                         <h3 class="text-sm font-semibold text-neutral-900 mb-1">Legal Obligation</h3>
                         <p class="text-xs text-neutral-600 leading-relaxed">Tax laws, accounting requirements and court orders</p>

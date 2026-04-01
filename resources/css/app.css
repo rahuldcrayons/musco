@@ -16,40 +16,40 @@
 
 @theme {
     /* ============================
-       Font Stack
+       Font Stack — Luxury Jewelry Brand
        ============================ */
-    --font-sans: 'Poppins', 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
-    --font-heading: 'Fredoka', 'Poppins', ui-sans-serif, system-ui, -apple-system, sans-serif;
+    --font-sans: 'DM Sans', ui-sans-serif, system-ui, -apple-system, sans-serif;
+    --font-heading: 'Playfair Display', 'Georgia', ui-serif, serif;
     --font-mono: 'JetBrains Mono', ui-monospace, monospace;
 
     /* ============================
-       Purple Override → Teal (Jikra Brand)
-       Remapped to match brand teal #205258
+       Purple Override → Rose Gold (Luxury Jewelry)
+       Primary: #B76E79, Accent/Hover: #c29958
        ============================ */
-    --color-purple-50:  #e6f0f1;
-    --color-purple-100: #c0dade;
-    --color-purple-200: #96c0c5;
-    --color-purple-300: #6ba5ac;
-    --color-purple-400: #4d8f97;
-    --color-purple-500: #307079;
-    --color-purple-600: #205258;
-    --color-purple-700: #1b454a;
-    --color-purple-800: #15383c;
-    --color-purple-900: #0f2a2e;
-    --color-purple-950: #091c1f;
+    --color-purple-50:  #FDF2F3;
+    --color-purple-100: #F9E0E3;
+    --color-purple-200: #F0BFC5;
+    --color-purple-300: #D99BA3;
+    --color-purple-400: #C8848E;
+    --color-purple-500: #B76E79;
+    --color-purple-600: #A35E67;
+    --color-purple-700: #8B4F57;
+    --color-purple-800: #734148;
+    --color-purple-900: #5C3439;
+    --color-purple-950: #3D2226;
 
-    /* Primary (Brand Teal for customer-facing) */
-    --color-primary-50:  #e6f0f1;
-    --color-primary-100: #c0dade;
-    --color-primary-200: #96c0c5;
-    --color-primary-300: #6ba5ac;
-    --color-primary-400: #4d8f97;
-    --color-primary-500: #307079;
-    --color-primary-600: #205258;
-    --color-primary-700: #1b454a;
-    --color-primary-800: #15383c;
-    --color-primary-900: #0f2a2e;
-    --color-primary-950: #091c1f;
+    /* Primary (Rose Gold for customer-facing jewelry brand) */
+    --color-primary-50:  #FDF2F3;
+    --color-primary-100: #F9E0E3;
+    --color-primary-200: #F0BFC5;
+    --color-primary-300: #D99BA3;
+    --color-primary-400: #C8848E;
+    --color-primary-500: #B76E79;
+    --color-primary-600: #A35E67;
+    --color-primary-700: #8B4F57;
+    --color-primary-800: #734148;
+    --color-primary-900: #5C3439;
+    --color-primary-950: #3D2226;
 
     /* ============================
        Neutral (Material Design Grey)
@@ -134,6 +134,11 @@
     --color-deal: #dc362e;
     --color-prime: #1a237e;
 
+    /* Rose Gold Jewelry Brand Accents */
+    --color-brand-beige: #FDE8E4;
+    --color-brand-cream: #FFF8F6;
+    --color-brand-gold: #C9A96E;
+
     /* Social / External Brand */
     --color-facebook: #39579a;
     --color-twitter: #00abf0;
@@ -183,6 +188,7 @@
 
 h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-heading);
+    letter-spacing: 0.01em;
 }
 
 .font-heading {
@@ -351,7 +357,7 @@ button:disabled, [disabled] {
 }
 
 .hero-banner::after {
-    background: #f8f6f3;
+    background: #FFF8F6;
 }
 
 /* Save-data mode: reduce non-essential visuals */
@@ -680,6 +686,24 @@ a[class*="btn"] {
     cursor: not-allowed;
 }
 
+.btn-primary,
+.btn-secondary,
+.btn-outline,
+.btn-ghost,
+.btn-danger {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.375rem 0.75rem;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    line-height: 1.25rem;
+    border-radius: 0.5rem;
+    transition: all 150ms ease-in-out;
+    cursor: pointer;
+    border: none;
+}
+
 .btn-primary {
     color: white;
     background-color: var(--color-primary-600);
@@ -701,6 +725,7 @@ a[class*="btn"] {
 .btn-outline {
     color: var(--color-neutral-700);
     background-color: transparent;
+    border: 1px solid var(--color-neutral-200);
 }
 
 .btn-outline:hover:not(:disabled) {
@@ -791,6 +816,12 @@ a[class*="btn"] {
     background-color: white;
     border-radius: 0.375rem;
     overflow: hidden;
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.card-product:hover {
+    box-shadow: 0 8px 24px rgba(183, 110, 121, 0.12);
+    transform: translateY(-4px);
 }
 
 .card-body {
@@ -1462,9 +1493,147 @@ img:not([src]), img[src=""] {
 }
 
 /* ========================================
-   Performance: Font Display
+   Global Layout Styles (Header, Footer, Marquee)
+   Shared across ALL pages — not just homepage
    ======================================== */
 
-@font-face {
-    font-display: swap;
+:root {
+    --primary: #B76E79;
+    --primary-light: rgba(183,110,121,.08);
+    --primary-dark: #956060;
+    --accent: #c29958;
+    --accent-dark: #222222;
+    --text-dark: #222222;
+    --text-body: #555555;
+    --text-muted: #777777;
+    --bg-warm: #f7f7f7;
+    --bg-beige: #FFFFFF;
+    --bg-cream: #f7f7f7;
+    --bg-footer: #f7f7f7;
+    --card-radius: 8px;
+    --btn-radius: 50px;
+    --sale-badge: #222222;
+}
+
+/* ===== MARQUEE ANNOUNCEMENT BAR ===== */
+.marquee-bar {
+    background: #2D2D2D;
+    overflow: hidden;
+    white-space: nowrap;
+    padding: 8px 0;
+    position: relative;
+}
+.marquee-track {
+    display: inline-block;
+    animation: marquee-scroll 30s linear infinite;
+    padding-left: 100%;
+}
+.marquee-item {
+    color: #fff;
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-family: 'DM Sans', sans-serif;
+}
+.marquee-separator {
+    color: rgba(255,255,255,0.25);
+    margin: 0 28px;
+    font-size: 8px;
+}
+.marquee-close {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: rgba(255,255,255,0.5);
+    padding: 4px;
+    z-index: 5;
+    transition: color 0.2s;
+}
+.marquee-close:hover { color: #fff; }
+@keyframes marquee-scroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+}
+
+/* ===== HEADER STYLES ===== */
+.header-main {
+    background: #fff;
+    border-bottom: 1px solid #efefef;
+}
+.header-nav-link {
+    padding: 8px 16px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-dark);
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    transition: color 0.3s;
+    font-family: 'DM Sans', sans-serif;
+    position: relative;
+}
+.header-nav-link:hover,
+.header-nav-link:focus {
+    color: var(--primary);
+}
+.header-nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: 4px;
+    left: 16px;
+    right: 16px;
+    height: 1.5px;
+    background: var(--primary);
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+}
+.header-nav-link:hover::after {
+    transform: scaleX(1);
+}
+.header-nav-link--accent {
+    color: var(--primary);
+    font-weight: 600;
+}
+
+/* ===== LUXURY FOOTER ===== */
+.luxury-footer {
+    background: #F5F0EE;
+    border-top: 1px solid #e0d5d2;
+}
+.footer-heading {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: var(--text-dark);
+    text-transform: none;
+    letter-spacing: -0.01em;
+}
+.footer-link {
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: color 0.3s;
+    font-size: 14px;
+}
+.footer-link:hover {
+    color: var(--primary);
+}
+.footer-social-icon {
+    width: 36px;
+    height: 36px;
+    background: transparent;
+    color: var(--text-dark);
+    border: 1.5px solid var(--text-dark);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+}
+.footer-social-icon:hover {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: #fff;
 }

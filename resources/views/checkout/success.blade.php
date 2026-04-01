@@ -8,38 +8,26 @@
         <meta name="twitter:card" content="summary">
 
         {{-- JSON-LD Order --}}
-        <script type="application/ld+json">
-        {
-            "@context": "https://schema.org",
-            "@type": "Order",
-            "orderNumber": "{{ $order->order_number }}",
-            "orderDate": "{{ $order->created_at->toIso8601String() }}",
-            "orderStatus": "https://schema.org/OrderProcessing",
-            "priceCurrency": "INR",
-            "price": "{{ number_format($order->total, 2, '.', '') }}",
-            "acceptedOffer": [
-                @foreach($order->items as $item)
-                {
-                    "@type": "Offer",
-                    "itemOffered": {
-                        "@type": "Product",
-                        "name": "{{ e($item->product_name) }}"
-                    },
-                    "price": "{{ number_format($item->price, 2, '.', '') }}",
-                    "priceCurrency": "INR",
-                    "eligibleQuantity": {
-                        "@type": "QuantitativeValue",
-                        "value": {{ $item->quantity }}
-                    }
-                }{{ !$loop->last ? ',' : '' }}
-                @endforeach
-            ],
-            "seller": {
-                "@type": "Organization",
-                "name": "{{ config('app.name') }}"
-            }
-        }
-        </script>
+        @php
+            $orderSchema = [
+                '@context' => 'https://schema.org',
+                '@type' => 'Order',
+                'orderNumber' => $order->order_number,
+                'orderDate' => $order->created_at->toIso8601String(),
+                'orderStatus' => 'https://schema.org/OrderProcessing',
+                'priceCurrency' => 'INR',
+                'price' => number_format($order->total, 2, '.', ''),
+                'acceptedOffer' => $order->items->map(fn($item) => [
+                    '@type' => 'Offer',
+                    'itemOffered' => ['@type' => 'Product', 'name' => $item->product_name],
+                    'price' => number_format($item->price, 2, '.', ''),
+                    'priceCurrency' => 'INR',
+                    'eligibleQuantity' => ['@type' => 'QuantitativeValue', 'value' => $item->quantity],
+                ])->toArray(),
+                'seller' => ['@type' => 'Organization', 'name' => config('app.name')],
+            ];
+        @endphp
+        <script type="application/ld+json">{!! json_encode($orderSchema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}</script>
     @endpush
 
     <div class="bg-neutral-50 min-h-screen">
@@ -48,8 +36,8 @@
 
                 <!-- Success Header -->
                 <div class="text-center mb-8">
-                    <div class="w-16 h-16 mx-auto rounded-full bg-emerald-100 flex items-center justify-center mb-4">
-                        <svg class="w-8 h-8 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div class="w-16 h-16 mx-auto rounded-full bg-[#B76E79]/10 flex items-center justify-center mb-4">
+                        <svg class="w-8 h-8 text-[#B76E79]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
                         </svg>
                     </div>
@@ -117,13 +105,13 @@
                         </div>
                         @if($order->discount > 0)
                             <div class="flex justify-between text-[13px]">
-                                <span class="text-emerald-600 flex items-center gap-1">
+                                <span class="text-[#B76E79] flex items-center gap-1">
                                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/>
                                     </svg>
                                     Discount
                                 </span>
-                                <span class="text-emerald-600 font-medium">-@price($order->discount)</span>
+                                <span class="text-[#B76E79] font-medium">-@price($order->discount)</span>
                             </div>
                         @endif
                         @if($order->tax > 0)
@@ -138,7 +126,7 @@
                                 @if($order->shipping_cost > 0)
                                     @price($order->shipping_cost)
                                 @else
-                                    <span class="text-emerald-600">Free</span>
+                                    <span class="text-[#B76E79]">Free</span>
                                 @endif
                             </span>
                         </div>
@@ -205,8 +193,8 @@
                             </p>
                             <p class="text-[12px] mt-1">
                                 <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium
-                                    {{ $order->payment_status === 'paid' ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700' }}">
-                                    <span class="w-1.5 h-1.5 rounded-full {{ $order->payment_status === 'paid' ? 'bg-emerald-500' : 'bg-amber-500' }}"></span>
+                                    {{ $order->payment_status === 'paid' ? 'bg-[#B76E79]/5 text-[#B76E79]' : 'bg-[#c29958]/10 text-[#c29958]' }}">
+                                    <span class="w-1.5 h-1.5 rounded-full {{ $order->payment_status === 'paid' ? 'bg-[#B76E79]' : 'bg-[#c29958]' }}"></span>
                                     {{ ucfirst($order->payment_status) }}
                                 </span>
                             </p>
@@ -216,11 +204,11 @@
 
                 @if($order->discount > 0)
                     <!-- Savings Banner -->
-                    <div class="bg-emerald-50 border border-emerald-100 rounded-xl px-4 py-3 mb-4 flex items-center gap-2.5">
-                        <svg class="w-5 h-5 text-emerald-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div class="bg-[#B76E79]/5 border border-[#B76E79]/20 rounded-xl px-4 py-3 mb-4 flex items-center gap-2.5">
+                        <svg class="w-5 h-5 text-[#B76E79] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/>
                         </svg>
-                        <p class="text-[13px] font-medium text-emerald-800">
+                        <p class="text-[13px] font-medium text-[#B76E79]">
                             You saved @price($order->discount) on this order!
                         </p>
                     </div>
@@ -230,7 +218,7 @@
                 <div class="flex flex-col sm:flex-row gap-3">
                     @if(auth()->check())
                     <a href="{{ route('account.orders.show', $order) }}"
-                       class="flex-1 inline-flex items-center justify-center gap-2 px-3 py-1.5 bg-primary-600 text-white text-sm font-semibold rounded-lg hover:bg-primary-700 transition-colors">
+                       class="flex-1 inline-flex items-center justify-center gap-2 px-3 py-1.5 bg-[#B76E79] text-white text-sm font-semibold rounded-lg hover:bg-[#956060] transition-colors">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
@@ -239,7 +227,7 @@
                     </a>
                     @endif
                     <a href="{{ route('products.index') }}"
-                       class="flex-1 inline-flex items-center justify-center gap-2 px-3 py-1.5 {{ auth()->check() ? 'border border-neutral-200 text-neutral-700 hover:bg-neutral-50 hover:border-neutral-300' : 'bg-primary-600 text-white hover:bg-primary-700' }} text-sm font-{{ auth()->check() ? 'medium' : 'semibold' }} rounded-lg transition-all">
+                       class="flex-1 inline-flex items-center justify-center gap-2 px-3 py-1.5 {{ auth()->check() ? 'border border-neutral-200 text-neutral-700 hover:bg-neutral-50 hover:border-neutral-300' : 'bg-[#B76E79] text-white hover:bg-[#956060]' }} text-sm font-{{ auth()->check() ? 'medium' : 'semibold' }} rounded-lg transition-all">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z"/>
                         </svg>

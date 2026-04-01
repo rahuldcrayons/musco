@@ -259,7 +259,7 @@ class CheckoutController extends Controller
         // Resolve affiliate from cookie/session
         $affiliateId = null;
         $affiliateRefCode = null;
-        $refCode = session('affiliate_ref') ?? request()->cookie(config('affiliate.cookie_name', 'jikra_ref'));
+        $refCode = session('affiliate_ref') ?? request()->cookie(config('affiliate.cookie_name', 'musco_ref'));
         if ($refCode) {
             $affiliate = Affiliate::where('referral_code', $refCode)->where('status', 'approved')->first();
             if ($affiliate) {
@@ -546,7 +546,7 @@ class CheckoutController extends Controller
             'amount' => $amountInPaise,
             'currency' => 'INR',
             'key' => config('services.razorpay.key_id'),
-            'name' => config('app.name', 'Jikra'),
+            'name' => config('app.name', 'MusCo'),
             'description' => 'Order from ' . config('app.name'),
             'prefill' => [
                 'name' => $contactName,
@@ -682,7 +682,7 @@ class CheckoutController extends Controller
         // Resolve affiliate from cookie/session
         $affiliateId = null;
         $affiliateRefCode = null;
-        $refCode = session('affiliate_ref') ?? request()->cookie(config('affiliate.cookie_name', 'jikra_ref'));
+        $refCode = session('affiliate_ref') ?? request()->cookie(config('affiliate.cookie_name', 'musco_ref'));
         if ($refCode) {
             $razorpayAffiliate = Affiliate::where('referral_code', $refCode)->where('status', 'approved')->first();
             if ($razorpayAffiliate) {
@@ -932,10 +932,10 @@ class CheckoutController extends Controller
             // Send credentials via email
             \Illuminate\Support\Facades\Mail::send([], [], function ($m) use ($email, $name, $password, $order) {
                 $m->to($email)
-                  ->from(config('mail.from.address', 'jikra@jikra.in'), config('app.name', 'Jikra'))
-                  ->subject('Your Jikra Account is Ready!')
+                  ->from(config('mail.from.address', 'info@musco.com'), config('app.name', 'MusCo'))
+                  ->subject('Your MusCo Account is Ready!')
                   ->html("<div style='font-family:sans-serif;max-width:450px;margin:0 auto;padding:20px;'>
-                    <h2 style='color:#205258;'>Welcome to Jikra, {$name}!</h2>
+                    <h2 style='color:#205258;'>Welcome to MusCo, {$name}!</h2>
                     <p style='font-size:14px;color:#333;'>Your account has been created with your recent order #{$order->order_number}.</p>
                     <div style='background:#f5f5f5;border-radius:8px;padding:15px;margin:15px 0;'>
                         <p style='font-size:13px;color:#555;margin:0 0 5px;'><strong>Email:</strong> {$email}</p>
@@ -961,7 +961,7 @@ class CheckoutController extends Controller
                         'to' => $cleanPhone,
                         'type' => 'text',
                         'text' => [
-                            'body' => "Hi {$name}! Your Jikra account is ready.\n\nEmail: {$email}\nPassword: {$password}\n\nYou can also login with OTP — just enter your phone number on the login page.\n\nLogin: " . url('/login'),
+                            'body' => "Hi {$name}! Your MusCo account is ready.\n\nEmail: {$email}\nPassword: {$password}\n\nYou can also login with OTP — just enter your phone number on the login page.\n\nLogin: " . url('/login'),
                         ],
                     ]);
                 }

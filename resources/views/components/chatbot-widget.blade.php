@@ -1,5 +1,5 @@
 {{--
-    Jikra AI Shopping Assistant Widget
+    MusCo AI Shopping Assistant Widget
     Floating chatbot in the bottom-right corner.
     Z-index z-[75] — above quick-view modal (z-70).
     Alpine.js: chatbotWidget() — defined in <script> below.
@@ -92,13 +92,13 @@
                             <circle cx="12" cy="1.5" r="1" fill="#E91E63"/>
                         </svg>
                     </div>
-                    <p class="text-sm font-semibold text-neutral-800 mb-1">Hi there! 👋</p>
-                    <p class="text-xs text-neutral-600 leading-relaxed mb-4">I'm your shopping assistant. Ask me about products, orders, sizes, offers, or anything about the store!</p>
+                    <p class="text-sm font-semibold text-neutral-800 mb-1">{{ \App\Models\Setting::get('chatbot_greeting', 'Hi there! 👋') }}</p>
+                    <p class="text-xs text-neutral-600 leading-relaxed mb-4">{{ \App\Models\Setting::get('chatbot_welcome_message', "I'm your shopping assistant. Ask me about products, orders, sizes, offers, or anything about the store!") }}</p>
                     <div class="flex flex-wrap gap-1.5 justify-center">
                         <template x-for="chip in quickChips" :key="chip.label">
                             <button
                                 @click="sendQuickChip(chip.message)"
-                                class="text-[11px] px-3 py-1 rounded-full text-[#205258] bg-[#205258]/5 hover:bg-[#205258]/10 transition-colors font-medium whitespace-nowrap"
+                                class="text-[11px] px-3 py-1 rounded-full text-[#B76E79] bg-[#B76E79]/5 hover:bg-[#c29958]/10 transition-colors font-medium whitespace-nowrap"
                                 x-text="chip.label"
                             ></button>
                         </template>
@@ -142,7 +142,7 @@
                                         <template x-for="product in msg.products" :key="product.id">
                                             <a
                                                 :href="product.url"
-                                                class="shrink-0 w-[108px] bg-white rounded-xl border border-neutral-100 overflow-hidden hover:shadow-md hover:border-[#205258]/30 transition-all block"
+                                                class="shrink-0 w-[108px] bg-white rounded-xl border border-neutral-100 overflow-hidden hover:shadow-md hover:border-[#c29958]/30 transition-all block"
                                             >
                                                 <div class="relative w-full aspect-square bg-neutral-50 overflow-hidden">
                                                     <img
@@ -167,7 +167,7 @@
                                                     <template x-if="product.has_discount">
                                                         <p class="text-[9px] text-neutral-600 line-through" x-text="product.mrp"></p>
                                                     </template>
-                                                    <div class="mt-1.5 text-center text-[9px] font-semibold text-[#205258] bg-[#205258]/5 rounded-md py-0.5 hover:bg-[#205258] hover:text-white transition-colors">
+                                                    <div class="mt-1.5 text-center text-[9px] font-semibold text-[#B76E79] bg-[#B76E79]/5 rounded-md py-0.5 hover:bg-[#c29958] hover:text-white transition-colors">
                                                         View →
                                                     </div>
                                                 </div>
@@ -206,7 +206,7 @@
                 <template x-for="chip in quickChips" :key="chip.label">
                     <button
                         @click="sendQuickChip(chip.message)"
-                        class="shrink-0 text-[10px] px-2.5 py-1 rounded-full border border-neutral-200 text-neutral-600 bg-neutral-50 hover:bg-[#205258]/10 hover:border-[#205258]/40 hover:text-[#205258] transition-colors whitespace-nowrap"
+                        class="shrink-0 text-[10px] px-2.5 py-1 rounded-full border border-neutral-200 text-neutral-600 bg-neutral-50 hover:bg-[#c29958]/10 hover:border-[#c29958]/40 hover:text-[#c29958] transition-colors whitespace-nowrap"
                         x-text="chip.label"
                     ></button>
                 </template>
@@ -336,12 +336,12 @@ function chatbotWidget() {
         messages:     [],
         unreadCount:  0,
 
-        quickChips: [
-            { label: '📦 Track Order',    message: 'How can I track my order?' },
-            { label: '🏷️ Current Offers', message: 'What offers and coupons are available right now?' },
-            { label: '📏 Size Guide',      message: 'How do I find the right size for my child?' },
-            { label: '↩️ Return Policy',   message: 'What is the return policy?' },
-        ],
+        quickChips: {!! json_encode(json_decode(\App\Models\Setting::get('chatbot_quick_chips', json_encode([
+            ['label' => '📦 Track Order', 'message' => 'How can I track my order?'],
+            ['label' => '🏷️ Current Offers', 'message' => 'What offers and coupons are available right now?'],
+            ['label' => '📏 Size Guide', 'message' => 'How do I find the right size?'],
+            ['label' => '↩️ Return Policy', 'message' => 'What is the return policy?'],
+        ])), true)) !!},
 
         init() {
             this.$watch('messages', () => this.$nextTick(() => this.scrollToBottom()));

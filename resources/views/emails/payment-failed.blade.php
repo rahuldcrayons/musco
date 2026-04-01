@@ -18,5 +18,5 @@ Retry Payment
 If you continue to face issues, please contact our support team and we'll be happy to help.
 
 Warm regards,
-**Jikra**
+**MusCo**
 @endcomponent

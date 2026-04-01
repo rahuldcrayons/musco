@@ -75,8 +75,8 @@
                             <td class="px-4 py-3 text-gray-700">{{ ucfirst(str_replace('_', ' ', $member->role ?? 'staff')) }}</td>
                             <td class="px-4 py-3">
                                 @if($member->is_active)
-                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 text-xs font-medium rounded-full bg-green-50 text-green-700">
-                                        <span class="w-1.5 h-1.5 rounded-full bg-green-600"></span>
+                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 text-xs font-medium rounded-full bg-[#B76E79]/5 text-[#B76E79]">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-[#B76E79]"></span>
                                         Active
                                     </span>
                                 @else

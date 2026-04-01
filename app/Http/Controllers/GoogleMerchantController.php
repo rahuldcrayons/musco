@@ -18,7 +18,7 @@ class GoogleMerchantController extends Controller
                 ->get();
 
             $appUrl = rtrim(config('app.url'), '/');
-            $appName = config('app.name', 'Jikra');
+            $appName = config('app.name', 'MusCo');
 
             $xml = '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
             $xml .= '<rss xmlns:g="http://base.google.com/ns/1.0" version="2.0">' . "\n";
@@ -82,7 +82,7 @@ class GoogleMerchantController extends Controller
         }
 
         // Brand (required by Google)
-        $brandName = $product->brand?->name ?: config('app.name', 'Jikra');
+        $brandName = $product->brand?->name ?: config('app.name', 'MusCo');
         $item .= "    <g:brand>{$this->esc($brandName)}</g:brand>\n";
 
         // Identifiers

@@ -11,8 +11,8 @@ use Illuminate\Support\Str;
 
 class ImportShopifyProducts extends Command
 {
-    protected $signature = 'jikra:import-products {file? : Path to CSV file}';
-    protected $description = 'Import products from Shopify CSV export into Jikra';
+    protected $signature = 'musco:import-products {file? : Path to CSV file}';
+    protected $description = 'Import products from Shopify CSV export into MusCo';
 
     private array $categoryMap = [];
 
@@ -145,7 +145,7 @@ class ImportShopifyProducts extends Command
             $parent = Category::create([
                 'name' => $topLevel,
                 'slug' => Str::slug($topLevel),
-                'description' => "Shop {$topLevel} at Jikra",
+                'description' => "Shop {$topLevel} at MusCo",
                 'position' => $position++,
                 'is_active' => true,
                 'is_featured' => $position <= 7,
@@ -171,7 +171,7 @@ class ImportShopifyProducts extends Command
                 'parent_id' => $parentId,
                 'name' => $subLevel,
                 'slug' => Str::slug($subLevel . '-' . Str::random(4)),
-                'description' => "Shop {$subLevel} at Jikra",
+                'description' => "Shop {$subLevel} at MusCo",
                 'position' => 1,
                 'is_active' => true,
             ]);
@@ -226,7 +226,7 @@ class ImportShopifyProducts extends Command
 
         // Generate SEO description if not provided
         $seoDesc = $data['seo_description'] ?: Str::limit(strip_tags($data['body']), 155);
-        $seoTitle = $data['seo_title'] ?: $data['title'] . ' - Buy Online at Jikra';
+        $seoTitle = $data['seo_title'] ?: $data['title'] . ' - Buy Online at MusCo';
 
         // Build specs from metadata
         $specs = array_filter([
@@ -260,7 +260,7 @@ class ImportShopifyProducts extends Command
             'seo_data' => [
                 'title' => $seoTitle,
                 'description' => $seoDesc,
-                'keywords' => strtolower($data['title']) . ', buy online, jikra',
+                'keywords' => strtolower($data['title']) . ', buy online, musco',
             ],
             'specifications' => !empty($specs) ? $specs : null,
             'status' => 'approved',

@@ -25,5 +25,5 @@ Shop Now & Save
 Simply enter the code at checkout to enjoy your discount. Happy shopping!
 
 Warm regards,
-**{{ config('app.name', 'Jikra') }}**
+**{{ config('app.name', 'MusCo') }}**
 @endcomponent

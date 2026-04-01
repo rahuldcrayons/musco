@@ -36,7 +36,7 @@ class TrackAffiliateReferral
                 // Set cookie and pass response through
                 $response = $next($request);
 
-                $cookieName = config('affiliate.cookie_name', 'jikra_ref');
+                $cookieName = config('affiliate.cookie_name', 'musco_ref');
                 $cookieDays = config('affiliate.cookie_duration_days', 30);
 
                 return $response->withCookie(
@@ -47,7 +47,7 @@ class TrackAffiliateReferral
 
         // Also restore from cookie if no query param but cookie exists
         if (!session('affiliate_ref')) {
-            $cookieName = config('affiliate.cookie_name', 'jikra_ref');
+            $cookieName = config('affiliate.cookie_name', 'musco_ref');
             $cookieRef = $request->cookie($cookieName);
 
             if ($cookieRef) {

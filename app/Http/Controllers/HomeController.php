@@ -100,25 +100,12 @@ class HomeController extends Controller
             ->withCount('products')
             ->first();
 
-        // Coffee Lovers collection
-        $coffeeProducts = Product::query()
-            ->where('is_active', true)
-            ->where('status', 'approved')
-            ->where(function ($q) {
-                $q->where('name', 'like', '%coffee%')
-                  ->orWhere('name', 'like', '%frother%');
-            })
-            ->with($productEager)
-            ->orderBy('sales_count', 'desc')
-            ->take(12)
-            ->get();
-
         // Site settings (all from batch cache — no extra queries)
         $siteSettings = [
-            'site_name' => Setting::get('site_name', 'Jikra'),
-            'site_tagline' => Setting::get('site_tagline', 'Adorable Clothing for Little Ones'),
+            'site_name' => Setting::get('site_name', 'MusCo'),
+            'site_tagline' => Setting::get('site_tagline', 'Exquisite Jewellery for Every Occasion'),
             'site_logo' => Setting::get('site_logo', ''),
-            'footer_about' => Setting::get('footer_about', 'Your one-stop shop for mobile accessories, Bluetooth speakers, earphones, chargers, and more. Quality tech accessories at great prices.'),
+            'footer_about' => Setting::get('footer_about', 'Your trusted destination for certified gold, diamond & silver jewellery. Hallmarked collections, exquisite craftsmanship, and timeless designs for every occasion.'),
         ];
 
         return view('home', compact(
@@ -132,8 +119,7 @@ class HomeController extends Controller
             'sections',
             'testimonials',
             'siteSettings',
-            'flashSale',
-            'coffeeProducts'
+            'flashSale'
         ));
     }
 }

@@ -53,7 +53,7 @@
         <div class="w-full max-w-sm">
             {{-- Logo + Header --}}
             <div class="mb-8">
-                <img src="{{ asset('images/jikra-logo.png') }}" alt="{{ config('app.name') }}" class="h-10 object-contain mb-4">
+                <span class="text-3xl font-bold tracking-tight mb-4 block" style="font-family:'Outfit',sans-serif; color:#B76E79;">Mus<span style="color:#2b2b2b;">Co</span></span>
                 <h2 class="text-2xl font-bold text-neutral-900 mb-1">Sign in</h2>
                 <p class="text-neutral-600 text-sm">Enter your credentials to access the delivery panel</p>
             </div>
@@ -69,7 +69,7 @@
                            class="w-full px-4 py-3 bg-neutral-50 border border-neutral-300 rounded-lg text-sm text-neutral-900 placeholder-neutral-400 focus:outline-none focus:border-primary-500 focus:ring-0 transition-colors"
                            placeholder="partner@example.com">
                     @error('email')
-                        <p class="mt-1.5 text-sm text-red-400">{{ $message }}</p>
+                        <p class="mt-1.5 text-sm text-[#CC0C39]">{{ $message }}</p>
                     @enderror
                 </div>
 
@@ -86,7 +86,7 @@
                         </button>
                     </div>
                     @error('password')
-                        <p class="mt-1.5 text-sm text-red-400">{{ $message }}</p>
+                        <p class="mt-1.5 text-sm text-[#CC0C39]">{{ $message }}</p>
                     @enderror
                 </div>
 

@@ -49,14 +49,14 @@
                     </label>
                 </div>
 
-                <button type="submit" class="w-full py-2.5 px-4 bg-[#FFD814] hover:bg-[#F7CA00] text-neutral-900 font-medium text-sm rounded-lg border border-[#FCD200] transition-colors">
+                <button type="submit" class="w-full py-2.5 px-4 bg-[#B76E79] hover:bg-[#956060] text-white font-medium text-sm rounded-lg border border-[#B76E79] transition-colors">
                     Sign in
                 </button>
             </form>
 
             <div class="mt-6 pt-6 border-t border-neutral-200">
                 <p class="text-center text-sm text-neutral-600">
-                    New to Jikra Affiliates?
+                    New to MusCo Affiliates?
                     <a href="{{ route('affiliate.register') }}" class="font-medium text-primary-600 hover:underline">Create an account</a>
                 </p>
             </div>

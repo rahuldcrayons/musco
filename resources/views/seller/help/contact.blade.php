@@ -29,7 +29,7 @@
                     <option value="other" {{ old('category') === 'other' ? 'selected' : '' }}>Other</option>
                 </select>
                 @error('category')
-                    <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+                    <p class="text-sm text-[#CC0C39] mt-1">{{ $message }}</p>
                 @enderror
             </div>
 
@@ -38,7 +38,7 @@
                 <input type="text" name="subject" id="subject" value="{{ old('subject') }}"
                        class="form-input w-full" placeholder="Brief description of your issue" required>
                 @error('subject')
-                    <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+                    <p class="text-sm text-[#CC0C39] mt-1">{{ $message }}</p>
                 @enderror
             </div>
 
@@ -47,7 +47,7 @@
                 <textarea name="message" id="message" rows="6"
                           class="form-textarea w-full" placeholder="Describe your issue in detail..." required>{{ old('message') }}</textarea>
                 @error('message')
-                    <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+                    <p class="text-sm text-[#CC0C39] mt-1">{{ $message }}</p>
                 @enderror
             </div>
 

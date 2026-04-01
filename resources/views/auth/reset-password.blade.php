@@ -29,7 +29,7 @@
         <div class="w-full lg:w-1/2 flex flex-col justify-center px-6 sm:px-12 lg:px-16 xl:px-24 py-6 lg:py-8 relative overflow-y-auto">
 
             <!-- Back to login link -->
-            <a href="{{ route('login') }}" class="absolute top-6 left-6 sm:left-12 lg:left-16 xl:left-24 flex items-center gap-2 text-sm text-neutral-600 hover:text-[#205258] transition-colors group">
+            <a href="{{ route('login') }}" class="absolute top-6 left-6 sm:left-12 lg:left-16 xl:left-24 flex items-center gap-2 text-sm text-neutral-600 hover:text-[#c29958] transition-colors group">
                 <svg class="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
                 </svg>
@@ -40,14 +40,14 @@
                 <!-- Logo -->
                 <div class="mb-6">
                     <a href="{{ url('/') }}" class="inline-block">
-                        <img src="{{ asset('images/jikra-logo.png') }}" alt="{{ config('app.name') }}" class="h-12 lg:h-14 object-contain">
+                        <span class="text-3xl lg:text-4xl font-bold tracking-tight" style="font-family:'Outfit',sans-serif; color:#B76E79;">Mus<span style="color:#2b2b2b;">Co</span></span>
                     </a>
                 </div>
 
                 <!-- Header -->
                 <div class="mb-5">
-                    <div class="w-12 h-12 bg-[#205258]/10 rounded-xl flex items-center justify-center mb-4">
-                        <svg class="w-6 h-6 text-[#205258]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div class="w-12 h-12 bg-[#B76E79]/10 rounded-xl flex items-center justify-center mb-4">
+                        <svg class="w-6 h-6 text-[#B76E79]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"/>
                         </svg>
                     </div>
@@ -56,7 +56,7 @@
                 </div>
 
                 @if ($errors->any())
-                    <div class="bg-red-50 border border-red-200 text-red-700 rounded-xl p-4 mb-5">
+                    <div class="bg-[#CC0C39]/5 border border-[#CC0C39]/30 text-[#CC0C39] rounded-xl p-4 mb-5">
                         <div class="flex items-start gap-2">
                             <svg class="w-5 h-5 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z"/>
@@ -84,7 +84,7 @@
                                 </svg>
                             </div>
                             <input type="email" name="email" id="email" value="{{ $email ?? old('email') }}" required
-                                   class="w-full pl-12 pr-4 py-3 bg-neutral-50 border border-neutral-200 rounded-xl text-neutral-900 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-[#205258]/20 focus:border-[#205258] transition-all"
+                                   class="w-full pl-12 pr-4 py-3 bg-neutral-50 border border-neutral-200 rounded-xl text-neutral-900 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-[#B76E79]/20 focus:border-[#B76E79] transition-all"
                                    placeholder="you@example.com">
                         </div>
                     </div>
@@ -99,7 +99,7 @@
                                 </svg>
                             </div>
                             <input :type="show ? 'text' : 'password'" name="password" id="password" required
-                                   class="w-full pl-12 pr-12 py-3 bg-neutral-50 border border-neutral-200 rounded-xl text-neutral-900 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-[#205258]/20 focus:border-[#205258] transition-all"
+                                   class="w-full pl-12 pr-12 py-3 bg-neutral-50 border border-neutral-200 rounded-xl text-neutral-900 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-[#B76E79]/20 focus:border-[#B76E79] transition-all"
                                    placeholder="Min 8 characters">
                             <button type="button" @click="show = !show" class="absolute inset-y-0 right-0 pr-4 flex items-center text-neutral-600 hover:text-neutral-600 transition-colors">
                                 <svg x-show="!show" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -123,14 +123,14 @@
                                 </svg>
                             </div>
                             <input type="password" name="password_confirmation" id="password_confirmation" required
-                                   class="w-full pl-12 pr-4 py-3 bg-neutral-50 border border-neutral-200 rounded-xl text-neutral-900 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-[#205258]/20 focus:border-[#205258] transition-all"
+                                   class="w-full pl-12 pr-4 py-3 bg-neutral-50 border border-neutral-200 rounded-xl text-neutral-900 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-[#B76E79]/20 focus:border-[#B76E79] transition-all"
                                    placeholder="Repeat new password">
                         </div>
                     </div>
 
                     <!-- Submit -->
                     <button type="submit"
-                            class="w-full py-2 px-4 bg-gradient-to-r from-[#F8931D] via-[#F8931D] to-[#E07E0A] hover:from-[#E07E0A] hover:via-[#E07E0A] hover:to-[#D47200] text-white font-semibold rounded-xl shadow-lg shadow-[#F8931D]/25 hover:shadow-[#F8931D]/40 transition-all duration-300 transform hover:-translate-y-0.5 active:translate-y-0 focus:outline-none focus:ring-2 focus:ring-[#205258]/50 focus:ring-offset-2">
+                            class="w-full py-2 px-4 bg-gradient-to-r from-[#B76E79] via-[#B76E79] to-[#222222] hover:from-[#222222] hover:via-[#222222] hover:to-[#D47200] text-white font-semibold rounded-xl shadow-lg shadow-[#B76E79]/25 hover:shadow-[#B76E79]/40 transition-all duration-300 transform hover:-translate-y-0.5 active:translate-y-0 focus:outline-none focus:ring-2 focus:ring-[#B76E79]/50 focus:ring-offset-2">
                         Reset Password
                     </button>
                 </form>
@@ -138,15 +138,15 @@
                 <!-- Back to Login -->
                 <p class="mt-5 text-center text-sm text-neutral-600">
                     Remember your password?
-                    <a href="{{ route('login') }}" class="font-semibold text-[#205258] hover:text-[#1b454a] transition-colors">Sign in</a>
+                    <a href="{{ route('login') }}" class="font-semibold text-[#B76E79] hover:text-[#222222] transition-colors">Sign in</a>
                 </p>
 
                 <!-- Footer -->
                 <div class="mt-6 pt-4 border-t border-neutral-100 text-center">
                     <p class="text-xs text-neutral-600">
-                        <a href="{{ route('terms') }}" class="text-neutral-600 hover:text-[#205258] underline transition-colors">Terms</a>
+                        <a href="{{ route('terms') }}" class="text-neutral-600 hover:text-[#c29958] underline transition-colors">Terms</a>
                         &
-                        <a href="{{ route('privacy') }}" class="text-neutral-600 hover:text-[#205258] underline transition-colors">Privacy Policy</a>
+                        <a href="{{ route('privacy') }}" class="text-neutral-600 hover:text-[#c29958] underline transition-colors">Privacy Policy</a>
                     </p>
                 </div>
             </div>
@@ -177,7 +177,7 @@
                     </div>
                 </div>
                 <h2 class="text-4xl xl:text-5xl font-bold text-white mb-4 leading-tight">Almost There</h2>
-                <p class="text-[#205258]/40 text-base xl:text-lg leading-relaxed">Choose a strong password to keep your account safe and secure</p>
+                <p class="text-[#B76E79]/40 text-base xl:text-lg leading-relaxed">Choose a strong password to keep your account safe and secure</p>
                 <div class="mt-8 flex justify-center">
                     <div class="w-16 h-0.5 bg-white/30 rounded-full"></div>
                 </div>

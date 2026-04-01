@@ -45,11 +45,11 @@ class SendOrderNotification
         if ($customerPhone) {
             $this->sendWhatsApp(
                 $customerPhone,
-                "Hi {$customerName}! 🎉 Your Jikra order #{$order->order_number} is confirmed!\n\n"
+                "Hi {$customerName}! 🎉 Your MusCo order #{$order->order_number} is confirmed!\n\n"
                 . "Order Total: ₹" . number_format($order->total, 0) . "\n"
                 . "Payment: " . ($order->payment_status === 'paid' ? '✅ Paid' : '💵 Cash on Delivery') . "\n\n"
                 . "Track your order: " . url("/track-order") . "\n\n"
-                . "Thank you for shopping with Jikra! 🛍️"
+                . "Thank you for shopping with MusCo! 🛍️"
             );
         }
 
@@ -95,9 +95,9 @@ class SendOrderNotification
             $trackingInfo = $event->trackingNumber ? "\nTracking: {$event->trackingNumber}" : '';
             $this->sendWhatsApp(
                 $customerPhone,
-                "Hi {$customerName}! 📦 Your Jikra order #{$order->order_number} has been shipped!{$trackingInfo}\n\n"
+                "Hi {$customerName}! 📦 Your MusCo order #{$order->order_number} has been shipped!{$trackingInfo}\n\n"
                 . "Track: " . url("/track-order") . "\n\n"
-                . "Thank you for shopping with Jikra!"
+                . "Thank you for shopping with MusCo!"
             );
         }
     }
@@ -121,9 +121,9 @@ class SendOrderNotification
         if ($customerPhone) {
             $this->sendWhatsApp(
                 $customerPhone,
-                "Hi {$customerName}! ✅ Your Jikra order #{$order->order_number} has been delivered!\n\n"
+                "Hi {$customerName}! ✅ Your MusCo order #{$order->order_number} has been delivered!\n\n"
                 . "We hope you love your purchase. If you need any help, reply here or visit " . url("/track-order") . "\n\n"
-                . "Thank you for choosing Jikra! 💚"
+                . "Thank you for choosing MusCo! 💚"
             );
         }
     }

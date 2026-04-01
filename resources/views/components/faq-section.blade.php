@@ -18,24 +18,24 @@
     $items = $faqs ?? $defaultFaqs;
 @endphp
 
-<section {{ $attributes->merge(['class' => 'py-10 bg-[#F7F8FA]']) }}>
+<section {{ $attributes->merge(['class' => 'py-10 bg-[#f7f7f7]']) }}>
     <div class="container mx-auto px-4">
-        <h2 class="text-lg font-bold text-[#0F1111] mb-5 text-center">Frequently Asked Questions</h2>
+        <h2 class="text-lg font-bold text-[#222222] mb-5 text-center">Frequently Asked Questions</h2>
         <div class="max-w-3xl mx-auto space-y-2" x-data="{ open: null }">
             @foreach($items as $i => $faq)
-                <div class="bg-white border border-[#E3E6E6] rounded overflow-hidden">
+                <div class="bg-white border border-[#efefef] rounded overflow-hidden">
                     <button type="button"
                             @click="open === {{ $i }} ? open = null : open = {{ $i }}"
-                            class="w-full flex items-center justify-between px-4 py-3 text-left hover:bg-[#F7F8FA] transition-colors">
-                        <span class="text-sm font-medium text-[#0F1111] pr-4">{{ $faq['q'] }}</span>
-                        <svg class="w-4 h-4 text-[#565959] shrink-0 transition-transform duration-200"
+                            class="w-full flex items-center justify-between px-4 py-3 text-left hover:bg-[#f7f7f7] transition-colors">
+                        <span class="text-sm font-medium text-[#222222] pr-4">{{ $faq['q'] }}</span>
+                        <svg class="w-4 h-4 text-[#555555] shrink-0 transition-transform duration-200"
                              :class="open === {{ $i }} && 'rotate-180'"
                              fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                         </svg>
                     </button>
                     <div x-show="open === {{ $i }}" x-collapse x-cloak>
-                        <div class="px-4 pb-3 text-sm text-[#565959] leading-relaxed border-t border-[#E3E6E6]">
+                        <div class="px-4 pb-3 text-sm text-[#555555] leading-relaxed border-t border-[#efefef]">
                             <p class="pt-3">{{ $faq['a'] }}</p>
                         </div>
                     </div>

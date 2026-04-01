@@ -60,6 +60,25 @@ class Product extends Model
         'status',
         'rejection_reason',
         'published_at',
+        // Jewellery fields
+        'metal_type',
+        'metal_purity',
+        'metal_color',
+        'metal_weight',
+        'making_charge_percent',
+        'stone_type',
+        'stone_weight',
+        'stone_clarity',
+        'stone_cut',
+        'stone_color',
+        'hallmark_number',
+        'certification_type',
+        'certification_number',
+        'occasion',
+        'is_customizable',
+        'engraving_available',
+        'engraving_cost',
+        'care_instructions',
     ];
 
     protected function casts(): array
@@ -74,9 +93,15 @@ class Product extends Model
             'height' => 'decimal:2',
             'tax_rate' => 'decimal:2',
             'rating' => 'decimal:2',
+            'metal_weight' => 'decimal:3',
+            'making_charge_percent' => 'decimal:2',
+            'stone_weight' => 'decimal:3',
+            'engraving_cost' => 'decimal:2',
             'is_active' => 'boolean',
             'is_featured' => 'boolean',
             'is_taxable' => 'boolean',
+            'is_customizable' => 'boolean',
+            'engraving_available' => 'boolean',
             'seo_data' => 'array',
             'attributes' => 'array',
             'specifications' => 'array',
@@ -200,6 +225,11 @@ class Product extends Model
     public function orderItems(): HasMany
     {
         return $this->hasMany(OrderItem::class);
+    }
+
+    public function certifications(): HasMany
+    {
+        return $this->hasMany(ProductCertification::class);
     }
 
     // Scopes

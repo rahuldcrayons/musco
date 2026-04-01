@@ -39,7 +39,7 @@ class OtpController extends Controller
                 'first_name' => 'User',
                 'last_name' => '',
                 'phone' => $phone10,
-                'email' => $phone10 . '@phone.jikra.in',
+                'email' => $phone10 . '@phone.musco.com',
                 'password' => bcrypt(Str::random(16)),
             ]);
         }

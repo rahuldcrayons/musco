@@ -17,8 +17,8 @@
 
             {{-- Header --}}
             <div class="text-center mb-8">
-                <div class="w-14 h-14 mx-auto rounded-full bg-amber-50 flex items-center justify-center mb-4">
-                    <svg class="w-7 h-7 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="w-14 h-14 mx-auto rounded-full bg-[#c29958]/10 flex items-center justify-center mb-4">
+                    <svg class="w-7 h-7 text-[#c29958]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                     </svg>
                 </div>
@@ -39,7 +39,7 @@
             <div class="bg-white border border-neutral-100 rounded-xl p-5 sm:p-6 mb-4">
                 <div class="flex items-center justify-between mb-3">
                     <h2 class="text-[15px] font-bold text-neutral-900">Essential Cookies</h2>
-                    <span class="text-xs font-medium px-2.5 py-0.5 rounded-full bg-green-100 text-green-700">Always Active</span>
+                    <span class="text-xs font-medium px-2.5 py-0.5 rounded-full bg-[#B76E79]/10 text-[#B76E79]">Always Active</span>
                 </div>
                 <p class="text-[13px] text-neutral-600 mb-3">Required for the website to function properly. These cannot be disabled.</p>
                 <ul class="space-y-2">
@@ -67,7 +67,7 @@
                 <div class="bg-white border border-neutral-100 rounded-xl p-5 sm:p-6">
                     <div class="flex items-center justify-between mb-3">
                         <h2 class="text-[15px] font-bold text-neutral-900">Functional Cookies</h2>
-                        <span class="text-xs font-medium px-2.5 py-0.5 rounded-full bg-[#205258]/10 text-[#1b454a]">Optional</span>
+                        <span class="text-xs font-medium px-2.5 py-0.5 rounded-full bg-[#B76E79]/10 text-[#222222]">Optional</span>
                     </div>
                     <p class="text-[13px] text-neutral-600 mb-3">Enhance your experience by remembering preferences and settings.</p>
                     <ul class="space-y-1.5">
@@ -88,7 +88,7 @@
                 <div class="bg-white border border-neutral-100 rounded-xl p-5 sm:p-6">
                     <div class="flex items-center justify-between mb-3">
                         <h2 class="text-[15px] font-bold text-neutral-900">Analytics Cookies</h2>
-                        <span class="text-xs font-medium px-2.5 py-0.5 rounded-full bg-[#205258]/10 text-[#1b454a]">Optional</span>
+                        <span class="text-xs font-medium px-2.5 py-0.5 rounded-full bg-[#B76E79]/10 text-[#222222]">Optional</span>
                     </div>
                     <p class="text-[13px] text-neutral-600 mb-3">Help us understand how visitors use our website so we can improve it.</p>
                     <ul class="space-y-1.5">
@@ -112,7 +112,7 @@
             <div class="bg-white border border-neutral-100 rounded-xl p-5 sm:p-6 mb-4">
                 <div class="flex items-center justify-between mb-3">
                     <h2 class="text-[15px] font-bold text-neutral-900">Marketing Cookies</h2>
-                    <span class="text-xs font-medium px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-700">Optional</span>
+                    <span class="text-xs font-medium px-2.5 py-0.5 rounded-full bg-[#c29958]/10 text-[#c29958]">Optional</span>
                 </div>
                 <p class="text-[13px] text-neutral-600 mb-3">Used to show relevant advertisements and measure campaign effectiveness.</p>
                 <ul class="space-y-2">

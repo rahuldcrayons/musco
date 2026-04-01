@@ -1,12 +1,12 @@
 {
-    "name": "Jikra - Shop Smart, Live Better",
-    "short_name": "Jikra",
-    "description": "Shop gadgets, home essentials, and accessories online at Jikra.",
+    "name": "MusCo - Fine Jewellery & Accessories",
+    "short_name": "MusCo",
+    "description": "Shop exquisite gold, diamond & silver jewellery online at MusCo. Certified, hallmarked jewellery with free shipping across India.",
     "start_url": "/",
     "display": "standalone",
     "orientation": "portrait",
     "background_color": "#ffffff",
-    "theme_color": "#205258",
+    "theme_color": "#B76E79",
     "categories": ["shopping", "lifestyle"],
     "lang": "en-IN",
     "dir": "ltr",
@@ -26,19 +26,10 @@
             "purpose": "maskable"
         },
         {
-            "src": "/images/jikra-logo.png",
+            "src": "/images/icons/favicon.png",
             "sizes": "512x512",
             "type": "image/png",
             "purpose": "any"
-        }
-    ],
-    "screenshots": [
-        {
-            "src": "/images/screenshots/home-mobile.png",
-            "sizes": "390x844",
-            "type": "image/png",
-            "form_factor": "narrow",
-            "label": "Jikra Home"
         }
     ],
     "shortcuts": [
@@ -46,19 +37,19 @@
             "name": "Categories",
             "short_name": "Categories",
             "url": "/categories",
-            "icons": [{ "src": "/images/icons/icon-96x96.png", "sizes": "96x96" }]
+            "icons": [{ "src": "/images/icons/favicon-32x32.png", "sizes": "32x32" }]
         },
         {
             "name": "My Orders",
             "short_name": "Orders",
             "url": "/account/orders",
-            "icons": [{ "src": "/images/icons/icon-96x96.png", "sizes": "96x96" }]
+            "icons": [{ "src": "/images/icons/favicon-32x32.png", "sizes": "32x32" }]
         },
         {
             "name": "Cart",
             "short_name": "Cart",
             "url": "/cart",
-            "icons": [{ "src": "/images/icons/icon-96x96.png", "sizes": "96x96" }]
+            "icons": [{ "src": "/images/icons/favicon-32x32.png", "sizes": "32x32" }]
         }
     ]
 }
