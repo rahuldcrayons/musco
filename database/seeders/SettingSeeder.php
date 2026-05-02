@@ -16,7 +16,7 @@ class SettingSeeder extends Seeder
             ['group' => 'general', 'key' => 'site_email', 'value' => 'support@musco.com', 'type' => 'string'],
             ['group' => 'general', 'key' => 'site_phone', 'value' => '+91 98765 43210', 'type' => 'string'],
             ['group' => 'general', 'key' => 'site_address', 'value' => 'Mumbai, Maharashtra, India', 'type' => 'string'],
-            ['group' => 'general', 'key' => 'timezone', 'value' => 'Asia/Kolkata', 'type' => 'string'],
+            ['group' => 'general', 'key' => 'timezone', 'value' => 'Europe/London', 'type' => 'string'],
             ['group' => 'general', 'key' => 'date_format', 'value' => 'M d, Y', 'type' => 'string'],
             ['group' => 'general', 'key' => 'currency', 'value' => 'INR', 'type' => 'string'],
             ['group' => 'general', 'key' => 'currency_symbol', 'value' => '₹', 'type' => 'string'],
