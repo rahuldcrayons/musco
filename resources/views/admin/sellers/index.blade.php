@@ -105,14 +105,14 @@
                             <td class="px-4 py-3">
                                 @switch($seller->status)
                                     @case('approved')
-                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 text-xs font-medium rounded-full bg-[#B76E79]/5 text-[#B76E79]">
-                                            <span class="w-1.5 h-1.5 rounded-full bg-[#B76E79]"></span>
+                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 text-xs font-medium rounded-full bg-[#202a40]/5 text-[#202a40]">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-[#202a40]"></span>
                                             Active
                                         </span>
                                         @break
                                     @case('pending')
-                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 text-xs font-medium rounded-full bg-[#c29958]/10 text-[#c29958]">
-                                            <span class="w-1.5 h-1.5 rounded-full bg-[#c29958]"></span>
+                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 text-xs font-medium rounded-full bg-[#506282]/10 text-[#506282]">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-[#506282]"></span>
                                             Pending
                                         </span>
                                         @break

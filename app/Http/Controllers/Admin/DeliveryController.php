@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Models\Setting;
-use App\Services\DelhiveryService;
+// use App\Services\DelhiveryService; // Disabled for UK
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -14,7 +14,9 @@ use Illuminate\View\View;
 
 class DeliveryController extends Controller
 {
-    public function __construct(private DelhiveryService $delhivery) {}
+    private $delhivery = null; // DelhiveryService removed for UK
+
+    public function __construct() {}
 
     /**
      * Delivery dashboard — stats, pending shipments, NDR, RTO.
@@ -71,41 +73,7 @@ class DeliveryController extends Controller
      */
     public function book(Order $order): RedirectResponse
     {
-        if (!$this->delhivery->isConfigured()) {
-            return back()->with('error', 'Delhivery API not configured. Add token in settings.');
-        }
-
-        $result = $this->delhivery->bookDelivery($order);
-
-        if ($result['success'] && !empty($result['waybill'])) {
-            $order->update([
-                'status' => 'shipped',
-                'tracking_number' => $result['waybill'],
-                'carrier' => 'Delhivery',
-                'shipped_at' => now(),
-            ]);
-
-            // Create shipment record if model exists
-            if (class_exists(\App\Models\OrderShipment::class)) {
-                \App\Models\OrderShipment::create([
-                    'order_id' => $order->id,
-                    'carrier' => 'Delhivery',
-                    'tracking_number' => $result['waybill'],
-                    'status' => 'shipped',
-                    'shipped_at' => now(),
-                ]);
-            }
-
-            // Dispatch order shipped event — sends WhatsApp + email with tracking number
-            \App\Events\OrderShipped::dispatch($order, $result['waybill']);
-
-            return back()->with('success', "Shipment booked! AWB: {$result['waybill']}");
-        }
-
-        $errorMsg = $result['message'] ?? implode(', ', $result['remarks'] ?? ['Unknown error']);
-        Log::warning('Delhivery booking failed', ['order' => $order->order_number, 'result' => $result]);
-
-        return back()->with('error', "Delhivery booking failed: {$errorMsg}");
+        return back()->with('error', 'Automatic delivery booking is not available. Please arrange shipping manually.');
     }
 
     /**
@@ -113,6 +81,7 @@ class DeliveryController extends Controller
      */
     public function track(Order $order): JsonResponse
     {
+        if (!$this->delhivery) return response()->json(['success' => false, 'message' => 'Tracking not available']);
         if (empty($order->tracking_number)) {
             return response()->json(['success' => false, 'message' => 'No tracking number']);
         }
@@ -127,6 +96,7 @@ class DeliveryController extends Controller
      */
     public function cancel(Order $order): RedirectResponse
     {
+        if (!$this->delhivery) return back()->with('error', 'Cancellation not available');
         if (empty($order->tracking_number)) {
             return back()->with('error', 'No tracking number to cancel.');
         }
@@ -151,6 +121,7 @@ class DeliveryController extends Controller
      */
     public function label(Order $order)
     {
+        if (!$this->delhivery) return back()->with('error', 'Labels not available');
         if (empty($order->tracking_number)) {
             return back()->with('error', 'No tracking number.');
         }
@@ -169,6 +140,7 @@ class DeliveryController extends Controller
      */
     public function requestPickup(Request $request): RedirectResponse
     {
+        if (!$this->delhivery) return back()->with('error', 'Pickup not available');
         $count = (int) $request->input('package_count', 1);
         $date = $request->input('pickup_date', now()->addDay()->format('Y-m-d'));
 
@@ -185,6 +157,7 @@ class DeliveryController extends Controller
      */
     public function ndrAction(Request $request, Order $order): RedirectResponse
     {
+        if (!$this->delhivery) return back()->with('error', 'NDR not available');
         $action = $request->input('action'); // re-attempt, return, hold
         $comment = $request->input('comment', '');
 
@@ -201,26 +174,27 @@ class DeliveryController extends Controller
     }
 
     /**
+     * Return registered Delhivery warehouses as JSON (AJAX).
+     */
+    public function warehouses(): JsonResponse
+    {
+        if (!$this->delhivery) return response()->json(['warehouses' => []]);
+        $warehouses = $this->delhivery->fetchWarehouses();
+        $configured = Setting::get('delhivery_pickup_location', 'Trendymus Warehouse');
+
+        return response()->json([
+            'warehouses' => $warehouses,
+            'configured' => $configured,
+            'match' => collect($warehouses)->pluck('name')->contains($configured),
+        ]);
+    }
+
+    /**
      * Check pincode serviceability (AJAX).
      */
     public function checkPincode(Request $request): JsonResponse
     {
-        $pincode = $request->input('pincode', '');
-
-        if (strlen($pincode) !== 6) {
-            return response()->json(['serviceable' => false, 'message' => 'Invalid pincode']);
-        }
-
-        $result = $this->delhivery->checkPincode($pincode);
-
-        // Also get estimated cost
-        if ($result['serviceable']) {
-            $cost = $this->delhivery->calculateCost($pincode);
-            $result['estimated_cost'] = $cost['total_amount'] ?? null;
-            $result['zone'] = $cost['zone'] ?? null;
-        }
-
-        return response()->json($result);
+        return response()->json(['serviceable' => false, 'message' => 'Postcode check not available']);
     }
 
     /**
@@ -228,6 +202,7 @@ class DeliveryController extends Controller
      */
     public function calculateCost(Request $request): JsonResponse
     {
+        if (!$this->delhivery) return response()->json(['success' => false]);
         $pin = $request->input('pincode');
         $weight = (float) $request->input('weight', 500);
         $paymentType = $request->input('payment_type', 'Pre-paid');

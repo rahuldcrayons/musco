@@ -21,101 +21,94 @@
 
         <div class="space-y-4">
 
-            {{-- Razorpay --}}
-            <div class="card" x-data="{ enabled: {{ ($settings['razorpay_enabled'] ?? '0') === '1' ? 'true' : 'false' }} }">
+            {{-- PayPal --}}
+            <div class="card" x-data="{ enabled: {{ ($settings['paypal_enabled'] ?? '0') === '1' ? 'true' : 'false' }} }">
                 <div class="px-5 py-4 flex items-center justify-between">
                     <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-lg flex items-center justify-center shrink-0" style="background:#072654;">
-                            <span class="text-white font-bold text-sm tracking-tight">R₹</span>
+                        <div class="w-10 h-10 rounded-lg flex items-center justify-center shrink-0" style="background:#003087;">
+                            <span class="text-white font-bold text-xs">PP</span>
                         </div>
                         <div>
-                            <h3 class="text-sm font-semibold text-neutral-900 flex items-center gap-2">
-                                Razorpay
-                                <span class="text-[10px] font-medium text-primary-600 bg-primary-50 px-1.5 py-0.5 rounded">Recommended</span>
-                            </h3>
-                            <p class="text-xs text-neutral-600">Accept payments via Razorpay checkout</p>
+                            <h3 class="text-sm font-semibold text-neutral-900 flex items-center gap-2">PayPal</h3>
+                            <p class="text-xs text-neutral-600">Accept payments via PayPal checkout</p>
                         </div>
                     </div>
                     <label class="relative inline-flex items-center cursor-pointer">
-                        <input type="checkbox" name="razorpay_enabled" value="1" x-model="enabled" class="sr-only peer">
+                        <input type="checkbox" name="paypal_enabled" value="1" x-model="enabled" class="sr-only peer">
                         <div class="w-11 h-6 bg-neutral-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-100 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-600"></div>
                     </label>
                 </div>
                 <div class="px-5 pb-5 space-y-4 border-t border-neutral-100" x-show="enabled" x-collapse>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4">
                         <div>
-                            <label class="form-label">Key ID</label>
-                            <input type="text" name="razorpay_key_id" value="{{ old('razorpay_key_id', $settings['razorpay_key_id'] ?? '') }}" placeholder="rzp_live_..." class="form-input">
+                            <label class="form-label">Client ID</label>
+                            <input type="text" name="paypal_client_id" value="{{ old('paypal_client_id', $settings['paypal_client_id'] ?? '') }}" placeholder="AcfGk..." class="form-input">
                         </div>
                         <div>
-                            <label class="form-label">Key Secret</label>
-                            <input type="password" name="razorpay_key_secret" value="" placeholder="{{ !empty($settings['razorpay_key_secret']) ? '••••••••••••' : 'Enter key secret' }}" class="form-input">
-                            @if(!empty($settings['razorpay_key_secret']))
+                            <label class="form-label">Client Secret</label>
+                            <input type="password" name="paypal_client_secret" value="" placeholder="{{ !empty($settings['paypal_client_secret']) ? '••••••••••••' : 'Enter client secret' }}" class="form-input">
+                            @if(!empty($settings['paypal_client_secret']))
                                 <p class="text-xs text-neutral-600 mt-1">Secret is saved. Leave blank to keep current value.</p>
                             @endif
                         </div>
                     </div>
                     <div class="max-w-xs">
                         <label class="form-label">Mode</label>
-                        <select name="razorpay_mode" class="form-select">
-                            <option value="test" @selected(($settings['razorpay_mode'] ?? 'test') === 'test')>Test / Sandbox</option>
-                            <option value="live" @selected(($settings['razorpay_mode'] ?? '') === 'live')>Live / Production</option>
+                        <select name="paypal_mode" class="form-select">
+                            <option value="sandbox" @selected(($settings['paypal_mode'] ?? 'live') === 'sandbox')>Sandbox / Test</option>
+                            <option value="live" @selected(($settings['paypal_mode'] ?? 'live') === 'live')>Live / Production</option>
                         </select>
                     </div>
-                    <p class="text-xs text-neutral-600">Get your API keys from <span class="font-medium text-neutral-600">Razorpay Dashboard → Settings → API Keys</span></p>
+                    <p class="text-xs text-neutral-600">Get your API credentials from <span class="font-medium text-neutral-600">PayPal Developer Dashboard → Apps & Credentials</span></p>
                 </div>
             </div>
 
-            {{-- UPI --}}
-            <div class="card">
+            {{-- Stripe --}}
+            <div class="card" x-data="{ enabled: {{ ($settings['stripe_enabled'] ?? '0') === '1' ? 'true' : 'false' }} }">
                 <div class="px-5 py-4 flex items-center justify-between">
                     <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 bg-info-50 rounded-lg flex items-center justify-center shrink-0">
-                            <svg class="w-5 h-5 text-info-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/>
-                            </svg>
+                        <div class="w-10 h-10 rounded-lg flex items-center justify-center shrink-0" style="background:#635BFF;">
+                            <span class="text-white font-bold text-xs">S</span>
                         </div>
                         <div>
-                            <p class="text-sm font-semibold text-neutral-900">UPI</p>
-                            <p class="text-xs text-neutral-600">Google Pay, PhonePe, Paytm, BHIM</p>
+                            <h3 class="text-sm font-semibold text-neutral-900 flex items-center gap-2">Stripe</h3>
+                            <p class="text-xs text-neutral-600">Accept credit/debit card payments via Stripe</p>
                         </div>
                     </div>
                     <label class="relative inline-flex items-center cursor-pointer">
-                        <input type="checkbox" name="upi_enabled" value="1" {{ ($settings['upi_enabled'] ?? '0') === '1' ? 'checked' : '' }} class="sr-only peer">
+                        <input type="checkbox" name="stripe_enabled" value="1" x-model="enabled" class="sr-only peer">
                         <div class="w-11 h-6 bg-neutral-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-100 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-600"></div>
                     </label>
                 </div>
-            </div>
-
-            {{-- COD --}}
-            <div class="card" x-data="{ enabled: {{ ($settings['cod_enabled'] ?? '0') === '1' ? 'true' : 'false' }} }">
-                <div class="px-5 py-4 flex items-center justify-between">
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 bg-success-50 rounded-lg flex items-center justify-center shrink-0">
-                            <svg class="w-5 h-5 text-success-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/>
-                            </svg>
+                <div class="px-5 pb-5 space-y-4 border-t border-neutral-100" x-show="enabled" x-collapse>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4">
+                        <div>
+                            <label class="form-label">Publishable Key</label>
+                            <input type="text" name="stripe_publishable_key" value="{{ old('stripe_publishable_key', $settings['stripe_publishable_key'] ?? '') }}" placeholder="pk_live_..." class="form-input">
                         </div>
                         <div>
-                            <p class="text-sm font-semibold text-neutral-900">Cash on Delivery (COD)</p>
-                            <p class="text-xs text-neutral-600">Customer pays cash when order arrives</p>
+                            <label class="form-label">Secret Key</label>
+                            <input type="password" name="stripe_secret_key" value="" placeholder="{{ !empty($settings['stripe_secret_key']) ? str_repeat(chr(8226), 12) : 'Enter secret key' }}" class="form-input">
+                            @if(!empty($settings['stripe_secret_key']))
+                                <p class="text-xs text-neutral-600 mt-1">Secret key is saved. Leave blank to keep current value.</p>
+                            @endif
                         </div>
                     </div>
-                    <label class="relative inline-flex items-center cursor-pointer">
-                        <input type="checkbox" name="cod_enabled" value="1" x-model="enabled" class="sr-only peer">
-                        <div class="w-11 h-6 bg-neutral-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-100 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-600"></div>
-                    </label>
-                </div>
-                <div class="px-5 pb-4 border-t border-neutral-100" x-show="enabled" x-collapse>
-                    <label class="form-label mt-4">Instructions for Customer <span class="text-neutral-600 font-normal">(optional)</span></label>
-                    <textarea name="cod_instructions" rows="2" class="form-textarea" placeholder="e.g. Please keep exact change ready at delivery.">{{ old('cod_instructions', $settings['cod_instructions'] ?? '') }}</textarea>
+                    <div class="max-w-sm">
+                        <label class="form-label">Webhook Secret</label>
+                        <input type="password" name="stripe_webhook_secret" value="" placeholder="{{ !empty($settings['stripe_webhook_secret']) ? str_repeat(chr(8226), 12) : 'whsec_...' }}" class="form-input">
+                        @if(!empty($settings['stripe_webhook_secret']))
+                            <p class="text-xs text-neutral-600 mt-1">Webhook secret is saved. Leave blank to keep current value.</p>
+                        @endif
+                    </div>
+                    <p class="text-xs text-neutral-600">Get your API keys from <span class="font-medium text-neutral-600">Stripe Dashboard &rarr; Developers &rarr; API keys</span>. Webhook endpoint: <code class="text-xs bg-neutral-100 px-1 py-0.5 rounded">{{ url('/webhook/stripe') }}</code></p>
                 </div>
             </div>
 
         </div>
 
         <div class="mt-6 flex justify-end">
-            <button type="submit" class="btn btn-primary">Save Payment Settings</button>
+            <button type="submit" class="btn btn-primary">Save Settings</button>
         </div>
     </form>
 </x-layouts.admin>

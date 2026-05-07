@@ -7,6 +7,7 @@ use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
@@ -37,13 +38,25 @@ class CategoryController extends Controller
         }
 
         $perPage = $request->input('per_page', 10);
-        $categories = $query->with(['children' => fn($q) => $q->withCount('products')])
-            ->orderBy('position')->orderBy('name')->paginate($perPage)->withQueryString();
+        match($request->input('sort')) {
+            'name_asc'      => $query->orderBy('name'),
+            'name_desc'     => $query->orderByDesc('name'),
+            'products_desc' => $query->orderByDesc('products_count'),
+            default         => $query->orderBy('position')->orderBy('name'),
+        };
+        $categories = $query->with([
+            'children' => fn($q) => $q->withCount('products'),
+            'products' => fn($q) => $q->with('images')->limit(1),
+        ])->paginate($perPage)->withQueryString();
 
-        // Compute total products including children for each category
+        // Compute total products including children, and set fallback thumbnail
         $categories->getCollection()->transform(function ($category) {
             $category->total_products_count = $category->products_count
                 + ($category->children ? $category->children->sum('products_count') : 0);
+            if (empty($category->image_url)) {
+                $firstProduct = $category->products->first();
+                $category->fallback_image_url = $firstProduct?->primary_image_url;
+            }
             return $category;
         });
 
@@ -95,6 +108,8 @@ class CategoryController extends Controller
 
         Category::create($validated);
 
+        Cache::forget('homepage_data');
+
         return redirect()->route('admin.categories.index')
             ->with('success', 'Category created successfully.');
     }
@@ -124,7 +139,13 @@ class CategoryController extends Controller
             ->orderBy('name')
             ->get();
 
-        return view('admin.categories.edit', compact('category', 'parentCategories'));
+        $fallbackImageUrl = null;
+        if (empty($category->image_url)) {
+            $category->load(['products' => fn($q) => $q->with('images')->limit(1)]);
+            $fallbackImageUrl = $category->products->first()?->primary_image_url;
+        }
+
+        return view('admin.categories.edit', compact('category', 'parentCategories', 'fallbackImageUrl'));
     }
 
     public function update(Request $request, Category $category): RedirectResponse
@@ -166,6 +187,8 @@ class CategoryController extends Controller
 
         $category->update($validated);
 
+        Cache::forget('homepage_data');
+
         return redirect()->route('admin.categories.index')
             ->with('success', 'Category updated successfully.');
     }
@@ -183,6 +206,8 @@ class CategoryController extends Controller
         }
 
         $category->delete();
+
+        Cache::forget('homepage_data');
 
         return redirect()->route('admin.categories.index')
             ->with('success', 'Category deleted successfully.');

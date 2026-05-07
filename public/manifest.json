@@ -1,55 +1,24 @@
 {
-    "name": "MusCo - Fine Jewellery & Accessories",
-    "short_name": "MusCo",
-    "description": "Shop exquisite gold, diamond & silver jewellery online at MusCo. Certified, hallmarked jewellery with free shipping across India.",
+    "name": "Trendymus",
+    "short_name": "Trendymus",
+    "description": "Shop affordable luxury jewellery online at Trendymus. Rings, necklaces, earrings, bracelets & more.",
     "start_url": "/",
     "display": "standalone",
-    "orientation": "portrait",
     "background_color": "#ffffff",
-    "theme_color": "#B76E79",
-    "categories": ["shopping", "lifestyle"],
-    "lang": "en-IN",
-    "dir": "ltr",
+    "theme_color": "#202a40",
+    "orientation": "portrait",
     "scope": "/",
-    "prefer_related_applications": false,
     "icons": [
         {
-            "src": "/images/icons/icon-192x192.svg",
-            "sizes": "any",
-            "type": "image/svg+xml",
-            "purpose": "any"
+            "src": "/favicon-32x32.png",
+            "sizes": "32x32",
+            "type": "image/png"
         },
         {
-            "src": "/images/icons/icon-maskable.svg",
-            "sizes": "any",
-            "type": "image/svg+xml",
-            "purpose": "maskable"
-        },
-        {
-            "src": "/images/icons/favicon.png",
-            "sizes": "512x512",
-            "type": "image/png",
-            "purpose": "any"
+            "src": "/apple-touch-icon.png",
+            "sizes": "180x180",
+            "type": "image/png"
         }
     ],
-    "shortcuts": [
-        {
-            "name": "Categories",
-            "short_name": "Categories",
-            "url": "/categories",
-            "icons": [{ "src": "/images/icons/favicon-32x32.png", "sizes": "32x32" }]
-        },
-        {
-            "name": "My Orders",
-            "short_name": "Orders",
-            "url": "/account/orders",
-            "icons": [{ "src": "/images/icons/favicon-32x32.png", "sizes": "32x32" }]
-        },
-        {
-            "name": "Cart",
-            "short_name": "Cart",
-            "url": "/cart",
-            "icons": [{ "src": "/images/icons/favicon-32x32.png", "sizes": "32x32" }]
-        }
-    ]
+    "categories": ["shopping", "lifestyle"]
 }

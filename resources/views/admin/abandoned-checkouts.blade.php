@@ -7,7 +7,7 @@
     </div>
 
     @if(session('success'))
-    <div class="mb-4 p-3 rounded-lg bg-[#B76E79]/5 border border-[#B76E79]/20 text-[#B76E79] text-sm">{{ session('success') }}</div>
+    <div class="mb-4 p-3 rounded-lg bg-[#202a40]/5 border border-[#202a40]/20 text-[#202a40] text-sm">{{ session('success') }}</div>
     @endif
 
     {{-- Tabs --}}
@@ -47,7 +47,7 @@
                     Delete selected
                 </button>
                 <button type="submit" name="action" value="remind" onclick="return confirm('Send reminders to entries with contact info?')"
-                        class="px-3 py-1 text-xs font-medium text-[#B76E79] bg-white border border-gray-300 rounded-md hover:bg-[#B76E79]/5 transition ml-1">
+                        class="px-3 py-1 text-xs font-medium text-[#202a40] bg-white border border-gray-300 rounded-md hover:bg-[#202a40]/5 transition ml-1">
                     Send reminder
                 </button>
             </form>
@@ -73,7 +73,7 @@
                         <input type="checkbox" class="rounded border-gray-300" value="{{ $item->id }}" x-model="selected">
                     </td>
                     <td class="px-4 py-3">
-                        <button @click="showItems = !showItems" class="text-[#B76E79] hover:text-[#B76E79]/80 font-medium text-sm hover:underline">
+                        <button @click="showItems = !showItems" class="text-[#202a40] hover:text-[#202a40]/80 font-medium text-sm hover:underline">
                             #{{ $item->id }}
                         </button>
                         <span class="text-gray-400 text-xs ml-1">{{ $item->items_count ?? ($item->cart_snapshot ? count($item->cart_snapshot) : 0) }} {{ Str::plural('item', $item->items_count ?? 1) }}</span>
@@ -91,16 +91,16 @@
                             <span class="text-gray-400 text-xs">No contact info</span>
                         @endif
                     </td>
-                    <td class="px-4 py-3 text-right font-medium text-gray-900">{{ config('app.currency_symbol', '₹') }}{{ number_format($item->cart_total, 0) }}</td>
+                    <td class="px-4 py-3 text-right font-medium text-gray-900">{{ currency_symbol() }}{{ number_format($item->cart_total, 2) }}</td>
                     <td class="px-4 py-3">
                         @if($item->recovered && $item->order_id)
-                            <a href="{{ route('admin.orders.show', $item->order_id) }}" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-[#B76E79]/5 text-[#B76E79] hover:bg-[#B76E79]/10 transition">
+                            <a href="{{ route('admin.orders.show', $item->order_id) }}" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-[#202a40]/5 text-[#202a40] hover:bg-[#202a40]/10 transition">
                                 Recovered
                             </a>
                         @elseif($item->recovered)
-                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-[#B76E79]/5 text-[#B76E79]">Recovered</span>
+                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-[#202a40]/5 text-[#202a40]">Recovered</span>
                         @elseif($item->notified_at)
-                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-[#c29958]/10 text-[#c29958]">Reminded {{ $item->notified_at->diffForHumans() }}</span>
+                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-[#506282]/10 text-[#506282]">Reminded {{ $item->notified_at->diffForHumans() }}</span>
                         @else
                             <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-[#CC0C39]/10 text-[#CC0C39]">Not recovered</span>
                         @endif
@@ -113,7 +113,7 @@
                             @foreach($item->cart_snapshot as $cartItem)
                             <div class="flex items-center justify-between max-w-lg">
                                 <span class="text-gray-700">{{ $cartItem['product_name'] ?? 'Product' }} <span class="text-gray-400">x{{ $cartItem['quantity'] ?? 1 }}</span></span>
-                                <span class="font-medium text-gray-900">{{ config('app.currency_symbol', '₹') }}{{ number_format(($cartItem['price'] ?? 0) * ($cartItem['quantity'] ?? 1), 0) }}</span>
+                                <span class="font-medium text-gray-900">{{ currency_symbol() }}{{ number_format(($cartItem['price'] ?? 0) * ($cartItem['quantity'] ?? 1), 2) }}</span>
                             </div>
                             @endforeach
                         </div>

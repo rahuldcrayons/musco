@@ -1,16 +1,11 @@
 <x-layouts.app>
     <x-slot name="title">Notification Preferences</x-slot>
 
-    <div class="bg-neutral-50 min-h-screen">
-        <div class="container mx-auto px-4 py-8">
-            <div class="flex flex-col lg:flex-row gap-8">
-                @include('account.partials.sidebar')
-
-                <div class="flex-1 max-w-2xl">
-                    <h1 class="text-xl font-bold text-neutral-900 mb-5">Notification Preferences</h1>
+    @include('account.partials.sidebar')
+<h1 class="text-xl font-bold text-neutral-900 mb-5">Notification Preferences</h1>
 
                     @if(session('success'))
-                        <div class="mb-4 p-3 bg-[#B76E79]/5 border border-[#B76E79]/20 rounded-lg text-[#B76E79] text-sm flex items-center gap-2">
+                        <div class="mb-4 p-3 bg-[#202a40]/5 border border-[#202a40]/20 rounded-lg text-[#202a40] text-sm flex items-center gap-2">
                             <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
                             {{ session('success') }}
                         </div>
@@ -53,7 +48,7 @@
                                             <input type="hidden" name="order_placed_email" value="0">
                                             <input type="checkbox" name="order_placed_email" value="1" class="sr-only peer"
                                                    {{ old('order_placed_email', $preferences['order_placed_email'] ?? true) ? 'checked' : '' }}>
-                                            <div class="w-9 h-5 bg-neutral-200 peer-focus:ring-2 peer-focus:ring-primary-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-neutral-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary-500"></div>
+                                            <div class="w-9 h-5 bg-neutral-200 peer-focus:ring-2 peer-focus:ring-[#202a40]/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-neutral-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#202a40]"></div>
                                         </label>
                                     </div>
                                     <div class="w-20 flex justify-center">
@@ -61,7 +56,7 @@
                                             <input type="hidden" name="order_placed_inapp" value="0">
                                             <input type="checkbox" name="order_placed_inapp" value="1" class="sr-only peer"
                                                    {{ old('order_placed_inapp', $preferences['order_placed_inapp'] ?? true) ? 'checked' : '' }}>
-                                            <div class="w-9 h-5 bg-neutral-200 peer-focus:ring-2 peer-focus:ring-primary-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-neutral-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary-500"></div>
+                                            <div class="w-9 h-5 bg-neutral-200 peer-focus:ring-2 peer-focus:ring-[#202a40]/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-neutral-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#202a40]"></div>
                                         </label>
                                     </div>
                                 </div>
@@ -77,7 +72,7 @@
                                             <input type="hidden" name="order_shipped_email" value="0">
                                             <input type="checkbox" name="order_shipped_email" value="1" class="sr-only peer"
                                                    {{ old('order_shipped_email', $preferences['order_shipped_email'] ?? true) ? 'checked' : '' }}>
-                                            <div class="w-9 h-5 bg-neutral-200 peer-focus:ring-2 peer-focus:ring-primary-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-neutral-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary-500"></div>
+                                            <div class="w-9 h-5 bg-neutral-200 peer-focus:ring-2 peer-focus:ring-[#202a40]/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-neutral-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#202a40]"></div>
                                         </label>
                                     </div>
                                     <div class="w-20 flex justify-center">
@@ -85,7 +80,7 @@
                                             <input type="hidden" name="order_shipped_inapp" value="0">
                                             <input type="checkbox" name="order_shipped_inapp" value="1" class="sr-only peer"
                                                    {{ old('order_shipped_inapp', $preferences['order_shipped_inapp'] ?? true) ? 'checked' : '' }}>
-                                            <div class="w-9 h-5 bg-neutral-200 peer-focus:ring-2 peer-focus:ring-primary-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-neutral-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary-500"></div>
+                                            <div class="w-9 h-5 bg-neutral-200 peer-focus:ring-2 peer-focus:ring-[#202a40]/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-neutral-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#202a40]"></div>
                                         </label>
                                     </div>
                                 </div>
@@ -101,7 +96,7 @@
                                             <input type="hidden" name="order_delivered_email" value="0">
                                             <input type="checkbox" name="order_delivered_email" value="1" class="sr-only peer"
                                                    {{ old('order_delivered_email', $preferences['order_delivered_email'] ?? true) ? 'checked' : '' }}>
-                                            <div class="w-9 h-5 bg-neutral-200 peer-focus:ring-2 peer-focus:ring-primary-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-neutral-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary-500"></div>
+                                            <div class="w-9 h-5 bg-neutral-200 peer-focus:ring-2 peer-focus:ring-[#202a40]/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-neutral-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#202a40]"></div>
                                         </label>
                                     </div>
                                     <div class="w-20 flex justify-center">
@@ -109,7 +104,7 @@
                                             <input type="hidden" name="order_delivered_inapp" value="0">
                                             <input type="checkbox" name="order_delivered_inapp" value="1" class="sr-only peer"
                                                    {{ old('order_delivered_inapp', $preferences['order_delivered_inapp'] ?? true) ? 'checked' : '' }}>
-                                            <div class="w-9 h-5 bg-neutral-200 peer-focus:ring-2 peer-focus:ring-primary-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-neutral-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary-500"></div>
+                                            <div class="w-9 h-5 bg-neutral-200 peer-focus:ring-2 peer-focus:ring-[#202a40]/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-neutral-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#202a40]"></div>
                                         </label>
                                     </div>
                                 </div>
@@ -125,7 +120,7 @@
                                             <input type="hidden" name="order_cancelled_email" value="0">
                                             <input type="checkbox" name="order_cancelled_email" value="1" class="sr-only peer"
                                                    {{ old('order_cancelled_email', $preferences['order_cancelled_email'] ?? true) ? 'checked' : '' }}>
-                                            <div class="w-9 h-5 bg-neutral-200 peer-focus:ring-2 peer-focus:ring-primary-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-neutral-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary-500"></div>
+                                            <div class="w-9 h-5 bg-neutral-200 peer-focus:ring-2 peer-focus:ring-[#202a40]/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-neutral-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#202a40]"></div>
                                         </label>
                                     </div>
                                     <div class="w-20 flex justify-center">
@@ -133,7 +128,7 @@
                                             <input type="hidden" name="order_cancelled_inapp" value="0">
                                             <input type="checkbox" name="order_cancelled_inapp" value="1" class="sr-only peer"
                                                    {{ old('order_cancelled_inapp', $preferences['order_cancelled_inapp'] ?? true) ? 'checked' : '' }}>
-                                            <div class="w-9 h-5 bg-neutral-200 peer-focus:ring-2 peer-focus:ring-primary-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-neutral-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary-500"></div>
+                                            <div class="w-9 h-5 bg-neutral-200 peer-focus:ring-2 peer-focus:ring-[#202a40]/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-neutral-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#202a40]"></div>
                                         </label>
                                     </div>
                                 </div>
@@ -173,7 +168,7 @@
                                             <input type="hidden" name="return_approved_email" value="0">
                                             <input type="checkbox" name="return_approved_email" value="1" class="sr-only peer"
                                                    {{ old('return_approved_email', $preferences['return_approved_email'] ?? true) ? 'checked' : '' }}>
-                                            <div class="w-9 h-5 bg-neutral-200 peer-focus:ring-2 peer-focus:ring-primary-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-neutral-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary-500"></div>
+                                            <div class="w-9 h-5 bg-neutral-200 peer-focus:ring-2 peer-focus:ring-[#202a40]/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-neutral-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#202a40]"></div>
                                         </label>
                                     </div>
                                     <div class="w-20 flex justify-center">
@@ -181,7 +176,7 @@
                                             <input type="hidden" name="return_approved_inapp" value="0">
                                             <input type="checkbox" name="return_approved_inapp" value="1" class="sr-only peer"
                                                    {{ old('return_approved_inapp', $preferences['return_approved_inapp'] ?? true) ? 'checked' : '' }}>
-                                            <div class="w-9 h-5 bg-neutral-200 peer-focus:ring-2 peer-focus:ring-primary-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-neutral-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary-500"></div>
+                                            <div class="w-9 h-5 bg-neutral-200 peer-focus:ring-2 peer-focus:ring-[#202a40]/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-neutral-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#202a40]"></div>
                                         </label>
                                     </div>
                                 </div>
@@ -197,7 +192,7 @@
                                             <input type="hidden" name="refund_processed_email" value="0">
                                             <input type="checkbox" name="refund_processed_email" value="1" class="sr-only peer"
                                                    {{ old('refund_processed_email', $preferences['refund_processed_email'] ?? true) ? 'checked' : '' }}>
-                                            <div class="w-9 h-5 bg-neutral-200 peer-focus:ring-2 peer-focus:ring-primary-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-neutral-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary-500"></div>
+                                            <div class="w-9 h-5 bg-neutral-200 peer-focus:ring-2 peer-focus:ring-[#202a40]/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-neutral-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#202a40]"></div>
                                         </label>
                                     </div>
                                     <div class="w-20 flex justify-center">
@@ -205,7 +200,7 @@
                                             <input type="hidden" name="refund_processed_inapp" value="0">
                                             <input type="checkbox" name="refund_processed_inapp" value="1" class="sr-only peer"
                                                    {{ old('refund_processed_inapp', $preferences['refund_processed_inapp'] ?? true) ? 'checked' : '' }}>
-                                            <div class="w-9 h-5 bg-neutral-200 peer-focus:ring-2 peer-focus:ring-primary-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-neutral-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary-500"></div>
+                                            <div class="w-9 h-5 bg-neutral-200 peer-focus:ring-2 peer-focus:ring-[#202a40]/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-neutral-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#202a40]"></div>
                                         </label>
                                     </div>
                                 </div>
@@ -245,7 +240,7 @@
                                             <input type="hidden" name="price_drop_email" value="0">
                                             <input type="checkbox" name="price_drop_email" value="1" class="sr-only peer"
                                                    {{ old('price_drop_email', $preferences['price_drop_email'] ?? false) ? 'checked' : '' }}>
-                                            <div class="w-9 h-5 bg-neutral-200 peer-focus:ring-2 peer-focus:ring-primary-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-neutral-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary-500"></div>
+                                            <div class="w-9 h-5 bg-neutral-200 peer-focus:ring-2 peer-focus:ring-[#202a40]/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-neutral-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#202a40]"></div>
                                         </label>
                                     </div>
                                     <div class="w-20 flex justify-center">
@@ -253,7 +248,7 @@
                                             <input type="hidden" name="price_drop_inapp" value="0">
                                             <input type="checkbox" name="price_drop_inapp" value="1" class="sr-only peer"
                                                    {{ old('price_drop_inapp', $preferences['price_drop_inapp'] ?? false) ? 'checked' : '' }}>
-                                            <div class="w-9 h-5 bg-neutral-200 peer-focus:ring-2 peer-focus:ring-primary-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-neutral-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary-500"></div>
+                                            <div class="w-9 h-5 bg-neutral-200 peer-focus:ring-2 peer-focus:ring-[#202a40]/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-neutral-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#202a40]"></div>
                                         </label>
                                     </div>
                                 </div>
@@ -269,7 +264,7 @@
                                             <input type="hidden" name="back_in_stock_email" value="0">
                                             <input type="checkbox" name="back_in_stock_email" value="1" class="sr-only peer"
                                                    {{ old('back_in_stock_email', $preferences['back_in_stock_email'] ?? false) ? 'checked' : '' }}>
-                                            <div class="w-9 h-5 bg-neutral-200 peer-focus:ring-2 peer-focus:ring-primary-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-neutral-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary-500"></div>
+                                            <div class="w-9 h-5 bg-neutral-200 peer-focus:ring-2 peer-focus:ring-[#202a40]/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-neutral-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#202a40]"></div>
                                         </label>
                                     </div>
                                     <div class="w-20 flex justify-center">
@@ -277,7 +272,7 @@
                                             <input type="hidden" name="back_in_stock_inapp" value="0">
                                             <input type="checkbox" name="back_in_stock_inapp" value="1" class="sr-only peer"
                                                    {{ old('back_in_stock_inapp', $preferences['back_in_stock_inapp'] ?? false) ? 'checked' : '' }}>
-                                            <div class="w-9 h-5 bg-neutral-200 peer-focus:ring-2 peer-focus:ring-primary-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-neutral-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary-500"></div>
+                                            <div class="w-9 h-5 bg-neutral-200 peer-focus:ring-2 peer-focus:ring-[#202a40]/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-neutral-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#202a40]"></div>
                                         </label>
                                     </div>
                                 </div>
@@ -285,12 +280,9 @@
                         </div>
 
                         <button type="submit"
-                                class="inline-flex items-center gap-2 bg-[#B76E79] hover:bg-[#222222] text-white text-sm font-semibold px-3 py-1.5 rounded-lg transition-colors">
+                                class="inline-flex items-center gap-2 bg-[#202a40] text-white text-sm font-semibold px-3 py-1.5 rounded-lg transition-colors">
                             Save Preferences
                         </button>
                     </form>
-                </div>
-            </div>
-        </div>
-    </div>
+                @include('account.partials.sidebar-end')
 </x-layouts.app>

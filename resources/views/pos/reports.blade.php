@@ -32,22 +32,22 @@
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div class="pos-card p-4">
                 <div class="text-xs font-medium mb-1" style="color: var(--pos-text-muted);">Total Sales</div>
-                <div class="text-2xl font-bold pos-mono" style="color: var(--pos-text);" x-text="'₹' + formatNum(stats.total_sales)"></div>
+                <div class="text-2xl font-bold pos-mono" style="color: var(--pos-text);" x-text="'£' + formatNum(stats.total_sales)"></div>
                 <div class="text-xs mt-1" style="color: var(--pos-success);" x-text="stats.total_bills + ' bills'"></div>
             </div>
             <div class="pos-card p-4">
                 <div class="text-xs font-medium mb-1" style="color: var(--pos-text-muted);">Avg Bill Value</div>
-                <div class="text-2xl font-bold pos-mono" style="color: var(--pos-text);" x-text="'₹' + formatNum(stats.avg_bill_value)"></div>
+                <div class="text-2xl font-bold pos-mono" style="color: var(--pos-text);" x-text="'£' + formatNum(stats.avg_bill_value)"></div>
                 <div class="text-xs mt-1" style="color: var(--pos-primary);">per transaction</div>
             </div>
             <div class="pos-card p-4">
                 <div class="text-xs font-medium mb-1" style="color: var(--pos-text-muted);">Returns</div>
-                <div class="text-2xl font-bold pos-mono" style="color: var(--pos-danger);" x-text="'₹' + formatNum(stats.total_returns)"></div>
+                <div class="text-2xl font-bold pos-mono" style="color: var(--pos-danger);" x-text="'£' + formatNum(stats.total_returns)"></div>
                 <div class="text-xs mt-1" style="color: var(--pos-danger);" x-text="stats.return_count + ' returns'"></div>
             </div>
             <div class="pos-card p-4">
                 <div class="text-xs font-medium mb-1" style="color: var(--pos-text-muted);">Net Revenue</div>
-                <div class="text-2xl font-bold pos-mono" style="color: var(--pos-success);" x-text="'₹' + formatNum(stats.total_sales - stats.total_returns)"></div>
+                <div class="text-2xl font-bold pos-mono" style="color: var(--pos-success);" x-text="'£' + formatNum(stats.total_sales - stats.total_returns)"></div>
                 <div class="text-xs mt-1" style="color: var(--pos-text-muted);">after returns</div>
             </div>
         </div>
@@ -62,7 +62,7 @@
                         <div>
                             <div class="flex justify-between text-xs mb-1">
                                 <span class="font-medium capitalize" x-text="pm.method"></span>
-                                <span class="pos-mono" x-text="'₹' + formatNum(pm.total) + ' (' + pm.count + ')'"></span>
+                                <span class="pos-mono" x-text="'£' + formatNum(pm.total) + ' (' + pm.count + ')'"></span>
                             </div>
                             <div class="w-full h-2 rounded-full" style="background: #E2E8F0;">
                                 <div class="h-full rounded-full transition-all" :style="'width:' + pm.pct + '%; background:' + pm.color"></div>
@@ -103,8 +103,8 @@
                                 </div>
                             </div>
                             <div class="text-right">
-                                <div class="text-sm font-bold pos-mono" x-text="'₹' + formatNum(s.total)"></div>
-                                <div class="text-xs" style="color: var(--pos-text-muted);">Avg ₹<span x-text="formatNum(s.avg)" class="pos-mono"></span></div>
+                                <div class="text-sm font-bold pos-mono" x-text="'£' + formatNum(s.total)"></div>
+                                <div class="text-xs" style="color: var(--pos-text-muted);">Avg £<span x-text="formatNum(s.avg)" class="pos-mono"></span></div>
                             </div>
                         </div>
                     </template>
@@ -126,7 +126,7 @@
                             </div>
                             <div class="text-right">
                                 <span class="text-xs font-bold pos-mono" x-text="p.qty + ' sold'"></span>
-                                <span class="text-xs pos-mono ml-2" style="color: var(--pos-text-muted);" x-text="'₹' + formatNum(p.revenue)"></span>
+                                <span class="text-xs pos-mono ml-2" style="color: var(--pos-text-muted);" x-text="'£' + formatNum(p.revenue)"></span>
                             </div>
                         </div>
                     </template>
@@ -179,7 +179,7 @@
                                 <td class="py-2 px-2 text-xs" x-text="sale.cashier"></td>
                                 <td class="py-2 px-2 text-xs" x-text="sale.customer"></td>
                                 <td class="py-2 px-2 text-xs text-right pos-mono" x-text="sale.items_count"></td>
-                                <td class="py-2 px-2 text-xs text-right font-bold pos-mono" x-text="'₹' + sale.total.toFixed(2)"></td>
+                                <td class="py-2 px-2 text-xs text-right font-bold pos-mono" x-text="'£' + sale.total.toFixed(2)"></td>
                                 <td class="py-2 px-2 text-center">
                                     <span class="text-[10px] px-2 py-0.5 rounded-full font-medium capitalize"
                                           :style="{'cash':'background:#DCFCE7;color:#14532D;','card':'background:#DBEAFE;color:#1E3A5F;','upi':'background:#F3E8FF;color:#4A1D72;','split':'background:#FEF3C7;color:#78350F;'}[sale.payment_method]"

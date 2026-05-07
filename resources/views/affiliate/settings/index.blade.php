@@ -83,7 +83,7 @@
                     <select name="payout_method" id="payout_method" x-model="method"
                             class="form-input w-full @error('payout_method') border-error-300 @enderror">
                         <option value="bank_transfer">Bank Transfer</option>
-                        <option value="upi">UPI</option>
+                        <option value="paypal">PayPal</option>
                     </select>
                     @error('payout_method')
                         <p class="mt-1 text-sm text-error-600">{{ $message }}</p>
@@ -132,10 +132,10 @@
                     </div>
                 </div>
 
-                <!-- UPI Details -->
+                <!-- PayPal Details -->
                 <div x-show="method === 'upi'" x-transition>
-                    <label for="upi_id" class="block text-sm font-medium text-neutral-700 mb-1">UPI ID</label>
-                    <input type="text" name="upi_id" id="upi_id"
+                    <label for="paypal_email" class="block text-sm font-medium text-neutral-700 mb-1">PayPal Email</label>
+                    <input type="text" name="paypal_email" id="paypal_email"
                            value="{{ old('upi_id', $affiliate->upi_id) }}"
                            class="form-input w-full @error('upi_id') border-error-300 @enderror"
                            placeholder="yourname@paytm">

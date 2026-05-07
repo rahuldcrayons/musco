@@ -1,11 +1,9 @@
 <x-layouts.app>
     <x-slot name="title">Notifications</x-slot>
 
-    <div class="container mx-auto px-4 py-8">
-        <div class="flex flex-col lg:flex-row gap-8">
             @include('account.partials.sidebar')
 
-            <div class="flex-1">
+            
                 <div class="flex items-center justify-between mb-6">
                     <h1 class="text-2xl font-bold text-neutral-900">Notifications</h1>
                 </div>
@@ -15,12 +13,12 @@
                         <div class="card p-4 flex items-start gap-4 {{ $notification->read_at ? 'opacity-60' : '' }}">
                             <div class="shrink-0 mt-1">
                                 @if(!$notification->read_at)
-                                    <span class="block w-2.5 h-2.5 rounded-full bg-primary-500"></span>
+                                    <span class="block w-2.5 h-2.5 rounded-full bg-[#202a40]"></span>
                                 @else
                                     <span class="block w-2.5 h-2.5 rounded-full bg-neutral-300"></span>
                                 @endif
                             </div>
-                            <div class="flex-1">
+                            
                                 <p class="text-neutral-900">{{ $notification->data['message'] ?? $notification->data['title'] ?? 'Notification' }}</p>
                                 @if(!empty($notification->data['description']))
                                     <p class="text-sm text-neutral-600 mt-1">{{ $notification->data['description'] }}</p>
@@ -47,4 +45,5 @@
             </div>
         </div>
     </div>
+    @include('account.partials.sidebar-end')
 </x-layouts.app>

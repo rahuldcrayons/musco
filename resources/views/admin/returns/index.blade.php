@@ -92,7 +92,7 @@
                                 </span>
                             </td>
                             <td class="px-4 py-3 text-right">
-                                <span class="text-sm text-neutral-900">{{ $return->refund_amount ? '₹' . number_format($return->refund_amount, 2) : '-' }}</span>
+                                <span class="text-sm text-neutral-900">{{ $return->refund_amount ? format_price($return->refund_amount) : '-' }}</span>
                             </td>
                         </tr>
                     @empty

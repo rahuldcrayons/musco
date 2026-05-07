@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Account;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\View\View;
 
@@ -44,5 +46,24 @@ class ProfileController extends Controller
         ]);
 
         return back()->with('success', 'Password updated successfully.');
+    }
+
+    public function updateAvatar(Request $request): JsonResponse
+    {
+        $request->validate(['avatar' => 'required|image|mimes:jpg,jpeg,png,webp|max:2048']);
+
+        $user = $request->user();
+
+        if ($user->avatar_url && Storage::disk('public')->exists($user->avatar_url)) {
+            Storage::disk('public')->delete($user->avatar_url);
+        }
+
+        $path = $request->file('avatar')->store('avatars', 'public');
+        $user->update(['avatar_url' => $path]);
+
+        return response()->json([
+            'success' => true,
+            'avatar_url' => Storage::disk('public')->url($path),
+        ]);
     }
 }

@@ -45,6 +45,18 @@ class Category extends Model
             ->saveSlugsTo('slug');
     }
 
+    public function getRouteKeyName(): string
+    {
+        return 'slug';
+    }
+
+    public function resolveRouteBinding($value, $field = null)
+    {
+        return $this->where('slug', $value)
+            ->when(is_numeric($value), fn ($q) => $q->orWhere('id', $value))
+            ->first();
+    }
+
     protected static function booted(): void
     {
         static::creating(function ($category) {

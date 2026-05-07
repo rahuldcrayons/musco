@@ -85,7 +85,7 @@ class Payment extends Model
             'captured_at' => now(),
         ]);
 
-        $this->order->update(['payment_status' => 'paid']);
+        $this->order?->update(['payment_status' => 'paid']);
     }
 
     public function markAsFailed(string $reason, array $response = []): void
@@ -96,6 +96,6 @@ class Payment extends Model
             'gateway_response' => $response,
         ]);
 
-        $this->order->update(['payment_status' => 'failed']);
+        $this->order?->update(['payment_status' => 'failed']);
     }
 }

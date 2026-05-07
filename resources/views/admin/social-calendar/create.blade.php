@@ -39,7 +39,7 @@
                         <label class="block text-sm font-medium text-gray-700 mb-1">Hashtags</label>
                         <input type="text" name="hashtags" value="{{ old('hashtags') }}"
                                class="w-full rounded-lg border-gray-300 text-sm focus:ring-gray-900 focus:border-gray-900"
-                               placeholder="#GoldJewellery #MusCo #ShopNow (space or comma separated)">
+                               placeholder="#GoldJewellery #Trendymus #ShopNow (space or comma separated)">
                     </div>
 
                     <div>
@@ -56,7 +56,7 @@
                         <label class="block text-sm font-medium text-gray-700 mb-1">Media URLs</label>
                         <textarea name="media_urls" rows="4"
                                   class="w-full rounded-lg border-gray-300 text-sm font-mono focus:ring-gray-900 focus:border-gray-900"
-                                  placeholder="One URL per line (must be publicly accessible)&#10;https://musco.com/images/social/...&#10;https://musco.com/videos/...">{{ old('media_urls') }}</textarea>
+                                  placeholder="One URL per line (must be publicly accessible)&#10;https://trendymus.com/images/social/...&#10;https://trendymus.com/videos/...">{{ old('media_urls') }}</textarea>
                         <p class="text-xs text-gray-400 mt-1">Public URLs that Meta API can access. Upload to server first.</p>
                         @error('media_urls') <p class="text-[#CC0C39] text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
@@ -65,7 +65,7 @@
                         <label class="block text-sm font-medium text-gray-700 mb-1">Product Link</label>
                         <input type="url" name="link" value="{{ old('link') }}"
                                class="w-full rounded-lg border-gray-300 text-sm focus:ring-gray-900 focus:border-gray-900"
-                               placeholder="https://musco.com/product/...">
+                               placeholder="https://trendymus.com/product/...">
                     </div>
                 </div>
             </div>
@@ -80,7 +80,7 @@
                         @foreach(['ig_post' => 'Post', 'ig_reel' => 'Reel', 'ig_story' => 'Story'] as $key => $label)
                         <label class="flex items-center gap-2 text-sm">
                             <input type="checkbox" name="platforms[]" value="{{ $key }}"
-                                   class="rounded border-gray-300 text-[#B76E79] focus:ring-[#B76E79]"
+                                   class="rounded border-gray-300 text-[#202a40] focus:ring-[#202a40]"
                                    {{ in_array($key, old('platforms', [])) ? 'checked' : '' }}>
                             {{ $label }}
                         </label>
@@ -90,7 +90,7 @@
                         @foreach(['fb_post' => 'Post', 'fb_reel' => 'Reel', 'fb_story' => 'Story'] as $key => $label)
                         <label class="flex items-center gap-2 text-sm">
                             <input type="checkbox" name="platforms[]" value="{{ $key }}"
-                                   class="rounded border-gray-300 text-[#B76E79] focus:ring-[#B76E79]"
+                                   class="rounded border-gray-300 text-[#202a40] focus:ring-[#202a40]"
                                    {{ in_array($key, old('platforms', [])) ? 'checked' : '' }}>
                             {{ $label }}
                         </label>
@@ -133,11 +133,11 @@
                 {{-- Actions --}}
                 <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5 space-y-2">
                     <button type="submit" name="action" value="publish_now"
-                            class="w-full px-4 py-2 bg-[#B76E79] text-white text-sm font-medium rounded-lg hover:bg-[#B76E79]/90">
+                            class="w-full px-4 py-2 bg-[#202a40] text-white text-sm font-medium rounded-lg hover:bg-[#202a40]/90">
                         Publish Now
                     </button>
                     <button type="submit" name="action" value="schedule"
-                            class="w-full px-4 py-2 bg-[#B76E79]/80 text-white text-sm font-medium rounded-lg hover:bg-[#B76E79]/70">
+                            class="w-full px-4 py-2 bg-[#202a40]/80 text-white text-sm font-medium rounded-lg hover:bg-[#202a40]/70">
                         Schedule Post
                     </button>
                     <button type="submit" name="action" value="draft"

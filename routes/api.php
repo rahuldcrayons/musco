@@ -4,10 +4,10 @@ use App\Http\Controllers\Api\V1\Auth\LoginController;
 use App\Http\Controllers\Api\V1\Auth\LogoutController;
 use App\Http\Controllers\Api\V1\Auth\ProfileController;
 use App\Http\Controllers\Api\V1\Auth\RegisterController;
-use App\Http\Controllers\Api\RazorpayWebhookController;
+// use App\Http\Controllers\Api\RazorpayWebhookController; // disabled
 use App\Http\Controllers\Api\WebhookController;
 use App\Http\Middleware\VerifyMetaWebhookSignature;
-use App\Http\Middleware\VerifyRazorpayWebhookSignature;
+// use App\Http\Middleware\VerifyRazorpayWebhookSignature; // disabled
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -31,10 +31,10 @@ Route::prefix('webhook')->middleware(VerifyMetaWebhookSignature::class)->group(f
 Route::match(['get', 'post'], 'instagram/deauthorize', [\App\Http\Controllers\Api\InstagramCallbackController::class, 'deauthorize'])->name('instagram.deauthorize');
 Route::match(['get', 'post'], 'instagram/delete', [\App\Http\Controllers\Api\InstagramCallbackController::class, 'delete'])->name('instagram.delete');
 
-// ─── Razorpay Webhooks (Payment Events) ─────────────────────────────────
-Route::post('webhook/razorpay', [RazorpayWebhookController::class, 'handle'])
-    ->middleware(VerifyRazorpayWebhookSignature::class)
-    ->name('webhook.razorpay');
+// ─── Razorpay Webhooks (Payment Events) ─── DISABLED ────────────────────
+// Route::post('webhook/razorpay', [RazorpayWebhookController::class, 'handle'])
+//     ->middleware(VerifyRazorpayWebhookSignature::class)
+//     ->name('webhook.razorpay');
 
 // API Version 1
 Route::prefix('v1')->name('api.v1.')->group(function () {
@@ -68,8 +68,8 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
         // Wishlist
         Route::prefix('wishlist')->name('wishlist.')->group(function () {
             Route::get('/', [\App\Http\Controllers\Api\V1\User\WishlistController::class, 'index'])->name('index');
-            Route::post('{product}', [\App\Http\Controllers\Api\V1\User\WishlistController::class, 'store'])->name('store');
-            Route::delete('{product}', [\App\Http\Controllers\Api\V1\User\WishlistController::class, 'destroy'])->name('destroy');
+            Route::post('{product:id}', [\App\Http\Controllers\Api\V1\User\WishlistController::class, 'store'])->name('store');
+            Route::delete('{product:id}', [\App\Http\Controllers\Api\V1\User\WishlistController::class, 'destroy'])->name('destroy');
         });
 
         // Cart

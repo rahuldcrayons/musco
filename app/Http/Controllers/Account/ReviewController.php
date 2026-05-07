@@ -36,30 +36,35 @@ class ReviewController extends Controller
             ->where('product_id', $product->id)
             ->first();
 
-        return view('account.reviews.create', compact('product', 'hasPurchased', 'existingReview'));
+        $productReviews = Review::where('product_id', $product->id)
+            ->where('is_approved', true)
+            ->latest()
+            ->take(10)
+            ->get();
+
+        return view('account.reviews.create', compact('product', 'hasPurchased', 'existingReview', 'productReviews'));
     }
 
     public function store(Request $request, Product $product): RedirectResponse
     {
-        $existingReview = $request->user()->reviews()
-            ->where('product_id', $product->id)
-            ->first();
-
-        if ($existingReview) {
-            return back()->with('error', 'You have already reviewed this product.');
+        // Duplicate check for auth users
+        if ($request->user()) {
+            $existingReview = $request->user()->reviews()
+                ->where('product_id', $product->id)
+                ->first();
+            if ($existingReview) {
+                return back()->with('error', 'You have already reviewed this product.');
+            }
         }
 
-        $hasPurchased = $request->user()->orders()
-            ->where('status', 'completed')
-            ->whereHas('items', fn($q) => $q->where('product_id', $product->id))
-            ->exists();
-
         $validated = $request->validate([
-            'rating' => 'required|integer|min:1|max:5',
-            'title' => 'nullable|string|max:255',
-            'content' => 'required|string|max:2000',
-            'pros' => 'nullable|string|max:1000',
-            'cons' => 'nullable|string|max:1000',
+            'rating'         => 'required|integer|min:1|max:5',
+            'title'          => 'nullable|string|max:255',
+            'content'        => 'required|string|max:2000',
+            'pros'           => 'nullable|string|max:1000',
+            'cons'           => 'nullable|string|max:1000',
+            'reviewer_name'  => 'nullable|string|max:100',
+            'reviewer_email' => 'nullable|email|max:255',
         ]);
 
         if (!empty($validated['pros'])) {
@@ -69,14 +74,34 @@ class ReviewController extends Controller
             $validated['cons'] = array_filter(array_map('trim', explode("\n", $validated['cons'])));
         }
 
-        $validated['user_id'] = $request->user()->id;
-        $validated['product_id'] = $product->id;
-        $validated['status'] = 'pending';
-        $validated['is_verified_purchase'] = $hasPurchased;
+        $hasPurchased = $request->user()
+            ? $request->user()->orders()
+                ->where('status', 'completed')
+                ->whereHas('items', fn($q) => $q->where('product_id', $product->id))
+                ->exists()
+            : false;
 
-        Review::create($validated);
+        $guestName  = $validated['reviewer_name'] ?? ($request->user()?->name);
+        $guestEmail = $validated['reviewer_email'] ?? null;
 
-        return redirect()->route('account.reviews')
-            ->with('success', 'Thank you for your review! It will be published after moderation.');
+        unset($validated['reviewer_name'], $validated['reviewer_email']);
+
+        Review::create([
+            'user_id'              => $request->user()?->id,
+            'product_id'           => $product->id,
+            'guest_name'           => $guestName,
+            'guest_email'          => $guestEmail,
+            'rating'               => $validated['rating'],
+            'title'                => $validated['title'] ?? null,
+            'content'              => $validated['content'],
+            'pros'                 => $validated['pros'] ?? null,
+            'cons'                 => $validated['cons'] ?? null,
+            'status'               => 'pending',
+            'is_approved'          => false,
+            'is_verified_purchase' => $hasPurchased,
+        ]);
+
+        return redirect()->route('product.show', $product)
+            ->with('review_success', 'Thank you! Your review will be published after moderation.');
     }
 }

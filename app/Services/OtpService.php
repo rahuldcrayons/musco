@@ -134,7 +134,7 @@ class OtpService
                 'to' => $cleanPhone,
                 'type' => 'text',
                 'text' => [
-                    'body' => "Your MusCo OTP is: *{$code}*\n\nUse this to {$purposeText}.\nValid for " . self::OTP_EXPIRY_MINUTES . " minutes.\n\nDo not share this code with anyone.",
+                    'body' => "Your Trendymus OTP is: *{$code}*\n\nUse this to {$purposeText}.\nValid for " . self::OTP_EXPIRY_MINUTES . " minutes.\n\nDo not share this code with anyone.",
                 ],
             ]);
 
@@ -159,16 +159,16 @@ class OtpService
                 };
 
                 $m->to($email)
-                  ->from(config('mail.from.address', 'info@musco.com'), config('app.name', 'MusCo'))
-                  ->subject("Your MusCo {$purposeText} OTP: {$code}")
+                  ->from(config('mail.from.address', 'info@trendymus.com'), config('app.name', 'Trendymus'))
+                  ->subject("Your Trendymus {$purposeText} OTP: {$code}")
                   ->html("<div style='font-family:sans-serif;max-width:400px;margin:0 auto;padding:20px;'>
-                    <h2 style='color:#205258;margin-bottom:10px;'>MusCo {$purposeText} OTP</h2>
+                    <h2 style='color:#205258;margin-bottom:10px;'>Trendymus {$purposeText} OTP</h2>
                     <p style='font-size:14px;color:#333;'>Your one-time password is:</p>
                     <div style='background:#f5f5f5;border:2px dashed #205258;border-radius:8px;padding:15px;text-align:center;margin:15px 0;'>
                         <span style='font-size:32px;font-weight:bold;letter-spacing:8px;color:#205258;'>{$code}</span>
                     </div>
                     <p style='font-size:12px;color:#666;'>Valid for " . self::OTP_EXPIRY_MINUTES . " minutes. Do not share this code.</p>
-                    <p style='font-size:12px;color:#999;margin-top:20px;'>— Team MusCo</p>
+                    <p style='font-size:12px;color:#999;margin-top:20px;'>— Team Trendymus</p>
                   </div>");
             });
 

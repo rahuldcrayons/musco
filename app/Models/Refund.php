@@ -63,11 +63,13 @@ class Refund extends Model
         ]);
 
         // Update order payment status
-        $totalRefunded = $this->order->refunds()->where('status', 'completed')->sum('amount');
-        if ($totalRefunded >= $this->order->paid_amount) {
-            $this->order->update(['payment_status' => 'refunded']);
-        } else {
-            $this->order->update(['payment_status' => 'partial_refund']);
+        if ($this->order) {
+            $totalRefunded = $this->order->refunds()->where('status', 'completed')->sum('amount');
+            if ($totalRefunded >= $this->order->paid_amount) {
+                $this->order->update(['payment_status' => 'refunded']);
+            } else {
+                $this->order->update(['payment_status' => 'partial_refund']);
+            }
         }
     }
 }

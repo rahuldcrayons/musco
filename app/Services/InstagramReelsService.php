@@ -22,6 +22,7 @@ class InstagramReelsService
 
     /**
      * Get latest reels from Instagram, cached for 1 hour.
+     * Always fetches/caches 50 items; trims to $limit after cache retrieval.
      */
     public function getLatestReels(int $limit = 10): array
     {
@@ -29,9 +30,11 @@ class InstagramReelsService
             return [];
         }
 
-        return Cache::remember('instagram_reels', 3600, function () use ($limit) {
-            return $this->fetchReelsFromApi($limit);
+        $all = Cache::remember('instagram_reels', 3600, function () {
+            return $this->fetchReelsFromApi(50);
         });
+
+        return array_slice($all, 0, $limit);
     }
 
     /**
@@ -70,11 +73,19 @@ class InstagramReelsService
             $ownOthers = collect($ownData)->filter(fn($item) => !in_array($item['media_type'] ?? '', ['VIDEO', 'REELS']) || empty($item['media_url']));
             $collabItems = collect($collabData);
 
+            // Jewellery keyword filter
+            $jewelleryKeywords = ['jewel', 'jewelry', 'jewellery', 'necklace', 'ring', 'earring', 'bracelet',
+                'bangle', 'pendant', 'chain', 'gold', 'silver', 'diamond', 'gemstone', 'anklet',
+                'accessory', 'accessories', 'trendymus', 'fashion', 'outfit', 'style', 'ootd'];
+            $filterReels = fn($item) => collect($jewelleryKeywords)->contains(
+                fn($kw) => str_contains(strtolower($item['caption'] ?? ''), $kw)
+            ) || empty($item['caption']);
+
             // 4. Own autoplay videos first, then collab reels by order, then other own media
-            $combined = $ownVideos
+            $combined = $ownVideos->filter($filterReels)
                 ->sortByDesc(fn($item) => ($item['like_count'] ?? 0) + ($item['comments_count'] ?? 0))
                 ->concat($collabItems)
-                ->concat($ownOthers)
+                ->concat($ownOthers->filter($filterReels))
                 ->unique('id')
                 ->take($limit);
 

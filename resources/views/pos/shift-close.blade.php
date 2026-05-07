@@ -28,19 +28,19 @@
                         </div>
                         <div class="flex justify-between text-sm">
                             <span style="color: var(--pos-text-muted);">Gross Sales</span>
-                            <span class="font-medium pos-mono">₹{{ number_format($summary['gross_sales'], 2) }}</span>
+                            <span class="font-medium pos-mono">£{{ number_format($summary['gross_sales'], 2) }}</span>
                         </div>
                         <div class="flex justify-between text-sm">
                             <span style="color: var(--pos-text-muted);">Discounts</span>
-                            <span class="font-medium pos-mono" style="color: var(--pos-success);">-₹{{ number_format($summary['total_discount'], 2) }}</span>
+                            <span class="font-medium pos-mono" style="color: var(--pos-success);">-£{{ number_format($summary['total_discount'], 2) }}</span>
                         </div>
                         <div class="flex justify-between text-sm">
                             <span style="color: var(--pos-text-muted);">Tax (GST)</span>
-                            <span class="font-medium pos-mono">₹{{ number_format($summary['total_tax'], 2) }}</span>
+                            <span class="font-medium pos-mono">£{{ number_format($summary['total_tax'], 2) }}</span>
                         </div>
                         <div class="flex justify-between text-sm pt-1.5" style="border-top: 1px solid var(--pos-border);">
                             <span class="font-semibold">Net Sales</span>
-                            <span class="font-bold pos-mono" style="color: var(--pos-primary);">₹{{ number_format($summary['net_sales'], 2) }}</span>
+                            <span class="font-bold pos-mono" style="color: var(--pos-primary);">£{{ number_format($summary['net_sales'], 2) }}</span>
                         </div>
                     </div>
                 </div>
@@ -51,19 +51,19 @@
                     <div class="grid grid-cols-2 gap-2">
                         <div class="p-2.5 rounded-lg text-center" style="background: #DCFCE7;">
                             <div class="text-xs" style="color: #14532D;">Cash</div>
-                            <div class="text-sm font-bold pos-mono" style="color: #14532D;">₹{{ number_format($summary['payments']['cash'], 2) }}</div>
+                            <div class="text-sm font-bold pos-mono" style="color: #14532D;">£{{ number_format($summary['payments']['cash'], 2) }}</div>
                         </div>
                         <div class="p-2.5 rounded-lg text-center" style="background: #DBEAFE;">
                             <div class="text-xs" style="color: #1E3A5F;">Card</div>
-                            <div class="text-sm font-bold pos-mono" style="color: #1E3A5F;">₹{{ number_format($summary['payments']['card'], 2) }}</div>
+                            <div class="text-sm font-bold pos-mono" style="color: #1E3A5F;">£{{ number_format($summary['payments']['card'], 2) }}</div>
                         </div>
                         <div class="p-2.5 rounded-lg text-center" style="background: #F3E8FF;">
                             <div class="text-xs" style="color: #4A1D72;">UPI</div>
-                            <div class="text-sm font-bold pos-mono" style="color: #4A1D72;">₹{{ number_format($summary['payments']['upi'], 2) }}</div>
+                            <div class="text-sm font-bold pos-mono" style="color: #4A1D72;">£{{ number_format($summary['payments']['upi'], 2) }}</div>
                         </div>
                         <div class="p-2.5 rounded-lg text-center" style="background: #FEF3C7;">
                             <div class="text-xs" style="color: #92400E;">Split</div>
-                            <div class="text-sm font-bold pos-mono" style="color: #92400E;">₹{{ number_format($summary['payments']['split'], 2) }}</div>
+                            <div class="text-sm font-bold pos-mono" style="color: #92400E;">£{{ number_format($summary['payments']['split'], 2) }}</div>
                         </div>
                     </div>
                 </div>
@@ -78,7 +78,7 @@
                     </div>
                     <div class="flex justify-between text-sm">
                         <span style="color: var(--pos-text-muted);">Total Refunds</span>
-                        <span class="font-medium pos-mono" style="color: var(--pos-danger);">₹{{ number_format($summary['total_refunds'], 2) }}</span>
+                        <span class="font-medium pos-mono" style="color: var(--pos-danger);">£{{ number_format($summary['total_refunds'], 2) }}</span>
                     </div>
                 </div>
                 @endif
@@ -89,19 +89,19 @@
                     <div class="space-y-1.5">
                         <div class="flex justify-between text-sm">
                             <span style="color: var(--pos-text-muted);">Opening Cash</span>
-                            <span class="pos-mono">₹{{ number_format($summary['cash_reconciliation']['opening_cash'], 2) }}</span>
+                            <span class="pos-mono">£{{ number_format($summary['cash_reconciliation']['opening_cash'], 2) }}</span>
                         </div>
                         <div class="flex justify-between text-sm">
                             <span style="color: var(--pos-text-muted);">+ Cash Sales</span>
-                            <span class="pos-mono" style="color: var(--pos-success);">₹{{ number_format($summary['cash_reconciliation']['cash_sales'], 2) }}</span>
+                            <span class="pos-mono" style="color: var(--pos-success);">£{{ number_format($summary['cash_reconciliation']['cash_sales'], 2) }}</span>
                         </div>
                         <div class="flex justify-between text-sm">
                             <span style="color: var(--pos-text-muted);">- Cash Refunds</span>
-                            <span class="pos-mono" style="color: var(--pos-danger);">₹{{ number_format($summary['cash_reconciliation']['cash_refunds'], 2) }}</span>
+                            <span class="pos-mono" style="color: var(--pos-danger);">£{{ number_format($summary['cash_reconciliation']['cash_refunds'], 2) }}</span>
                         </div>
                         <div class="flex justify-between text-sm font-semibold pt-1.5" style="border-top: 1px solid var(--pos-border);">
                             <span>Expected Cash</span>
-                            <span class="pos-mono" style="color: var(--pos-primary);">₹{{ number_format($summary['cash_reconciliation']['expected_cash'], 2) }}</span>
+                            <span class="pos-mono" style="color: var(--pos-primary);">£{{ number_format($summary['cash_reconciliation']['expected_cash'], 2) }}</span>
                         </div>
                     </div>
                 </div>
@@ -112,7 +112,7 @@
                         Actual Cash in Drawer
                     </label>
                     <div class="relative">
-                        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-lg font-medium" style="color: var(--pos-text-muted);">₹</span>
+                        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-lg font-medium" style="color: var(--pos-text-muted);">£</span>
                         <input
                             type="text"
                             x-ref="closingCashInput"
@@ -128,7 +128,7 @@
                     <div x-show="closingCash !== ''" class="mt-2 p-2.5 rounded-lg text-center"
                          :style="variance() === 0 ? 'background: #DCFCE7;' : (variance() > 0 ? 'background: #DBEAFE;' : 'background: #FEF2F2;')">
                         <span class="text-xs" :style="variance() === 0 ? 'color: #14532D;' : (variance() > 0 ? 'color: #1E3A5F;' : 'color: #7F1D1D;')">
-                            <span x-text="variance() === 0 ? 'Cash balanced ✓' : (variance() > 0 ? 'Cash OVER by ₹' + Math.abs(variance()).toFixed(2) : 'Cash SHORT by ₹' + Math.abs(variance()).toFixed(2))"></span>
+                            <span x-text="variance() === 0 ? 'Cash balanced ✓' : (variance() > 0 ? 'Cash OVER by £' + Math.abs(variance()).toFixed(2) : 'Cash SHORT by £' + Math.abs(variance()).toFixed(2))"></span>
                         </span>
                     </div>
                 </div>
@@ -189,7 +189,7 @@ function shiftClose() {
 
             const v = this.variance();
             if (Math.abs(v) > 100) {
-                if (!confirm(`Cash variance is ₹${Math.abs(v).toFixed(2)} ${v > 0 ? 'OVER' : 'SHORT'}. Are you sure?`)) {
+                if (!confirm(`Cash variance is £${Math.abs(v).toFixed(2)} ${v > 0 ? 'OVER' : 'SHORT'}. Are you sure?`)) {
                     return;
                 }
             }

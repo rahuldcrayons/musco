@@ -23,7 +23,7 @@
                     </svg>
                 </div>
                 <h1 class="text-lg sm:text-xl font-bold text-neutral-900">Returns Policy</h1>
-                <p class="text-[13px] text-neutral-600 mt-2">We want you to be completely satisfied with your purchase.</p>
+                <p class="text-[13px] text-neutral-600 mt-2">We want you to be completely satisfied with your purchase. Your statutory rights under the Consumer Rights Act 2015 are not affected.</p>
             </div>
 
             <!-- Return Policy -->
@@ -44,7 +44,7 @@
                         <svg class="w-4 h-4 text-success-500 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
                         </svg>
-                        In the same condition as received — unused and in working order
+                        In the same condition as received &mdash; unused and in working order
                     </li>
                     <li class="flex items-start gap-2 text-[13px] text-neutral-600">
                         <svg class="w-4 h-4 text-success-500 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">

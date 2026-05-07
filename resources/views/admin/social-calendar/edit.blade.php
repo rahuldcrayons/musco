@@ -8,18 +8,18 @@
         </div>
         <span class="inline-flex items-center px-3 py-1 text-sm font-medium rounded-full
             {{ match($post->status) {
-                'published' => 'bg-[#B76E79]/10 text-[#B76E79]',
-                'scheduled' => 'bg-[#B76E79]/5 text-[#B76E79]',
+                'published' => 'bg-[#202a40]/10 text-[#202a40]',
+                'scheduled' => 'bg-[#202a40]/5 text-[#202a40]',
                 'draft' => 'bg-gray-100 text-gray-600',
                 'failed','partially_failed' => 'bg-[#CC0C39]/10 text-[#CC0C39]',
-                default => 'bg-[#c29958]/10 text-[#c29958]',
+                default => 'bg-[#506282]/10 text-[#506282]',
             } }}">
             {{ ucfirst($post->status) }}
         </span>
     </div>
 
     @if(session('success'))
-        <div class="mb-4 px-4 py-3 bg-[#B76E79]/5 border border-[#B76E79]/20 text-[#B76E79] text-sm rounded-lg">{{ session('success') }}</div>
+        <div class="mb-4 px-4 py-3 bg-[#202a40]/5 border border-[#202a40]/20 text-[#202a40] text-sm rounded-lg">{{ session('success') }}</div>
     @endif
     @if(session('error'))
         <div class="mb-4 px-4 py-3 bg-[#CC0C39]/10 border border-[#CC0C39]/20 text-[#CC0C39] text-sm rounded-lg">{{ session('error') }}</div>
@@ -33,7 +33,7 @@
             @foreach($post->platform_results as $platform => $result)
             <div class="flex items-center justify-between text-sm">
                 <span class="font-medium">{{ \App\Models\SocialMediaPost::PLATFORMS[$platform] ?? $platform }}</span>
-                <span class="inline-flex items-center gap-1 {{ ($result['status'] ?? '') === 'success' ? 'text-[#B76E79]' : 'text-[#CC0C39]' }}">
+                <span class="inline-flex items-center gap-1 {{ ($result['status'] ?? '') === 'success' ? 'text-[#202a40]' : 'text-[#CC0C39]' }}">
                     @if(($result['status'] ?? '') === 'success')
                         <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd"/></svg>
                         Published (ID: {{ $result['id'] ?? '' }})
@@ -49,7 +49,7 @@
     @endif
 
     @if(in_array($post->status, ['published', 'publishing']))
-        <div class="bg-[#c29958]/10 border border-[#c29958]/20 text-[#c29958] text-sm rounded-lg px-4 py-3 mb-6">
+        <div class="bg-[#506282]/10 border border-[#506282]/20 text-[#506282] text-sm rounded-lg px-4 py-3 mb-6">
             This post has been published and cannot be edited.
         </div>
     @else
@@ -110,7 +110,7 @@
                         @foreach(['ig_post' => 'Post', 'ig_reel' => 'Reel', 'ig_story' => 'Story'] as $key => $label)
                         <label class="flex items-center gap-2 text-sm">
                             <input type="checkbox" name="platforms[]" value="{{ $key }}"
-                                   class="rounded border-gray-300 text-[#B76E79]"
+                                   class="rounded border-gray-300 text-[#202a40]"
                                    {{ in_array($key, old('platforms', $post->platforms ?? [])) ? 'checked' : '' }}>
                             {{ $label }}
                         </label>
@@ -119,7 +119,7 @@
                         @foreach(['fb_post' => 'Post', 'fb_reel' => 'Reel', 'fb_story' => 'Story'] as $key => $label)
                         <label class="flex items-center gap-2 text-sm">
                             <input type="checkbox" name="platforms[]" value="{{ $key }}"
-                                   class="rounded border-gray-300 text-[#B76E79]"
+                                   class="rounded border-gray-300 text-[#202a40]"
                                    {{ in_array($key, old('platforms', $post->platforms ?? [])) ? 'checked' : '' }}>
                             {{ $label }}
                         </label>
@@ -148,11 +148,11 @@
 
                 <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5 space-y-2">
                     <button type="submit" name="action" value="publish_now"
-                            class="w-full px-4 py-2 bg-[#B76E79] text-white text-sm font-medium rounded-lg hover:bg-[#B76E79]/90">
+                            class="w-full px-4 py-2 bg-[#202a40] text-white text-sm font-medium rounded-lg hover:bg-[#202a40]/90">
                         Publish Now
                     </button>
                     <button type="submit" name="action" value="schedule"
-                            class="w-full px-4 py-2 bg-[#B76E79]/80 text-white text-sm font-medium rounded-lg hover:bg-[#B76E79]/70">
+                            class="w-full px-4 py-2 bg-[#202a40]/80 text-white text-sm font-medium rounded-lg hover:bg-[#202a40]/70">
                         Schedule Post
                     </button>
                     <button type="submit" name="action" value="draft"

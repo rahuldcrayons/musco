@@ -49,7 +49,7 @@
 
                     <div>
                         <label class="form-label">Announcement Bar Text</label>
-                        <input type="text" name="announcement_text" value="{{ $settings['announcement_text'] }}" class="form-input" placeholder="e.g. Free Shipping on Orders Over ₹500!">
+                        <input type="text" name="announcement_text" value="{{ $settings['announcement_text'] }}" class="form-input" placeholder="e.g. Free Shipping on Orders Over £30!">
                         <p class="form-help">Displayed in the teal bar at the top of every page. Leave empty to hide.</p>
                     </div>
                 </div>

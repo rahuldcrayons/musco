@@ -6,7 +6,7 @@ Hi {{ $order->user?->first_name ?? $order->guest_name ?? 'Customer' }},
 Your payment has been successfully processed for your order. Here are the details:
 
 **Order Number:** #{{ $order->order_number }}
-**Payment Amount:** ₹{{ number_format($payment->amount, 2) }}
+**Payment Amount:** {{ format_price($payment->amount) }}
 **Payment Method:** {{ ucfirst($payment->method) }}
 **Transaction ID:** {{ $payment->gateway_transaction_id }}
 **Date:** {{ $payment->captured_at?->format('M d, Y \a\t h:i A') ?? $payment->authorized_at?->format('M d, Y \a\t h:i A') ?? now()->format('M d, Y \a\t h:i A') }}
@@ -36,5 +36,5 @@ Track Your Order
 Thank you for shopping with us!
 
 Warm regards,
-**MusCo**
+**Trendymus**
 @endcomponent

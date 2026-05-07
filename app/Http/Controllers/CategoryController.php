@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -12,30 +13,41 @@ class CategoryController extends Controller
 {
     public function index(): View
     {
+        $with = [
+            'children' => fn ($q) => $q->where('is_active', true)
+                ->withCount(['products' => fn ($q2) => $q2->where('is_active', true)]),
+            'products' => fn ($q) => $q->where('is_active', true)->with('primaryImage')->limit(1),
+        ];
+        $withCount = ['products' => fn ($q) => $q->where('is_active', true)];
+
         $categories = Category::query()
-            ->whereNull('parent_id')
             ->where('is_active', true)
-            ->with([
-                'children' => fn ($q) => $q->where('is_active', true)
-                    ->withCount(['products' => fn ($q2) => $q2->where('is_active', true)]),
-                'products' => fn ($q) => $q->where('is_active', true)->with('primaryImage')->limit(1),
-            ])
-            ->withCount(['products' => fn ($q) => $q->where('is_active', true)])
+            ->whereNull('parent_id')
+            ->with($with)
+            ->withCount($withCount)
             ->orderBy('position')
+            ->orderBy('name')
             ->get()
             ->map(function ($category) {
-                // Total products = direct + all children's products
                 $category->total_products_count = $category->products_count
                     + $category->children->sum('products_count');
                 return $category;
-            })
-            ->filter(fn ($c) => $c->total_products_count > 0);
+            });
 
         return view('categories.index', compact('categories'));
     }
 
-    public function show(Request $request, Category $category): View|JsonResponse
+    public function show(Request $request, Category $category): View|JsonResponse|RedirectResponse
     {
+        // Redirect legacy ID-based URLs to canonical slug URL
+        $routeParam = $request->route()->parameter('category', '');
+        if (is_object($routeParam)) {
+            $routeParam = $request->segment(2);
+        }
+        if (is_numeric($routeParam) && $category->slug) {
+            return redirect()->route('categories.show', $category, 301);
+        }
+
         abort_unless($category->is_active, 404);
 
         // Get all descendant category IDs
@@ -60,12 +72,12 @@ class CategoryController extends Controller
             }
         }
 
-        // Price filter
+        // Price filter — convert display currency value to stored (GBP base) before comparing
         if ($request->filled('min_price')) {
-            $query->where('price', '>=', $request->min_price);
+            $query->where('price', '>=', display_price_to_stored($request->min_price));
         }
         if ($request->filled('max_price')) {
-            $query->where('price', '<=', $request->max_price);
+            $query->where('price', '<=', display_price_to_stored($request->max_price));
         }
 
         // Attributes filter (dynamic based on category)
@@ -81,6 +93,16 @@ class CategoryController extends Controller
             }
         }
 
+        // Keyword search within category
+        if ($request->filled('q')) {
+            $q = $request->get('q');
+            $query->where(function ($sq) use ($q) {
+                $sq->where('name', 'like', "%{$q}%")
+                   ->orWhere('description', 'like', "%{$q}%")
+                   ->orWhere('short_description', 'like', "%{$q}%");
+            });
+        }
+
         // In stock filter
         if ($request->boolean('in_stock')) {
             $query->where('stock_quantity', '>', 0);
@@ -94,15 +116,15 @@ class CategoryController extends Controller
         // Sorting
         $sortBy = $request->get('sort', 'newest');
         match ($sortBy) {
-            'price_asc' => $query->orderBy('price', 'asc'),
-            'price_desc' => $query->orderBy('price', 'desc'),
-            'rating' => $query->orderBy('rating', 'desc'),
-            'bestselling' => $query->orderBy('sales_count', 'desc'),
-            'name' => $query->orderBy('name', 'asc'),
-            default => $query->orderBy('created_at', 'desc'),
+            'price_asc'   => $query->orderBy('price', 'asc')->orderBy('id', 'asc'),
+            'price_desc'  => $query->orderBy('price', 'desc')->orderBy('id', 'desc'),
+            'rating'      => $query->orderBy('rating', 'desc')->orderBy('id', 'desc'),
+            'bestselling' => $query->orderBy('sales_count', 'desc')->orderBy('id', 'desc'),
+            'name'        => $query->orderBy('name', 'asc')->orderBy('id', 'asc'),
+            default       => $query->orderByRaw('EXISTS(SELECT 1 FROM product_images WHERE product_images.product_id = products.id) DESC')->orderByRaw('CASE WHEN stock_quantity > 0 THEN 0 ELSE 1 END ASC')->orderBy('created_at', 'desc')->orderBy('id', 'desc'),
         };
 
-        $products = $query->paginate(24)->withQueryString();
+        $products = $query->paginate(12)->withQueryString();
 
         if ($request->ajax()) {
             $html = '';
@@ -121,7 +143,7 @@ class CategoryController extends Controller
         // Breadcrumbs
         $breadcrumbs = [];
         if ($category->parent) {
-            $breadcrumbs[] = ['label' => $category->parent->name, 'url' => route('category.show', $category->parent)];
+            $breadcrumbs[] = ['label' => $category->parent->name, 'url' => route('categories.show', $category->parent)];
         }
         $breadcrumbs[] = ['label' => $category->name, 'url' => null];
 

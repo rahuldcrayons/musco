@@ -11,7 +11,7 @@
     <style>
         body { font-family: 'DM Sans', sans-serif; }
         .form-input { display: block; width: 100%; padding: 10px 14px; font-size: 14px; border: 1px solid #d1d5db; border-radius: 10px; outline: none; transition: border-color 0.2s; background: #fff; }
-        .form-input:focus { border-color: #B76E79; box-shadow: 0 0 0 3px rgba(32,82,88,0.08); }
+        .form-input:focus { border-color: #202a40; box-shadow: 0 0 0 3px rgba(32,82,88,0.08); }
         .form-input.error { border-color: #ef4444; }
     </style>
 </head>
@@ -24,13 +24,13 @@
     </header>
 
     {{-- Hero --}}
-    <section style="background: linear-gradient(135deg, #B76E79 0%, #1a3f44 100%); padding:48px 20px; text-align:center; position:relative; overflow:hidden;">
+    <section style="background: linear-gradient(135deg, #202a40 0%, #1a3f44 100%); padding:48px 20px; text-align:center; position:relative; overflow:hidden;">
         <div style="position:absolute; top:-40px; right:-40px; width:200px; height:200px; background:rgba(255,255,255,0.03); border-radius:50%;"></div>
         <div style="position:absolute; bottom:-60px; left:-30px; width:160px; height:160px; background:rgba(255,255,255,0.03); border-radius:50%;"></div>
         <div style="max-width:600px; margin:0 auto; position:relative; z-index:1;">
-            <p style="color:#B76E79; font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:2px; margin:0 0 8px;">Partner with us</p>
-            <h1 style="color:#fff; font-size:32px; font-weight:700; margin:0 0 12px; line-height:1.2;">Earn Money with MusCo</h1>
-            <p style="color:rgba(255,255,255,0.7); font-size:15px; margin:0;">Get <span style="color:#B76E79; font-weight:700;">{{ config('affiliate.default_commission_rate', 5) }}% commission</span> on every sale you refer. No limits.</p>
+            <p style="color:#202a40; font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:2px; margin:0 0 8px;">Partner with us</p>
+            <h1 style="color:#fff; font-size:32px; font-weight:700; margin:0 0 12px; line-height:1.2;">Earn Money with Trendymus</h1>
+            <p style="color:rgba(255,255,255,0.7); font-size:15px; margin:0;">Get <span style="color:#202a40; font-weight:700;">{{ config('affiliate.default_commission_rate', 5) }}% commission</span> on every sale you refer. No limits.</p>
         </div>
     </section>
 
@@ -40,7 +40,7 @@
             @foreach([
                 ['icon' => '📝', 'title' => 'Sign Up Free', 'desc' => 'Fill the form below. Approval within 24 hours.'],
                 ['icon' => '🔗', 'title' => 'Share Your Link', 'desc' => 'Post your unique referral link on social media.'],
-                ['icon' => '💰', 'title' => 'Earn & Withdraw', 'desc' => 'Get 5% per sale. Withdraw to bank or UPI anytime.'],
+                ['icon' => '💰', 'title' => 'Earn & Withdraw', 'desc' => 'Get 5% per sale. Withdraw to bank or PayPal anytime.'],
             ] as $step)
                 <div style="background:#fff; border-radius:16px; padding:24px 20px; text-align:center; box-shadow:0 2px 12px rgba(0,0,0,0.06);">
                     <div style="font-size:28px; margin-bottom:10px;">{{ $step['icon'] }}</div>
@@ -58,7 +58,7 @@
             <p style="font-size:13px; color:#555555; margin:0 0 24px;">Free to join. Start earning today.</p>
 
             @if(session('success'))
-                <div style="margin-bottom:20px; padding:12px 16px; background:rgba(183,110,121,0.05); border:1px solid rgba(183,110,121,0.2); color:#B76E79; border-radius:10px; font-size:13px;">
+                <div style="margin-bottom:20px; padding:12px 16px; background:rgba(183,110,121,0.05); border:1px solid rgba(183,110,121,0.2); color:#202a40; border-radius:10px; font-size:13px;">
                     {{ session('success') }}
                 </div>
             @endif
@@ -87,7 +87,7 @@
 
                 <div style="margin-bottom:14px;">
                     <label style="display:block; font-size:12px; font-weight:500; color:#374151; margin-bottom:4px;">Phone</label>
-                    <input type="text" name="phone" value="{{ old('phone') }}" class="form-input @error('phone') error @enderror" placeholder="+91 XXXXX XXXXX">
+                    <input type="text" name="phone" value="{{ old('phone') }}" class="form-input @error('phone') error @enderror" placeholder="+44 XXXX XXXXXX">
                     @error('phone')<p style="font-size:11px; color:#ef4444; margin:4px 0 0;">{{ $message }}</p>@enderror
                 </div>
 
@@ -128,21 +128,21 @@
                 </div>
 
                 <label style="display:flex; align-items:flex-start; gap:8px; margin-bottom:20px; cursor:pointer;">
-                    <input type="checkbox" name="terms" required style="margin-top:2px; accent-color:#B76E79;">
+                    <input type="checkbox" name="terms" required style="margin-top:2px; accent-color:#202a40;">
                     <span style="font-size:11px; color:#555555; line-height:1.5;">
-                        By signing up, I agree to the <a href="{{ url('/terms') }}" target="_blank" style="color:#B76E79; text-decoration:underline;">Terms</a>
-                        and <a href="{{ url('/privacy') }}" target="_blank" style="color:#B76E79; text-decoration:underline;">Privacy Policy</a>.
+                        By signing up, I agree to the <a href="{{ url('/terms') }}" target="_blank" style="color:#202a40; text-decoration:underline;">Terms</a>
+                        and <a href="{{ url('/privacy') }}" target="_blank" style="color:#202a40; text-decoration:underline;">Privacy Policy</a>.
                     </span>
                 </label>
                 @error('terms')<p style="font-size:11px; color:#ef4444; margin:-14px 0 14px;">{{ $message }}</p>@enderror
 
-                <button type="submit" style="width:100%; padding:12px; background:#B76E79; color:#fff; font-size:14px; font-weight:600; border:none; border-radius:50px; cursor:pointer; transition:all 0.2s;">
+                <button type="submit" style="width:100%; padding:12px; background:#202a40; color:#fff; font-size:14px; font-weight:600; border:none; border-radius:50px; cursor:pointer; transition:all 0.2s;">
                     Create Affiliate Account
                 </button>
             </form>
 
             <p style="text-align:center; font-size:12px; color:#555555; margin:16px 0 0;">
-                Already have an account? <a href="{{ route('affiliate.login') }}" style="color:#B76E79; font-weight:600; text-decoration:none;">Sign in</a>
+                Already have an account? <a href="{{ route('affiliate.login') }}" style="color:#202a40; font-weight:600; text-decoration:none;">Sign in</a>
             </p>
         </div>
     </section>

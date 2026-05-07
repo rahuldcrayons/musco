@@ -66,7 +66,7 @@ class WishlistController extends Controller
                     'content_name' => $product->name,
                     'content_type' => 'product',
                     'value' => (float) $product->price,
-                    'currency' => 'INR',
+                    'currency' => 'GBP',
                 ] : null,
             ]);
         }

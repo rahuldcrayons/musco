@@ -4,10 +4,14 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Setting;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\View\View;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use PhpOffice\PhpSpreadsheet\IOFactory;
 
 class SettingController extends Controller
 {
@@ -21,17 +25,31 @@ class SettingController extends Controller
     public function updateGeneral(Request $request): RedirectResponse
     {
         $validated = $request->validate([
-            'site_name' => 'required|string|max:255',
-            'site_tagline' => 'nullable|string|max:255',
-            'site_email' => 'required|email',
-            'site_phone' => 'nullable|string|max:20',
-            'site_address' => 'nullable|string|max:500',
-            'timezone' => 'required|string',
-            'date_format' => 'required|string',
-            'currency' => 'required|string|size:3',
-            'currency_symbol' => 'required|string|max:5',
-            'currency_position' => 'required|in:before,after',
+            'site_name'          => 'required|string|max:255',
+            'site_tagline'       => 'nullable|string|max:255',
+            'site_email'         => 'required|email',
+            'site_phone'         => 'nullable|string|max:20',
+            'site_address'       => 'nullable|string|max:500',
+            'timezone'           => 'required|string',
+            'date_format'        => 'required|string',
+            'currency'           => 'required|string|size:3',
+            'currency_symbol'    => 'required|string|max:5',
+            'currency_position'  => 'required|in:before,after',
+            'exchange_rate_inr'  => 'nullable|numeric|min:0',
         ]);
+
+        // Save exchange rate: use manually entered value, or auto-fetch from live API
+        $code    = strtolower($request->input('currency', 'inr'));
+        $rateKey = 'exchange_rate_' . $code;
+        if ($code !== 'inr') {
+            $manualRate = $request->filled('exchange_rate_inr') ? (float) $request->input('exchange_rate_inr') : 0;
+            $rate = $manualRate > 0 ? $manualRate : $this->fetchLiveRate(strtoupper($code));
+            if ($rate > 0) {
+                Setting::updateOrCreate(['key' => $rateKey], ['value' => (string) $rate, 'group' => 'general']);
+                Cache::forget("setting.{$rateKey}");
+            }
+        }
+        unset($validated['exchange_rate_inr']);
 
         foreach ($validated as $key => $value) {
             Setting::updateOrCreate(
@@ -41,8 +59,11 @@ class SettingController extends Controller
             Cache::forget("setting.{$key}");
         }
         Cache::forget('currency_config');
+        Cache::forget('settings.all');
+        Cache::forget('settings.group.general');
 
-        return back()->with('success', 'General settings updated successfully.');
+        $rateMsg = ($code !== 'inr') ? ' Exchange rate auto-updated.' : '';
+        return back()->with('success', 'General settings updated successfully.' . $rateMsg);
     }
 
     public function payment(): View
@@ -55,14 +76,16 @@ class SettingController extends Controller
     public function updatePayment(Request $request): RedirectResponse
     {
         $validated = $request->validate([
-            'razorpay_key_id'     => 'nullable|string|max:255',
-            'razorpay_key_secret' => 'nullable|string|max:255',
-            'razorpay_mode'       => 'nullable|in:test,live',
-            'cod_instructions'    => 'nullable|string|max:1000',
+            'paypal_client_id'    => 'nullable|string|max:255',
+            'paypal_client_secret' => 'nullable|string|max:255',
+            'paypal_mode'         => 'nullable|in:sandbox,live',
+            'stripe_publishable_key' => 'nullable|string|max:255',
+            'stripe_secret_key'      => 'nullable|string|max:255',
+            'stripe_webhook_secret'  => 'nullable|string|max:255',
         ]);
 
         // Boolean toggles — use request->boolean() so unchecked checkboxes save '0'
-        foreach (['razorpay_enabled', 'upi_enabled', 'cod_enabled'] as $key) {
+        foreach (['paypal_enabled', 'stripe_enabled'] as $key) {
             Setting::updateOrCreate(
                 ['key' => $key],
                 ['value' => $request->boolean($key) ? '1' : '0', 'group' => 'payment']
@@ -71,7 +94,7 @@ class SettingController extends Controller
 
         // Credential / text fields — skip blank secrets to keep existing value
         foreach ($validated as $key => $value) {
-            if ($key === 'razorpay_key_secret' && empty($value)) {
+            if (in_array($key, ['paypal_client_secret', 'stripe_secret_key', 'stripe_webhook_secret']) && empty($value)) {
                 continue; // Keep existing secret
             }
             Setting::updateOrCreate(
@@ -229,6 +252,203 @@ class SettingController extends Controller
         return view('admin.settings.product-card', compact('settings'));
     }
 
+    public function testEmail(Request $request): JsonResponse
+    {
+        $request->validate(['email' => 'required|email']);
+
+        try {
+            $settings = Setting::where('group', 'email')->pluck('value', 'key');
+
+            config([
+                'mail.mailers.smtp.host'       => $settings['mail_host'] ?? config('mail.mailers.smtp.host'),
+                'mail.mailers.smtp.port'       => $settings['mail_port'] ?? config('mail.mailers.smtp.port'),
+                'mail.mailers.smtp.encryption' => $settings['mail_encryption'] ?? config('mail.mailers.smtp.encryption'),
+                'mail.mailers.smtp.username'   => $settings['mail_username'] ?? config('mail.mailers.smtp.username'),
+                'mail.mailers.smtp.password'   => $settings['mail_password'] ?? config('mail.mailers.smtp.password'),
+                'mail.from.address'            => $settings['mail_from_address'] ?? config('mail.from.address'),
+                'mail.from.name'               => $settings['mail_from_name'] ?? config('mail.from.name'),
+            ]);
+
+            \Illuminate\Support\Facades\Mail::raw(
+                'This is a test email from your store. SMTP is configured correctly!',
+                function ($message) use ($request, $settings) {
+                    $message->to($request->email)
+                        ->subject('Test Email — ' . ($settings['mail_from_name'] ?? 'Your Store'));
+                }
+            );
+
+            return response()->json(['success' => true, 'message' => 'Test email sent to ' . $request->email]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Failed: ' . $e->getMessage()]);
+        }
+    }
+
+    public function importTemplate(): \Symfony\Component\HttpFoundation\StreamedResponse
+    {
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        // Header row
+        $sheet->setCellValue('A1', 'group');
+        $sheet->setCellValue('B1', 'key');
+        $sheet->setCellValue('C1', 'value');
+
+        // Style header
+        $headerStyle = [
+            'font' => ['bold' => true, 'color' => ['rgb' => 'FFFFFF']],
+            'fill' => ['fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID, 'startColor' => ['rgb' => '374151']],
+        ];
+        $sheet->getStyle('A1:C1')->applyFromArray($headerStyle);
+        $sheet->getColumnDimension('A')->setWidth(20);
+        $sheet->getColumnDimension('B')->setWidth(35);
+        $sheet->getColumnDimension('C')->setWidth(50);
+
+        // Example rows
+        $examples = [
+            ['general', 'site_name', 'My Store'],
+            ['general', 'site_email', 'admin@example.com'],
+            ['email', 'mail_host', 'smtp.gmail.com'],
+            ['email', 'mail_port', '587'],
+            ['email', 'mail_encryption', 'tls'],
+            ['email', 'mail_username', 'you@gmail.com'],
+            ['email', 'mail_from_address', 'noreply@example.com'],
+            ['email', 'mail_from_name', 'My Store'],
+            ['seo', 'meta_title', 'My Store – Best Products'],
+            ['payment', 'stripe_enabled', '1'],
+        ];
+
+        $row = 2;
+        foreach ($examples as $example) {
+            $sheet->setCellValue("A{$row}", $example[0]);
+            $sheet->setCellValue("B{$row}", $example[1]);
+            $sheet->setCellValue("C{$row}", $example[2]);
+            $row++;
+        }
+
+        $writer = new Xlsx($spreadsheet);
+        $filename = 'settings-import-template.xlsx';
+
+        return response()->streamDownload(function () use ($writer) {
+            $writer->save('php://output');
+        }, $filename, [
+            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'Cache-Control' => 'max-age=0',
+        ]);
+    }
+
+    public function import(Request $request): JsonResponse
+    {
+        // Lift limits for large uploads at runtime
+        @ini_set('memory_limit', '512M');
+        @ini_set('max_execution_time', '300');
+
+        $request->validate([
+            'file' => [
+                'required',
+                'file',
+                function ($attribute, $value, $fail) {
+                    $ext = strtolower($value->getClientOriginalExtension());
+                    if (!in_array($ext, ['xlsx', 'xls'])) {
+                        $fail('Only .xlsx and .xls files are allowed.');
+                    }
+                },
+            ],
+        ]);
+
+        try {
+            $path = $request->file('file')->getRealPath();
+
+            // Use chunk read filter to keep memory low for large files
+            $reader = IOFactory::createReaderForFile($path);
+            $reader->setReadDataOnly(true);
+
+            // Read only first row to detect columns
+            $reader->setReadFilter(new class(1, 1) implements \PhpOffice\PhpSpreadsheet\Reader\IReadFilter {
+                public function __construct(private int $from, private int $to) {}
+                public function readCell(string $columnAddress, int $row, string $worksheetName = ''): bool {
+                    return $row >= $this->from && $row <= $this->to;
+                }
+            });
+
+            $headerSheet   = $reader->load($path)->getActiveSheet();
+            $headerRowData = $headerSheet->toArray(null, true, true, true)[1] ?? [];
+            $header        = array_map('strtolower', array_map('trim', array_map(fn($v) => (string) $v, $headerRowData)));
+
+            if (!in_array('group', $header) || !in_array('key', $header) || !in_array('value', $header)) {
+                return response()->json(['success' => false, 'message' => 'Invalid format. First row must have columns: group, key, value.']);
+            }
+
+            $colGroup = array_search('group', $header);
+            $colKey   = array_search('key', $header);
+            $colValue = array_search('value', $header);
+
+            // Now read all data rows in chunks of 500
+            $chunkSize     = 500;
+            $startRow      = 2;
+            $imported      = 0;
+            $skipped       = 0;
+            $importedRows  = [];
+            $protectedKeys = ['mail_password', 'paypal_client_secret', 'stripe_secret_key', 'stripe_webhook_secret'];
+            $hasMore       = true;
+
+            while ($hasMore) {
+                $endRow = $startRow + $chunkSize - 1;
+
+                $reader->setReadFilter(new class($startRow, $endRow) implements \PhpOffice\PhpSpreadsheet\Reader\IReadFilter {
+                    public function __construct(private int $from, private int $to) {}
+                    public function readCell(string $columnAddress, int $row, string $worksheetName = ''): bool {
+                        return $row >= $this->from && $row <= $this->to;
+                    }
+                });
+
+                $chunkSheet = $reader->load($path)->getActiveSheet();
+                $chunkRows  = $chunkSheet->toArray(null, true, true, true);
+
+                // Filter only rows in range (sheet toArray returns all cached rows)
+                $dataRows = array_filter($chunkRows, fn($i) => $i >= $startRow && $i <= $endRow, ARRAY_FILTER_USE_KEY);
+
+                if (empty($dataRows)) { break; }
+
+                foreach ($dataRows as $row) {
+                    $group = trim((string) ($row[$colGroup] ?? ''));
+                    $key   = trim((string) ($row[$colKey] ?? ''));
+                    $value = trim((string) ($row[$colValue] ?? ''));
+
+                    if (empty($group) || empty($key)) { $skipped++; continue; }
+                    if (in_array($key, $protectedKeys) && empty($value)) { $skipped++; continue; }
+
+                    Setting::updateOrCreate(
+                        ['key' => $key],
+                        ['value' => $value, 'group' => $group]
+                    );
+                    Cache::forget("setting.{$key}");
+                    $imported++;
+                    $importedRows[] = ['group' => $group, 'key' => $key, 'value' => $value];
+                }
+
+                $hasMore  = count($dataRows) >= $chunkSize;
+                $startRow = $endRow + 1;
+                unset($chunkSheet, $chunkRows, $dataRows);
+            }
+
+            if ($imported === 0 && $skipped === 0) {
+                return response()->json(['success' => false, 'message' => 'No data rows found in the file.']);
+            }
+
+            Cache::forget('settings.all');
+
+            return response()->json([
+                'success'  => true,
+                'message'  => "Import complete: {$imported} setting(s) updated.",
+                'detail'   => $skipped > 0 ? "{$skipped} row(s) skipped (empty key/group)." : null,
+                'imported' => $imported,
+                'rows'     => $importedRows,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Failed to read file: ' . $e->getMessage()]);
+        }
+    }
+
     public function updateProductCard(Request $request): RedirectResponse
     {
         $productCardFields = ['product_card_quick_view', 'product_card_add_to_cart', 'product_card_wishlist'];
@@ -250,5 +470,35 @@ class SettingController extends Controller
         }
 
         return back()->with('success', 'Settings updated successfully.');
+    }
+
+    /**
+     * Fetch live exchange rate for the given currency code (e.g. "USD" → 1.25 means 1 USD = 1.25 of base currency).
+     */
+    private function fetchLiveRate(string $code): float
+    {
+        try {
+            $json = @file_get_contents(
+                "https://open.er-api.com/v6/latest/GBP",
+                false,
+                stream_context_create(['http' => ['timeout' => 5]])
+            );
+            if ($json) {
+                $data = json_decode($json, true);
+                // data['rates'] gives "how many X per 1 GBP"
+                // We want "how many GBP per 1 X" → invert
+                if (!empty($data['rates'][$code])) {
+                    return round(1 / (float) $data['rates'][$code], 6);
+                }
+            }
+        } catch (\Throwable) {}
+
+        // Fallback hardcoded rates (GBP per 1 unit)
+        $fallback = [
+            'USD' => 1.27, 'EUR' => 1.17,
+            'AED' => 4.67, 'SGD' => 1.71, 'CAD' => 1.75,
+            'AUD' => 1.96, 'JPY' => 192.0,
+        ];
+        return $fallback[$code] ?? 0.0;
     }
 }

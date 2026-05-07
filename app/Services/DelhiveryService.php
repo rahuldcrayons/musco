@@ -17,7 +17,7 @@ class DelhiveryService
     public function __construct()
     {
         $this->token = Setting::get('delhivery_api_token', config('services.delhivery.token', ''));
-        $this->pickupLocation = Setting::get('delhivery_pickup_location', 'MusCo Warehouse');
+        $this->pickupLocation = Setting::get('delhivery_pickup_location', 'Trendymus Warehouse');
         $this->originPin = Setting::get('delhivery_origin_pin', '110085');
     }
 
@@ -120,6 +120,27 @@ class DelhiveryService
         return [];
     }
 
+    // ─── Fetch Registered Warehouses ─────────────────────────
+
+    public function fetchWarehouses(): array
+    {
+        try {
+            $response = $this->api('GET', '/api/backend/clientwarehouse/');
+            if ($response->successful()) {
+                $data = $response->json();
+                $warehouses = $data['warehouses'] ?? $data['results'] ?? (is_array($data) ? $data : []);
+                return array_map(fn($w) => [
+                    'name'    => $w['registered_name'] ?? $w['name'] ?? '',
+                    'city'    => $w['city'] ?? '',
+                    'pincode' => $w['pin'] ?? '',
+                ], array_filter($warehouses, fn($w) => !empty($w['registered_name'] ?? $w['name'] ?? '')));
+            }
+        } catch (\Exception $e) {
+            Log::error('Delhivery fetch warehouses failed: ' . $e->getMessage());
+        }
+        return [];
+    }
+
     // ─── Create Shipment ──────────────────────────────────────
 
     public function createShipment(array $shipmentData): array
@@ -138,24 +159,51 @@ class DelhiveryService
                 'data' => json_encode($payload),
             ]);
 
-            $data = $response->json();
+            $body = $response->body();
+            $data = $response->json() ?? [];
+
+            // Detect warehouse name mismatch specifically
+            if (str_contains($body, 'ClientWarehouse matching query does not exist')) {
+                $warehouses = $this->fetchWarehouses();
+                $names = array_column($warehouses, 'name');
+                Log::warning('Delhivery warehouse mismatch', [
+                    'configured_name' => $this->pickupLocation,
+                    'available'       => $names,
+                ]);
+
+                $suggestion = count($names) ? ' Available: ' . implode(', ', $names) . '.' : '';
+                return [
+                    'success' => false,
+                    'message' => "Pickup location \"{$this->pickupLocation}\" not found in your Delivery account.{$suggestion}",
+                ];
+            }
 
             if (!empty($data['packages'])) {
                 $pkg = $data['packages'][0];
+                $remarks = $pkg['remarks'] ?? [];
+                $remarkStr = is_array($remarks) ? implode('; ', $remarks) : (string) $remarks;
+
+                if (($pkg['status'] ?? '') === 'Fail') {
+                    return [
+                        'success' => false,
+                        'message' => $remarkStr ?: 'Shipment creation failed.',
+                        'remarks' => $remarks,
+                    ];
+                }
+
                 return [
-                    'success' => ($pkg['status'] ?? '') !== 'Fail',
+                    'success' => true,
                     'waybill' => $pkg['waybill'] ?? '',
                     'order_ref' => $pkg['refnum'] ?? '',
                     'status' => $pkg['status'] ?? 'Unknown',
-                    'remarks' => $pkg['remarks'] ?? [],
+                    'remarks' => $remarks,
                     'upload_wbn' => $data['upload_wbn'] ?? '',
                 ];
             }
 
-            return [
-                'success' => false,
-                'message' => $data['rmk'] ?? 'Unknown error',
-            ];
+            $rmk = $data['rmk'] ?? $body ?? 'Unknown error from Delhivery';
+            return ['success' => false, 'message' => $rmk];
+
         } catch (\Exception $e) {
             Log::error('Delhivery create shipment failed: ' . $e->getMessage());
             return ['success' => false, 'message' => $e->getMessage()];
@@ -192,14 +240,14 @@ class DelhiveryService
             'return_add' => Setting::get('delhivery_return_address', 'G-118, Deep Vihar, Rohini Sector 24'),
             'return_state' => Setting::get('delhivery_return_state', 'Delhi'),
             'return_country' => 'India',
-            'return_name' => Setting::get('delhivery_return_name', 'MusCo Returns'),
+            'return_name' => Setting::get('delhivery_return_name', 'Trendymus Returns'),
             'products_desc' => $order->items->pluck('product_name')->implode(', '),
             'hsn_code' => '',
             'cod_amount' => $isCod ? (string) $order->total : '0',
             'order_date' => $order->created_at->format('Y-m-d'),
             'total_amount' => (string) $order->total,
             'seller_add' => Setting::get('delhivery_return_address', 'G-118, Deep Vihar, Rohini Sector 24, Delhi'),
-            'seller_name' => config('app.name', 'MusCo'),
+            'seller_name' => config('app.name', 'Trendymus'),
             'seller_inv' => $order->invoice_number ?? $order->order_number,
             'quantity' => (string) $order->items->sum('quantity'),
             'waybill' => '',

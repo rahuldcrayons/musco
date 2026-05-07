@@ -17,8 +17,8 @@
 
             {{-- Header --}}
             <div class="text-center mb-8">
-                <div class="w-14 h-14 mx-auto rounded-full bg-[#c29958]/10 flex items-center justify-center mb-4">
-                    <svg class="w-7 h-7 text-[#c29958]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="w-14 h-14 mx-auto rounded-full bg-[#506282]/10 flex items-center justify-center mb-4">
+                    <svg class="w-7 h-7 text-[#506282]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                     </svg>
                 </div>
@@ -31,7 +31,7 @@
                 <h2 class="text-[15px] font-bold text-neutral-900 mb-2">What Are Cookies?</h2>
                 <div class="space-y-2.5 text-[13px] text-neutral-600 leading-relaxed">
                     <p>Cookies are small text files that are placed on your device when you visit a website. They are widely used to make websites work, improve user experience, and provide information to the website owner.</p>
-                    <p>Cookies are not harmful — they cannot carry viruses or install malware. They simply store small pieces of information that help the website remember your preferences and activity.</p>
+                    <p>Cookies are not harmful &mdash; they cannot carry viruses or install malware. They simply store small pieces of information that help the website remember your preferences and activity.</p>
                 </div>
             </div>
 
@@ -39,25 +39,25 @@
             <div class="bg-white border border-neutral-100 rounded-xl p-5 sm:p-6 mb-4">
                 <div class="flex items-center justify-between mb-3">
                     <h2 class="text-[15px] font-bold text-neutral-900">Essential Cookies</h2>
-                    <span class="text-xs font-medium px-2.5 py-0.5 rounded-full bg-[#B76E79]/10 text-[#B76E79]">Always Active</span>
+                    <span class="text-xs font-medium px-2.5 py-0.5 rounded-full bg-[#202a40]/10 text-[#202a40]">Always Active</span>
                 </div>
                 <p class="text-[13px] text-neutral-600 mb-3">Required for the website to function properly. These cannot be disabled.</p>
                 <ul class="space-y-2">
                     <li class="flex items-start gap-2 text-[13px] text-neutral-600">
                         <svg class="w-4 h-4 text-success-500 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                        Session cookies — keeping you logged in during your visit
+                        Session cookies &mdash; keeping you logged in during your visit
                     </li>
                     <li class="flex items-start gap-2 text-[13px] text-neutral-600">
                         <svg class="w-4 h-4 text-success-500 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                        Shopping cart contents — preserving your selected items
+                        Shopping cart contents &mdash; preserving your selected items
                     </li>
                     <li class="flex items-start gap-2 text-[13px] text-neutral-600">
                         <svg class="w-4 h-4 text-success-500 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                        CSRF security tokens — protecting you from cross-site attacks
+                        CSRF security tokens &mdash; protecting you from cross-site attacks
                     </li>
                     <li class="flex items-start gap-2 text-[13px] text-neutral-600">
                         <svg class="w-4 h-4 text-success-500 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                        Cookie consent preference — storing your cookie choices
+                        Cookie consent preference &mdash; storing your cookie choices
                     </li>
                 </ul>
             </div>
@@ -67,7 +67,7 @@
                 <div class="bg-white border border-neutral-100 rounded-xl p-5 sm:p-6">
                     <div class="flex items-center justify-between mb-3">
                         <h2 class="text-[15px] font-bold text-neutral-900">Functional Cookies</h2>
-                        <span class="text-xs font-medium px-2.5 py-0.5 rounded-full bg-[#B76E79]/10 text-[#222222]">Optional</span>
+                        <span class="text-xs font-medium px-2.5 py-0.5 rounded-full bg-[#202a40]/10 text-[#222222]">Optional</span>
                     </div>
                     <p class="text-[13px] text-neutral-600 mb-3">Enhance your experience by remembering preferences and settings.</p>
                     <ul class="space-y-1.5">
@@ -88,7 +88,7 @@
                 <div class="bg-white border border-neutral-100 rounded-xl p-5 sm:p-6">
                     <div class="flex items-center justify-between mb-3">
                         <h2 class="text-[15px] font-bold text-neutral-900">Analytics Cookies</h2>
-                        <span class="text-xs font-medium px-2.5 py-0.5 rounded-full bg-[#B76E79]/10 text-[#222222]">Optional</span>
+                        <span class="text-xs font-medium px-2.5 py-0.5 rounded-full bg-[#202a40]/10 text-[#222222]">Optional</span>
                     </div>
                     <p class="text-[13px] text-neutral-600 mb-3">Help us understand how visitors use our website so we can improve it.</p>
                     <ul class="space-y-1.5">
@@ -112,7 +112,7 @@
             <div class="bg-white border border-neutral-100 rounded-xl p-5 sm:p-6 mb-4">
                 <div class="flex items-center justify-between mb-3">
                     <h2 class="text-[15px] font-bold text-neutral-900">Marketing Cookies</h2>
-                    <span class="text-xs font-medium px-2.5 py-0.5 rounded-full bg-[#c29958]/10 text-[#c29958]">Optional</span>
+                    <span class="text-xs font-medium px-2.5 py-0.5 rounded-full bg-[#506282]/10 text-[#506282]">Optional</span>
                 </div>
                 <p class="text-[13px] text-neutral-600 mb-3">Used to show relevant advertisements and measure campaign effectiveness.</p>
                 <ul class="space-y-2">
@@ -135,7 +135,7 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                 <div class="bg-white border border-neutral-100 rounded-xl p-5 sm:p-6">
                     <h2 class="text-[15px] font-bold text-neutral-900 mb-2">Third-Party Cookies</h2>
-                    <p class="text-[13px] text-neutral-600 leading-relaxed">Some cookies are set by third-party services on our pages. We do not control these cookies — please refer to each third party's privacy policy for details on how they collect and use data.</p>
+                    <p class="text-[13px] text-neutral-600 leading-relaxed">Some cookies are set by third-party services on our pages. We do not control these cookies &mdash; please refer to each third party's privacy policy for details on how they collect and use data.</p>
                 </div>
                 <div class="bg-white border border-neutral-100 rounded-xl p-5 sm:p-6">
                     <h2 class="text-[15px] font-bold text-neutral-900 mb-2">Managing Cookies</h2>

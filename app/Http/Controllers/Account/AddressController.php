@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Account;
 
 use App\Http\Controllers\Controller;
 use App\Models\UserAddress;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -22,17 +23,17 @@ class AddressController extends Controller
         return view('account.addresses.create');
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request): RedirectResponse|JsonResponse
     {
         $request->validate([
             'name' => 'required|string|max:255',
             'phone' => 'required|string|max:20',
-            'address_line1' => 'required|string|max:255',
-            'address_line2' => 'nullable|string|max:255',
+            'address_line_1' => 'nullable|string|max:255',
+            'address_line_2' => 'nullable|string|max:255',
             'city' => 'required|string|max:100',
             'state' => 'required|string|max:100',
             'postal_code' => 'required|string|max:20',
-            'country' => 'required|string|max:2',
+            'country' => 'nullable|string|max:2',
             'label' => 'nullable|string|max:50',
             'is_default' => 'boolean',
         ]);
@@ -43,12 +44,12 @@ class AddressController extends Controller
             'first_name' => $nameParts[0],
             'last_name' => $nameParts[1] ?? '',
             'phone' => $request->phone,
-            'address_line_1' => $request->address_line1,
-            'address_line_2' => $request->address_line2,
+            'address_line_1' => $request->input('address_line_1', ''),
+            'address_line_2' => $request->input('address_line_2', ''),
             'city' => $request->city,
             'state' => $request->state,
             'postal_code' => $request->postal_code,
-            'country' => $request->country,
+            'country' => $request->input('country', 'IN'),
             'label' => $request->label,
             'is_default' => $request->boolean('is_default'),
         ];
@@ -63,7 +64,11 @@ class AddressController extends Controller
             $data['is_default'] = true;
         }
 
-        $request->user()->addresses()->create($data);
+        $address = $request->user()->addresses()->create($data);
+
+        if ($request->wantsJson()) {
+            return response()->json(['success' => true, 'address' => $address]);
+        }
 
         return redirect()->route('account.addresses.index')
             ->with('success', 'Address added successfully.');
@@ -83,12 +88,12 @@ class AddressController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'phone' => 'required|string|max:20',
-            'address_line1' => 'required|string|max:255',
-            'address_line2' => 'nullable|string|max:255',
+            'address_line_1' => 'nullable|string|max:255',
+            'address_line_2' => 'nullable|string|max:255',
             'city' => 'required|string|max:100',
             'state' => 'required|string|max:100',
             'postal_code' => 'required|string|max:20',
-            'country' => 'required|string|max:2',
+            'country' => 'nullable|string|max:2',
             'label' => 'nullable|string|max:50',
             'is_default' => 'boolean',
         ]);
@@ -99,12 +104,12 @@ class AddressController extends Controller
             'first_name' => $nameParts[0],
             'last_name' => $nameParts[1] ?? '',
             'phone' => $request->phone,
-            'address_line_1' => $request->address_line1,
-            'address_line_2' => $request->address_line2,
+            'address_line_1' => $request->input('address_line_1', ''),
+            'address_line_2' => $request->input('address_line_2', ''),
             'city' => $request->city,
             'state' => $request->state,
             'postal_code' => $request->postal_code,
-            'country' => $request->country,
+            'country' => $request->input('country', 'IN'),
             'label' => $request->label,
             'is_default' => $request->boolean('is_default'),
         ];

@@ -13,7 +13,7 @@ class WhatsAppWebhookController extends Controller
      */
     public function verify(Request $request): Response
     {
-        $verifyToken = config('services.whatsapp.verify_token', 'musco_whatsapp_verify_2026');
+        $verifyToken = config('services.whatsapp.verify_token', 'trendymus_whatsapp_verify_2026');
         $mode = $request->query('hub_mode');
         $token = $request->query('hub_verify_token');
         $challenge = $request->query('hub_challenge');
@@ -118,13 +118,13 @@ class WhatsAppWebhookController extends Controller
         $reply = null;
 
         if (in_array($textLower, ['hi', 'hello', 'hey', 'hii'])) {
-            $reply = "Hello! 👋 Welcome to MusCo! 🛍️\n\nHow can we help you today?\n\n1️⃣ Track my order\n2️⃣ Browse products\n3️⃣ Video review cashback\n4️⃣ Talk to support\n\nReply with a number or type your query!";
+            $reply = "Hello! 👋 Welcome to Trendymus! 🛍️\n\nHow can we help you today?\n\n1️⃣ Track my order\n2️⃣ Browse products\n3️⃣ Video review cashback\n4️⃣ Talk to support\n\nReply with a number or type your query!";
         } elseif (str_contains($textLower, 'track') || str_contains($textLower, 'order')) {
-            $reply = "📦 To track your order, please share your Order ID (e.g., ORD-20260318001).\n\nYou can also track at: https://musco.com/orders";
+            $reply = "📦 To track your order, please share your Order ID (e.g., ORD-20260318001).\n\nYou can also track at: https://trendymus.com/orders";
         } elseif (str_contains($textLower, 'video') || str_contains($textLower, 'cashback') || str_contains($textLower, '100')) {
-            $reply = "🎥 *Video Review ₹100 Cashback Offer!*\n\n1. Record a 30-60 sec video of your MusCo product\n2. Send the video here on WhatsApp\n3. Get ₹100 cashback in your UPI within 48 hours!\n\nPlease send your video and your UPI ID. 💰";
+            $reply = "🎥 *Video Review £1 Cashback Offer!*\n\n1. Record a 30-60 sec video of your Trendymus product\n2. Send the video here on WhatsApp\n3. Get £1 store credit within 48 hours!\n\nPlease send your video. 💰";
         } elseif (str_contains($textLower, 'product') || str_contains($textLower, 'shop') || str_contains($textLower, 'buy')) {
-            $reply = "🛍️ Browse our products at:\n👉 https://musco.com/products\n\n🔥 *Navratri Special: Extra 5% OFF at checkout!*\n\nAlso available on Amazon:\n👉 https://www.amazon.in/stores/MUSCO";
+            $reply = "🛍️ Browse our products at:\n👉 https://trendymus.com/products\n\n✨ *Free UK delivery on orders over £30!*";
         }
 
         if ($reply) {

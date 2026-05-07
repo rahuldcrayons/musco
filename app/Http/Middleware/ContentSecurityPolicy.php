@@ -18,7 +18,7 @@ class ContentSecurityPolicy
             "style-src 'self' 'unsafe-inline' https://fonts.bunny.net https://fonts.googleapis.com",
             "img-src 'self' data: blob: https: http:",
             "font-src 'self' https://fonts.bunny.net https://fonts.gstatic.com",
-            "connect-src 'self' https://www.google-analytics.com https://www.facebook.com https://graph.facebook.com https://graph.instagram.com https://api.razorpay.com https://api.postalpincode.in https://track.delhivery.com",
+            "connect-src 'self' https://www.google-analytics.com https://www.facebook.com https://graph.facebook.com https://graph.instagram.com https://js.stripe.com https://www.paypal.com",
             "frame-src 'self' https://www.instagram.com https://api.razorpay.com https://checkout.razorpay.com https://*.razorpay.com https://www.google.com https://accounts.google.com https://www.facebook.com",
             "media-src 'self' https: blob:",
             "object-src 'none'",

@@ -53,7 +53,7 @@
         <div class="w-full max-w-sm">
             {{-- Logo + Header --}}
             <div class="mb-8">
-                <span class="text-3xl font-bold tracking-tight mb-4 block" style="font-family:'Outfit',sans-serif; color:#B76E79;">Mus<span style="color:#2b2b2b;">Co</span></span>
+                <span class="text-3xl font-bold tracking-tight mb-4 block" style="font-family:'Outfit',sans-serif; color:#202a40;">Mus<span style="color:#2b2b2b;">Co</span></span>
                 <h2 class="text-2xl font-bold text-neutral-900 mb-1">Sign in</h2>
                 <p class="text-neutral-600 text-sm">Enter your credentials to access the delivery panel</p>
             </div>

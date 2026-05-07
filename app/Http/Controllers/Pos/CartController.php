@@ -246,7 +246,7 @@ class CartController extends Controller
         // Check minimum order
         if ($coupon->min_order_amount && $cart['subtotal'] < $coupon->min_order_amount) {
             return response()->json([
-                'message' => 'Minimum order of ₹' . number_format($coupon->min_order_amount) . ' required.',
+                'message' => 'Minimum order of £' . number_format($coupon->min_order_amount, 2) . ' required.',
             ], 422);
         }
 

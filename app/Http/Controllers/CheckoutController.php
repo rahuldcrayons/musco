@@ -128,135 +128,407 @@ class CheckoutController extends Controller
 
     public function process(Request $request): RedirectResponse
     {
+        // One-click checkout fallback (should not normally be called for PayPal/Stripe redirect flows)
+        return redirect()->route('checkout.index');
+    }
+
+    // ─── PayPal ──────────────────────────────────────────────────────────────
+
+    public function createPaypalOrder(Request $request): JsonResponse
+    {
+        $this->logActivity('payment_initiated', ['method' => 'paypal'], $request);
+        $isGuest = !auth()->check();
+
+        $validated = $this->validateCheckoutForm($request);
+
+        $cart = $this->getCart(['items.product', 'items.variant', 'coupon']);
+        if (!$cart || $cart->items->isEmpty()) {
+            return response()->json(['error' => 'Your cart is empty.'], 422);
+        }
+
+        foreach ($cart->items as $item) {
+            $available = $item->variant_id ? $item->variant->stock_quantity : $item->product->stock_quantity;
+            if ($available < $item->quantity) {
+                return response()->json(['error' => "\"{$item->product->name}\" only has {$available} item(s) in stock."], 422);
+            }
+        }
+
+        $totals = $this->calculateTotals($cart);
+        $addresses = $this->buildAddressSnapshots($validated, $isGuest);
+
+        $accessToken = $this->getPaypalToken();
+        if (!$accessToken) {
+            return response()->json(['error' => 'Payment service unavailable. Please try again.'], 503);
+        }
+
+        $baseUrl = config('services.paypal.mode', 'live') === 'sandbox'
+            ? 'https://api-m.sandbox.paypal.com'
+            : 'https://api-m.paypal.com';
+
+        $paypalResponse = Http::timeout(15)->withToken($accessToken)
+            ->post("{$baseUrl}/v2/checkout/orders", [
+                'intent' => 'CAPTURE',
+                'purchase_units' => [[
+                    'amount' => [
+                        'currency_code' => 'GBP',
+                        'value' => number_format($totals['finalTotal'], 2, '.', ''),
+                    ],
+                    'description' => 'Trendymus Order',
+                ]],
+                'application_context' => [
+                    'return_url' => route('checkout.paypal.success'),
+                    'cancel_url' => route('checkout.failed'),
+                    'brand_name' => 'Trendymus',
+                    'landing_page' => 'LOGIN',
+                    'user_action' => 'PAY_NOW',
+                ],
+            ]);
+
+        if ($paypalResponse->failed()) {
+            Log::error('PayPal order creation failed', ['response' => $paypalResponse->json()]);
+            return response()->json(['error' => 'Could not create PayPal order. Please try again.'], 500);
+        }
+
+        $paypalOrder = $paypalResponse->json();
+        $approvalUrl = collect($paypalOrder['links'] ?? [])->firstWhere('rel', 'approve')['href'] ?? null;
+
+        if (!$approvalUrl) {
+            return response()->json(['error' => 'Could not get PayPal approval URL.'], 500);
+        }
+
+        session()->put('paypal_checkout', [
+            'paypal_order_id' => $paypalOrder['id'],
+            'validated'       => $validated,
+            'final_total'     => $totals['finalTotal'],
+            'total_discount'  => $totals['totalDiscount'],
+            'shipping_fee'    => $totals['shippingFee'],
+            'cart_subtotal'   => $cart->subtotal,
+            'is_guest'        => $isGuest,
+            'addresses'       => $addresses,
+        ]);
+
+        return response()->json(['approval_url' => $approvalUrl]);
+    }
+
+    public function paypalReturn(Request $request): RedirectResponse
+    {
+        $token = $request->query('token');
+        $checkoutData = session('paypal_checkout');
+
+        if (!$checkoutData || !$token) {
+            return redirect()->route('checkout.failed');
+        }
+
+        // Idempotency check
+        $existingOrder = Order::where('paypal_order_id', $token)->first();
+        if ($existingOrder) {
+            session()->forget('paypal_checkout');
+            session()->put('guest_order_id', $existingOrder->id);
+            return redirect()->route('checkout.success', $existingOrder);
+        }
+
+        $accessToken = $this->getPaypalToken();
+        if (!$accessToken) {
+            return redirect()->route('checkout.failed');
+        }
+
+        $baseUrl = config('services.paypal.mode', 'live') === 'sandbox'
+            ? 'https://api-m.sandbox.paypal.com'
+            : 'https://api-m.paypal.com';
+
+        $captureResponse = Http::timeout(15)->withToken($accessToken)
+            ->post("{$baseUrl}/v2/checkout/orders/{$token}/capture", []);
+
+        if ($captureResponse->failed() || ($captureResponse->json('status') !== 'COMPLETED')) {
+            Log::error('PayPal capture failed', ['token' => $token, 'response' => $captureResponse->json()]);
+            return redirect()->route('checkout.failed');
+        }
+
+        $cart = $this->getCart(['items.product', 'items.variant', 'coupon']);
+        if (!$cart || $cart->items->isEmpty()) {
+            return redirect()->route('checkout.failed');
+        }
+
+        try {
+            $order = $this->createOrderInDb(
+                $cart,
+                $checkoutData['validated'],
+                $checkoutData['is_guest'],
+                $checkoutData['addresses'],
+                $checkoutData['final_total'],
+                $checkoutData['total_discount'],
+                $checkoutData['shipping_fee'],
+                'paypal',
+                'paid',
+                ['paypal_order_id' => $token]
+            );
+        } catch (\Exception $e) {
+            Log::error('Order creation after PayPal failed', ['error' => $e->getMessage()]);
+            return redirect()->route('checkout.failed');
+        }
+
+        session()->forget('paypal_checkout');
+        $this->markAbandonedRecovered($cart, $order);
+
+        if ($checkoutData['is_guest']) {
+            session()->put('guest_order_id', $order->id);
+            $this->createAccountForGuest($order, $checkoutData['validated']);
+        } else {
+            \App\Models\UserCheckoutPreference::updateOrCreate(
+                ['user_id' => auth()->id()],
+                ['default_shipping_address_id' => $checkoutData['addresses']['shipping_id'], 'default_payment_method' => 'paypal', 'same_as_shipping' => true, 'enable_one_click' => true]
+            );
+        }
+
+        OrderPlaced::dispatch($order, 'web');
+
+        return redirect()->route('checkout.success', $order);
+    }
+
+    // ─── Stripe ──────────────────────────────────────────────────────────────
+
+    public function createStripeSession(Request $request): JsonResponse
+    {
+        $this->logActivity('payment_initiated', ['method' => 'stripe'], $request);
+        $isGuest = !auth()->check();
+
+        $validated = $this->validateCheckoutForm($request);
+
+        $cart = $this->getCart(['items.product', 'items.variant', 'coupon']);
+        if (!$cart || $cart->items->isEmpty()) {
+            return response()->json(['error' => 'Your cart is empty.'], 422);
+        }
+
+        foreach ($cart->items as $item) {
+            $available = $item->variant_id ? $item->variant->stock_quantity : $item->product->stock_quantity;
+            if ($available < $item->quantity) {
+                return response()->json(['error' => "\"{$item->product->name}\" only has {$available} item(s) in stock."], 422);
+            }
+        }
+
+        $totals = $this->calculateTotals($cart);
+        $addresses = $this->buildAddressSnapshots($validated, $isGuest);
+        $sessionKey = uniqid('s_', true);
+        $customerEmail = $isGuest ? ($validated['guest_email'] ?? null) : auth()->user()?->email;
+
+        $payload = [
+            'mode' => 'payment',
+            'line_items[0][price_data][currency]' => 'gbp',
+            'line_items[0][price_data][unit_amount]' => (int) round($totals['finalTotal'] * 100),
+            'line_items[0][price_data][product_data][name]' => 'Trendymus Order',
+            'line_items[0][price_data][product_data][description]' => $cart->items->count() . ' item(s)',
+            'line_items[0][quantity]' => 1,
+            'success_url' => route('checkout.stripe.success') . '?session_id={CHECKOUT_SESSION_ID}&key=' . $sessionKey,
+            'cancel_url' => route('checkout.failed'),
+        ];
+        if ($customerEmail) {
+            $payload['customer_email'] = $customerEmail;
+        }
+
+        $stripeResponse = Http::timeout(15)
+            ->withBasicAuth(config('services.stripe.secret'), '')
+            ->asForm()
+            ->post('https://api.stripe.com/v1/checkout/sessions', $payload);
+
+        if ($stripeResponse->failed()) {
+            Log::error('Stripe session creation failed', ['response' => $stripeResponse->json()]);
+            return response()->json(['error' => 'Could not create payment session. Please try again.'], 500);
+        }
+
+        $stripeSession = $stripeResponse->json();
+        $checkoutUrl = $stripeSession['url'] ?? null;
+
+        if (!$checkoutUrl) {
+            return response()->json(['error' => 'Could not get payment URL.'], 500);
+        }
+
+        session()->put("stripe_{$sessionKey}", [
+            'stripe_session_id' => $stripeSession['id'],
+            'validated'         => $validated,
+            'final_total'       => $totals['finalTotal'],
+            'total_discount'    => $totals['totalDiscount'],
+            'shipping_fee'      => $totals['shippingFee'],
+            'cart_subtotal'     => $cart->subtotal,
+            'is_guest'          => $isGuest,
+            'addresses'         => $addresses,
+        ]);
+
+        return response()->json(['checkout_url' => $checkoutUrl]);
+    }
+
+    public function stripeSuccess(Request $request): RedirectResponse
+    {
+        $sessionId = $request->query('session_id');
+        $sessionKey = $request->query('key');
+        $checkoutData = session("stripe_{$sessionKey}");
+
+        if (!$sessionId || !$checkoutData) {
+            return redirect()->route('checkout.failed');
+        }
+
+        // Idempotency check
+        $existingOrder = Order::where('stripe_session_id', $sessionId)->first();
+        if ($existingOrder) {
+            session()->forget("stripe_{$sessionKey}");
+            session()->put('guest_order_id', $existingOrder->id);
+            return redirect()->route('checkout.success', $existingOrder);
+        }
+
+        $stripeResponse = Http::timeout(15)
+            ->withBasicAuth(config('services.stripe.secret'), '')
+            ->get("https://api.stripe.com/v1/checkout/sessions/{$sessionId}");
+
+        if ($stripeResponse->failed() || $stripeResponse->json('payment_status') !== 'paid') {
+            Log::error('Stripe payment verification failed', ['session_id' => $sessionId, 'response' => $stripeResponse->json()]);
+            return redirect()->route('checkout.failed');
+        }
+
+        $stripeSession = $stripeResponse->json();
+
+        $cart = $this->getCart(['items.product', 'items.variant', 'coupon']);
+        if (!$cart || $cart->items->isEmpty()) {
+            return redirect()->route('checkout.failed');
+        }
+
+        try {
+            $order = $this->createOrderInDb(
+                $cart,
+                $checkoutData['validated'],
+                $checkoutData['is_guest'],
+                $checkoutData['addresses'],
+                $checkoutData['final_total'],
+                $checkoutData['total_discount'],
+                $checkoutData['shipping_fee'],
+                'stripe',
+                'paid',
+                [
+                    'stripe_session_id'      => $sessionId,
+                    'stripe_payment_intent'  => $stripeSession['payment_intent'] ?? null,
+                ]
+            );
+        } catch (\Exception $e) {
+            Log::error('Order creation after Stripe failed', ['error' => $e->getMessage()]);
+            return redirect()->route('checkout.failed');
+        }
+
+        session()->forget("stripe_{$sessionKey}");
+        $this->markAbandonedRecovered($cart, $order);
+
+        if ($checkoutData['is_guest']) {
+            session()->put('guest_order_id', $order->id);
+            $this->createAccountForGuest($order, $checkoutData['validated']);
+        } else {
+            \App\Models\UserCheckoutPreference::updateOrCreate(
+                ['user_id' => auth()->id()],
+                ['default_shipping_address_id' => $checkoutData['addresses']['shipping_id'], 'default_payment_method' => 'stripe', 'same_as_shipping' => true, 'enable_one_click' => true]
+            );
+        }
+
+        OrderPlaced::dispatch($order, 'web');
+
+        return redirect()->route('checkout.success', $order);
+    }
+
+    // ─── Helpers ─────────────────────────────────────────────────────────────
+
+    private function validateCheckoutForm(Request $request): array
+    {
         $isGuest = !auth()->check();
 
         $rules = [
-            'same_billing_address' => ['nullable', 'boolean'],
-            'payment_method' => ['required', 'string', 'in:cod,partial_pay,razorpay,upi'],
-            'notes' => ['nullable', 'string', 'max:500'],
+            'payment_method' => ['required', 'string', 'in:paypal,stripe'],
+            'notes'          => ['nullable', 'string', 'max:500'],
         ];
 
         if ($isGuest) {
-            $rules['guest_email'] = ['required', 'email', 'max:255'];
-            $rules['guest_name'] = ['required', 'string', 'max:255'];
-            $rules['guest_phone'] = ['required', 'string', 'regex:/^[6-9]\d{9}$/'];
-            $rules['shipping_name'] = ['required', 'string', 'max:255'];
-            // shipping_phone uses guest_phone
+            $rules['guest_email']             = ['required', 'email', 'max:255'];
+            $rules['guest_name']              = ['required', 'string', 'max:255'];
+            $rules['guest_phone']             = ['required', 'string', 'max:20'];
+            $rules['shipping_name']           = ['required', 'string', 'max:255'];
             $rules['shipping_address_line_1'] = ['required', 'string', 'max:255'];
             $rules['shipping_address_line_2'] = ['nullable', 'string', 'max:255'];
-            $rules['shipping_city'] = ['required', 'string', 'max:100'];
-            $rules['shipping_state'] = ['required', 'string', 'max:100'];
-            $rules['shipping_postal_code'] = ['required', 'string', 'max:10'];
+            $rules['shipping_city']           = ['required', 'string', 'max:100'];
+            $rules['shipping_state']          = ['nullable', 'string', 'max:100'];
+            $rules['shipping_postal_code']    = ['required', 'string', 'max:10'];
         } else {
             $rules['shipping_address_id'] = ['required', 'exists:user_addresses,id'];
-            $rules['billing_address_id'] = ['nullable', 'exists:user_addresses,id'];
+            $rules['billing_address_id']  = ['nullable', 'exists:user_addresses,id'];
+            $rules['same_billing_address'] = ['nullable', 'boolean'];
         }
 
-        $validated = $request->validate($rules);
+        return $request->validate($rules);
+    }
 
-        $cart = $this->getCart(['items.product', 'items.variant', 'coupon']);
-
-        if (!$cart || $cart->items->isEmpty()) {
-            return redirect()->route('cart.index')->with('error', 'Your cart is empty.');
-        }
-
-        // Re-validate stock
-        foreach ($cart->items as $item) {
-            $available = $item->variant_id
-                ? $item->variant->stock_quantity
-                : $item->product->stock_quantity;
-
-            if ($available < $item->quantity) {
-                return redirect()->route('cart.index')
-                    ->with('error', "\"{$item->product->name}\" only has {$available} item(s) in stock. Please update your cart.");
-            }
-        }
-
-        // Build address snapshots
+    private function buildAddressSnapshots(array $validated, bool $isGuest): array
+    {
         if ($isGuest) {
-            $shippingSnapshot = [
-                'name' => $validated['shipping_name'],
-                'phone' => $validated['guest_phone'] ?? '',
-                'address_line_1' => $validated['shipping_address_line_1'],
-                'address_line_2' => $validated['shipping_address_line_2'] ?? '',
-                'city' => $validated['shipping_city'],
-                'state' => $validated['shipping_state'],
-                'postal_code' => $validated['shipping_postal_code'],
-                'country' => 'India',
+            $snapshot = [
+                'name'             => $validated['shipping_name'],
+                'phone'            => $validated['guest_phone'] ?? '',
+                'address_line_1'   => $validated['shipping_address_line_1'],
+                'address_line_2'   => $validated['shipping_address_line_2'] ?? '',
+                'city'             => $validated['shipping_city'],
+                'state'            => $validated['shipping_state'] ?? '',
+                'postal_code'      => $validated['shipping_postal_code'],
+                'country'          => 'United Kingdom',
             ];
-            $billingSnapshot = $shippingSnapshot;
-            $shippingAddressId = null;
-            $billingAddressId = null;
-        } else {
-            $shippingAddress = UserAddress::where('user_id', auth()->id())->findOrFail($validated['shipping_address_id']);
-            $billingAddressId = $validated['same_billing_address']
-                ? $shippingAddress->id
-                : ($validated['billing_address_id'] ?? $shippingAddress->id);
-            $billingAddress = UserAddress::where('user_id', auth()->id())->findOrFail($billingAddressId);
+            return ['shipping' => $snapshot, 'billing' => $snapshot, 'shipping_id' => null, 'billing_id' => null];
+        }
 
-            $shippingSnapshot = [
-                'name' => $shippingAddress->full_name,
-                'phone' => $shippingAddress->phone,
-                'address_line_1' => $shippingAddress->address_line_1,
-                'address_line_2' => $shippingAddress->address_line_2,
-                'city' => $shippingAddress->city,
-                'state' => $shippingAddress->state,
-                'postal_code' => $shippingAddress->postal_code,
-                'country' => $shippingAddress->country,
-            ];
-            $billingSnapshot = [
+        $shippingAddress = UserAddress::where('user_id', auth()->id())->findOrFail($validated['shipping_address_id']);
+        $billingId = ($validated['same_billing_address'] ?? true)
+            ? $shippingAddress->id
+            : ($validated['billing_address_id'] ?? $shippingAddress->id);
+        $billingAddress = UserAddress::where('user_id', auth()->id())->findOrFail($billingId);
+
+        return [
+            'shipping' => [
+                'name' => $shippingAddress->full_name, 'phone' => $shippingAddress->phone,
+                'address_line_1' => $shippingAddress->address_line_1, 'address_line_2' => $shippingAddress->address_line_2,
+                'city' => $shippingAddress->city, 'state' => $shippingAddress->state,
+                'postal_code' => $shippingAddress->postal_code, 'country' => $shippingAddress->country,
+            ],
+            'billing' => [
                 'name' => $billingAddress->full_name,
                 'address_line_1' => $billingAddress->address_line_1,
-                'city' => $billingAddress->city,
-                'state' => $billingAddress->state,
-                'postal_code' => $billingAddress->postal_code,
-                'country' => $billingAddress->country,
-            ];
-            $shippingAddressId = $shippingAddress->id;
-            $billingAddressId = $billingAddress->id;
+                'city' => $billingAddress->city, 'state' => $billingAddress->state,
+                'postal_code' => $billingAddress->postal_code, 'country' => $billingAddress->country,
+            ],
+            'shipping_id' => $shippingAddress->id,
+            'billing_id'  => $billingId,
+        ];
+    }
+
+    private function calculateTotals(Cart $cart): array
+    {
+        $freeShipThreshold = (float) Setting::get('free_shipping_threshold', 30);
+        $defaultShippingFee = (float) Setting::get('shipping_fee', 3.99);
+        $shippingFee = ($cart->subtotal - $cart->discount) >= $freeShipThreshold ? 0.0 : $defaultShippingFee;
+        $totalDiscount = (float) $cart->discount;
+        $finalTotal = round(max(0.0, $cart->subtotal - $totalDiscount + $shippingFee), 2);
+        return compact('shippingFee', 'totalDiscount', 'finalTotal');
+    }
+
+    private function getPaypalToken(): ?string
+    {
+        $baseUrl = config('services.paypal.mode', 'live') === 'sandbox'
+            ? 'https://api-m.sandbox.paypal.com'
+            : 'https://api-m.paypal.com';
+
+        $response = Http::timeout(15)
+            ->withBasicAuth(config('services.paypal.client_id'), config('services.paypal.client_secret'))
+            ->asForm()
+            ->post("{$baseUrl}/v1/oauth2/token", ['grant_type' => 'client_credentials']);
+
+        if ($response->failed()) {
+            Log::error('PayPal token request failed', ['status' => $response->status()]);
+            return null;
         }
+        return $response->json('access_token');
+    }
 
-        // Navratri offer: 5% extra off on all orders (after coupon discounts)
-        $paymentMethod = $validated['payment_method'];
-        $navratriDiscount = 0;
-        $navratriActive = Setting::get('navratri_offer_active', '1') === '1';
-        if ($navratriActive) {
-            $navratriDiscount = round(($cart->subtotal - $cart->discount) * 0.05, 2);
-        }
-
-        $totalDiscount = $cart->discount + $navratriDiscount;
-
-        // Loyalty points redemption
-        $loyaltyPointsUsed = 0;
-        $loyaltyDiscount = 0;
-        if (!$isGuest && $request->boolean('use_loyalty_points') && (bool) Setting::get('loyalty_enabled', true)) {
-            $user = auth()->user();
-            $pointsAvailable = $user->loyalty_points_balance ?? 0;
-            $redeemRate = (float) Setting::get('loyalty_redeem_rate', 0.25);
-            $maxDiscount = $pointsAvailable * $redeemRate;
-            $loyaltyDiscount = min($maxDiscount, $cart->subtotal - $totalDiscount); // Can't exceed order value
-            $loyaltyPointsUsed = (int) ceil($loyaltyDiscount / $redeemRate);
-            $totalDiscount += $loyaltyDiscount;
-        }
-
-        // Shipping fee: free above threshold, else Rs50
-        $freeShipThreshold = (float) Setting::get('free_shipping_threshold', 499);
-        $shippingFee = ($cart->subtotal - $cart->discount) >= $freeShipThreshold ? 0 : 50;
-
-        $finalTotal = max(0, $cart->subtotal - $totalDiscount + $shippingFee);
-
-        // COD: only available for orders above Rs199, no partial pay for orders below Rs200
-        $codAdvance = 0;
-        $codAvailable = $finalTotal >= 199;
-        if ($paymentMethod === 'cod') {
-            if (!$codAvailable) {
-                return redirect()->route('checkout.index')
-                    ->with('error', 'COD is not available for orders below ₹199. Please choose online payment.');
-            }
-            $codAdvance = min(100, $finalTotal);
-        }
-
-        // Resolve affiliate from cookie/session
+    private function createOrderInDb(Cart $cart, array $validated, bool $isGuest, array $addresses, float $finalTotal, float $totalDiscount, float $shippingFee, string $paymentMethod, string $paymentStatus, array $extra = []): Order
+    {
         $affiliateId = null;
         $affiliateRefCode = null;
         $refCode = session('affiliate_ref') ?? request()->cookie(config('affiliate.cookie_name', 'musco_ref'));
@@ -268,90 +540,74 @@ class CheckoutController extends Controller
             }
         }
 
-        $order = DB::transaction(function () use ($cart, $shippingSnapshot, $billingSnapshot, $shippingAddressId, $billingAddressId, $validated, $isGuest, $finalTotal, $totalDiscount, $paymentMethod, $navratriDiscount, $codAdvance, $affiliateId, $affiliateRefCode, $shippingFee, $loyaltyPointsUsed, $loyaltyDiscount) {
-            $metadata = ['payment_method' => $paymentMethod];
-            if ($navratriDiscount > 0) {
-                $metadata['navratri_discount'] = $navratriDiscount;
-            }
-            if ($codAdvance > 0) {
-                $metadata['cod_advance'] = $codAdvance;
-                $metadata['cod_balance'] = $finalTotal - $codAdvance;
-            }
+        return DB::transaction(function () use ($cart, $validated, $isGuest, $addresses, $finalTotal, $totalDiscount, $shippingFee, $paymentMethod, $paymentStatus, $extra, $affiliateId, $affiliateRefCode) {
+            DB::table('carts')->where('id', $cart->id)->lockForUpdate()->first();
+
+            $metadata = array_merge(['payment_method' => $paymentMethod], $extra);
             if ($affiliateRefCode) {
                 $metadata['affiliate_referral_code'] = $affiliateRefCode;
             }
-            if ($loyaltyPointsUsed > 0) {
-                $metadata['loyalty_points_used'] = $loyaltyPointsUsed;
-                $metadata['loyalty_discount'] = $loyaltyDiscount;
-            }
 
             $order = Order::create([
-                'user_id' => $isGuest ? null : auth()->id(),
-                'guest_email' => $validated['guest_email'] ?? null,
-                'guest_name' => $validated['guest_name'] ?? null,
-                'guest_phone' => $validated['guest_phone'] ?? null,
-                'status' => 'confirmed',
-                'payment_status' => 'pending',
-                'subtotal' => $cart->subtotal,
-                'discount' => $totalDiscount,
-                'shipping_cost' => $shippingFee,
-                'tax' => 0,
-                'total' => $finalTotal,
-                'paid_amount' => $codAdvance,
-                'coupon_id' => $cart->coupon_id,
-                'affiliate_id' => $affiliateId,
-                'affiliate_referral_code' => $affiliateRefCode,
-                'shipping_address_id' => $shippingAddressId,
-                'billing_address_id' => $billingAddressId,
-                'shipping_address_snapshot' => $shippingSnapshot,
-                'billing_address_snapshot' => $billingSnapshot,
-                'notes' => $validated['notes'],
-                'metadata' => $metadata,
+                'user_id'                   => $isGuest ? null : auth()->id(),
+                'guest_email'               => $validated['guest_email'] ?? null,
+                'guest_name'                => $validated['guest_name'] ?? null,
+                'guest_phone'               => $validated['guest_phone'] ?? null,
+                'status'                    => 'confirmed',
+                'payment_status'            => $paymentStatus,
+                'payment_method'            => $paymentMethod,
+                'subtotal'                  => $cart->subtotal,
+                'discount'                  => $totalDiscount,
+                'shipping_cost'             => $shippingFee,
+                'tax'                       => 0,
+                'total'                     => $finalTotal,
+                'paid_amount'               => $paymentStatus === 'paid' ? $finalTotal : 0,
+                'coupon_id'                 => $cart->coupon_id,
+                'affiliate_id'              => $affiliateId,
+                'affiliate_referral_code'   => $affiliateRefCode,
+                'shipping_address_id'       => $addresses['shipping_id'],
+                'billing_address_id'        => $addresses['billing_id'],
+                'shipping_address_snapshot' => $addresses['shipping'],
+                'billing_address_snapshot'  => $addresses['billing'],
+                'notes'                     => $validated['notes'] ?? null,
+                'metadata'                  => $metadata,
+                'paypal_order_id'           => $extra['paypal_order_id'] ?? null,
+                'stripe_session_id'         => $extra['stripe_session_id'] ?? null,
+                'stripe_payment_intent'     => $extra['stripe_payment_intent'] ?? null,
             ]);
 
             foreach ($cart->items as $item) {
                 OrderItem::create([
-                    'order_id' => $order->id,
-                    'product_id' => $item->product_id,
-                    'variant_id' => $item->variant_id,
-                    'seller_id' => $item->product->seller_id,
+                    'order_id'    => $order->id,
+                    'product_id'  => $item->product_id,
+                    'variant_id'  => $item->variant_id,
+                    'seller_id'   => $item->product->seller_id,
                     'product_name' => $item->product->name,
-                    'sku' => $item->product->sku ?? '',
+                    'sku'         => $item->product->sku ?? '',
                     'variant_name' => $item->variant?->attributeValues->pluck('value')->join(' / '),
-                    'quantity' => $item->quantity,
-                    'mrp' => $item->product->mrp ?? $item->price,
-                    'price' => $item->price,
-                    'tax' => 0,
-                    'discount' => 0,
-                    'total' => $item->price * $item->quantity,
+                    'quantity'    => $item->quantity,
+                    'mrp'         => $item->product->mrp ?? $item->price,
+                    'price'       => $item->price,
+                    'tax'         => 0,
+                    'discount'    => 0,
+                    'total'       => $item->price * $item->quantity,
                 ]);
 
-                // Atomic stock decrement with check to prevent overselling
+                $qty = (int) $item->quantity;
                 if ($item->variant_id) {
-                    $updated = DB::table('product_variants')
-                        ->where('id', $item->variant_id)
-                        ->where('stock_quantity', '>=', $item->quantity)
-                        ->update(['stock_quantity' => DB::raw("stock_quantity - {$item->quantity}")]);
+                    $updated = DB::table('product_variants')->where('id', $item->variant_id)->where('stock_quantity', '>=', $qty)->update(['stock_quantity' => DB::raw("stock_quantity - {$qty}")]);
                 } else {
-                    $updated = DB::table('products')
-                        ->where('id', $item->product_id)
-                        ->where('stock_quantity', '>=', $item->quantity)
-                        ->update(['stock_quantity' => DB::raw("stock_quantity - {$item->quantity}")]);
+                    $updated = DB::table('products')->where('id', $item->product_id)->where('stock_quantity', '>=', $qty)->update(['stock_quantity' => DB::raw("stock_quantity - {$qty}")]);
                 }
-
                 if (!$updated) {
-                    throw new \RuntimeException("Insufficient stock for \"{$item->product->name}\". Please try again.");
+                    throw new \RuntimeException("Insufficient stock for \"{$item->product->name}\".");
                 }
-
                 $item->product->increment('sales_count', $item->quantity);
             }
 
-            // Re-validate coupon at order creation
             if ($cart->coupon) {
                 $coupon = $cart->coupon;
-                if (!$coupon->is_active || ($coupon->expires_at && $coupon->expires_at < now()) || ($coupon->usage_limit && $coupon->times_used >= $coupon->usage_limit)) {
-                    Log::warning('Coupon expired/exhausted at checkout', ['coupon' => $coupon->code]);
-                } else {
+                if ($coupon->is_active && (!$coupon->expires_at || $coupon->expires_at >= now()) && (!$coupon->usage_limit || $coupon->times_used < $coupon->usage_limit)) {
                     $coupon->increment('times_used');
                 }
             }
@@ -361,40 +617,6 @@ class CheckoutController extends Controller
 
             return $order;
         });
-
-        // Redeem loyalty points inside try/catch
-        if ($loyaltyPointsUsed > 0 && !$isGuest) {
-            try {
-                app(\App\Services\LoyaltyService::class)->redeem(auth()->user(), $loyaltyPointsUsed, $order);
-            } catch (\Exception $e) {
-                Log::error('Loyalty points redemption failed', ['order' => $order->id, 'error' => $e->getMessage()]);
-            }
-        }
-
-        // Mark abandoned checkout as recovered → linked to order
-        $this->markAbandonedRecovered($cart, $order);
-
-        if ($isGuest) {
-            session()->put('guest_order_id', $order->id);
-
-            // Auto-create account for guest and send credentials
-            $this->createAccountForGuest($order, $validated);
-        } else {
-            // Save checkout preferences for one-click checkout next time
-            \App\Models\UserCheckoutPreference::updateOrCreate(
-                ['user_id' => auth()->id()],
-                [
-                    'default_shipping_address_id' => $order->shipping_address_id ?? ($request->input('shipping_address_id')),
-                    'default_payment_method' => $request->input('payment_method', 'cod'),
-                    'same_as_shipping' => $request->boolean('same_billing_address', true),
-                    'enable_one_click' => true,
-                ]
-            );
-        }
-
-        OrderPlaced::dispatch($order, 'web');
-
-        return redirect()->route('checkout.success', $order);
     }
 
     public function success(Order $order): View
@@ -402,6 +624,11 @@ class CheckoutController extends Controller
         if (auth()->check()) {
             abort_unless($order->user_id === auth()->id(), 403);
         } else {
+            // Rate-limit guest order success page to prevent order ID enumeration
+            $key = 'guest_order_view:' . request()->ip();
+            abort_if(\Illuminate\Support\Facades\RateLimiter::tooManyAttempts($key, 10), 429);
+            \Illuminate\Support\Facades\RateLimiter::hit($key, 300);
+
             abort_unless(session('guest_order_id') === $order->id, 403);
         }
 
@@ -747,17 +974,18 @@ class CheckoutController extends Controller
                     'total' => $item->price * $item->quantity,
                 ]);
 
-                // Atomic stock decrement with check to prevent overselling
+                // Atomic stock decrement — explicit int cast prevents any SQL injection risk.
+                $qty = (int) $item->quantity;
                 if ($item->variant_id) {
                     $updated = DB::table('product_variants')
                         ->where('id', $item->variant_id)
-                        ->where('stock_quantity', '>=', $item->quantity)
-                        ->update(['stock_quantity' => DB::raw("stock_quantity - {$item->quantity}")]);
+                        ->where('stock_quantity', '>=', $qty)
+                        ->update(['stock_quantity' => DB::raw("stock_quantity - {$qty}")]);
                 } else {
                     $updated = DB::table('products')
                         ->where('id', $item->product_id)
-                        ->where('stock_quantity', '>=', $item->quantity)
-                        ->update(['stock_quantity' => DB::raw("stock_quantity - {$item->quantity}")]);
+                        ->where('stock_quantity', '>=', $qty)
+                        ->update(['stock_quantity' => DB::raw("stock_quantity - {$qty}")]);
                 }
 
                 if (!$updated) {

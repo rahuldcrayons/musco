@@ -1,4 +1,49 @@
-@php $announcement = \App\Models\Setting::get('announcement_text', 'Our All Products are 100% Made in India'); @endphp
+<style>
+@media (max-width: 639px) {
+    .search-dropdown {
+        position: fixed !important;
+        top: 58px !important;
+        left: 8px !important;
+        right: 8px !important;
+        width: auto !important;
+        margin-top: 0 !important;
+    }
+}
+</style>
+@php
+    $announcement = \App\Models\Setting::get('announcement_text', 'Free Shipping on Orders Above £30 | 100% Anti-Tarnish Guarantee | Easy 7-Day Returns');
+
+    // Load jewellery subcategories as nav items — cached 10 min
+    [$navCategories, $navTrending] = cache()->remember('nav.header.data', 600, function () {
+        $jewelleryParent = \App\Models\Category::where('slug', 'jewellery')->first();
+        if ($jewelleryParent) {
+            $cats = \App\Models\Category::where('is_active', true)
+                ->where('parent_id', $jewelleryParent->id)
+                ->with(['children' => fn($q) => $q->where('is_active', true)->orderBy('position')->take(8)])
+                ->orderBy('position')->take(20)->get();
+        } else {
+            $cats = \App\Models\Category::where('is_active', true)
+                ->whereNull('parent_id')
+                ->with(['children' => fn($q) => $q->where('is_active', true)->orderBy('position')->take(8)])
+                ->orderBy('position')->take(20)->get();
+        }
+
+        // Batch all category+children IDs into ONE query instead of N queries
+        $allIds = $cats->flatMap(fn($nc) => collect([$nc->id])->merge($nc->children->pluck('id')))->unique()->values();
+        $allProducts = \App\Models\Product::whereIn('category_id', $allIds)
+            ->where('is_active', true)->with('primaryImage')
+            ->orderByDesc('is_featured')->get();
+
+        $trending = [];
+        foreach ($cats as $nc) {
+            $ids = collect([$nc->id])->merge($nc->children->pluck('id'));
+            $trending[$nc->id] = $allProducts->whereIn('category_id', $ids->all())->take(4)->values();
+        }
+
+        return [$cats, $trending];
+    });
+
+@endphp
 
 <header id="main-header" x-data="{ visible: true, lastScroll: 0 }"
        x-on:scroll.window="
@@ -8,201 +53,358 @@
            else if (y > lastScroll + 5) { visible = false }
            lastScroll = y;
        "
-       class="bg-white border-b border-neutral-100 fixed left-0 right-0 z-40"
-       :style="'top:0; transition: transform 0.3s ease; transform: translateY(' + (visible ? '0' : '-100%') + ')'">
-    <!-- Announcement Bar -->
+       class="bg-white fixed left-0 right-0 z-40"
+       :style="'transition: top 0.3s ease; top: ' + (visible ? '0px' : '-80px')">
+
+    {{-- Marquee Announcement Bar (commented out)
     @if($announcement)
-    <div class="bg-[#222222] text-white text-center py-1.5 text-[11px] sm:text-xs font-medium tracking-wide">
-        {{ $announcement }}
-    </div>
-    @endif
-    <div class="container mx-auto px-4">
-        <div class="flex items-center justify-between h-14 lg:h-16">
-
-            <!-- Left: Mobile menu + Desktop Nav -->
-            <div class="flex items-center gap-3 lg:gap-0 flex-1">
-                <!-- Mobile menu button -->
-                <button @click="$dispatch('toggle-mobile-nav')" class="lg:hidden p-1.5 -ml-1.5 text-neutral-700 hover:text-[#c29958]" aria-label="Open menu">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16"/>
-                    </svg>
-                </button>
-
-                <!-- Desktop Navigation (Left side) -->
-                <nav class="hidden lg:flex items-center gap-1">
-                    <a href="{{ route('new-arrivals') }}" class="px-3 py-2 text-[13px] text-[#222] hover:text-[#c29958] font-medium transition-colors tracking-wide uppercase">New Arrival</a>
-                    <a href="{{ route('categories.index') }}" class="px-3 py-2 text-[13px] text-[#222] hover:text-[#c29958] font-medium transition-colors tracking-wide uppercase">Categories</a>
-                    <a href="{{ route('bestsellers') }}" class="px-3 py-2 text-[13px] text-[#222] hover:text-[#c29958] font-medium transition-colors tracking-wide uppercase">Bestsellers</a>
-                    <a href="{{ route('deals') }}" class="px-3 py-2 text-[13px] text-[#c29958] hover:text-[#c29958] font-semibold transition-colors tracking-wide uppercase">Sale</a>
-                </nav>
-            </div>
-
-            <!-- Center: Logo -->
-            <a href="{{ url('/') }}" class="flex items-center shrink-0 mx-4">
-                @php $siteLogo = \App\Models\Setting::get('site_logo', ''); @endphp
-                @if($siteLogo)
-                    <img src="{{ asset('storage/' . $siteLogo) }}" alt="{{ config('app.name') }}" class="h-auto w-32 lg:w-40">
-                @else
-                    <img src="{{ asset('images/musco-logo.svg') }}" alt="{{ config('app.name') }}" class="h-auto w-32 lg:w-40">
-                @endif
-            </a>
-
-            <!-- Right: Nav links + Icons -->
-            <div class="flex items-center gap-1 lg:gap-0 flex-1 justify-end">
-
-                <!-- Desktop Navigation (Right side) -->
-                <nav class="hidden lg:flex items-center gap-1 mr-2">
-                    @if(config('app.wholesale_enabled'))
-                        <a href="{{ route('wholesale') }}" class="px-3 py-2 text-[13px] text-[#222] hover:text-[#c29958] font-medium transition-colors tracking-wide uppercase">Wholesale</a>
-                    @endif
-                </nav>
-
-                <!-- Mobile search icon (shown below sm, links to search page) -->
-                <a href="{{ route('search') }}" class="sm:hidden p-2 text-neutral-600 hover:text-[#c29958] transition-colors" aria-label="Search">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-                    </svg>
-                </a>
-
-                <!-- Inline Search Bar with Typewriter + Mic (hidden on mobile) -->
-                <div class="relative hidden sm:block flex-1 max-w-xs lg:max-w-sm mx-1 lg:mx-3"
-                     x-data="searchBar()"
-                     @click.outside="showResults = false">
-                    <form action="{{ route('search') }}" method="GET" class="relative flex items-center">
-                        <!-- Search icon -->
-                        <svg class="absolute left-2.5 w-4 h-4 text-neutral-600 pointer-events-none" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-                        </svg>
-
-                        <!-- Input with typewriter placeholder -->
-                        <input type="text"
-                               name="q"
-                               x-ref="searchInput"
-                               x-model="query"
-                               @input.debounce.300ms="fetchSuggestions()"
-                               @focus="showResults = true; stopTypewriter()"
-                               @blur="if(!query) startTypewriter()"
-                               @keydown.escape="showResults = false; $refs.searchInput.blur()"
-                               :placeholder="currentPlaceholder"
-                               class="w-full pl-8 pr-16 py-2 text-base bg-neutral-50 border border-neutral-200 rounded-full placeholder-neutral-400 focus:bg-white focus:border-[#B76E79] transition-all"
-                               style="outline:none !important; box-shadow:none !important; font-size:16px;"
-                               autocomplete="off">
-
-                        <!-- Mic button (only shown when browser supports Speech Recognition) -->
-                        <button x-show="recognition" x-cloak
-                                type="button"
-                                @click.prevent="toggleMic()"
-                                class="absolute right-8 p-1 transition-colors z-10"
-                                :class="listening ? 'text-[#CC0C39] animate-pulse' : 'text-neutral-600 hover:text-[#c29958]'"
-                                :title="listening ? 'Stop listening' : 'Voice search'"
-                                aria-label="Voice search">
-                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/>
-                                <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/>
-                            </svg>
-                        </button>
-
-                        <!-- Submit button -->
-                        <button type="submit" class="absolute right-2 p-1 text-neutral-600 hover:text-[#c29958] transition-colors" aria-label="Search">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
-                            </svg>
-                        </button>
-                    </form>
-
-                    <!-- Search results dropdown -->
-                    <div x-show="showResults && (results.length > 0 || (query.length >= 2 && !loading))" x-cloak
-                         x-transition:enter="transition ease-out duration-150"
-                         x-transition:enter-start="opacity-0 -translate-y-1"
-                         x-transition:enter-end="opacity-100 translate-y-0"
-                         x-transition:leave="transition ease-in duration-100"
-                         x-transition:leave-start="opacity-100"
-                         x-transition:leave-end="opacity-0"
-                         class="absolute left-0 right-0 top-full mt-1 bg-white border border-neutral-200 rounded-lg shadow-dropdown z-50 overflow-hidden">
-                        <div x-show="results.length > 0" class="max-h-60 overflow-y-auto">
-                            <ul class="py-1">
-                                <template x-for="result in results" :key="result.id">
-                                    <li>
-                                        <a :href="result.url" class="flex items-center gap-2.5 px-3 py-2 hover:bg-neutral-50 transition-colors">
-                                            <img :src="result.image" :alt="result.name" class="w-8 h-8 object-cover rounded">
-                                            <div class="min-w-0">
-                                                <div class="text-sm text-neutral-900 truncate" x-text="result.name"></div>
-                                                <div class="text-xs text-neutral-600" x-text="result.category"></div>
-                                            </div>
-                                        </a>
-                                    </li>
-                                </template>
-                            </ul>
-                        </div>
-                        <div x-show="query.length >= 2 && results.length === 0 && !loading" class="px-4 py-4 text-center">
-                            <p class="text-sm text-neutral-600">No results found</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Wishlist -->
-                <a href="{{ route('wishlist') }}" class="relative p-2 text-neutral-600 hover:text-[#c29958] transition-colors hidden sm:flex" aria-label="Wishlist">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
-                    </svg>
-                    <span x-cloak
-                          x-show="$store.wishlist.count > 0"
-                          x-text="$store.wishlist.count"
-                          class="absolute -top-0.5 -right-0.5 w-4 h-4 bg-[#F8931D] text-white text-[10px] font-bold rounded-full flex items-center justify-center">
-                    </span>
-                </a>
-
-                <!-- User account - desktop -->
-                <div class="relative hidden lg:block" x-data="dropdown()">
-                    <button @click="toggle()" class="p-2 text-neutral-600 hover:text-[#c29958] transition-colors" aria-label="Account">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
-                        </svg>
-                    </button>
-
-                    <div x-cloak x-show="open" x-transition @click.outside="close()" class="absolute right-0 mt-1 w-48 bg-white border border-neutral-200 rounded-lg shadow-dropdown z-50 overflow-hidden">
-                        @guest
-                            <a href="{{ route('login') }}" class="block px-4 py-2 text-sm text-neutral-700 hover:text-[#c29958]">Login</a>
-                            <a href="{{ route('register') }}" class="block px-4 py-2 text-sm text-neutral-700 hover:text-[#c29958]">Register</a>
-                        @else
-                            <div class="px-4 py-2 border-b border-neutral-100">
-                                <div class="text-sm font-medium text-neutral-900">{{ auth()->user()->full_name }}</div>
-                                <div class="text-xs text-neutral-600">{{ auth()->user()->email }}</div>
-                            </div>
-                            <a href="{{ route('account.dashboard') }}" class="block px-4 py-2 text-sm text-neutral-700 hover:text-[#c29958]">Dashboard</a>
-                            <a href="{{ route('account.orders.index') }}" class="block px-4 py-2 text-sm text-neutral-700 hover:text-[#c29958]">My Orders</a>
-                            <a href="{{ route('account.profile') }}" class="block px-4 py-2 text-sm text-neutral-700 hover:text-[#c29958]">Profile Settings</a>
-                            @if(auth()->user()->deliveryPartner)
-                                <a href="{{ route('delivery.login') }}" class="block px-4 py-2 text-sm text-[#B76E79] hover:text-[#222222] font-medium">Delivery Panel</a>
-                            @else
-                                <a href="{{ route('account.become-delivery-partner') }}" class="block px-4 py-2 text-sm text-[#B76E79] hover:text-[#222222] font-medium">Become a Delivery Partner</a>
-                            @endif
-                            <form action="{{ route('logout') }}" method="POST">
-                                @csrf
-                                <button type="submit" class="w-full text-left px-4 py-2 text-sm text-neutral-700 hover:text-[#c29958]">Logout</button>
-                            </form>
-                        @endguest
-                    </div>
-                </div>
-
-                <!-- Cart -->
-                <a href="{{ route('cart.index') }}" class="relative p-2 text-neutral-700 hover:text-[#c29958] transition-colors" aria-label="Cart">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
-                    </svg>
-                    <span x-cloak
-                          x-show="$store.cart.itemCount > 0"
-                          x-text="$store.cart.itemCount"
-                          class="absolute -top-0.5 -right-0.5 w-4 h-4 bg-[#F8931D] text-white text-[10px] font-bold rounded-full flex items-center justify-center">
-                    </span>
-                </a>
+    <div class="bg-[#222222] text-white overflow-hidden h-8 flex items-center">
+        <div class="marquee-track">
+            <div class="marquee-content">
+                @for($i = 0; $i < 4; $i++)
+                    @foreach(explode('|', $announcement) as $msg)
+                        <span class="marquee-item">{{ trim($msg) }}</span>
+                        <span class="marquee-separator">✦</span>
+                    @endforeach
+                @endfor
             </div>
         </div>
     </div>
+    @endif
+    --}}
+
+    <!-- Main Header Row -->
+    <div class="border-b border-neutral-100">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-between h-14 lg:h-16">
+
+                <!-- Left: Mobile menu -->
+                <div class="flex items-center lg:hidden shrink-0 mr-1">
+                    <button @click="$dispatch('toggle-mobile-nav')" class="p-1.5 -ml-1.5 text-neutral-700 hover:text-[#202a40]" aria-label="Open menu">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16"/>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Center: Logo (hidden on mobile) -->
+                <a href="{{ route('home') }}" class="hidden sm:flex items-center shrink-0 lg:mr-8">
+                    @php $siteLogo = \App\Models\Setting::get('site_logo', ''); @endphp
+                    <span style="font-size:1.45rem;font-weight:700;letter-spacing:-0.02em;line-height:1;font-family:'DM Sans',sans-serif;"><span style="color:#1e2a40;">Trendy</span><span style="color:#5a6e8a;">mus</span></span>
+                </a>
+
+                <!-- Desktop Navigation with Mega Menu -->
+                <nav class="hidden lg:flex items-center gap-0 shrink-0">
+                    @foreach($navCategories->take(9) as $navCat)
+                        @php
+                            $shortName = match(true) {
+                                str_contains($navCat->name, 'Necklaces & Pendants') => 'Necklaces',
+                                str_contains($navCat->name, 'Bangles & Bracelets')  => 'Bangles+',
+                                str_contains($navCat->name, 'Nose Pins')            => 'Nose Pins',
+                                str_contains($navCat->name, 'Pendant Sets')         => 'Pendants',
+                                str_contains($navCat->name, 'Accessories')          => 'Accessories',
+                                default => $navCat->name,
+                            };
+                            $trendingItems = $navTrending[$navCat->id] ?? collect();
+                            $children      = $navCat->children ?? collect();
+                            $col1          = $children->slice(0, 5);
+                            $col2          = $children->slice(5, 5);
+                            $currentSlug   = request()->route('category')?->slug ?? '';
+                            $childSlugs    = $navCat->children->pluck('slug')->toArray();
+                            $isActive      = $currentSlug === $navCat->slug || in_array($currentSlug, $childSlugs);
+                        @endphp
+
+                        <div class="relative shrink-0"
+                             x-data="{ open: false, t: null, active: {{ $isActive ? 'true' : 'false' }} }"
+                             @mouseenter="clearTimeout(t); open = true"
+                             @mouseleave="t = setTimeout(() => open = false, 200)">
+
+                            {{-- Nav trigger link --}}
+                            <a href="{{ route('categories.show', $navCat) }}"
+                               class="relative flex items-center gap-0.5 px-1.5 py-5 text-[14px] font-medium whitespace-nowrap transition-colors"
+                               :class="(open || active) ? 'text-[#202a40]' : 'text-[#555]'">
+                                {{ $shortName }}
+                                <svg class="w-2 h-2 opacity-40 shrink-0 transition-transform duration-150" :class="open ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/>
+                                </svg>
+                                {{-- Bottom active/hover bar --}}
+                                <span class="absolute bottom-0 left-0 right-0 h-[2px] bg-[#202a40] rounded-t transition-all duration-150 opacity-0 scale-x-0"
+                                      :class="(open || active) ? 'opacity-100 scale-x-100' : 'opacity-0 scale-x-0'"></span>
+                            </a>
+
+                            {{-- Mega panel teleported to <body> — escapes header stacking context entirely --}}
+                            <template x-teleport="body">
+                                {{-- Backdrop: starts BELOW the header so it never covers nav triggers.
+                                     pointer-events:none so it doesn't intercept mouse — only visual dim. --}}
+                                <div x-show="open"
+                                     style="display:none;position:fixed;left:0;right:0;bottom:0;z-index:9997;background:rgba(0,0,0,0.2);pointer-events:none;"
+                                     :style="'top:' + (document.getElementById('main-header')?.offsetHeight ?? 64) + 'px'"></div>
+
+                                {{-- Panel --}}
+                                <div x-show="open"
+                                     style="display:none;position:fixed;left:0;right:0;z-index:9999;background:#fff;border-top:2px solid #202a40;box-shadow:0 8px 40px rgba(0,0,0,0.12);"
+                                     :style="'top:' + (document.getElementById('main-header')?.offsetHeight ?? 64) + 'px'"
+                                     @mouseenter="clearTimeout(t)"
+                                     @mouseleave="t = setTimeout(() => open = false, 200)">
+
+                                    <div class="container mx-auto px-4">
+                                        <div class="flex" style="min-height:240px;">
+
+                                            {{-- Left: subcategory columns --}}
+                                            <div class="flex flex-1 divide-x divide-neutral-100 py-6">
+
+                                                @if($col1->isNotEmpty())
+                                                <div class="pr-6 flex-1">
+                                                    <p class="text-[11px] font-bold text-[#202a40] uppercase tracking-widest mb-3">{{ $shortName }}</p>
+                                                    <ul class="space-y-0.5">
+                                                        @foreach($col1 as $child)
+                                                        <li>
+                                                            <a href="{{ route('categories.show', $child) }}"
+                                                               class="flex items-center gap-2.5 py-1.5 text-[13px] text-neutral-600 hover:text-[#202a40] transition-colors group">
+                                                                {{-- Left bar indicator on sub-item hover --}}
+                                                                <span class="w-[3px] h-4 rounded-full bg-[#202a40] opacity-0 group-hover:opacity-100 transition-opacity shrink-0"></span>
+                                                                {{ $child->name }}
+                                                            </a>
+                                                        </li>
+                                                        @endforeach
+                                                    </ul>
+                                                </div>
+                                                @endif
+
+                                                @if($col2->isNotEmpty())
+                                                <div class="px-6 flex-1">
+                                                    <p class="text-[11px] font-bold text-neutral-300 uppercase tracking-widest mb-3">&nbsp;</p>
+                                                    <ul class="space-y-0.5">
+                                                        @foreach($col2 as $child)
+                                                        <li>
+                                                            <a href="{{ route('categories.show', $child) }}"
+                                                               class="flex items-center gap-2.5 py-1.5 text-[13px] text-neutral-600 hover:text-[#202a40] transition-colors group">
+                                                                <span class="w-[3px] h-4 rounded-full bg-[#202a40] opacity-0 group-hover:opacity-100 transition-opacity shrink-0"></span>
+                                                                {{ $child->name }}
+                                                            </a>
+                                                        </li>
+                                                        @endforeach
+                                                    </ul>
+                                                </div>
+                                                @endif
+
+                                                {{-- Trending --}}
+                                                <div class="px-6 flex-1">
+                                                    <p class="text-[11px] font-bold text-[#202a40] uppercase tracking-widest mb-3 flex items-center gap-1.5">
+                                                        <span>🔥</span> Trending
+                                                    </p>
+                                                    <div class="grid grid-cols-2 gap-2">
+                                                        @forelse($trendingItems->take(4) as $tp)
+                                                        <a href="{{ route('product.show', $tp) }}" class="group">
+                                                            <div class="aspect-square rounded-lg overflow-hidden bg-neutral-50 border border-neutral-100 group-hover:border-[#202a40]/30 transition-colors mb-1">
+                                                                <img src="{{ $tp->primary_image_url }}" alt="{{ $tp->name }}"
+                                                                     class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                                                     onerror="this.src='{{ asset('images/placeholder-product.svg') }}'">
+                                                            </div>
+                                                            <p class="text-[11px] text-neutral-600 group-hover:text-[#202a40] transition-colors line-clamp-1">{{ Str::limit($tp->name, 22) }}</p>
+                                                            <p class="text-[12px] font-bold text-[#202a40]">£{{ number_format($tp->price, 2) }}</p>
+                                                        </a>
+                                                        @empty
+                                                        @endforelse
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {{-- Right: CTA sidebar --}}
+                                            <div class="w-36 shrink-0 bg-gradient-to-b from-[#f5f7fa] to-[#eef1f5] flex flex-col items-center justify-center py-6 border-l border-neutral-100 gap-3">
+                                                <p class="text-xs font-bold text-[#202a40] uppercase tracking-wider text-center">{{ $shortName }}</p>
+                                                <a href="{{ route('categories.show', $navCat) }}"
+                                                   class="px-4 py-2 bg-[#202a40] text-white text-[11px] font-bold rounded-full uppercase tracking-wider hover:bg-[#2d3a55] transition-colors text-center">
+                                                    View All
+                                                </a>
+                                                <a href="{{ route('products.index') }}?category={{ $navCat->slug }}&on_sale=1"
+                                                   class="px-4 py-1.5 border border-[#202a40] text-[#202a40] text-[11px] font-semibold rounded-full hover:bg-neutral-100 transition-colors text-center">
+                                                    On Sale
+                                                </a>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                    @endforeach
+
+                    <a href="{{ route('deals') }}" class="nav-link shrink-0 px-1.5 py-5 text-[14px] font-semibold text-[#202a40] hover:text-[#2d3a55] transition-colors whitespace-nowrap">
+                        Sale
+                    </a>
+                </nav>
+
+                <!-- Right: Search + Icons -->
+                <div class="flex items-center gap-2 flex-1 lg:flex-none justify-end min-w-0 ml-3">
+
+                    <!-- Inline Search Bar -->
+                    <div class="relative min-w-0 lg:w-[180px] xl:w-[220px]"
+                         x-data="searchBar()"
+                         @click.outside="showResults = false">
+                        <form action="{{ route('search') }}" method="GET" class="relative flex items-center"
+                              @submit.prevent="if(query.trim()) window.location.href='{{ route('search') }}?q='+encodeURIComponent(query.trim())">
+                            <svg class="absolute left-3 w-4 h-4 text-neutral-400 pointer-events-none" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                            </svg>
+                            <input type="text" name="q" x-ref="searchInput" x-model="query"
+                                   @input.debounce.150ms="fetchSuggestions()"
+                                   @focus="showResults = true; stopTypewriter()"
+                                   @blur="if(!query) startTypewriter()"
+                                   @keydown.escape="showResults = false; $refs.searchInput.blur()"
+                                   :placeholder="currentPlaceholder"
+                                   class="w-full pl-9 pr-10 py-2 text-sm bg-neutral-50 border border-neutral-200 rounded-full placeholder-neutral-400 focus:bg-white focus:border-[#202a40] transition-all"
+                                   style="outline:none !important; box-shadow:none !important; font-size:14px;"
+                                   autocomplete="off">
+                            <button type="button" @click="if(query.trim()) window.location.href='{{ route('search') }}?q='+encodeURIComponent(query.trim())" class="absolute right-1 w-7 h-7 flex items-center justify-center bg-[#202a40] text-white rounded-full transition-colors shadow-sm" aria-label="Search">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                                </svg>
+                            </button>
+                        </form>
+
+                        <!-- Live Search Dropdown -->
+                        <div x-show="showResults && query.length >= 1" x-cloak
+                             x-transition:enter="transition ease-out duration-150"
+                             x-transition:enter-start="opacity-0 -translate-y-1"
+                             x-transition:enter-end="opacity-100 translate-y-0"
+                             x-transition:leave="transition ease-in duration-100"
+                             x-transition:leave-start="opacity-100"
+                             x-transition:leave-end="opacity-0"
+                             class="search-dropdown absolute top-full mt-4 mr-1 bg-white border border-neutral-200 rounded-2xl shadow-2xl z-[9999] overflow-hidden"
+                             style="width:380px; right:-1px; left:auto;">
+
+                            <!-- Loading -->
+                            <div x-show="loading" class="flex items-center gap-2 px-4 py-3 text-sm text-neutral-400">
+                                <svg class="w-4 h-4 animate-spin text-[#202a40]" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/></svg>
+                                Searching...
+                            </div>
+
+                            <!-- Results -->
+                            <template x-if="!loading && results.length > 0">
+                                <div>
+                                    <!-- Products -->
+                                    <template x-if="results.filter(r => r.type === 'product').length > 0">
+                                        <div>
+                                            <div class="px-4 pt-3 pb-1">
+                                                <span class="text-[10px] font-bold uppercase tracking-widest text-neutral-400">Products</span>
+                                            </div>
+                                            <template x-for="result in results.filter(r => r.type === 'product').slice(0,6)" :key="result.id">
+                                                <a :href="result.url" class="flex items-center gap-3 px-4 py-2 hover:bg-[#FDF2F3] transition-colors group">
+                                                    <div class="w-10 h-10 rounded-lg overflow-hidden bg-neutral-100 shrink-0 border border-neutral-100">
+                                                        <img :src="result.image" :alt="result.name" class="w-full h-full object-cover" onerror="this.src='{{ asset('images/placeholder-product.svg') }}'">
+                                                    </div>
+                                                    <div class="flex-1 min-w-0 overflow-hidden">
+                                                        <p class="text-[13px] text-neutral-800 group-hover:text-[#202a40] transition-colors leading-tight" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:270px;" x-text="result.name"></p>
+                                                        <p class="text-[11px] text-neutral-400 mt-0.5" x-text="result.category"></p>
+                                                    </div>
+                                                </a>
+                                            </template>
+                                        </div>
+                                    </template>
+
+
+                                </div>
+                            </template>
+
+                            <!-- No results -->
+                            <div x-show="!loading && results.length === 0 && query.length >= 1" class="px-4 py-5 text-center">
+                                <p class="text-sm text-neutral-500">No results for "<span x-text="query" class="font-medium text-neutral-700"></span>"</p>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <!-- Wishlist -->
+                    <a href="{{ route('wishlist') }}" class="relative shrink-0 w-8 h-8 flex items-center justify-center text-neutral-600 hover:text-[#202a40] transition-colors ml-1" aria-label="Wishlist">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                        </svg>
+                        <span x-cloak x-show="$store.wishlist.count > 0" x-text="$store.wishlist.count"
+                              class="absolute -top-0.5 -right-0.5 w-4 h-4 bg-[#202a40] text-white text-[10px] font-bold rounded-full flex items-center justify-center"></span>
+                    </a>
+
+                    <!-- User account -->
+                    @guest
+                        <button @click="$store.authModal.open('login', '/account')"
+                                class="shrink-0 w-8 h-8 flex items-center justify-center text-neutral-600 hover:text-[#202a40] hover:bg-neutral-50 rounded-full transition-colors" aria-label="Login">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                            </svg>
+                        </button>
+                    @else
+                        <div class="relative" x-data="{ open: false }" @click.outside="open = false">
+                            <button @click.stop="open = !open"
+                                    class="flex items-center gap-1 p-1 rounded-full hover:bg-neutral-50 active:bg-neutral-100 transition-colors focus:outline-none shrink-0"
+                                    aria-label="My Account" aria-haspopup="true" :aria-expanded="open">
+                                @if(Auth::user()->avatar_url ?? null)
+                                    <img src="{{ Storage::disk('public')->url(Auth::user()->avatar_url) }}" alt="{{ Auth::user()->first_name }}" class="w-7 h-7 rounded-full object-cover">
+                                @else
+                                    <div class="w-7 h-7 rounded-full bg-[#202a40] flex items-center justify-center text-white text-xs font-bold shrink-0">
+                                        {{ strtoupper(substr(Auth::user()->first_name ?? Auth::user()->name ?? 'U', 0, 1)) }}
+                                    </div>
+                                @endif
+                                <svg class="w-3 h-3 text-neutral-400 transition-transform duration-200" :class="open ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/>
+                                </svg>
+                            </button>
+
+                            <!-- Dropdown -->
+                            <div x-show="open"
+                                 style="display:none;z-index:99999; top:100%; right:-1px; min-width:160px; width:auto;"
+                                 x-transition:enter="transition ease-out duration-150"
+                                 x-transition:enter-start="opacity-0 scale-95 -translate-y-1"
+                                 x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+                                 x-transition:leave="transition ease-in duration-100"
+                                 x-transition:leave-start="opacity-100 scale-100"
+                                 x-transition:leave-end="opacity-0 scale-95"
+                                 class="absolute mt-2 bg-white rounded-2xl shadow-2xl border border-neutral-100 overflow-hidden origin-top-right py-1 whitespace-nowrap">
+
+                                <!-- Profile -->
+                                <a href="{{ route('account.profile') }}"
+                                   class="flex items-center gap-3 px-4 py-2.5 text-[13px] text-neutral-700 hover:bg-[#FDF2F3] hover:text-[#202a40] transition-colors">
+                                    <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                                    </svg>
+                                    Profile
+                                </a>
+
+                                <div class="border-t border-neutral-100 mt-1"></div>
+
+                                <!-- Logout -->
+                                <form action="{{ route('logout') }}" method="POST" class="m-0">
+                                    @csrf
+                                    <button type="submit"
+                                            class="w-full flex items-center gap-3 px-4 py-2.5 text-[13px] text-red-600 hover:bg-red-50 transition-colors">
+                                        <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                                        </svg>
+                                        Logout
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    @endguest
+
+                    <!-- Cart -->
+                    <a id="cart-icon" href="{{ route('cart.index') }}" class="relative shrink-0 w-8 h-8 flex items-center justify-center text-neutral-700 hover:text-[#202a40] transition-colors" aria-label="Cart">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+                        </svg>
+                        <span x-cloak x-show="$store.cart.itemCount > 0" x-text="$store.cart.itemCount"
+                              class="absolute -top-0.5 -right-0.5 w-4 h-4 bg-[#202a40] text-white text-[10px] font-bold rounded-full flex items-center justify-center"></span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
 </header>
-<!-- Spacer for fixed header + announcement bar -->
+
+<!-- Spacer for fixed header -->
 <div id="header-spacer"
-     class="{{ $announcement ? 'h-[86px] lg:h-[94px]' : 'h-14 lg:h-16' }}"
+     class="{{ $announcement ? 'h-[88px] lg:h-[96px]' : 'h-14 lg:h-16' }}"
      aria-hidden="true"></div>
 <script>
     (function () {

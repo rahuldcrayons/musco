@@ -26,16 +26,16 @@
                 <!-- Tab Navigation -->
                 <div x-data="{ activeTab: 'rings' }" class="space-y-8">
                     <div class="flex flex-wrap justify-center gap-2 sm:gap-3">
-                        <button @click="activeTab = 'rings'" :class="activeTab === 'rings' ? 'bg-[#B76E79] text-white shadow-lg shadow-[#B76E79]/25' : 'bg-white text-neutral-600 hover:bg-neutral-50 border border-neutral-200'" class="px-4 py-2 text-sm font-medium rounded-lg transition-all">
+                        <button @click="activeTab = 'rings'" :class="activeTab === 'rings' ? 'bg-[#202a40] text-white shadow-lg shadow-[#202a40]/25' : 'bg-white text-neutral-600 hover:bg-neutral-50 border border-neutral-200'" class="px-4 py-2 text-sm font-medium rounded-lg transition-all">
                             Rings
                         </button>
-                        <button @click="activeTab = 'bangles'" :class="activeTab === 'bangles' ? 'bg-[#B76E79] text-white shadow-lg shadow-[#B76E79]/25' : 'bg-white text-neutral-600 hover:bg-neutral-50 border border-neutral-200'" class="px-4 py-2 text-sm font-medium rounded-lg transition-all">
+                        <button @click="activeTab = 'bangles'" :class="activeTab === 'bangles' ? 'bg-[#202a40] text-white shadow-lg shadow-[#202a40]/25' : 'bg-white text-neutral-600 hover:bg-neutral-50 border border-neutral-200'" class="px-4 py-2 text-sm font-medium rounded-lg transition-all">
                             Bangles
                         </button>
-                        <button @click="activeTab = 'necklaces'" :class="activeTab === 'necklaces' ? 'bg-[#B76E79] text-white shadow-lg shadow-[#B76E79]/25' : 'bg-white text-neutral-600 hover:bg-neutral-50 border border-neutral-200'" class="px-4 py-2 text-sm font-medium rounded-lg transition-all">
+                        <button @click="activeTab = 'necklaces'" :class="activeTab === 'necklaces' ? 'bg-[#202a40] text-white shadow-lg shadow-[#202a40]/25' : 'bg-white text-neutral-600 hover:bg-neutral-50 border border-neutral-200'" class="px-4 py-2 text-sm font-medium rounded-lg transition-all">
                             Necklaces
                         </button>
-                        <button @click="activeTab = 'bracelets'" :class="activeTab === 'bracelets' ? 'bg-[#B76E79] text-white shadow-lg shadow-[#B76E79]/25' : 'bg-white text-neutral-600 hover:bg-neutral-50 border border-neutral-200'" class="px-4 py-2 text-sm font-medium rounded-lg transition-all">
+                        <button @click="activeTab = 'bracelets'" :class="activeTab === 'bracelets' ? 'bg-[#202a40] text-white shadow-lg shadow-[#202a40]/25' : 'bg-white text-neutral-600 hover:bg-neutral-50 border border-neutral-200'" class="px-4 py-2 text-sm font-medium rounded-lg transition-all">
                             Bracelets
                         </button>
                     </div>
@@ -88,17 +88,17 @@
                             <h3 class="text-base font-bold text-neutral-900 mb-4">How to Measure Your Ring Size</h3>
                             <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
                                 <div>
-                                    <div class="w-8 h-8 rounded-lg bg-[#B76E79]/10 flex items-center justify-center mb-2 text-sm font-bold text-[#B76E79]">1</div>
+                                    <div class="w-8 h-8 rounded-lg bg-[#202a40]/10 flex items-center justify-center mb-2 text-sm font-bold text-[#202a40]">1</div>
                                     <h4 class="text-sm font-semibold text-neutral-900 mb-1">String Method</h4>
                                     <p class="text-xs text-neutral-600 leading-relaxed">Wrap a thin string or paper strip around the base of your finger. Mark where it overlaps, then measure the length in mm.</p>
                                 </div>
                                 <div>
-                                    <div class="w-8 h-8 rounded-lg bg-[#B76E79]/10 flex items-center justify-center mb-2 text-sm font-bold text-[#B76E79]">2</div>
+                                    <div class="w-8 h-8 rounded-lg bg-[#202a40]/10 flex items-center justify-center mb-2 text-sm font-bold text-[#202a40]">2</div>
                                     <h4 class="text-sm font-semibold text-neutral-900 mb-1">Existing Ring</h4>
                                     <p class="text-xs text-neutral-600 leading-relaxed">Place a ring that fits well on a ruler. Measure the inner diameter in mm and match it with the chart above.</p>
                                 </div>
                                 <div>
-                                    <div class="w-8 h-8 rounded-lg bg-[#B76E79]/10 flex items-center justify-center mb-2 text-sm font-bold text-[#B76E79]">3</div>
+                                    <div class="w-8 h-8 rounded-lg bg-[#202a40]/10 flex items-center justify-center mb-2 text-sm font-bold text-[#202a40]">3</div>
                                     <h4 class="text-sm font-semibold text-neutral-900 mb-1">Best Practices</h4>
                                     <p class="text-xs text-neutral-600 leading-relaxed">Measure at the end of the day when fingers are slightly larger. Avoid measuring when cold. If between sizes, choose the larger one.</p>
                                 </div>
@@ -139,12 +139,12 @@
                             <h3 class="text-base font-bold text-neutral-900 mb-4">How to Measure Your Bangle Size</h3>
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                                 <div>
-                                    <div class="w-8 h-8 rounded-lg bg-[#B76E79]/10 flex items-center justify-center mb-2 text-sm font-bold text-[#B76E79]">1</div>
+                                    <div class="w-8 h-8 rounded-lg bg-[#202a40]/10 flex items-center justify-center mb-2 text-sm font-bold text-[#202a40]">1</div>
                                     <h4 class="text-sm font-semibold text-neutral-900 mb-1">Ruler Method</h4>
                                     <p class="text-xs text-neutral-600 leading-relaxed">Close your fingers together and bring your thumb to your little finger. Measure the widest part of your hand across the knuckles with a ruler.</p>
                                 </div>
                                 <div>
-                                    <div class="w-8 h-8 rounded-lg bg-[#B76E79]/10 flex items-center justify-center mb-2 text-sm font-bold text-[#B76E79]">2</div>
+                                    <div class="w-8 h-8 rounded-lg bg-[#202a40]/10 flex items-center justify-center mb-2 text-sm font-bold text-[#202a40]">2</div>
                                     <h4 class="text-sm font-semibold text-neutral-900 mb-1">Existing Bangle</h4>
                                     <p class="text-xs text-neutral-600 leading-relaxed">Place a well-fitting bangle on a flat surface. Measure the inner diameter with a ruler and match with the chart.</p>
                                 </div>
@@ -172,7 +172,7 @@
                                     <tbody class="divide-y divide-neutral-100">
                                         <tr class="hover:bg-neutral-50/50"><td class="px-4 py-2.5 font-medium text-neutral-900">14"</td><td class="px-4 py-2.5 text-neutral-600">Collar</td><td class="px-4 py-2.5 text-neutral-600">Tight around the neck</td><td class="px-4 py-2.5 text-neutral-600">Off-shoulder, strapless tops</td></tr>
                                         <tr class="hover:bg-neutral-50/50"><td class="px-4 py-2.5 font-medium text-neutral-900">16"</td><td class="px-4 py-2.5 text-neutral-600">Choker</td><td class="px-4 py-2.5 text-neutral-600">Base of the neck</td><td class="px-4 py-2.5 text-neutral-600">Crew necks, casual wear</td></tr>
-                                        <tr class="hover:bg-neutral-50/50"><td class="px-4 py-2.5 font-medium text-neutral-900">18"</td><td class="px-4 py-2.5 text-neutral-600">Princess</td><td class="px-4 py-2.5 text-neutral-600">Just below the collarbone</td><td class="px-4 py-2.5 text-neutral-600">Most versatile — works with everything</td></tr>
+                                        <tr class="hover:bg-neutral-50/50"><td class="px-4 py-2.5 font-medium text-neutral-900">18"</td><td class="px-4 py-2.5 text-neutral-600">Princess</td><td class="px-4 py-2.5 text-neutral-600">Just below the collarbone</td><td class="px-4 py-2.5 text-neutral-600">Most versatile &mdash; works with everything</td></tr>
                                         <tr class="hover:bg-neutral-50/50"><td class="px-4 py-2.5 font-medium text-neutral-900">20"</td><td class="px-4 py-2.5 text-neutral-600">Matinee</td><td class="px-4 py-2.5 text-neutral-600">Above the bust</td><td class="px-4 py-2.5 text-neutral-600">Business and casual wear</td></tr>
                                         <tr class="hover:bg-neutral-50/50"><td class="px-4 py-2.5 font-medium text-neutral-900">22"</td><td class="px-4 py-2.5 text-neutral-600">Matinee</td><td class="px-4 py-2.5 text-neutral-600">Top of the bust</td><td class="px-4 py-2.5 text-neutral-600">Pendants and layering</td></tr>
                                         <tr class="hover:bg-neutral-50/50"><td class="px-4 py-2.5 font-medium text-neutral-900">24"</td><td class="px-4 py-2.5 text-neutral-600">Opera</td><td class="px-4 py-2.5 text-neutral-600">Centre of the bust</td><td class="px-4 py-2.5 text-neutral-600">High necklines, formal wear</td></tr>
@@ -224,14 +224,14 @@
                 </div>
 
                 <!-- General Tips -->
-                <div class="mt-10 bg-[#c29958]/10 rounded-xl border border-[#c29958]/20 p-6">
-                    <h3 class="text-sm font-bold text-[#c29958] mb-2">Sizing Tips</h3>
-                    <ul class="text-xs text-[#c29958] space-y-1.5 leading-relaxed">
-                        <li>Finger sizes can vary by up to half a size throughout the day — measure in the evening for the most accurate reading.</li>
+                <div class="mt-10 bg-[#506282]/10 rounded-xl border border-[#506282]/20 p-6">
+                    <h3 class="text-sm font-bold text-[#506282] mb-2">Sizing Tips</h3>
+                    <ul class="text-xs text-[#506282] space-y-1.5 leading-relaxed">
+                        <li>Finger sizes can vary by up to half a size throughout the day &mdash; measure in the evening for the most accurate reading.</li>
                         <li>Temperature affects finger size: fingers swell in heat and shrink in cold.</li>
                         <li>If you're between two sizes, choose the larger size for comfort.</li>
                         <li>For wider bands (6mm+), go up half a size from your standard measurement.</li>
-                        <li>Not sure about your size? Our team is happy to help — <a href="{{ route('contact') }}" class="underline font-medium hover:text-[#c29958]">contact us</a> for assistance.</li>
+                        <li>Not sure about your size? Our team is happy to help &mdash; <a href="{{ route('contact') }}" class="underline font-medium hover:text-[#506282]">contact us</a> for assistance.</li>
                     </ul>
                 </div>
 

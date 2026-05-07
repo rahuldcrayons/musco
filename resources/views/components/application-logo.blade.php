@@ -1,1 +1,1 @@
-<span style="font-family:'Outfit',sans-serif; color:#B76E79; font-weight:700; letter-spacing:-0.02em;" {{ $attributes->merge(['class' => 'text-2xl']) }}>Mus<span style="color:#2b2b2b;">Co</span></span>
+<span {{ $attributes->merge(['class' => 'inline-block']) }} style="font-size:1.35rem;font-weight:700;letter-spacing:-0.02em;line-height:1;font-family:'DM Sans',sans-serif;"><span style="color:#1e2a40;">Trendy</span><span style="color:#5a6e8a;">mus</span></span>

@@ -3,25 +3,20 @@
 
     @push('meta')
         <meta name="robots" content="noindex, nofollow">
-        <meta property="og:title" content="Order Confirmed - {{ config('app.name') }}">
-        <meta property="og:type" content="website">
-        <meta name="twitter:card" content="summary">
-
-        {{-- JSON-LD Order --}}
         @php
             $orderSchema = [
                 '@context' => 'https://schema.org',
-                '@type' => 'Order',
+                '@type'    => 'Order',
                 'orderNumber' => $order->order_number,
-                'orderDate' => $order->created_at->toIso8601String(),
+                'orderDate'   => $order->created_at->toIso8601String(),
                 'orderStatus' => 'https://schema.org/OrderProcessing',
-                'priceCurrency' => 'INR',
+                'priceCurrency' => 'GBP',
                 'price' => number_format($order->total, 2, '.', ''),
                 'acceptedOffer' => $order->items->map(fn($item) => [
                     '@type' => 'Offer',
                     'itemOffered' => ['@type' => 'Product', 'name' => $item->product_name],
                     'price' => number_format($item->price, 2, '.', ''),
-                    'priceCurrency' => 'INR',
+                    'priceCurrency' => 'GBP',
                     'eligibleQuantity' => ['@type' => 'QuantitativeValue', 'value' => $item->quantity],
                 ])->toArray(),
                 'seller' => ['@type' => 'Organization', 'name' => config('app.name')],
@@ -30,236 +25,239 @@
         <script type="application/ld+json">{!! json_encode($orderSchema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}</script>
     @endpush
 
-    <div class="bg-neutral-50 min-h-screen">
-        <div class="container mx-auto px-4 py-10">
-            <div class="max-w-2xl mx-auto">
+    <style>
+        @keyframes checkPop {
+            0%   { transform: scale(0); opacity: 0; }
+            60%  { transform: scale(1.15); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(14px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .anim-check  { animation: checkPop .5s cubic-bezier(.34,1.56,.64,1) .1s both; opacity:1; }
+        .anim-fade-1 { animation: fadeUp .4s ease .2s both; }
+        .anim-fade-2 { animation: fadeUp .4s ease .35s both; }
+        .anim-fade-3 { animation: fadeUp .4s ease .5s both; }
+    </style>
 
-                <!-- Success Header -->
-                <div class="text-center mb-8">
-                    <div class="w-16 h-16 mx-auto rounded-full bg-[#B76E79]/10 flex items-center justify-center mb-4">
-                        <svg class="w-8 h-8 text-[#B76E79]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-                        </svg>
-                    </div>
-                    <h1 class="text-2xl font-bold text-neutral-900 mb-1">Order Confirmed!</h1>
-                    <p class="text-[14px] text-neutral-600">Thank you for your order. We'll begin processing it shortly.</p>
-                </div>
+    <div class="min-h-screen bg-[#F7F4F2]">
+        <div class="container mx-auto px-4 py-8 lg:py-10">
 
-                <!-- Order Number Banner -->
-                <div class="bg-white rounded-xl border border-neutral-100 p-4 mb-4 flex items-center justify-between">
-                    <div>
-                        <p class="text-[12px] font-medium text-neutral-600 uppercase tracking-wider">Order Number</p>
-                        <p class="text-base font-bold text-neutral-900 mt-0.5">{{ $order->order_number }}</p>
-                    </div>
-                    <div class="text-right">
-                        <p class="text-[12px] font-medium text-neutral-600 uppercase tracking-wider">Placed On</p>
-                        <p class="text-sm font-medium text-neutral-700 mt-0.5">{{ $order->created_at->format('d M Y, h:i A') }}</p>
-                    </div>
-                </div>
+            {{-- 2-column layout --}}
+            <div class="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
 
-                <!-- Order Items -->
-                <div class="bg-white rounded-xl border border-neutral-100 mb-4">
-                    <div class="flex items-center gap-2.5 px-5 py-3.5 border-b border-neutral-100">
-                        <svg class="w-4.5 h-4.5 text-neutral-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
-                        </svg>
-                        <h2 class="text-sm font-semibold text-neutral-900">Items Ordered</h2>
-                        <span class="text-[12px] text-neutral-600 ml-auto">{{ $order->items->count() }} {{ Str::plural('item', $order->items->count()) }}</span>
+                {{-- ── LEFT COL — Success header + items ── --}}
+                <div class="lg:col-span-7 space-y-4">
+
+                    {{-- Success hero --}}
+                    <div class="anim-fade-1 bg-white rounded-2xl overflow-hidden shadow-sm border border-neutral-100">
+                        <div class="h-1.5 w-full" style="background: linear-gradient(90deg, #202a40 0%, #506282 100%);"></div>
+                        <div class="px-6 pt-7 pb-6">
+                            <div class="flex items-center gap-4">
+                                <div class="anim-check shrink-0 w-14 h-14 rounded-full flex items-center justify-center" style="background-color:#22c55e;">
+                                    <svg class="w-7 h-7" fill="none" stroke="#fff" stroke-width="2.5" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h1 class="text-xl font-bold text-neutral-900">Order Confirmed!</h1>
+                                    <p class="text-[13px] text-neutral-500 mt-0.5">Thank you for shopping with {{ config('app.name') }}.</p>
+                                    @if(auth()->check())
+                                    <p class="text-[11px] text-neutral-400 mt-1">
+                                        Confirmation sent to <span class="font-medium text-neutral-500">{{ auth()->user()->email }}</span>
+                                    </p>
+                                    @elseif($order->guest_email)
+                                    <p class="text-[11px] text-neutral-400 mt-1">
+                                        Confirmation will be sent to <span class="font-medium text-neutral-500">{{ $order->guest_email }}</span>
+                                    </p>
+                                    @endif
+                                </div>
+                            </div>
+
+                            {{-- Order number + date --}}
+                            <div class="mt-5 grid grid-cols-2 gap-3">
+                                <div class="bg-[#F7F4F2] rounded-xl px-4 py-3">
+                                    <p class="text-[10px] font-semibold uppercase tracking-widest text-neutral-400">Order Number</p>
+                                    <p class="text-[15px] font-bold text-neutral-800 mt-1">{{ $order->order_number }}</p>
+                                </div>
+                                <div class="bg-[#F7F4F2] rounded-xl px-4 py-3">
+                                    <p class="text-[10px] font-semibold uppercase tracking-widest text-neutral-400">Placed On</p>
+                                    <p class="text-[13px] font-semibold text-neutral-700 mt-1">{{ $order->created_at->format('d M Y') }}</p>
+                                    <p class="text-[11px] text-neutral-400">{{ $order->created_at->format('h:i A') }}</p>
+                                </div>
+                            </div>
+
+                            @if($order->discount > 0)
+                            <div class="mt-3 inline-flex items-center gap-1.5 text-[12px] font-semibold px-3 py-1.5 rounded-full" style="background:rgba(183,110,121,.08);color:#202a40;">
+                                <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M17.707 9.293a1 1 0 010 1.414l-7 7a1 1 0 01-1.414 0l-7-7A.997.997 0 012 10V5a3 3 0 013-3h5c.256 0 .512.098.707.293l7 7zM5 6a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"/></svg>
+                                You saved @price($order->discount) on this order!
+                            </div>
+                            @endif
+                        </div>
                     </div>
 
-                    <div class="divide-y divide-neutral-50">
-                        @foreach($order->items as $item)
-                            <div class="flex gap-3.5 p-4">
+                    {{-- Items ordered --}}
+                    <div class="anim-fade-2 bg-white rounded-2xl border border-neutral-100 shadow-sm overflow-hidden">
+                        <div class="flex items-center justify-between px-5 py-3.5 border-b border-neutral-100">
+                            <h2 class="text-[13px] font-bold text-neutral-800">Items Ordered</h2>
+                            <span class="text-[11px] text-neutral-400 bg-neutral-100 px-2 py-0.5 rounded-full">
+                                {{ $order->items->count() }} {{ Str::plural('item', $order->items->count()) }}
+                            </span>
+                        </div>
+
+                        <div class="divide-y divide-neutral-50">
+                            @foreach($order->items as $item)
+                            <div class="flex gap-3 p-4">
                                 @if($item->product && $item->product->primary_image_url)
                                     <img src="{{ $item->product->primary_image_url }}" alt="{{ $item->product_name }}"
-                                         class="w-14 h-14 object-cover rounded-lg border border-neutral-100 shrink-0">
+                                         class="w-14 h-14 object-cover rounded-lg border border-neutral-100 shrink-0 bg-neutral-50">
                                 @else
                                     <div class="w-14 h-14 rounded-lg bg-neutral-100 flex items-center justify-center shrink-0">
-                                        <svg class="w-6 h-6 text-neutral-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                                        </svg>
+                                        <svg class="w-5 h-5 text-neutral-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                                     </div>
                                 @endif
                                 <div class="flex-1 min-w-0">
-                                    <p class="text-[13px] font-semibold text-neutral-900 truncate">{{ $item->product_name }}</p>
+                                    <p class="text-[13px] font-semibold text-neutral-900 leading-snug line-clamp-2">{{ $item->product_name }}</p>
                                     @if($item->variant_name)
-                                        <p class="text-[12px] text-neutral-600 mt-0.5">{{ $item->variant_name }}</p>
+                                        <p class="text-[11px] text-neutral-400 mt-0.5">{{ $item->variant_name }}</p>
                                     @endif
-                                    <p class="text-[12px] text-neutral-600 mt-0.5">Qty: {{ $item->quantity }}</p>
+                                    <p class="text-[11px] text-neutral-400 mt-0.5">Qty: {{ $item->quantity }}</p>
                                 </div>
                                 <div class="text-right shrink-0">
-                                    <p class="text-[13px] font-semibold text-neutral-900">@price($item->total)</p>
+                                    <p class="text-[13px] font-bold text-neutral-900">@price($item->total)</p>
                                     @if($item->quantity > 1)
-                                        <p class="text-[11px] text-neutral-600">@price($item->price) each</p>
+                                        <p class="text-[11px] text-neutral-400 mt-0.5">@price($item->price) each</p>
                                     @endif
                                 </div>
                             </div>
-                        @endforeach
+                            @endforeach
+                        </div>
                     </div>
 
-                    <!-- Price Breakdown -->
-                    <div class="px-5 py-4 border-t border-neutral-100 space-y-2">
-                        <div class="flex justify-between text-[13px]">
-                            <span class="text-neutral-600">Subtotal</span>
-                            <span class="text-neutral-700">@price($order->subtotal)</span>
-                        </div>
-                        @if($order->discount > 0)
-                            <div class="flex justify-between text-[13px]">
-                                <span class="text-[#B76E79] flex items-center gap-1">
-                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/>
-                                    </svg>
-                                    Discount
-                                </span>
-                                <span class="text-[#B76E79] font-medium">-@price($order->discount)</span>
-                            </div>
-                        @endif
-                        @if($order->tax > 0)
-                            <div class="flex justify-between text-[13px]">
-                                <span class="text-neutral-600">Tax</span>
-                                <span class="text-neutral-700">@price($order->tax)</span>
-                            </div>
-                        @endif
-                        <div class="flex justify-between text-[13px]">
-                            <span class="text-neutral-600">Shipping</span>
-                            <span class="text-neutral-700">
-                                @if($order->shipping_cost > 0)
-                                    @price($order->shipping_cost)
-                                @else
-                                    <span class="text-[#B76E79]">Free</span>
-                                @endif
-                            </span>
-                        </div>
-                        <div class="flex justify-between pt-2.5 mt-1 border-t border-dashed border-neutral-200">
-                            <span class="text-sm font-bold text-neutral-900">Total Paid</span>
-                            <span class="text-sm font-bold text-neutral-900">@price($order->total)</span>
-                        </div>
-                    </div>
                 </div>
 
-                <!-- Shipping & Payment Info -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-                    <!-- Shipping Address -->
-                    <div class="bg-white rounded-xl border border-neutral-100 p-4">
-                        <div class="flex items-center gap-2 mb-3">
-                            <svg class="w-4 h-4 text-neutral-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
-                            </svg>
-                            <h3 class="text-[13px] font-semibold text-neutral-900">Shipping Address</h3>
+                {{-- ── RIGHT COL — Summary + shipping + payment + actions ── --}}
+                <div class="lg:col-span-5 space-y-4 lg:sticky lg:top-6">
+
+                    {{-- Price summary --}}
+                    <div class="anim-fade-2 bg-white rounded-2xl border border-neutral-100 shadow-sm overflow-hidden">
+                        <div class="px-5 py-3.5 border-b border-neutral-100">
+                            <h2 class="text-[13px] font-bold text-neutral-800">Order Summary</h2>
                         </div>
-                        @php $shipping = $order->shipping_address_snapshot; @endphp
-                        @if($shipping)
-                            <div class="text-[13px] text-neutral-600 leading-relaxed">
-                                <p class="font-medium text-neutral-800">{{ $shipping['name'] ?? '' }}</p>
-                                @if(!empty($shipping['phone']))
-                                    <p class="text-neutral-600 text-[12px]">{{ $shipping['phone'] }}</p>
-                                @endif
-                                <p class="mt-1">
-                                    {{ $shipping['address_line_1'] ?? '' }}@if(!empty($shipping['address_line_2'])), {{ $shipping['address_line_2'] }}@endif<br>
-                                    {{ $shipping['city'] ?? '' }}, {{ $shipping['state'] ?? '' }} {{ $shipping['postal_code'] ?? '' }}
-                                </p>
+                        <div class="px-5 py-4 space-y-2.5">
+                            <div class="flex justify-between text-[12px] text-neutral-500">
+                                <span>Subtotal</span>
+                                <span>@price($order->subtotal)</span>
                             </div>
-                        @endif
+                            @if($order->discount > 0)
+                            <div class="flex justify-between text-[12px]">
+                                <span class="text-[#202a40]">Discount</span>
+                                <span class="text-[#202a40] font-medium">−@price($order->discount)</span>
+                            </div>
+                            @endif
+                            @if($order->tax > 0)
+                            <div class="flex justify-between text-[12px] text-neutral-500">
+                                <span>Tax (GST incl.)</span>
+                                <span>@price($order->tax)</span>
+                            </div>
+                            @endif
+                            <div class="flex justify-between text-[12px] text-neutral-500">
+                                <span>Shipping</span>
+                                <span class="{{ $order->shipping_cost > 0 ? '' : 'text-[#202a40] font-medium' }}">
+                                    {{ $order->shipping_cost > 0 ? '£'.number_format($order->shipping_cost, 2) : 'Free' }}
+                                </span>
+                            </div>
+                            <div class="flex justify-between pt-3 border-t border-dashed border-neutral-200">
+                                <span class="text-[14px] font-bold text-neutral-900">Total Paid</span>
+                                <span class="text-[14px] font-bold text-neutral-900">@price($order->total)</span>
+                            </div>
+                        </div>
                     </div>
 
-                    <!-- Payment Method -->
-                    <div class="bg-white rounded-xl border border-neutral-100 p-4">
-                        <div class="flex items-center gap-2 mb-3">
-                            <svg class="w-4 h-4 text-neutral-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/>
-                            </svg>
-                            <h3 class="text-[13px] font-semibold text-neutral-900">Payment</h3>
+                    {{-- Shipping & Payment --}}
+                    <div class="anim-fade-3 bg-white rounded-2xl border border-neutral-100 shadow-sm divide-y divide-neutral-100 overflow-hidden">
+
+                        {{-- Shipping address --}}
+                        <div class="p-4">
+                            <div class="flex items-center gap-2 mb-2.5">
+                                <div class="w-6 h-6 rounded-full bg-[#202a40]/10 flex items-center justify-center">
+                                    <svg class="w-3.5 h-3.5 text-[#202a40]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                                </div>
+                                <h3 class="text-[12px] font-bold text-neutral-700">Deliver To</h3>
+                            </div>
+                            @php $shipping = $order->shipping_address_snapshot; @endphp
+                            @if($shipping)
+                            <div class="text-[12px] text-neutral-500 leading-relaxed space-y-0.5">
+                                <p class="font-semibold text-neutral-800">{{ $shipping['name'] ?? '' }}</p>
+                                @if(!empty($shipping['phone']))<p>{{ $shipping['phone'] }}</p>@endif
+                                <p>{{ $shipping['address_line_1'] ?? '' }}@if(!empty($shipping['address_line_2'])), {{ $shipping['address_line_2'] }}@endif</p>
+                                <p>{{ $shipping['city'] ?? '' }}, {{ $shipping['state'] ?? '' }} {{ $shipping['postal_code'] ?? '' }}</p>
+                            </div>
+                            @endif
                         </div>
-                        <div class="text-[13px] text-neutral-600">
+
+                        {{-- Payment --}}
+                        <div class="p-4">
+                            <div class="flex items-center gap-2 mb-2.5">
+                                <div class="w-6 h-6 rounded-full bg-[#202a40]/10 flex items-center justify-center">
+                                    <svg class="w-3.5 h-3.5 text-[#202a40]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                                </div>
+                                <h3 class="text-[12px] font-bold text-neutral-700">Payment</h3>
+                            </div>
                             @php $paymentMethod = $order->metadata['payment_method'] ?? 'cod'; @endphp
-                            <p class="font-medium text-neutral-800">
-                                @switch($paymentMethod)
-                                    @case('cod')
-                                        Cash on Delivery
-                                        @break
-                                    @case('card')
-                                        Credit/Debit Card
-                                        @break
-                                    @case('upi')
-                                        UPI
-                                        @break
-                                    @case('paypal')
-                                        PayPal
-                                        @break
-                                    @default
-                                        {{ ucfirst($paymentMethod) }}
-                                @endswitch
-                            </p>
-                            <p class="text-[12px] mt-1">
-                                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium
-                                    {{ $order->payment_status === 'paid' ? 'bg-[#B76E79]/5 text-[#B76E79]' : 'bg-[#c29958]/10 text-[#c29958]' }}">
-                                    <span class="w-1.5 h-1.5 rounded-full {{ $order->payment_status === 'paid' ? 'bg-[#B76E79]' : 'bg-[#c29958]' }}"></span>
+                            <div class="flex items-center justify-between">
+                                <p class="text-[12px] font-semibold text-neutral-800">
+                                    @switch($paymentMethod)
+                                        @case('cod') Pending Payment @break
+                                        @case('card') Credit / Debit Card @break
+                                        @case('paypal') PayPal @break
+                                        @case('paypal') PayPal @break
+                                        @default {{ ucfirst($paymentMethod) }}
+                                    @endswitch
+                                </p>
+                                <span class="inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full
+                                    {{ $order->payment_status === 'paid' ? 'bg-green-50 text-green-600' : 'bg-amber-50 text-amber-600' }}">
+                                    <span class="w-1.5 h-1.5 rounded-full {{ $order->payment_status === 'paid' ? 'bg-green-500' : 'bg-amber-500' }}"></span>
                                     {{ ucfirst($order->payment_status) }}
                                 </span>
-                            </p>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                @if($order->discount > 0)
-                    <!-- Savings Banner -->
-                    <div class="bg-[#B76E79]/5 border border-[#B76E79]/20 rounded-xl px-4 py-3 mb-4 flex items-center gap-2.5">
-                        <svg class="w-5 h-5 text-[#B76E79] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/>
-                        </svg>
-                        <p class="text-[13px] font-medium text-[#B76E79]">
-                            You saved @price($order->discount) on this order!
-                        </p>
+                    {{-- Action buttons --}}
+                    <div class="anim-fade-3 space-y-2.5">
+                        @if(auth()->check())
+                        <a href="{{ route('account.orders.show', $order) }}"
+                           class="flex items-center justify-center gap-2 w-full py-3 rounded-xl text-[13px] font-bold text-white"
+                           style="background:#202a40;">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+                            Track Order
+                        </a>
+                        @endif
+                        <a href="{{ route('products.index') }}"
+                           class="flex items-center justify-center gap-2 w-full py-3 rounded-xl text-[13px] font-semibold border border-neutral-200 bg-white text-neutral-700 hover:bg-neutral-50 transition-all">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z"/></svg>
+                            Continue Shopping
+                        </a>
                     </div>
-                @endif
 
-                <!-- Actions -->
-                <div class="flex flex-col sm:flex-row gap-3">
-                    @if(auth()->check())
-                    <a href="{{ route('account.orders.show', $order) }}"
-                       class="flex-1 inline-flex items-center justify-center gap-2 px-3 py-1.5 bg-[#B76E79] text-white text-sm font-semibold rounded-lg hover:bg-[#956060] transition-colors">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-                        </svg>
-                        Track Order
-                    </a>
-                    @endif
-                    <a href="{{ route('products.index') }}"
-                       class="flex-1 inline-flex items-center justify-center gap-2 px-3 py-1.5 {{ auth()->check() ? 'border border-neutral-200 text-neutral-700 hover:bg-neutral-50 hover:border-neutral-300' : 'bg-[#B76E79] text-white hover:bg-[#956060]' }} text-sm font-{{ auth()->check() ? 'medium' : 'semibold' }} rounded-lg transition-all">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z"/>
-                        </svg>
-                        Continue Shopping
-                    </a>
                 </div>
-
-                <!-- Email Notice -->
-                @if(auth()->check())
-                <p class="text-center text-[12px] text-neutral-600 mt-6">
-                    A confirmation email has been sent to <span class="font-medium text-neutral-600">{{ auth()->user()->email }}</span>
-                </p>
-                @elseif($order->guest_email)
-                <p class="text-center text-[12px] text-neutral-600 mt-6">
-                    A confirmation email will be sent to <span class="font-medium text-neutral-600">{{ $order->guest_email }}</span>
-                </p>
-                @endif
             </div>
         </div>
     </div>
 
-    {{-- GA4 Purchase + FB Purchase tracking --}}
+    {{-- GA4 + FB Purchase tracking --}}
     @if(config('services.ga4.measurement_id') || config('services.facebook.pixel_id'))
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             <?php
             $orderItemsArr = $order->items->map(function($item) {
                 return [
-                    'item_id' => $item->sku ?? (string) $item->product_id,
+                    'item_id'   => $item->sku ?? (string) $item->product_id,
                     'item_name' => $item->product_name,
-                    'price' => (float) $item->price,
-                    'quantity' => $item->quantity,
+                    'price'     => (float) $item->price,
+                    'quantity'  => $item->quantity,
                 ];
             })->values()->toArray();
             ?>
@@ -271,7 +269,7 @@
                 value: {{ (float) $order->total }},
                 tax: {{ (float) $order->tax }},
                 shipping: {{ (float) $order->shipping_cost }},
-                currency: 'INR',
+                currency: 'GBP',
                 items: orderItems
             });
             @endif
@@ -281,7 +279,7 @@
                 content_ids: {!! json_encode($order->items->pluck('product_id')->map('strval')->values()->toArray()) !!},
                 content_type: 'product',
                 value: {{ (float) $order->total }},
-                currency: 'INR',
+                currency: 'GBP',
                 num_items: {{ $order->items->sum('quantity') }},
                 order_id: '{{ $order->order_number }}'
             }@if(!empty($fbPurchaseEventId)), {eventID: '{{ $fbPurchaseEventId }}'}@endif);

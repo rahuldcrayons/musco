@@ -44,12 +44,12 @@ class SettingsController extends Controller
         abort_unless($affiliate, 403);
 
         $validated = $request->validate([
-            'payout_method' => 'required|string|in:bank_transfer,upi',
+            'payout_method' => 'required|string|in:bank_transfer,paypal',
             'bank_name' => 'required_if:payout_method,bank_transfer|nullable|string|max:255',
             'bank_account' => 'required_if:payout_method,bank_transfer|nullable|string|max:50',
             'bank_ifsc' => 'required_if:payout_method,bank_transfer|nullable|string|max:20',
             'bank_holder_name' => 'required_if:payout_method,bank_transfer|nullable|string|max:255',
-            'upi_id' => 'required_if:payout_method,upi|nullable|string|max:100',
+            'paypal_email' => 'required_if:payout_method,paypal|nullable|email|max:100',
         ]);
 
         $data = ['payout_method' => $validated['payout_method']];
@@ -62,7 +62,7 @@ class SettingsController extends Controller
                 'holder_name' => $validated['bank_holder_name'],
             ];
         } else {
-            $data['upi_id'] = $validated['upi_id'];
+            $data['paypal_email'] = $validated['paypal_email'];
         }
 
         $affiliate->update($data);

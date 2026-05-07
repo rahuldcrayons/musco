@@ -11,7 +11,7 @@ class ReviewSchemaService
     {
         $description = strip_tags($product->short_description ?? $product->description ?? '');
         if (empty($description)) {
-            $description = $product->name . ' - Available at ' . config('app.name', 'MusCo');
+            $description = $product->name . ' - Available at ' . config('app.name', 'Trendymus');
         }
 
         // Truncate description to avoid Google warnings (max ~5000 chars)
@@ -44,7 +44,7 @@ class ReviewSchemaService
         } else {
             $schema['brand'] = [
                 '@type' => 'Brand',
-                'name' => config('app.name', 'MusCo'),
+                'name' => config('app.name', 'Trendymus'),
             ];
         }
 
@@ -57,7 +57,7 @@ class ReviewSchemaService
         $offer = [
             '@type' => 'Offer',
             'url' => route('product.show', $product),
-            'priceCurrency' => 'INR',
+            'priceCurrency' => 'GBP',
             'price' => (float) number_format((float) $product->price, 2, '.', ''),
             'priceValidUntil' => now()->addMonths(6)->format('Y-m-d'),
             'itemCondition' => 'https://schema.org/NewCondition',
@@ -66,7 +66,7 @@ class ReviewSchemaService
                 : 'https://schema.org/OutOfStock',
             'seller' => [
                 '@type' => 'Organization',
-                'name' => config('app.name', 'MusCo'),
+                'name' => config('app.name', 'Trendymus'),
             ],
         ];
 
@@ -79,11 +79,11 @@ class ReviewSchemaService
             'shippingRate' => [
                 '@type' => 'MonetaryAmount',
                 'value' => $shippingCost,
-                'currency' => 'INR',
+                'currency' => 'GBP',
             ],
             'shippingDestination' => [
                 '@type' => 'DefinedRegion',
-                'addressCountry' => 'IN',
+                'addressCountry' => 'GB',
             ],
             'deliveryTime' => [
                 '@type' => 'ShippingDeliveryTime',
@@ -106,7 +106,7 @@ class ReviewSchemaService
         $returnDays = (int) Setting::get('return_policy_days', 7);
         $offer['hasMerchantReturnPolicy'] = [
             '@type' => 'MerchantReturnPolicy',
-            'applicableCountry' => 'IN',
+            'applicableCountry' => 'GB',
             'returnPolicyCategory' => 'https://schema.org/MerchantReturnFiniteReturnWindow',
             'merchantReturnDays' => $returnDays,
             'returnMethod' => 'https://schema.org/ReturnByMail',

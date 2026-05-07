@@ -1,17 +1,8 @@
 <x-layouts.app>
     <x-slot name="title">Raise a Ticket</x-slot>
 
-    <div class="bg-neutral-50 border-b border-neutral-100">
-        <div class="container mx-auto px-4 py-3">
-            <x-breadcrumb :items="[['label' => 'My Account', 'url' => route('account.dashboard')], ['label' => 'Support Tickets', 'url' => route('account.tickets.index')], ['label' => 'Raise Ticket', 'url' => null]]" />
-        </div>
-    </div>
+    @include('account.partials.sidebar')
 
-    <div class="container mx-auto px-4 py-6 sm:py-8">
-        <div class="flex flex-col lg:flex-row gap-6">
-            @include('account.partials.sidebar')
-
-            <div class="flex-1 min-w-0">
                 <div class="flex items-center gap-3 mb-5">
                     <a href="{{ route('account.tickets.index') }}" class="text-neutral-600 hover:text-neutral-600">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -29,7 +20,7 @@
                             <div>
                                 <label for="category" class="block text-sm font-medium text-neutral-700 mb-1.5">Category <span class="text-[#CC0C39]">*</span></label>
                                 <select name="category" id="category" required
-                                        class="w-full px-4 py-2.5 bg-neutral-50 border border-neutral-200 rounded-xl text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-[#B76E79]/20 focus:border-[#B76E79] transition-all @error('category') border-[#CC0C39]/30 @enderror">
+                                        class="w-full px-4 py-2.5 bg-neutral-50 border border-neutral-200 rounded-xl text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-[#202a40]/20 focus:border-[#202a40] transition-all @error('category') border-[#CC0C39]/30 @enderror">
                                     <option value="">Select category</option>
                                     <option value="general" @selected(old('category') === 'general')>General Inquiry</option>
                                     <option value="order" @selected(old('category') === 'order')>Order Issue</option>
@@ -46,7 +37,7 @@
                             <div>
                                 <label for="priority" class="block text-sm font-medium text-neutral-700 mb-1.5">Priority <span class="text-[#CC0C39]">*</span></label>
                                 <select name="priority" id="priority" required
-                                        class="w-full px-4 py-2.5 bg-neutral-50 border border-neutral-200 rounded-xl text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-[#B76E79]/20 focus:border-[#B76E79] transition-all @error('priority') border-[#CC0C39]/30 @enderror">
+                                        class="w-full px-4 py-2.5 bg-neutral-50 border border-neutral-200 rounded-xl text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-[#202a40]/20 focus:border-[#202a40] transition-all @error('priority') border-[#CC0C39]/30 @enderror">
                                     <option value="low" @selected(old('priority', 'normal') === 'low')>Low</option>
                                     <option value="normal" @selected(old('priority', 'normal') === 'normal')>Normal</option>
                                     <option value="high" @selected(old('priority') === 'high')>High</option>
@@ -60,7 +51,7 @@
                         <div>
                             <label for="subject" class="block text-sm font-medium text-neutral-700 mb-1.5">Subject <span class="text-[#CC0C39]">*</span></label>
                             <input type="text" name="subject" id="subject" value="{{ old('subject') }}" required
-                                   class="w-full px-4 py-2.5 bg-neutral-50 border border-neutral-200 rounded-xl text-sm text-neutral-900 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-[#B76E79]/20 focus:border-[#B76E79] transition-all @error('subject') border-[#CC0C39]/30 @enderror"
+                                   class="w-full px-4 py-2.5 bg-neutral-50 border border-neutral-200 rounded-xl text-sm text-neutral-900 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-[#202a40]/20 focus:border-[#202a40] transition-all @error('subject') border-[#CC0C39]/30 @enderror"
                                    placeholder="Brief description of your issue">
                             @error('subject')
                                 <p class="mt-1 text-xs text-[#CC0C39]">{{ $message }}</p>
@@ -70,7 +61,7 @@
                         <div>
                             <label for="message" class="block text-sm font-medium text-neutral-700 mb-1.5">Message <span class="text-[#CC0C39]">*</span></label>
                             <textarea name="message" id="message" rows="6" required
-                                      class="w-full px-4 py-2.5 bg-neutral-50 border border-neutral-200 rounded-xl text-sm text-neutral-900 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-[#B76E79]/20 focus:border-[#B76E79] transition-all resize-none @error('message') border-[#CC0C39]/30 @enderror"
+                                      class="w-full px-4 py-2.5 bg-neutral-50 border border-neutral-200 rounded-xl text-sm text-neutral-900 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-[#202a40]/20 focus:border-[#202a40] transition-all resize-none @error('message') border-[#CC0C39]/30 @enderror"
                                       placeholder="Describe your issue in detail...">{{ old('message') }}</textarea>
                             @error('message')
                                 <p class="mt-1 text-xs text-[#CC0C39]">{{ $message }}</p>
@@ -79,14 +70,13 @@
 
                         <div class="flex items-center gap-3 pt-1">
                             <button type="submit"
-                                    class="px-4 py-2 bg-gradient-to-r from-[#B76E79] to-[#222222] hover:from-[#222222] hover:to-[#D47200] text-white text-sm font-semibold rounded-xl shadow-lg shadow-[#B76E79]/25 transition-all">
+                                    class="px-4 py-2 bg-gradient-to-r from-[#202a40] to-[#222222] hover:from-[#222222] hover:to-[#D47200] text-white text-sm font-semibold rounded-xl shadow-lg shadow-[#202a40]/25 transition-all">
                                 Submit Ticket
                             </button>
                             <a href="{{ route('account.tickets.index') }}" class="px-3 py-1.5 text-sm text-neutral-600 hover:text-neutral-900">Cancel</a>
                         </div>
                     </form>
                 </div>
-            </div>
-        </div>
-    </div>
+
+    @include('account.partials.sidebar-end')
 </x-layouts.app>

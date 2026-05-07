@@ -28,7 +28,7 @@ class HomepageController extends Controller
     {
         $settings = [
             'site_logo' => Setting::get('site_logo', ''),
-            'site_name' => Setting::get('site_name', 'MusCo'),
+            'site_name' => Setting::get('site_name', 'Trendymus'),
             'site_tagline' => Setting::get('site_tagline', 'Unlock Your Natural Beauty'),
             'site_description' => Setting::get('site_description', ''),
             'footer_about' => Setting::get('footer_about', ''),
@@ -426,11 +426,11 @@ class HomepageController extends Controller
     public function navigation()
     {
         $headerMenus = NavigationMenu::getByLocation('header');
-        $footerCol1 = NavigationMenu::getByLocation('footer_col1');
-        $footerCol2 = NavigationMenu::getByLocation('footer_col2');
-        $footerCol3 = NavigationMenu::getByLocation('footer_col3');
+        $footer_col1 = NavigationMenu::getByLocation('footer_col1');
+        $footer_col2 = NavigationMenu::getByLocation('footer_col2');
+        $footer_col3 = NavigationMenu::getByLocation('footer_col3');
 
-        return view('admin.homepage.navigation', compact('headerMenus', 'footerCol1', 'footerCol2', 'footerCol3'));
+        return view('admin.homepage.navigation', compact('headerMenus', 'footer_col1', 'footer_col2', 'footer_col3'));
     }
 
     public function storeNavItem(Request $request)

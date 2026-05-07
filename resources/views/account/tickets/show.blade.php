@@ -1,17 +1,7 @@
 <x-layouts.app>
     <x-slot name="title">Ticket #{{ $ticket->id }}</x-slot>
 
-    <div class="bg-neutral-50 border-b border-neutral-100">
-        <div class="container mx-auto px-4 py-3">
-            <x-breadcrumb :items="[['label' => 'My Account', 'url' => route('account.dashboard')], ['label' => 'Support Tickets', 'url' => route('account.tickets.index')], ['label' => '#' . $ticket->id, 'url' => null]]" />
-        </div>
-    </div>
-
-    <div class="container mx-auto px-4 py-6 sm:py-8">
-        <div class="flex flex-col lg:flex-row gap-6">
-            @include('account.partials.sidebar')
-
-            <div class="flex-1 min-w-0">
+    @include('account.partials.sidebar')
                 <!-- Header -->
                 <div class="flex items-start justify-between mb-5">
                     <div class="flex items-center gap-3">
@@ -41,7 +31,7 @@
                 </div>
 
                 @if(session('success'))
-                    <div class="mb-4 p-4 bg-[#B76E79]/5 border border-[#B76E79]/20 rounded-xl text-sm text-[#B76E79]">
+                    <div class="mb-4 p-4 bg-[#202a40]/5 border border-[#202a40]/20 rounded-xl text-sm text-[#202a40]">
                         {{ session('success') }}
                     </div>
                 @endif
@@ -53,8 +43,8 @@
                     </div>
                     <div class="p-5">
                         <div class="flex items-start gap-3">
-                            <div class="w-8 h-8 bg-[#B76E79]/10 rounded-full flex items-center justify-center shrink-0">
-                                <span class="text-xs font-semibold text-[#B76E79]">{{ strtoupper(substr(auth()->user()->first_name, 0, 1)) }}</span>
+                            <div class="w-8 h-8 bg-[#202a40]/10 rounded-full flex items-center justify-center shrink-0">
+                                <span class="text-xs font-semibold text-[#202a40]">{{ strtoupper(substr(auth()->user()->first_name, 0, 1)) }}</span>
                             </div>
                             <div class="flex-1 min-w-0">
                                 <div class="flex items-center gap-2 mb-1">
@@ -71,11 +61,11 @@
 
                 <!-- Replies -->
                 @foreach($ticket->replies as $reply)
-                    <div class="bg-white border border-neutral-100 rounded-xl mb-4 {{ $reply->is_admin ? 'border-l-4 border-l-[#B76E79]' : '' }}">
+                    <div class="bg-white border border-neutral-100 rounded-xl mb-4 {{ $reply->is_admin ? 'border-l-4 border-l-[#202a40]' : '' }}">
                         <div class="p-5">
                             <div class="flex items-start gap-3">
-                                <div class="w-8 h-8 rounded-full flex items-center justify-center shrink-0 {{ $reply->is_admin ? 'bg-[#B76E79]' : 'bg-[#B76E79]/10' }}">
-                                    <span class="text-xs font-semibold {{ $reply->is_admin ? 'text-white' : 'text-[#B76E79]' }}">
+                                <div class="w-8 h-8 rounded-full flex items-center justify-center shrink-0 {{ $reply->is_admin ? 'bg-[#202a40]' : 'bg-[#202a40]/10' }}">
+                                    <span class="text-xs font-semibold {{ $reply->is_admin ? 'text-white' : 'text-[#202a40]' }}">
                                         {{ $reply->is_admin ? 'S' : strtoupper(substr(auth()->user()->first_name, 0, 1)) }}
                                     </span>
                                 </div>
@@ -83,7 +73,7 @@
                                     <div class="flex items-center gap-2 mb-1">
                                         <span class="text-sm font-medium text-neutral-900">{{ $reply->is_admin ? 'Support Team' : 'You' }}</span>
                                         @if($reply->is_admin)
-                                            <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-[#B76E79]/10 text-[#222222]">Staff</span>
+                                            <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-[#202a40]/10 text-[#222222]">Staff</span>
                                         @endif
                                         <span class="text-xs text-neutral-600">{{ $reply->created_at->diffForHumans() }}</span>
                                     </div>
@@ -105,14 +95,14 @@
                         <form action="{{ route('account.tickets.reply', $ticket) }}" method="POST" class="p-5">
                             @csrf
                             <textarea name="message" rows="4" required
-                                      class="w-full px-4 py-2.5 bg-neutral-50 border border-neutral-200 rounded-xl text-sm text-neutral-900 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-[#B76E79]/20 focus:border-[#B76E79] transition-all resize-none @error('message') border-[#CC0C39]/30 @enderror"
+                                      class="w-full px-4 py-2.5 bg-neutral-50 border border-neutral-200 rounded-xl text-sm text-neutral-900 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-[#202a40]/20 focus:border-[#202a40] transition-all resize-none @error('message') border-[#CC0C39]/30 @enderror"
                                       placeholder="Type your reply...">{{ old('message') }}</textarea>
                             @error('message')
                                 <p class="mt-1 text-xs text-[#CC0C39]">{{ $message }}</p>
                             @enderror
                             <div class="mt-3 flex justify-end">
                                 <button type="submit"
-                                        class="px-3 py-1.5 bg-[#B76E79] text-white text-sm font-semibold rounded-lg hover:bg-[#222222] transition-colors">
+                                        class="px-3 py-1.5 bg-[#202a40] text-white text-sm font-semibold rounded-lg transition-colors">
                                     Send Reply
                                 </button>
                             </div>
@@ -123,7 +113,6 @@
                         This ticket is closed. If you need further help, please raise a new ticket.
                     </div>
                 @endif
-            </div>
-        </div>
-    </div>
+
+    @include('account.partials.sidebar-end')
 </x-layouts.app>

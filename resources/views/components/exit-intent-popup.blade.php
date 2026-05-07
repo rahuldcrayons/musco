@@ -33,8 +33,8 @@
 
         {{-- Content --}}
         <div class="p-6 sm:p-8 text-center">
-            <div class="w-16 h-16 mx-auto mb-4 bg-[#B76E79]/10 rounded-full flex items-center justify-center">
-                <svg class="w-8 h-8 text-[#B76E79]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 11.25v8.25a1.5 1.5 0 0 1-1.5 1.5H5.25a1.5 1.5 0 0 1-1.5-1.5v-8.25M12 4.875A2.625 2.625 0 1 0 9.375 7.5H12m0-2.625V7.5m0-2.625A2.625 2.625 0 1 1 14.625 7.5H12m0 0V21m-8.625-9.75h18c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125h-18c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125Z"/></svg>
+            <div class="w-16 h-16 mx-auto mb-4 bg-[#202a40]/10 rounded-full flex items-center justify-center">
+                <svg class="w-8 h-8 text-[#202a40]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 11.25v8.25a1.5 1.5 0 0 1-1.5 1.5H5.25a1.5 1.5 0 0 1-1.5-1.5v-8.25M12 4.875A2.625 2.625 0 1 0 9.375 7.5H12m0-2.625V7.5m0-2.625A2.625 2.625 0 1 1 14.625 7.5H12m0 0V21m-8.625-9.75h18c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125h-18c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125Z"/></svg>
             </div>
 
             <h2 class="text-xl sm:text-2xl font-bold text-[#222222] mb-2">{{ $exitHeadline }}</h2>
@@ -44,10 +44,10 @@
             <form @submit.prevent="submitEmail()" class="space-y-3">
                 <input type="email" x-model="email" required
                        placeholder="Enter your email address"
-                       class="w-full px-4 py-3 border border-neutral-300 rounded-lg text-sm focus:ring-2 focus:ring-[#B76E79] focus:border-[#B76E79] outline-none">
+                       class="w-full px-4 py-3 border border-neutral-300 rounded-lg text-sm focus:ring-2 focus:ring-[#202a40] focus:border-[#202a40] outline-none">
 
                 <button type="submit" :disabled="submitting"
-                        class="w-full py-3 bg-[#B76E79] hover:bg-[#222222] text-white font-bold rounded-lg text-sm transition-colors disabled:opacity-50">
+                        class="w-full py-3 bg-[#202a40] text-white font-bold rounded-lg text-sm transition-colors disabled:opacity-50">
                     <span x-show="!submitting">{{ $exitButtonText }}</span>
                     <span x-show="submitting">Sending...</span>
                 </button>
@@ -56,8 +56,8 @@
             <p class="text-[11px] text-[#555555] mt-3">No spam, ever. Unsubscribe anytime.</p>
 
             {{-- Success message --}}
-            <div x-show="success" x-cloak class="mt-4 p-3 bg-[#B76E79]/5 border border-[#B76E79]/20 rounded-lg">
-                <p class="text-sm text-[#B76E79] font-medium">{{ $exitSuccessMsg }}</p>
+            <div x-show="success" x-cloak class="mt-4 p-3 bg-[#202a40]/5 border border-[#202a40]/20 rounded-lg">
+                <p class="text-sm text-[#202a40] font-medium">{{ $exitSuccessMsg }}</p>
             </div>
 
             <button @click="dismiss()" class="mt-4 text-xs text-[#555555] hover:text-[#222222] underline">No thanks, I'll pay full price</button>

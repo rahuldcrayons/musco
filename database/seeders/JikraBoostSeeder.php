@@ -9,16 +9,16 @@ use App\Models\Review;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Carbon;
 
-class MusCoBoostSeeder extends Seeder
+class TrendimusBoostSeeder extends Seeder
 {
     public function run(): void
     {
-        // ── 1. Create/assign "MusCo" brand to all products ──
+        // ── 1. Create/assign "Trendimus" brand to all products ──
         $brand = Brand::firstOrCreate(
-            ['slug' => 'musco'],
+            ['slug' => 'trendimus'],
             [
-                'name' => 'MusCo',
-                'description' => 'MusCo - Quality products for everyday life.',
+                'name' => 'Trendimus',
+                'description' => 'Trendimus - Quality products for everyday life.',
                 'is_active' => true,
                 'is_featured' => true,
                 'position' => 0,
@@ -29,7 +29,7 @@ class MusCoBoostSeeder extends Seeder
             ->whereNull('brand_id')
             ->update(['brand_id' => $brand->id]);
 
-        $this->command->info("Brand 'MusCo' (ID: {$brand->id}) assigned to {$updated} products.");
+        $this->command->info("Brand 'Trendimus' (ID: {$brand->id}) assigned to {$updated} products.");
 
         // ── 2. Seed 10+ reviews per product (rating 3.8–4.6) ──
         $names = [
@@ -49,9 +49,9 @@ class MusCoBoostSeeder extends Seeder
             5 => [
                 'Amazing quality! Delivered on time and exactly as described. Very happy with this purchase.',
                 'This is exactly what I was looking for. The quality is premium and worth every rupee.',
-                'Superb product! My family loves it. Will definitely buy more from MusCo.',
+                'Superb product! My family loves it. Will definitely buy more from Trendimus.',
                 'Outstanding quality and fast delivery. Highly recommend to everyone!',
-                'Best product in this price range. MusCo never disappoints!',
+                'Best product in this price range. Trendimus never disappoints!',
             ],
             4 => [
                 'Good quality product. Packaging was great and delivery was fast.',

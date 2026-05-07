@@ -25,7 +25,7 @@
                 @if($lastShift->closing_cash !== null)
                 <div class="flex justify-between text-sm mt-1">
                     <span style="color: var(--pos-text-muted);">Closing Cash</span>
-                    <span class="pos-mono font-medium">₹{{ number_format($lastShift->closing_cash, 2) }}</span>
+                    <span class="pos-mono font-medium">£{{ number_format($lastShift->closing_cash, 2) }}</span>
                 </div>
                 @endif
             </div>
@@ -37,7 +37,7 @@
                     Opening Cash in Drawer
                 </label>
                 <div class="relative">
-                    <span class="absolute left-4 top-1/2 -translate-y-1/2 text-lg font-medium" style="color: var(--pos-text-muted);">₹</span>
+                    <span class="absolute left-4 top-1/2 -translate-y-1/2 text-lg font-medium" style="color: var(--pos-text-muted);">£</span>
                     <input
                         type="text"
                         x-ref="cashInput"
@@ -55,16 +55,16 @@
             <div class="flex gap-2 mb-5">
                 <button @click="setAmount(0)" class="flex-1 py-2 rounded-lg text-sm font-medium border transition-colors"
                         :style="openingCash === '0.00' ? 'background: var(--pos-primary); color: white; border-color: var(--pos-primary);' : 'border-color: var(--pos-border); color: var(--pos-text-muted);'"
-                >₹0</button>
+                >£0</button>
                 <button @click="setAmount(500)" class="flex-1 py-2 rounded-lg text-sm font-medium border transition-colors"
                         :style="openingCash === '500.00' ? 'background: var(--pos-primary); color: white; border-color: var(--pos-primary);' : 'border-color: var(--pos-border); color: var(--pos-text-muted);'"
-                >₹500</button>
+                >£5</button>
                 <button @click="setAmount(1000)" class="flex-1 py-2 rounded-lg text-sm font-medium border transition-colors"
                         :style="openingCash === '1000.00' ? 'background: var(--pos-primary); color: white; border-color: var(--pos-primary);' : 'border-color: var(--pos-border); color: var(--pos-text-muted);'"
-                >₹1,000</button>
+                >£10</button>
                 <button @click="setAmount(2000)" class="flex-1 py-2 rounded-lg text-sm font-medium border transition-colors"
                         :style="openingCash === '2000.00' ? 'background: var(--pos-primary); color: white; border-color: var(--pos-primary);' : 'border-color: var(--pos-border); color: var(--pos-text-muted);'"
-                >₹2,000</button>
+                >£20</button>
             </div>
 
             {{-- Error --}}

@@ -170,11 +170,11 @@ function adminSearch() {
                 const data = await res.json();
                 this.results = (data.data || data || []).slice(0, 8).map(item => {
                     if (this.section === 'products') {
-                        return { title: item.name, subtitle: '₹' + item.price, image: item.primary_image_url || null, url: `/admin/products/${item.id}/edit` };
+                        return { title: item.name, subtitle: '£' + item.price, image: item.primary_image_url || null, url: `/admin/products/${item.id}/edit` };
                     } else if (this.section === 'orders') {
-                        return { title: item.order_number, subtitle: '₹' + item.total, image: null, url: `/admin/orders/${item.id}` };
+                        return { title: item.order_number, subtitle: (item.customer || 'Guest') + ' · £' + item.total, image: null, url: `/admin/orders/${item.id}` };
                     } else {
-                        return { title: (item.first_name || '') + ' ' + (item.last_name || ''), subtitle: item.email, image: null, url: `/admin/customers/${item.id}` };
+                        return { title: item.first_name || item.email, subtitle: item.email, image: null, url: `/admin/customers/${item.id}` };
                     }
                 });
             } catch(e) { this.results = []; }

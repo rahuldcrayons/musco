@@ -28,7 +28,7 @@ return new class extends Migration
         HomepageSection::firstOrCreate(
             ['key' => 'product_banner_1'],
             [
-                'title' => 'MusCo Electric Lighter',
+                'title' => 'Trendimus Electric Lighter',
                 'subtitle' => null,
                 'type' => 'product_banner',
                 'image_url' => 'sections/banner-lighter.jpg',
@@ -42,7 +42,7 @@ return new class extends Migration
         HomepageSection::firstOrCreate(
             ['key' => 'product_banner_2'],
             [
-                'title' => 'MusCo Coffee Mug',
+                'title' => 'Trendimus Coffee Mug',
                 'subtitle' => null,
                 'type' => 'product_banner',
                 'image_url' => 'sections/banner-coffee-mug.jpg',

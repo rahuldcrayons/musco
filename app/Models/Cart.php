@@ -55,6 +55,12 @@ class Cart extends Model
         $subtotal = $this->items->sum('total');
         $discount = 0;
 
+        // Auto-remove expired or invalid coupons
+        if ($this->coupon && !$this->coupon->isValid()) {
+            $this->coupon_id = null;
+            $this->setRelation('coupon', null);
+        }
+
         if ($this->coupon && $this->coupon->isValid()) {
             $discount = $this->coupon->calculateDiscount($subtotal, $this->items);
         }
@@ -74,6 +80,7 @@ class Cart extends Model
         }
 
         $tax = $this->items->sum(function ($item) {
+            if (!$item->product) return 0;
             return $item->product->is_taxable
                 ? ($item->total * $item->product->tax_rate / 100)
                 : 0;

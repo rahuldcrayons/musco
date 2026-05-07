@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 
 class NewsletterController extends Controller
 {
-    public function subscribe(Request $request): JsonResponse
+    public function subscribe(Request $request): JsonResponse|\Illuminate\Http\RedirectResponse
     {
         $validated = $request->validate([
             'email' => 'required|email|max:255',
@@ -20,10 +20,10 @@ class NewsletterController extends Controller
 
         if ($existing) {
             if ($existing->is_active) {
-                return response()->json([
-                    'success' => true,
-                    'message' => 'This email is already subscribed!',
-                ]);
+                $message = 'This email is already subscribed!';
+                return $request->expectsJson()
+                    ? response()->json(['success' => true, 'message' => $message])
+                    : back()->with('newsletter_success', $message);
             }
 
             // Re-subscribe
@@ -35,10 +35,10 @@ class NewsletterController extends Controller
                 'ip_address'       => $request->ip(),
             ]);
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Welcome back! You have been re-subscribed.',
-            ]);
+            $message = 'Welcome back! You have been re-subscribed.';
+            return $request->expectsJson()
+                ? response()->json(['success' => true, 'message' => $message])
+                : back()->with('newsletter_success', $message);
         }
 
         NewsletterSubscriber::create([
@@ -53,9 +53,9 @@ class NewsletterController extends Controller
         // Facebook CAPI: Subscribe
         app(AnalyticsService::class)->trackSubscribe($validated['email'], $request);
 
-        return response()->json([
-            'success' => true,
-            'message' => 'You\'re subscribed! Check your inbox for your 15% off coupon.',
-        ]);
+        $message = "You're subscribed! Check your inbox for your 15% off coupon.";
+        return $request->expectsJson()
+            ? response()->json(['success' => true, 'message' => $message])
+            : back()->with('newsletter_success', $message);
     }
 }

@@ -10,7 +10,7 @@
 
         {{-- Flash Messages --}}
         @if(session('success'))
-            <div class="bg-[#B76E79]/5 border border-[#B76E79]/20 text-[#B76E79] text-sm px-4 py-3 rounded-lg">{{ session('success') }}</div>
+            <div class="bg-[#202a40]/5 border border-[#202a40]/20 text-[#202a40] text-sm px-4 py-3 rounded-lg">{{ session('success') }}</div>
         @endif
         @if(session('error'))
             <div class="bg-[#CC0C39]/10 border border-[#CC0C39]/20 text-[#CC0C39] text-sm px-4 py-3 rounded-lg">{{ session('error') }}</div>

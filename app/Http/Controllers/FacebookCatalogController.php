@@ -20,7 +20,7 @@ class FacebookCatalogController extends Controller
             ->get();
 
         $appUrl = rtrim(config('app.url'), '/');
-        $appName = config('app.name', 'MusCo');
+        $appName = config('app.name', 'Trendymus');
 
         $xml = '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
         $xml .= '<rss xmlns:g="http://base.google.com/ns/1.0" version="2.0">' . "\n";
@@ -45,7 +45,7 @@ class FacebookCatalogController extends Controller
     private function buildItem(Product $product, string $appUrl): string
     {
         $availability = $product->isInStock() ? 'in stock' : 'out of stock';
-        $price = number_format((float) $product->price, 2, '.', '') . ' INR';
+        $price = number_format((float) $product->price, 2, '.', '') . ' GBP';
         $link = $appUrl . '/product/' . $product->slug;
         $imageUrl = $product->primary_image_url;
 
@@ -79,8 +79,8 @@ class FacebookCatalogController extends Controller
 
         // Price: use MRP as base price if discounted, otherwise use price
         if ($product->mrp && $product->price < $product->mrp) {
-            $mrpPrice = number_format((float) $product->mrp, 2, '.', '') . ' INR';
-            $salePrice = number_format((float) $product->price, 2, '.', '') . ' INR';
+            $mrpPrice = number_format((float) $product->mrp, 2, '.', '') . ' GBP';
+            $salePrice = number_format((float) $product->price, 2, '.', '') . ' GBP';
             $item .= "    <g:price>{$mrpPrice}</g:price>\n";
             $item .= "    <g:sale_price>{$salePrice}</g:sale_price>\n";
         } else {

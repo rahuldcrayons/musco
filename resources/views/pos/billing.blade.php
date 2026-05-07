@@ -53,7 +53,7 @@
                             </div>
                         </div>
                         <div class="text-right">
-                            <div class="text-sm font-semibold pos-mono" x-text="'₹' + product.price.toFixed(2)"></div>
+                            <div class="text-sm font-semibold pos-mono" x-text="'£' + product.price.toFixed(2)"></div>
                             <div class="pos-badge-stock text-xs"
                                  :class="product.stock > 0 ? (product.low_stock ? 'low-stock' : 'in-stock') : 'out-of-stock'"
                                  x-text="product.stock > 0 ? product.stock + ' in stock' : 'Out of stock'"></div>
@@ -197,8 +197,8 @@
                             {{-- Info --}}
                             <div class="text-xs font-medium truncate" style="color: var(--pos-text);" x-text="product.name"></div>
                             <div class="flex items-baseline gap-1 mt-0.5">
-                                <span class="text-sm font-bold pos-mono" style="color: var(--pos-primary);" x-text="'₹' + product.price.toFixed(0)"></span>
-                                <span x-show="product.mrp > product.price" class="text-xs pos-mono line-through" style="color: var(--pos-text-muted);" x-text="'₹' + product.mrp.toFixed(0)"></span>
+                                <span class="text-sm font-bold pos-mono" style="color: var(--pos-primary);" x-text="'£' + product.price.toFixed(0)"></span>
+                                <span x-show="product.mrp > product.price" class="text-xs pos-mono line-through" style="color: var(--pos-text-muted);" x-text="'£' + product.mrp.toFixed(0)"></span>
                             </div>
                         </button>
                     </template>
@@ -286,10 +286,10 @@
                         <div class="flex-1 min-w-0">
                             <div class="text-sm font-medium truncate" style="color: var(--pos-text);" x-text="item.product_name"></div>
                             <div x-show="item.variant_name" class="text-xs" style="color: var(--pos-text-muted);" x-text="item.variant_name"></div>
-                            <div class="text-xs pos-mono mt-0.5" style="color: var(--pos-text-muted);" x-text="'₹' + item.price.toFixed(2) + ' × ' + item.quantity"></div>
+                            <div class="text-xs pos-mono mt-0.5" style="color: var(--pos-text-muted);" x-text="'£' + item.price.toFixed(2) + ' × ' + item.quantity"></div>
                             {{-- Discount per item --}}
                             <div x-show="item.discount > 0" class="text-xs mt-0.5" style="color: var(--pos-success);">
-                                -₹<span x-text="item.discount.toFixed(2)" class="pos-mono"></span> discount
+                                -£<span x-text="item.discount.toFixed(2)" class="pos-mono"></span> discount
                             </div>
                         </div>
                         {{-- Quantity Controls --}}
@@ -308,7 +308,7 @@
                         </div>
                         {{-- Line Total + Remove --}}
                         <div class="text-right min-w-[70px]">
-                            <div class="text-sm font-semibold pos-mono" x-text="'₹' + item.total.toFixed(2)"></div>
+                            <div class="text-sm font-semibold pos-mono" x-text="'£' + item.total.toFixed(2)"></div>
                             <button @click="removeItem(item)" class="text-xs mt-1" style="color: var(--pos-danger);">Remove</button>
                         </div>
                     </div>
@@ -335,7 +335,7 @@
                         <div class="flex items-center justify-between w-full">
                             <div class="flex items-center gap-2">
                                 <span class="px-2 py-0.5 rounded text-xs font-bold pos-mono" style="background: #DCFCE7; color: #166534;" x-text="cart.coupon.code"></span>
-                                <span class="text-xs" style="color: var(--pos-success);" x-text="'-₹' + cart.coupon.discount.toFixed(2)"></span>
+                                <span class="text-xs" style="color: var(--pos-success);" x-text="'-£' + cart.coupon.discount.toFixed(2)"></span>
                             </div>
                             <button @click="removeCoupon()" class="text-xs" style="color: var(--pos-danger);">Remove</button>
                         </div>
@@ -346,19 +346,19 @@
                 <div class="px-4 py-3 space-y-1.5">
                     <div class="flex justify-between text-sm" style="color: var(--pos-text-muted);">
                         <span>Subtotal</span>
-                        <span class="pos-mono" x-text="'₹' + cart.subtotal.toFixed(2)"></span>
+                        <span class="pos-mono" x-text="'£' + cart.subtotal.toFixed(2)"></span>
                     </div>
                     <div x-show="cart.discount > 0" class="flex justify-between text-sm" style="color: var(--pos-success);">
                         <span>Discount</span>
-                        <span class="pos-mono" x-text="'-₹' + cart.discount.toFixed(2)"></span>
+                        <span class="pos-mono" x-text="'-£' + cart.discount.toFixed(2)"></span>
                     </div>
                     <div x-show="cart.tax > 0" class="flex justify-between text-sm" style="color: var(--pos-text-muted);">
                         <span>Tax (GST)</span>
-                        <span class="pos-mono" x-text="'₹' + cart.tax.toFixed(2)"></span>
+                        <span class="pos-mono" x-text="'£' + cart.tax.toFixed(2)"></span>
                     </div>
                     <div class="flex justify-between text-lg font-bold pt-1.5" style="border-top: 1px solid var(--pos-border); color: var(--pos-text);">
                         <span>Total</span>
-                        <span class="pos-mono" x-text="'₹' + cart.total.toFixed(2)"></span>
+                        <span class="pos-mono" x-text="'£' + cart.total.toFixed(2)"></span>
                     </div>
                 </div>
 
@@ -409,7 +409,7 @@
                                         :style="variant.in_stock ? 'color: var(--pos-success);' : 'color: var(--pos-danger);'"></span>
                             </div>
                         </div>
-                        <span class="text-sm font-bold pos-mono" style="color: var(--pos-primary);" x-text="'₹' + variant.price.toFixed(2)"></span>
+                        <span class="text-sm font-bold pos-mono" style="color: var(--pos-primary);" x-text="'£' + variant.price.toFixed(2)"></span>
                     </button>
                 </template>
             </div>
@@ -430,7 +430,7 @@
             {{-- Total --}}
             <div class="text-center mb-5 p-4 rounded-lg" style="background: #F8FAFC;">
                 <div class="text-sm" style="color: var(--pos-text-muted);">Amount Due</div>
-                <div class="text-3xl font-bold pos-mono" style="color: var(--pos-text);" x-text="'₹' + cart.total.toFixed(2)"></div>
+                <div class="text-3xl font-bold pos-mono" style="color: var(--pos-text);" x-text="'£' + cart.total.toFixed(2)"></div>
             </div>
 
             {{-- Payment method tabs --}}
@@ -459,15 +459,15 @@
                                 style="border-color: var(--pos-border);">Exact</button>
                         <button @click="cashReceived = (Math.ceil(cart.total / 100) * 100).toFixed(2)" class="flex-1 py-2 rounded text-sm font-medium border transition-colors"
                                 style="border-color: var(--pos-border);"
-                                x-text="'₹' + (Math.ceil(cart.total / 100) * 100)"></button>
+                                x-text="'£' + (Math.ceil(cart.total / 100) * 100)"></button>
                         <button @click="cashReceived = (Math.ceil(cart.total / 500) * 500).toFixed(2)" class="flex-1 py-2 rounded text-sm font-medium border transition-colors"
                                 style="border-color: var(--pos-border);"
-                                x-text="'₹' + (Math.ceil(cart.total / 500) * 500)"></button>
+                                x-text="'£' + (Math.ceil(cart.total / 500) * 500)"></button>
                     </div>
                     {{-- Change --}}
                     <div x-show="parseFloat(cashReceived) >= cart.total" class="mt-3 p-3 rounded-lg text-center" style="background: #DCFCE7;">
                         <div class="text-sm" style="color: #166534;">Change Due</div>
-                        <div class="text-2xl font-bold pos-mono" style="color: #166534;" x-text="'₹' + (parseFloat(cashReceived) - cart.total).toFixed(2)"></div>
+                        <div class="text-2xl font-bold pos-mono" style="color: #166534;" x-text="'£' + (parseFloat(cashReceived) - cart.total).toFixed(2)"></div>
                     </div>
                 </div>
             </template>
@@ -511,7 +511,7 @@
                         <span style="color: var(--pos-text-muted);">Remaining</span>
                         <span class="pos-mono font-medium"
                               :style="splitRemaining() > 0 ? 'color: var(--pos-danger);' : 'color: var(--pos-success);'"
-                              x-text="'₹' + splitRemaining().toFixed(2)"></span>
+                              x-text="'£' + splitRemaining().toFixed(2)"></span>
                     </div>
                 </div>
             </template>
@@ -540,14 +540,14 @@
                     <div class="p-2 rounded" style="background: #DCFCE7;">
                         <div class="flex items-center justify-between">
                             <span class="text-xs font-bold pos-mono" style="color: #166534;" x-text="creditNote.number"></span>
-                            <span class="text-xs" style="color: #166534;">Balance: ₹<span x-text="creditNote.remaining.toFixed(2)" class="pos-mono"></span></span>
+                            <span class="text-xs" style="color: #166534;">Balance: £<span x-text="creditNote.remaining.toFixed(2)" class="pos-mono"></span></span>
                         </div>
                         <div class="flex items-center justify-between mt-1">
                             <span class="text-xs" style="color: #166534;">Applied:</span>
-                            <span class="text-sm font-bold pos-mono" style="color: #166534;" x-text="'-₹' + creditNoteApplied.toFixed(2)"></span>
+                            <span class="text-sm font-bold pos-mono" style="color: #166534;" x-text="'-£' + creditNoteApplied.toFixed(2)"></span>
                         </div>
                         <div x-show="amountAfterCreditNote() > 0" class="text-xs mt-1" style="color: #166534;">
-                            Remaining to pay: ₹<span x-text="amountAfterCreditNote().toFixed(2)" class="pos-mono font-medium"></span>
+                            Remaining to pay: £<span x-text="amountAfterCreditNote().toFixed(2)" class="pos-mono font-medium"></span>
                         </div>
                     </div>
                 </template>
@@ -579,7 +579,7 @@
             <h3 class="text-xl font-bold mb-1" style="color: var(--pos-text);">Sale Complete!</h3>
             <p class="text-sm mb-1" style="color: var(--pos-text-muted);">Bill #<span x-text="lastSale.sale_number" class="pos-mono font-medium"></span></p>
             <p x-show="lastSale.change > 0" class="text-lg font-bold pos-mono mb-4" style="color: var(--pos-success);">
-                Change: ₹<span x-text="lastSale.change.toFixed(2)"></span>
+                Change: £<span x-text="lastSale.change.toFixed(2)"></span>
             </p>
             <div class="flex gap-2 mt-5">
                 <button @click="printReceipt()" class="flex-1 pos-btn pos-btn-ghost text-sm gap-1.5">
@@ -669,7 +669,7 @@
                             <div class="text-sm font-medium" x-text="bill.reference || 'Bill #' + bill.id"></div>
                             <div class="text-xs" style="color: var(--pos-text-muted);">
                                 <span x-text="bill.items_count + ' items'"></span> ·
-                                <span x-text="'₹' + parseFloat(bill.total).toFixed(2)" class="pos-mono"></span> ·
+                                <span x-text="'£' + parseFloat(bill.total).toFixed(2)" class="pos-mono"></span> ·
                                 <span x-text="bill.created_at_human"></span>
                             </div>
                         </div>
@@ -706,7 +706,7 @@
                     </div>
                     <h4 class="text-lg font-bold mb-1" style="color: var(--pos-text);">Return Processed</h4>
                     <p class="text-sm" style="color: var(--pos-text-muted);">Return #<span x-text="returnSuccess.return_number" class="pos-mono font-medium"></span></p>
-                    <p class="text-xl font-bold pos-mono mt-2" style="color: var(--pos-success);">Refund: ₹<span x-text="returnSuccess.refund_amount.toFixed(2)"></span></p>
+                    <p class="text-xl font-bold pos-mono mt-2" style="color: var(--pos-success);">Refund: £<span x-text="returnSuccess.refund_amount.toFixed(2)"></span></p>
                     <p x-show="returnSuccess.credit_note" class="text-sm mt-1" style="color: var(--pos-primary);">Credit Note: <span x-text="returnSuccess.credit_note" class="pos-mono font-medium"></span></p>
                     <button @click="returnSuccess = null; showReturnsModal = false" class="pos-btn pos-btn-primary mt-5 px-8 text-sm">Done</button>
                 </div>
@@ -750,7 +750,7 @@
                                                 </div>
                                             </div>
                                             <div class="text-right">
-                                                <div class="text-sm font-bold pos-mono" x-text="'₹' + sale.total.toFixed(2)"></div>
+                                                <div class="text-sm font-bold pos-mono" x-text="'£' + sale.total.toFixed(2)"></div>
                                                 <div class="text-xs" style="color: var(--pos-text-muted);" x-text="sale.items.length + ' items'"></div>
                                             </div>
                                         </button>
@@ -772,7 +772,7 @@
                                         <span class="text-sm font-medium pos-mono" x-text="returnSelectedSale.sale_number"></span>
                                         <span class="text-xs ml-2" style="color: var(--pos-text-muted);" x-text="returnSelectedSale.date"></span>
                                     </div>
-                                    <span class="text-sm font-bold pos-mono" x-text="'₹' + returnSelectedSale.total.toFixed(2)"></span>
+                                    <span class="text-sm font-bold pos-mono" x-text="'£' + returnSelectedSale.total.toFixed(2)"></span>
                                 </div>
 
                                 <p class="text-xs font-medium mb-2" style="color: var(--pos-text-muted);">Select items to return:</p>
@@ -785,7 +785,7 @@
                                                 <input type="checkbox" x-model="item.selected" class="rounded" style="accent-color: var(--pos-primary);">
                                                 <div class="flex-1 min-w-0">
                                                     <div class="text-sm font-medium truncate" x-text="item.product_name"></div>
-                                                    <div class="text-xs" style="color: var(--pos-text-muted);">₹<span x-text="item.price.toFixed(2)" class="pos-mono"></span> × <span x-text="item.max_qty"></span></div>
+                                                    <div class="text-xs" style="color: var(--pos-text-muted);">£<span x-text="item.price.toFixed(2)" class="pos-mono"></span> × <span x-text="item.max_qty"></span></div>
                                                 </div>
                                                 <div x-show="item.selected" class="flex items-center gap-1">
                                                     <button @click="item.qty = Math.max(1, item.qty - 1)" class="w-6 h-6 rounded border flex items-center justify-center text-xs font-bold"
@@ -795,7 +795,7 @@
                                                             style="border-color: var(--pos-border);">+</button>
                                                 </div>
                                                 <div class="text-right min-w-[60px]">
-                                                    <span class="text-sm font-bold pos-mono" x-text="item.selected ? '₹' + (item.price * item.qty).toFixed(2) : ''"></span>
+                                                    <span class="text-sm font-bold pos-mono" x-text="item.selected ? '£' + (item.price * item.qty).toFixed(2) : ''"></span>
                                                 </div>
                                             </div>
                                             <div x-show="item.selected" class="mt-2 flex gap-2">
@@ -818,7 +818,7 @@
                                     <div class="p-3 rounded-lg" style="background: #FFF7ED; border: 1px solid #FED7AA;">
                                         <div class="flex justify-between text-sm font-medium">
                                             <span>Refund Total</span>
-                                            <span class="pos-mono font-bold" style="color: var(--pos-accent);" x-text="'₹' + returnItems.filter(i=>i.selected).reduce((s,i)=>s+i.price*i.qty,0).toFixed(2)"></span>
+                                            <span class="pos-mono font-bold" style="color: var(--pos-accent);" x-text="'£' + returnItems.filter(i=>i.selected).reduce((s,i)=>s+i.price*i.qty,0).toFixed(2)"></span>
                                         </div>
                                     </div>
 

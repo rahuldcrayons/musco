@@ -51,7 +51,7 @@
                             <td class="px-6 py-4 text-sm font-medium text-neutral-900">#{{ $redemption->id }}</td>
                             <td class="px-6 py-4 text-sm text-neutral-600">{{ $redemption->created_at->format('d M Y, h:i A') }}</td>
                             <td class="px-6 py-4 text-sm text-neutral-900">
-                                {{ $redemption->payout_method === 'bank_transfer' ? 'Bank Transfer' : 'UPI' }}
+                                {{ $redemption->payout_method === 'bank_transfer' ? 'Bank Transfer' : 'PayPal' }}
                             </td>
                             <td class="px-6 py-4 text-sm font-medium text-neutral-900 text-right">@price($redemption->amount)</td>
                             <td class="px-6 py-4 text-center">

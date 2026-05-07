@@ -12,14 +12,21 @@ class OrderController extends Controller
 {
     public function index(Request $request): View
     {
-        $query = $request->user()->orders()->with('items.product');
+        $user = $request->user();
+
+        // Claim any guest orders placed with the same email and link them to this account
+        Order::whereNull('user_id')
+            ->where('guest_email', $user->email)
+            ->update(['user_id' => $user->id]);
+
+        $query = $user->orders()->with('items.product');
 
         // Filter by status
         if ($request->filled('status')) {
             $query->where('status', $request->status);
         }
 
-        $orders = $query->latest()->paginate(10)->withQueryString();
+        $orders = $query->latest()->paginate(3)->withQueryString();
 
         return view('account.orders.index', compact('orders'));
     }

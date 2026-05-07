@@ -69,7 +69,6 @@
                 <div class="card p-6">
                     <h3 class="font-semibold text-neutral-900 mb-3">Footer: {{ $label }}</h3>
                     <div class="space-y-2">
-                        @php $items = ${str_replace('footer_', 'footerCol', ucfirst(str_replace('footer_col', 'footerCol', $loc)))} ?? collect(); @endphp
                         @forelse($$loc as $item)
                             <div class="flex items-center justify-between p-2 bg-neutral-50 rounded">
                                 <div>

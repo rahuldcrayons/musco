@@ -14,13 +14,12 @@ class DashboardController extends Controller
     {
         $user = auth()->user();
 
-        // Recent orders
+        // Recent orders — paginated 4 per page
         $recentOrders = Order::query()
             ->where('user_id', $user->id)
             ->with(['items.product'])
             ->latest()
-            ->take(5)
-            ->get();
+            ->paginate(4);
 
         // Order statistics
         $orderStats = [

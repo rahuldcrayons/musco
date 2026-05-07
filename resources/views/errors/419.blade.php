@@ -37,7 +37,7 @@
             width: 6rem;
             height: 6rem;
             margin: 0 auto 1.5rem;
-            background: linear-gradient(135deg, #B76E79 0%, #222222 100%);
+            background: linear-gradient(135deg, #202a40 0%, #222222 100%);
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -76,7 +76,7 @@
             transition: all 0.2s;
         }
         .btn-primary {
-            background: linear-gradient(to right, #B76E79, #222222);
+            background: linear-gradient(to right, #202a40, #222222);
             color: #fff;
             box-shadow: 0 4px 12px rgba(248, 147, 29, 0.25);
         }
@@ -86,14 +86,14 @@
             color: #555;
             border: 1px solid #ddd;
         }
-        .btn-outline:hover { border-color: #B76E79; color: #B76E79; }
+        .btn-outline:hover { border-color: #202a40; color: #202a40; }
         .btn svg { width: 1rem; height: 1rem; }
     </style>
 </head>
 <body>
     <div class="header">
         <a href="{{ url('/') }}">
-            <span style="font-family:'Outfit',sans-serif; color:#B76E79; font-size:32px; font-weight:700; letter-spacing:-0.02em;">Mus<span style="color:#2b2b2b;">Co</span></span>
+            <span style="font-family:'Outfit',sans-serif; color:#202a40; font-size:32px; font-weight:700; letter-spacing:-0.02em;">Mus<span style="color:#2b2b2b;">Co</span></span>
         </a>
     </div>
     <div class="content">
@@ -104,18 +104,40 @@
                 </svg>
             </div>
             <div class="code">419</div>
-            <h1 class="title">Page Expired</h1>
-            <p class="message">Your session has expired. This usually happens when you've been away for a while. Please refresh the page and try again.</p>
+            <h1 class="title">Session Expired</h1>
+            <p class="message">Your form session expired. Redirecting you back in <strong id="count">3</strong>s — please resubmit once the page reloads.</p>
             <div class="actions">
-                <a href="{{ url('/') }}" class="btn btn-primary">
+                <a id="back-btn" href="javascript:history.back()" class="btn btn-primary">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 17l-5-5m0 0l5-5m-5 5h12"/></svg>
+                    Go Back & Try Again
+                </a>
+                <a href="{{ url('/') }}" class="btn btn-outline">
                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
                     Go Home
                 </a>
-                <a href="javascript:location.reload()" class="btn btn-outline">
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-                    Refresh Page
-                </a>
             </div>
+            <script>
+                // Auto-redirect back after 3 seconds
+                let c = 3;
+                const el = document.getElementById('count');
+                const timer = setInterval(() => {
+                    c--;
+                    if (el) el.textContent = c;
+                    if (c <= 0) {
+                        clearInterval(timer);
+                        if (document.referrer) {
+                            window.location.href = document.referrer;
+                        } else {
+                            history.back();
+                        }
+                    }
+                }, 1000);
+                // Update back button to use referrer if available
+                const btn = document.getElementById('back-btn');
+                if (btn && document.referrer) {
+                    btn.href = document.referrer;
+                }
+            </script>
         </div>
     </div>
 </body>

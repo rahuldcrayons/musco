@@ -37,7 +37,7 @@
             </label>
             <input type="tel" name="phone" id="phone" value="{{ old('phone') }}"
                    class="form-input w-full @error('phone') border-error-300 @enderror"
-                   placeholder="+91 98765 43210">
+                   placeholder="+44 7459914080">
             @error('phone')
                 <p class="mt-1 text-sm text-error-600">{{ $message }}</p>
             @enderror

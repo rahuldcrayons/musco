@@ -1,6 +1,10 @@
 <x-layouts.app>
     <x-slot name="title">Shopping Cart - {{ config('app.name') }}</x-slot>
 
+    @push('meta')
+        <meta name="robots" content="noindex, nofollow">
+    @endpush
+
     <div class="bg-neutral-50 min-h-screen" x-data="cartPage()" x-cloak>
         <div class="container mx-auto px-4 py-4">
             <x-breadcrumb :items="[['label' => 'Shopping Cart', 'url' => null]]" />
@@ -159,18 +163,18 @@
                             <template x-if="true">
                                 <div>
                                     <template x-if="subtotal < {{ $freeShipThreshold }}">
-                                        <div class="bg-[#B76E79]/10 border border-[#B76E79]/20 rounded-md px-3.5 py-2.5 mb-3">
-                                            <p class="text-xs text-[#B76E79] font-semibold mb-1.5">
+                                        <div class="bg-[#202a40]/10 border border-[#202a40]/20 rounded-md px-3.5 py-2.5 mb-3">
+                                            <p class="text-xs text-[#202a40] font-semibold mb-1.5">
                                                 Add <span x-text="fp({{ $freeShipThreshold }} - subtotal)"></span> more for FREE shipping!
                                             </p>
-                                            <div class="bg-[#B76E79]/15 rounded h-1.5 overflow-hidden">
-                                                <div class="bg-[#B76E79] h-full rounded transition-all duration-300" :style="'width:' + Math.min(100, (subtotal / {{ $freeShipThreshold }}) * 100) + '%'"></div>
+                                            <div class="bg-[#202a40]/15 rounded h-1.5 overflow-hidden">
+                                                <div class="bg-[#202a40] h-full rounded transition-all duration-300" :style="'width:' + Math.min(100, (subtotal / {{ $freeShipThreshold }}) * 100) + '%'"></div>
                                             </div>
                                         </div>
                                     </template>
                                     <template x-if="subtotal >= {{ $freeShipThreshold }}">
-                                        <div class="bg-[#B76E79]/5 rounded-md px-3.5 py-2 mb-3">
-                                            <p class="text-xs text-[#B76E79] font-semibold">&#10003; You qualify for FREE shipping!</p>
+                                        <div class="bg-[#202a40]/5 rounded-md px-3.5 py-2 mb-3">
+                                            <p class="text-xs text-[#202a40] font-semibold">&#10003; You qualify for FREE shipping!</p>
                                         </div>
                                     </template>
                                 </div>
@@ -273,10 +277,17 @@
 
                                 <!-- Checkout Button -->
                                 <div class="p-4 pt-0">
-                                    <a href="{{ route('checkout.index') }}"
-                                       class="block w-full py-2 bg-primary-600 hover:bg-primary-700 text-white text-sm font-semibold text-center rounded-lg transition-colors shadow-sm">
-                                        PROCEED TO CHECKOUT
-                                    </a>
+                                    @auth
+                                        <a href="{{ route('checkout.index') }}"
+                                           class="block w-full py-2 bg-[#202a40] text-white text-sm font-semibold text-center rounded-lg transition-colors shadow-sm uppercase tracking-wide">
+                                            Proceed to Checkout
+                                        </a>
+                                    @else
+                                        <a href="{{ route('checkout.index') }}"
+                                           class="block w-full py-2 bg-[#202a40] text-white text-sm font-semibold text-center rounded-lg transition-colors shadow-sm uppercase tracking-wide">
+                                            Proceed to Checkout
+                                        </a>
+                                    @endauth
                                 </div>
 
                                 <!-- Trust Badges -->
@@ -318,7 +329,7 @@
                                              loading="lazy"
                                              onerror="this.src='{{ asset('images/placeholder-product.svg') }}'">
                                         @if($rec['has_discount'] && $rec['discount_pct'] > 0)
-                                            <span class="absolute top-2 left-2 bg-[#B76E79] text-white text-[10px] font-bold px-1.5 py-0.5 rounded">{{ $rec['discount_pct'] }}% Off</span>
+                                            <span class="absolute top-2 left-2 bg-[#202a40] text-white text-[10px] font-bold px-1.5 py-0.5 rounded">{{ $rec['discount_pct'] }}% Off</span>
                                         @endif
                                     </div>
                                 </a>
@@ -327,7 +338,7 @@
                                         <p class="text-[10px] text-neutral-500 uppercase tracking-wide mb-0.5">{{ $rec['brand'] }}</p>
                                     @endif
                                     <a href="{{ $rec['url'] }}" class="block">
-                                        <h3 class="text-xs font-medium text-neutral-800 line-clamp-2 leading-snug mb-1.5 group-hover:text-[#c29958]">{{ $rec['name'] }}</h3>
+                                        <h3 class="text-xs font-medium text-neutral-800 line-clamp-2 leading-snug mb-1.5 group-hover:text-[#506282]">{{ $rec['name'] }}</h3>
                                     </a>
                                     @if($rec['rating'] > 0)
                                         <div class="flex items-center gap-1 mb-1">
@@ -344,7 +355,7 @@
                                         @endif
                                     </div>
                                     <button @click="$store.cart.add({{ $rec['id'] }})"
-                                            class="w-full py-2 text-[11px] font-semibold text-white bg-[#B76E79] rounded-md hover:bg-[#222222] transition-colors">
+                                            class="w-full py-2 text-[11px] font-semibold text-white bg-[#202a40] rounded-md transition-colors">
                                         Add to Bag
                                     </button>
                                 </div>
@@ -357,15 +368,15 @@
             <template x-if="items.length === 0">
                 <!-- Empty Cart -->
                 <div class="flex flex-col items-center justify-center bg-white rounded-xl border border-neutral-100 py-20 px-6 mt-4">
-                    <div class="w-24 h-24 mb-6 bg-[#B76E79]/5 rounded-full flex items-center justify-center">
-                        <svg class="w-12 h-12 text-[#B76E79]/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div class="w-24 h-24 mb-6 bg-[#202a40]/5 rounded-full flex items-center justify-center">
+                        <svg class="w-12 h-12 text-[#202a40]/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
                         </svg>
                     </div>
                     <h2 class="text-xl font-bold text-neutral-800 mb-2">Your bag is empty</h2>
                     <p class="text-sm text-neutral-600 mb-8 max-w-sm text-center leading-relaxed">There is nothing in your bag. Let's add some items.</p>
                     <a href="{{ route('products.index') }}"
-                       class="inline-flex items-center gap-2 bg-[#B76E79] hover:bg-[#222222] text-white text-sm font-semibold px-10 py-2 rounded-lg transition-colors shadow-md shadow-[#B76E79]/20">
+                       class="inline-flex items-center gap-2 bg-[#202a40] text-white text-sm font-semibold px-10 py-2 rounded-lg transition-colors shadow-md shadow-[#202a40]/20">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
                         Start Shopping
                     </a>
@@ -631,7 +642,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             var cartItems = {!! json_encode($ga4CartItems, JSON_UNESCAPED_UNICODE) !!};
             gtag('event', 'view_cart', {
-                currency: 'INR',
+                currency: 'GBP',
                 value: {{ (float) $cart->total }},
                 items: cartItems
             });

@@ -30,5 +30,5 @@ Review Your Purchases
 Your feedback helps other shoppers make the best choices.
 
 Warm regards,
-**{{ config('app.name', 'MusCo') }}**
+**{{ config('app.name', 'Trendymus') }}**
 @endcomponent

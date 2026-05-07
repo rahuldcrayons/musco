@@ -10,7 +10,7 @@
     @include('admin.partials.stats-bar', ['stats' => [
         ['label' => 'Total customers', 'value' => number_format($customers->total()), 'sparkline' => '2,16 10,14 18,12 26,10 34,8 42,6 50,4 58,2', 'color' => '#5c6ac4'],
         ['label' => 'Returning rate', 'value' => '0%', 'sparkline' => '2,10 10,10 18,10 26,10 34,10 42,10 50,10 58,10', 'color' => '#47c1bf'],
-        ['label' => 'Avg order value', 'value' => '₹0', 'sparkline' => '2,10 10,10 18,10 26,10 34,10 42,10 50,10 58,10', 'color' => '#9c6ade'],
+        ['label' => 'Avg order value', 'value' => '£0', 'sparkline' => '2,10 10,10 18,10 26,10 34,10 42,10 50,10 58,10', 'color' => '#9c6ade'],
     ]])
 
     {{-- Main card --}}

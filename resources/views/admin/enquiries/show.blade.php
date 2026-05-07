@@ -29,7 +29,7 @@
     </x-slot>
 
     @if(session('success'))
-        <div class="mb-4 p-4 bg-[#B76E79]/5 border border-[#B76E79]/20 rounded-xl text-sm text-[#B76E79]">
+        <div class="mb-4 p-4 bg-[#202a40]/5 border border-[#202a40]/20 rounded-xl text-sm text-[#202a40]">
             {{ session('success') }}
         </div>
     @endif

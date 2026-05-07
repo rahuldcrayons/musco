@@ -2,7 +2,7 @@
     <x-slot name="title">Help Center</x-slot>
 
     @if(session('success'))
-        <div class="mb-4 p-4 bg-[#B76E79]/5 border border-[#B76E79]/20 rounded-lg text-[#B76E79] text-sm">
+        <div class="mb-4 p-4 bg-[#202a40]/5 border border-[#202a40]/20 rounded-lg text-[#202a40] text-sm">
             {{ session('success') }}
         </div>
     @endif

@@ -18,7 +18,7 @@
             --pos-bg: #F5F5F7;
             --pos-sidebar: #1E293B;
             --pos-card: #FFFFFF;
-            --pos-primary: #B76E79;
+            --pos-primary: #202a40;
             --pos-primary-dark: #222222;
             --pos-success: #15803D;
             --pos-warning: #B45309;

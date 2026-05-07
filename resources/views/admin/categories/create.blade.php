@@ -74,11 +74,11 @@
                             @enderror
                         </div>
                         <div>
-                            <label for="sort_order" class="form-label">Sort Order</label>
-                            <input type="number" name="sort_order" id="sort_order" value="{{ old('sort_order', 0) }}" min="0"
-                                   class="form-input w-full @error('sort_order') form-input-error @enderror">
+                            <label for="position" class="form-label">Sort Order</label>
+                            <input type="number" name="position" id="position" value="{{ old('position', 0) }}" min="0"
+                                   class="form-input w-full @error('position') form-input-error @enderror">
                             <p class="form-help">Lower numbers appear first</p>
-                            @error('sort_order')
+                            @error('position')
                                 <p class="form-error">{{ $message }}</p>
                             @enderror
                         </div>

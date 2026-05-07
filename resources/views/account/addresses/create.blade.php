@@ -86,7 +86,7 @@
                                 <div>
                                     <label for="phone" class="block text-[13px] font-medium text-neutral-600 mb-1.5">Phone Number <span class="text-error-500">*</span></label>
                                     <div class="relative">
-                                        <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-sm text-neutral-600">+91</span>
+                                        <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-sm text-neutral-600">+44</span>
                                         <input type="tel" name="phone" id="phone" value="{{ old('phone') }}" required
                                                class="w-full rounded-lg border border-neutral-200 pl-12 pr-3.5 py-2.5 text-sm text-neutral-900 placeholder-neutral-400 focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-colors @error('phone') border-error-300 ring-1 ring-error-300 @enderror"
                                                placeholder="Enter phone number">
@@ -135,27 +135,12 @@
                                     </div>
 
                                     <div>
-                                        <label for="state" class="block text-[13px] font-medium text-neutral-600 mb-1.5">State <span class="text-error-500">*</span></label>
-                                        <select name="state" id="state" required
-                                                class="w-full rounded-lg border border-neutral-200 px-3.5 py-2.5 text-sm text-neutral-900 focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-colors @error('state') border-error-300 ring-1 ring-error-300 @enderror">
-                                            <option value="">Select state</option>
-                                            @php
-                                                $states = [
-                                                    'Andhra Pradesh', 'Arunachal Pradesh', 'Assam', 'Bihar', 'Chhattisgarh',
-                                                    'Goa', 'Gujarat', 'Haryana', 'Himachal Pradesh', 'Jharkhand',
-                                                    'Karnataka', 'Kerala', 'Madhya Pradesh', 'Maharashtra', 'Manipur',
-                                                    'Meghalaya', 'Mizoram', 'Nagaland', 'Odisha', 'Punjab',
-                                                    'Rajasthan', 'Sikkim', 'Tamil Nadu', 'Telangana', 'Tripura',
-                                                    'Uttar Pradesh', 'Uttarakhand', 'West Bengal',
-                                                    'Andaman and Nicobar Islands', 'Chandigarh', 'Dadra and Nagar Haveli and Daman and Diu',
-                                                    'Delhi', 'Jammu and Kashmir', 'Ladakh', 'Lakshadweep', 'Puducherry',
-                                                ];
-                                            @endphp
-                                            @foreach ($states as $state)
-                                                <option value="{{ $state }}" {{ old('state') === $state ? 'selected' : '' }}>{{ $state }}</option>
-                                            @endforeach
-                                        </select>
-                                        @error('state')
+                                        <label for="postal_code" class="block text-[13px] font-medium text-neutral-600 mb-1.5">Post Code <span class="text-error-500">*</span></label>
+                                        <input type="text" name="postal_code" id="postal_code" value="{{ old('postal_code') }}" required
+                                               maxlength="8"
+                                               class="w-full rounded-lg border border-neutral-200 px-3.5 py-2.5 text-sm text-neutral-900 placeholder-neutral-400 focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-colors @error('postal_code') border-error-300 ring-1 ring-error-300 @enderror"
+                                               placeholder="SW1A 1AA">
+                                        @error('postal_code')
                                             <p class="mt-1 text-[12px] text-error-600">{{ $message }}</p>
                                         @enderror
                                     </div>
@@ -163,21 +148,10 @@
 
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div>
-                                        <label for="postal_code" class="block text-[13px] font-medium text-neutral-600 mb-1.5">PIN Code <span class="text-error-500">*</span></label>
-                                        <input type="text" name="postal_code" id="postal_code" value="{{ old('postal_code') }}" required
-                                               maxlength="6" pattern="[0-9]{6}"
-                                               class="w-full rounded-lg border border-neutral-200 px-3.5 py-2.5 text-sm text-neutral-900 placeholder-neutral-400 focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-colors @error('postal_code') border-error-300 ring-1 ring-error-300 @enderror"
-                                               placeholder="6-digit PIN code">
-                                        @error('postal_code')
-                                            <p class="mt-1 text-[12px] text-error-600">{{ $message }}</p>
-                                        @enderror
-                                    </div>
-
-                                    <div>
                                         <label for="country" class="block text-[13px] font-medium text-neutral-600 mb-1.5">Country <span class="text-error-500">*</span></label>
                                         <select name="country" id="country" required
                                                 class="w-full rounded-lg border border-neutral-200 px-3.5 py-2.5 text-sm text-neutral-900 focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-colors @error('country') border-error-300 ring-1 ring-error-300 @enderror">
-                                            <option value="IN" {{ old('country', 'IN') === 'IN' ? 'selected' : '' }}>India</option>
+                                            <option value="GB" {{ old('country', 'GB') === 'GB' ? 'selected' : '' }}>United Kingdom</option>
                                         </select>
                                         @error('country')
                                             <p class="mt-1 text-[12px] text-error-600">{{ $message }}</p>

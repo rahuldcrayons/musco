@@ -2,259 +2,265 @@
     <x-slot name="title">About Us - {{ config('app.name') }}</x-slot>
 
     @push('meta')
-        <meta name="description" content="Learn about {{ config('app.name') }} - your trusted destination for certified gold, diamond & silver jewellery. Exquisite craftsmanship, hallmarked collections.">
+        <meta name="description" content="Learn about Trendymus &mdash; affordable luxury jewelry that is high-quality, skin-friendly, and beautifully designed for every occasion.">
         <link rel="canonical" href="{{ url('/about') }}">
         <meta property="og:title" content="About Us - {{ config('app.name') }}">
-        <meta property="og:description" content="Learn about {{ config('app.name') }} - your trusted destination for certified gold, diamond & silver jewellery.">
+        <meta property="og:description" content="Trendymus &mdash; affordable luxury jewelry for everyone.">
         <meta property="og:type" content="website">
         <meta property="og:url" content="{{ url('/about') }}">
-        <meta name="twitter:card" content="summary">
-        <meta name="twitter:title" content="About Us - {{ config('app.name') }}">
-        <meta name="twitter:description" content="Learn about {{ config('app.name') }} - your trusted destination for certified gold, diamond & silver jewellery.">
+        <meta name="twitter:card" content="summary_large_image">
+        <meta property="og:image" content="{{ asset('images/og-default.png') }}">
+        <meta name="twitter:image" content="{{ asset('images/og-default.png') }}">
     @endpush
 
-    <!-- ============================================
-         1. BREADCRUMB HERO (Corano style — light gray)
-         ============================================ -->
-    <section class="bg-[#f2f2f2] py-12 sm:py-16 border-b border-[#efefef]">
-        <div class="container mx-auto px-4 text-center">
-            <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-[#222222] mb-3" style="font-family:'Playfair Display',Georgia,serif;">About Us</h1>
-            <div class="flex items-center justify-center gap-2 text-sm">
-                <a href="{{ url('/') }}" class="text-[#777777] hover:text-[#c29958] transition-colors">Home</a>
-                <span class="text-[#c29958]">></span>
-                <span class="text-[#c29958]">About Us</span>
+    @push('styles')
+    <style>
+        .about-hero-img { object-position: center 30%; }
+        @media (max-width: 640px) {
+            .about-split-img { height: 260px; }
+        }
+    </style>
+    @endpush
+
+    {{-- ════════════════════════════════════════════════════════
+         1. HERO BANNER
+         ════════════════════════════════════════════════════════ --}}
+    <section class="relative h-[300px] sm:h-[400px] lg:h-[480px] overflow-hidden">
+        <img src="{{ asset('images/banner1.jpeg') }}"
+             alt="About {{ config('app.name') }}"
+             class="absolute inset-0 w-full h-full object-cover about-hero-img">
+        <div class="absolute inset-0 bg-[#202a40]/50"></div>
+
+        {{-- Overlay content --}}
+        <div class="absolute inset-0 flex flex-col items-center justify-center text-center px-4">
+            <nav class="flex items-center gap-2 text-[11px] uppercase tracking-widest text-white/60 mb-4">
+                <a href="{{ url('/') }}" class="hover:text-white transition-colors">Home</a>
+                <span>›</span>
+                <span class="text-white/90">About Us</span>
+            </nav>
+            <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-white drop-shadow-sm"
+                style="font-family:'Playfair Display',Georgia,serif;">About Us</h1>
+            <div class="w-16 h-0.5 bg-white/40 mx-auto mt-5 mb-4"></div>
+            <p class="text-sm text-white/75 max-w-sm leading-relaxed">Affordable luxury &mdash; crafted for confidence, designed to last.</p>
+        </div>
+    </section>
+
+    {{-- ════════════════════════════════════════════════════════
+         2. OUR MISSION &mdash; image left, text right
+         ════════════════════════════════════════════════════════ --}}
+    <section class="py-16 sm:py-24">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-0 items-stretch max-w-6xl mx-auto shadow-sm overflow-hidden rounded-sm">
+
+                {{-- Image side --}}
+                <div class="relative overflow-hidden about-split-img h-72 sm:h-80 lg:h-auto min-h-[360px]">
+                    <img src="{{ asset('images/img1.jpg') }}" alt="Our Mission"
+                         class="absolute inset-0 w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-gradient-to-t from-[#202a40]/60 via-[#202a40]/20 to-transparent"></div>
+                    <div class="absolute bottom-6 left-6">
+                        <span class="text-xs uppercase tracking-[0.2em] text-white/90 font-medium bg-[#202a40]/60 px-3 py-1 rounded-full backdrop-blur-sm">Our Mission</span>
+                    </div>
+                </div>
+
+                {{-- Text side --}}
+                <div class="bg-white p-10 sm:p-12 lg:p-16 flex flex-col justify-center">
+                    <p class="text-[10px] uppercase tracking-[0.25em] text-[#202a40] font-bold mb-3">Who We Are</p>
+                    <h2 class="text-2xl sm:text-3xl font-bold text-[#1a1a1a] mb-5 leading-tight"
+                        style="font-family:'Playfair Display',Georgia,serif;">
+                        Quality & Confidence<br>For Every Budget
+                    </h2>
+                    <div class="w-10 h-0.5 bg-[#202a40] mb-6"></div>
+                    <div class="space-y-4 text-[13px] text-[#555] leading-[1.8]">
+                        <p>Our mission is to bring you high-quality, beautiful jewelry that fits your lifestyle and your budget. We hand-select every piece to ensure it meets our standards for shine, durability, and comfort. We believe that everyone deserves to feel elegant and confident, and we are dedicated to making that happen by offering stylish designs that don't break the bank.</p>
+                        <p>We are also committed to providing a seamless and honest shopping experience. From our skin-friendly materials to our carefully handled shipping, our goal is to make sure you love what you wear as much as we loved picking it out for you. Your trust is our greatest reward, and we work hard every day to earn it through quality and care.</p>
+                    </div>
+                    <div class="mt-8 flex items-center gap-3">
+                        <div class="flex gap-2">
+                            <div class="w-2.5 h-2.5 rounded-full bg-[#202a40]"></div>
+                            <div class="w-2.5 h-2.5 rounded-full bg-[#202a40]/40"></div>
+                            <div class="w-2.5 h-2.5 rounded-full bg-[#202a40]/20"></div>
+                        </div>
+                        <span class="text-[11px] text-[#999] uppercase tracking-wider">Since Day One</span>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
 
-    <!-- ============================================
-         2. LARGE IMAGE (Corano — centered image block)
-         ============================================ -->
-    <section class="py-14 sm:py-20">
-        <div class="container mx-auto px-4">
+    {{-- ════════════════════════════════════════════════════════
+         3. OUR VISION &mdash; text left, image right
+         ════════════════════════════════════════════════════════ --}}
+    <section class="py-16 sm:py-24 bg-[#f7f7f7]">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-0 items-stretch max-w-6xl mx-auto shadow-sm overflow-hidden rounded-sm">
+
+                {{-- Text side --}}
+                <div class="bg-[#202a40] p-10 sm:p-12 lg:p-16 flex flex-col justify-center order-2 lg:order-1">
+                    <p class="text-[10px] uppercase tracking-[0.25em] text-white/50 font-bold mb-3">Where We're Headed</p>
+                    <h2 class="text-2xl sm:text-3xl font-bold text-white mb-5 leading-tight"
+                        style="font-family:'Playfair Display',Georgia,serif;">
+                        Style Without<br>Compromise
+                    </h2>
+                    <div class="w-10 h-0.5 bg-white/30 mb-6"></div>
+                    <div class="space-y-4 text-[13px] text-white/75 leading-[1.8]">
+                        <p>We envision a world where high-end style is accessible to everyone, regardless of their budget. Our goal is to break the myth that elegance must be expensive by providing stunning, jewelry-store-quality pieces that allow you to shine every day. We want to be the first name you think of when you want to treat yourself or a loved one to something truly special.</p>
+                        <p>Looking ahead, we aim to build a community centered around confidence and self-expression. We are committed to constantly innovating our designs and improving our quality, ensuring that our brand remains a trusted symbol of modern luxury. Our ultimate dream is to help every customer feel like the best version of themselves, one sparkling piece at a time.</p>
+                    </div>
+                    <div class="mt-8">
+                        <span class="text-lg text-white/80 italic" style="font-family:'Playfair Display',Georgia,serif;">Trendymus</span>
+                    </div>
+                </div>
+
+                {{-- Image side --}}
+                <div class="relative overflow-hidden about-split-img h-72 sm:h-80 lg:h-auto min-h-[360px] order-1 lg:order-2">
+                    <img src="{{ asset('images/img2.jpg') }}" alt="Our Vision"
+                         class="absolute inset-0 w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#202a40]/50"></div>
+                    <div class="absolute bottom-6 right-6">
+                        <span class="text-xs uppercase tracking-[0.2em] text-white/90 font-medium bg-[#202a40]/60 px-3 py-1 rounded-full backdrop-blur-sm">Our Vision</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {{-- ════════════════════════════════════════════════════════
+         4. THE TRENDYMUS DIFFERENCE &mdash; 3 feature cards
+         ════════════════════════════════════════════════════════ --}}
+    <section class="py-16 sm:py-24">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
             <div class="max-w-5xl mx-auto">
-                @php $aboutImage = \App\Models\Setting::get('about_image', ''); @endphp
-                @if($aboutImage)
-                    <img src="{{ asset('storage/' . $aboutImage) }}" alt="About {{ config('app.name') }}" class="w-full max-h-[400px] object-cover" loading="lazy">
-                @else
-                    <img src="{{ asset('images/about-us-banner1.jpg') }}" alt="About {{ config('app.name') }}" class="w-full max-h-[400px] object-cover" loading="lazy">
-                @endif
-            </div>
-        </div>
-    </section>
+                <div class="text-center mb-14">
+                    <p class="text-[10px] uppercase tracking-[0.25em] text-[#202a40] font-bold mb-3">What Sets Us Apart</p>
+                    <h2 class="text-2xl sm:text-3xl font-bold text-[#1a1a1a]"
+                        style="font-family:'Playfair Display',Georgia,serif;">The Trendymus Difference</h2>
+                    <div class="w-12 h-0.5 bg-[#202a40] mx-auto mt-5"></div>
+                </div>
 
-    <!-- ============================================
-         3. STORY TEXT — Centered (Corano style)
-         ============================================ -->
-    <section class="pb-14 sm:pb-20">
-        <div class="container mx-auto px-4">
-            <div class="max-w-3xl mx-auto text-center">
-                <h2 class="text-xl sm:text-2xl lg:text-3xl font-bold text-[#222222] mb-6 leading-snug" style="font-family:'Playfair Display',Georgia,serif;">
-                    {{ \App\Models\Setting::get('about_heading', 'We Are A Jewellery Brand Focused On Delivering Timeless Elegance And Quality Craftsmanship.') }}
-                </h2>
-                <div class="text-sm text-[#777777] leading-relaxed space-y-4">
-                    @if($page?->content)
-                        {!! $page->content !!}
-                    @else
-                        <p>{{ \App\Models\Setting::get('about_paragraph_1', 'Founded with a passion for fine craftsmanship and timeless design, ' . config('app.name') . ' started with a simple mission — to bring exquisite, certified jewellery to every doorstep across India. We believe that beautiful jewellery should be accessible to everyone.') }}</p>
-                        <p>{{ \App\Models\Setting::get('about_paragraph_2', 'Today, we\'ve grown into a trusted destination for thousands of customers. We partner directly with master artisans and certified manufacturers to ensure every piece meets the highest standards of purity and craftsmanship. From everyday gold essentials to stunning diamond collections.') }}</p>
-                    @endif
-                </div>
-                <!-- Signature / Brand mark -->
-                <div class="mt-8">
-                    <span class="text-2xl text-[#B76E79] italic" style="font-family:'Playfair Display',Georgia,serif;">{{ config('app.name') }}</span>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ============================================
-         4. THREE SERVICES (Corano — line icons, 3 cols with dividers)
-         ============================================ -->
-    <section class="py-14 sm:py-20 border-y border-[#efefef]">
-        <div class="container mx-auto px-4">
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-0 max-w-5xl mx-auto">
-                <!-- Service 1 -->
-                <div class="text-center px-6 sm:px-8 py-6 sm:border-r border-[#efefef]">
-                    <div class="mb-5">
-                        <svg class="w-12 h-12 mx-auto text-[#222222]" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M9.53 16.122a3 3 0 00-5.78 1.128 2.25 2.25 0 01-2.4 2.245 4.5 4.5 0 008.4-2.245c0-.399-.078-.78-.22-1.128zm0 0a15.998 15.998 0 003.388-1.62m-5.043-.025a15.994 15.994 0 011.622-3.395m3.42 3.42a15.995 15.995 0 004.764-4.648l3.876-5.814a1.151 1.151 0 00-1.597-1.597L14.146 6.32a15.996 15.996 0 00-4.649 4.763m3.42 3.42a6.776 6.776 0 00-3.42-3.42"/>
-                        </svg>
-                    </div>
-                    <h3 class="text-sm font-bold text-[#222222] mb-3 uppercase tracking-wider">{{ \App\Models\Setting::get('about_usp_1_title', 'Creative Design') }}</h3>
-                    <p class="text-xs text-[#777777] leading-relaxed">{{ \App\Models\Setting::get('about_usp_1_desc', 'Every piece is designed with passion and precision, blending traditional artistry with modern elegance.') }}</p>
-                </div>
-                <!-- Service 2 -->
-                <div class="text-center px-6 sm:px-8 py-6 sm:border-r border-[#efefef] border-t sm:border-t-0">
-                    <div class="mb-5">
-                        <svg class="w-12 h-12 mx-auto text-[#222222]" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/>
-                        </svg>
-                    </div>
-                    <h3 class="text-sm font-bold text-[#222222] mb-3 uppercase tracking-wider">{{ \App\Models\Setting::get('about_usp_2_title', '100% Quality Guarantee') }}</h3>
-                    <p class="text-xs text-[#777777] leading-relaxed">{{ \App\Models\Setting::get('about_usp_2_desc', 'All our jewellery is BIS hallmarked and certified. We stand behind the quality of every piece we sell.') }}</p>
-                </div>
-                <!-- Service 3 -->
-                <div class="text-center px-6 sm:px-8 py-6 border-t sm:border-t-0">
-                    <div class="mb-5">
-                        <svg class="w-12 h-12 mx-auto text-[#222222]" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z"/>
-                        </svg>
-                    </div>
-                    <h3 class="text-sm font-bold text-[#222222] mb-3 uppercase tracking-wider">{{ \App\Models\Setting::get('about_usp_3_title', 'Online Support 24/7') }}</h3>
-                    <p class="text-xs text-[#777777] leading-relaxed">{{ \App\Models\Setting::get('about_usp_3_desc', 'Our support team is always ready to help. Contact us anytime via WhatsApp, email, or phone.') }}</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ============================================
-         5. THREE CARDS — What We Do / Mission / History (Corano style)
-         ============================================ -->
-    <section class="py-14 sm:py-20 bg-[#f7f7f7]">
-        <div class="container mx-auto px-4">
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-5xl mx-auto">
-                @php
-                    $defaultCardImages = [
-                        'images/dummy/cat-necklace.jpg',
-                        'images/dummy/cat-ring.jpg',
-                        'images/dummy/cat-bracelet.jpg',
-                    ];
-                    $aboutCards = [
-                        [
-                            'title' => \App\Models\Setting::get('about_card_1_title', 'What Do We Do?'),
-                            'desc' => \App\Models\Setting::get('about_card_1_desc', 'We curate and deliver exquisite jewellery that combines traditional Indian craftsmanship with contemporary design. Every piece is handpicked for quality and beauty.'),
-                            'img' => \App\Models\Setting::get('about_card_1_image', ''),
-                        ],
-                        [
-                            'title' => \App\Models\Setting::get('about_card_2_title', 'Our Mission'),
-                            'desc' => \App\Models\Setting::get('about_card_2_desc', 'To make fine jewellery accessible to every woman in India. We believe in transparent pricing, certified quality, and creating pieces that tell your unique story.'),
-                            'img' => \App\Models\Setting::get('about_card_2_image', ''),
-                        ],
-                        [
-                            'title' => \App\Models\Setting::get('about_card_3_title', 'History Of Us'),
-                            'desc' => \App\Models\Setting::get('about_card_3_desc', 'Starting as a small family business, we have grown into a trusted online jewellery destination serving thousands of happy customers across India with hallmarked collections.'),
-                            'img' => \App\Models\Setting::get('about_card_3_image', ''),
-                        ],
-                    ];
-                @endphp
-                @foreach($aboutCards as $card)
-                    <div class="bg-white hover:shadow-md transition-shadow duration-300">
-                        <!-- Card Image -->
-                        <div class="overflow-hidden">
-                            @if($card['img'])
-                                <img src="{{ asset('storage/' . $card['img']) }}" alt="{{ $card['title'] }}" class="w-full h-48 sm:h-52 object-cover hover:scale-105 transition-transform duration-500" loading="lazy">
-                            @else
-                                <img src="{{ asset($defaultCardImages[$loop->index]) }}" alt="{{ $card['title'] }}" class="w-full h-48 sm:h-52 object-cover hover:scale-105 transition-transform duration-500" loading="lazy">
-                            @endif
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 lg:gap-8">
+                    {{-- Card 1 --}}
+                    <div class="group relative bg-white border border-[#efefef] p-8 rounded-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                        <div class="w-14 h-14 rounded-full bg-[#f2f4f8] group-hover:bg-[#202a40] flex items-center justify-center mb-6 transition-colors duration-300">
+                            <svg class="w-6 h-6 text-[#202a40] group-hover:text-white transition-colors duration-300" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.563.563 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z"/>
+                            </svg>
                         </div>
-                        <!-- Card Content -->
-                        <div class="p-6">
-                            <h3 class="text-base font-bold text-[#222222] mb-3">{{ $card['title'] }}</h3>
-                            <p class="text-xs text-[#777777] leading-relaxed">{{ $card['desc'] }}</p>
+                        <h3 class="text-sm font-bold text-[#1a1a1a] mb-3 uppercase tracking-wide">Handpicked Quality</h3>
+                        <p class="text-[13px] text-[#666] leading-relaxed">We use premium alloys and high-grade stones that mimic the brilliance of real diamonds and gold.</p>
+                        <div class="absolute bottom-0 left-0 right-0 h-0.5 bg-[#202a40] scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left rounded-b-sm"></div>
+                    </div>
+
+                    {{-- Card 2 &mdash; featured / center --}}
+                    <div class="group relative bg-[#202a40] p-8 rounded-sm shadow-lg hover:-translate-y-1 transition-all duration-300">
+                        <div class="w-14 h-14 rounded-full bg-white/15 flex items-center justify-center mb-6">
+                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/>
+                            </svg>
+                        </div>
+                        <h3 class="text-sm font-bold text-white mb-3 uppercase tracking-wide">Skin-Friendly</h3>
+                        <p class="text-[13px] text-white/70 leading-relaxed">All our pieces are 100% hypoallergenic and nickel-free.</p>
+                        <div class="mt-6 inline-block text-[10px] uppercase tracking-widest text-white/50 border border-white/20 px-3 py-1 rounded-full">Our Promise</div>
+                    </div>
+
+                    {{-- Card 3 --}}
+                    <div class="group relative bg-white border border-[#efefef] p-8 rounded-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                        <div class="w-14 h-14 rounded-full bg-[#f2f4f8] group-hover:bg-[#202a40] flex items-center justify-center mb-6 transition-colors duration-300">
+                            <svg class="w-6 h-6 text-[#202a40] group-hover:text-white transition-colors duration-300" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                        </div>
+                        <h3 class="text-sm font-bold text-[#1a1a1a] mb-3 uppercase tracking-wide">Timeless Design</h3>
+                        <p class="text-[13px] text-[#666] leading-relaxed">We don't just follow trends; we create pieces you'll want to wear for years.</p>
+                        <div class="absolute bottom-0 left-0 right-0 h-0.5 bg-[#202a40] scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left rounded-b-sm"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {{-- ════════════════════════════════════════════════════════
+         5. OUR STORY &mdash; light bg with left accent card
+         ════════════════════════════════════════════════════════ --}}
+    <section class="py-16 sm:py-24 bg-[#f7f7f7]">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="max-w-5xl mx-auto">
+
+                <div class="text-center mb-12">
+                    <p class="text-[10px] uppercase tracking-[0.25em] text-[#202a40] font-bold mb-3">How It All Began</p>
+                    <h2 class="text-2xl sm:text-3xl font-bold text-[#1a1a1a]"
+                        style="font-family:'Playfair Display',Georgia,serif;">Our Story</h2>
+                    <div class="w-12 h-0.5 bg-[#202a40] mx-auto mt-5"></div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-0 overflow-hidden rounded-sm shadow-sm">
+
+                    {{-- Left accent panel --}}
+                    <div class="bg-[#202a40] p-10 flex flex-col justify-between">
+                        <div>
+                            <svg class="w-10 h-10 text-white/20 mb-6" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.293-3.995 5.847h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.293-3.996 5.847h3.983v10h-9.983z"/>
+                            </svg>
+                            <p class="text-[13px] text-white/70 leading-[1.9] italic mb-8">
+                                "Jewelry that looks, feels, and lasts like the real thing &mdash; without the investment-grade cost."
+                            </p>
+                        </div>
+                        <div class="border-t border-white/15 pt-6">
+                            <span class="text-xl text-white italic block mb-1" style="font-family:'Playfair Display',Georgia,serif;">Trendymus</span>
+                            <span class="text-[10px] uppercase tracking-[0.2em] text-white/40">Affordable Luxury</span>
                         </div>
                     </div>
-                @endforeach
-            </div>
-        </div>
-    </section>
 
-    <!-- ============================================
-         6. WHY CHOOSE US (accordion) + TESTIMONIALS (Corano 2-col)
-         ============================================ -->
-    <section class="py-14 sm:py-20">
-        <div class="container mx-auto px-4">
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 max-w-5xl mx-auto">
-
-                <!-- LEFT: Why Choose Us — Accordion -->
-                <div>
-                    <h2 class="text-xl sm:text-2xl font-bold text-[#222222] mb-2" style="font-family:'Playfair Display',Georgia,serif;">Why You Choose Us?</h2>
-                    <p class="text-xs text-[#777777] mb-6 leading-relaxed">{{ \App\Models\Setting::get('about_why_subtitle', 'We believe in quality, transparency, and building lasting relationships with our customers.') }}</p>
-
-                    <div x-data="{ open: 1 }" class="space-y-0">
-                        @php
-                            $faqs = [
-                                ['title' => \App\Models\Setting::get('about_faq_1_title', 'Fast Free Delivery'), 'content' => \App\Models\Setting::get('about_faq_1_content', 'We offer free shipping on all orders above ₹499. Your jewellery is carefully packaged and delivered to your doorstep within 3-7 business days across India.')],
-                                ['title' => \App\Models\Setting::get('about_faq_2_title', 'BIS Hallmarked & Certified'), 'content' => \App\Models\Setting::get('about_faq_2_content', 'Every piece of gold jewellery we sell is BIS hallmarked for purity. We provide authenticity certificates with all our products for your peace of mind.')],
-                                ['title' => \App\Models\Setting::get('about_faq_3_title', '100% Anti-Tarnish Quality'), 'content' => \App\Models\Setting::get('about_faq_3_content', 'Our anti-tarnish collections are crafted with premium coatings to maintain their shine and beauty for years. Quality that stands the test of time.')],
-                                ['title' => \App\Models\Setting::get('about_faq_4_title', '7 Days Easy Returns'), 'content' => \App\Models\Setting::get('about_faq_4_content', 'Not satisfied with your purchase? Simply return it within 7 days for a full refund. No questions asked, hassle-free process.')],
-                            ];
-                        @endphp
-                        @foreach($faqs as $i => $faq)
-                            <div class="{{ $loop->first ? 'border-t' : '' }} border-b border-[#efefef]">
-                                <button @click="open = open === {{ $i + 1 }} ? 0 : {{ $i + 1 }}"
-                                        class="w-full flex items-center justify-between px-5 py-3.5 text-left transition-colors duration-300"
-                                        :class="open === {{ $i + 1 }} ? 'bg-[#B76E79] text-white' : 'bg-white text-[#222222] hover:text-[#B76E79]'">
-                                    <span class="text-sm font-semibold">{{ $faq['title'] }}</span>
-                                    <span class="text-lg font-light shrink-0 w-5 text-center" x-text="open === {{ $i + 1 }} ? '−' : '+'"></span>
-                                </button>
-                                <div x-show="open === {{ $i + 1 }}" x-collapse x-cloak class="px-5 py-4 bg-white">
-                                    <p class="text-xs text-[#777777] leading-relaxed">{{ $faq['content'] }}</p>
+                    {{-- Right content panel --}}
+                    <div class="lg:col-span-2 bg-white p-10 sm:p-12 flex flex-col justify-center">
+                        <p class="text-[13px] text-[#555] leading-[1.9]">
+                            We believe that elegance shouldn't come with a heavy price tag. <strong class="text-[#202a40]">Trendymus</strong> was born out of a simple observation: women were often forced to choose between overpriced fine jewelry or low-quality trinkets. We decided to bridge that gap by creating <span class="font-semibold text-[#1a1a1a]">"affordable luxury"</span> &mdash; jewelry that looks, feels, and lasts like the real thing, without the investment-grade cost.
+                        </p>
+                        <div class="mt-8 flex flex-wrap gap-4">
+                            <div class="flex items-center gap-2.5">
+                                <div class="w-8 h-8 rounded-full bg-[#f2f4f8] flex items-center justify-center">
+                                    <svg class="w-4 h-4 text-[#202a40]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
                                 </div>
+                                <span class="text-[12px] text-[#555]">Affordable Luxury</span>
                             </div>
-                        @endforeach
-                    </div>
-                </div>
-
-                <!-- RIGHT: What Clients Say — Testimonial Carousel -->
-                <div>
-                    <h2 class="text-xl sm:text-2xl font-bold text-[#222222] mb-6" style="font-family:'Playfair Display',Georgia,serif;">What Clients Say</h2>
-
-                    @php
-                        $testimonialItems = $testimonials->isNotEmpty()
-                            ? $testimonials->map(fn($t) => ['name' => $t->name, 'content' => $t->content, 'title' => $t->title ?? 'Verified Buyer', 'avatar' => $t->avatar_url, 'initial' => strtoupper(substr($t->name, 0, 1))])
-                            : collect([
-                                ['name' => 'Priya Sharma', 'content' => 'Absolutely stunning jewellery! The craftsmanship is exquisite and the quality exceeded my expectations. Will definitely shop again.', 'title' => 'Verified Buyer', 'avatar' => null, 'initial' => 'P'],
-                                ['name' => 'Anita Verma', 'content' => 'I ordered a gold necklace set for my wedding and it was perfect. Beautiful packaging, fast delivery, and the hallmark certificate gave me full confidence.', 'title' => 'Verified Buyer', 'avatar' => null, 'initial' => 'A'],
-                                ['name' => 'Meera Patel', 'content' => 'The best online jewellery shopping experience I have had. The designs are unique, prices are transparent, and customer support is always helpful.', 'title' => 'Verified Buyer', 'avatar' => null, 'initial' => 'M'],
-                            ]);
-                    @endphp
-                    <div x-data="{ current: 0, total: {{ $testimonialItems->count() }} }" x-init="setInterval(() => current = (current + 1) % total, 5000)">
-                        <div class="relative" style="min-height: 320px;">
-                            @foreach($testimonialItems as $ti)
-                                <div x-show="current === {{ $loop->index }}"
-                                     x-transition:enter="transition ease-out duration-300"
-                                     x-transition:enter-start="opacity-0"
-                                     x-transition:enter-end="opacity-100"
-                                     x-transition:leave="transition ease-in duration-200"
-                                     x-transition:leave-start="opacity-100"
-                                     x-transition:leave-end="opacity-0"
-                                     class="absolute inset-x-0 top-0 text-center">
-                                    <!-- Avatar -->
-                                    <div class="mb-4">
-                                        @if($ti['avatar'])
-                                            <img src="{{ Storage::url($ti['avatar']) }}" alt="{{ $ti['name'] }}" class="w-20 h-20 rounded-full object-cover mx-auto shadow-md border-3 border-white">
-                                        @else
-                                            <div class="w-20 h-20 rounded-full bg-[#f2f2f2] flex items-center justify-center mx-auto shadow-md border-3 border-white">
-                                                <span class="text-2xl font-bold text-[#B76E79]">{{ $ti['initial'] }}</span>
-                                            </div>
-                                        @endif
-                                    </div>
-                                    <!-- Quote icon (closing quotes like Corano) -->
-                                    <div class="text-[#c29958] text-3xl mb-3" style="font-family: Georgia, serif; line-height: 1;">&rdquo;</div>
-                                    <!-- Content -->
-                                    <p class="text-sm text-[#555555] leading-relaxed mb-5 max-w-md mx-auto">{{ $ti['content'] }}</p>
-                                    <!-- Name -->
-                                    <p class="text-sm font-semibold text-[#c29958] uppercase tracking-wider">{{ $ti['name'] }}</p>
-                                    <p class="text-xs text-[#777777] mt-1">{{ $ti['title'] }}</p>
+                            <div class="flex items-center gap-2.5">
+                                <div class="w-8 h-8 rounded-full bg-[#f2f4f8] flex items-center justify-center">
+                                    <svg class="w-4 h-4 text-[#202a40]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
                                 </div>
-                            @endforeach
-                        </div>
-                        <!-- Dots (outside the relative container) -->
-                        @if($testimonialItems->count() > 1)
-                            <div class="flex items-center justify-center gap-3 pt-4">
-                                @foreach($testimonialItems as $ti)
-                                    <button @click="current = {{ $loop->index }}"
-                                            class="w-3 h-3 rounded-full transition-colors duration-300"
-                                            :class="current === {{ $loop->index }} ? 'bg-[#333]' : 'bg-[#ccc]'"></button>
-                                @endforeach
+                                <span class="text-[12px] text-[#555]">Real Quality</span>
                             </div>
-                        @endif
+                            <div class="flex items-center gap-2.5">
+                                <div class="w-8 h-8 rounded-full bg-[#f2f4f8] flex items-center justify-center">
+                                    <svg class="w-4 h-4 text-[#202a40]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                                </div>
+                                <span class="text-[12px] text-[#555]">Built to Last</span>
+                            </div>
+                        </div>
                     </div>
-                </div>
 
+                </div>
             </div>
         </div>
+    </section>
+
+    {{-- ════════════════════════════════════════════════════════
+         6. GALLERY STRIP &mdash; 4 images
+         ════════════════════════════════════════════════════════ --}}
+    <section class="grid grid-cols-2 sm:grid-cols-4">
+        @foreach([
+            ['label' => 'Necklaces', 'img' => 'img1.jpg'],
+            ['label' => 'Earrings',  'img' => 'img2.jpg'],
+            ['label' => 'Bracelets', 'img' => 'img3.jpg'],
+            ['label' => 'Rings',     'img' => 'img4.jpg'],
+        ] as $panel)
+        <div class="relative overflow-hidden h-44 sm:h-56 lg:h-64 group bg-[#202a40]">
+            <img src="{{ asset('images/' . $panel['img']) }}" alt="{{ $panel['label'] }}"
+                 class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+            <div class="absolute inset-0 bg-[#202a40]/30 group-hover:bg-[#202a40]/50 transition-colors duration-300"></div>
+            <div class="absolute inset-0 flex items-end justify-center pb-5">
+                <span class="text-xs font-semibold text-white uppercase tracking-widest drop-shadow">{{ $panel['label'] }}</span>
+            </div>
+        </div>
+        @endforeach
     </section>
 
 </x-layouts.app>

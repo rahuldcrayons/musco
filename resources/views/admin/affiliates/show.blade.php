@@ -202,9 +202,9 @@
             <div class="card p-6">
                 <h3 class="font-semibold text-neutral-900 mb-4">Payout Details</h3>
                 <div class="space-y-2 text-sm">
-                    <div><span class="text-neutral-500">Method:</span> <span class="font-medium">{{ $affiliate->payout_method === 'bank_transfer' ? 'Bank Transfer' : 'UPI' }}</span></div>
-                    @if($affiliate->payout_method === 'upi' && $affiliate->upi_id)
-                        <div><span class="text-neutral-500">UPI ID:</span> <span class="font-medium">{{ $affiliate->upi_id }}</span></div>
+                    <div><span class="text-neutral-500">Method:</span> <span class="font-medium">{{ $affiliate->payout_method === 'bank_transfer' ? 'Bank Transfer' : 'PayPal' }}</span></div>
+                    @if($affiliate->payout_method === 'upi' && $affiliate->paypal_email)
+                        <div><span class="text-neutral-500">PayPal:</span> <span class="font-medium">{{ $affiliate->paypal_email }}</span></div>
                     @endif
                     @if($affiliate->payout_method === 'bank_transfer' && $affiliate->bank_details)
                         <div><span class="text-neutral-500">Bank:</span> <span class="font-medium">{{ $affiliate->bank_details['bank_name'] ?? '-' }}</span></div>

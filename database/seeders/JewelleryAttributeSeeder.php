@@ -16,7 +16,7 @@ class JewelleryAttributeSeeder extends Seeder
                 'type' => 'select',
                 'is_filterable' => true,
                 'is_visible' => true,
-                'values' => ['Gold', 'Silver', 'Platinum', 'Rose Gold', 'White Gold', 'Copper', 'Brass'],
+                'values' => ['Gold', 'Silver', 'Platinum', 'Rose Gold', 'White Gold', 'Copper', 'Brass', 'Stainless Steel'],
             ],
             [
                 'name' => 'Metal Purity',
@@ -79,7 +79,7 @@ class JewelleryAttributeSeeder extends Seeder
                 'type' => 'select',
                 'is_filterable' => true,
                 'is_visible' => true,
-                'values' => ['4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24'],
+                'values' => ['Adjustable', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24'],
             ],
             [
                 'name' => 'Bangle Size',

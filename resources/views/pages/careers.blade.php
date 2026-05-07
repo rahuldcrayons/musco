@@ -33,7 +33,7 @@
                     <!-- Open Positions -->
                     <div class="space-y-4 text-left mb-10">
                         @foreach($positions as $position)
-                            <div class="bg-white rounded-xl border border-neutral-100 p-5 sm:p-6 hover:border-[#c29958]/30 hover:shadow-sm transition-all">
+                            <div class="bg-white rounded-xl border border-neutral-100 p-5 sm:p-6 hover:border-[#506282]/30 hover:shadow-sm transition-all">
                                 <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                                     <div>
                                         <h3 class="text-[15px] font-semibold text-neutral-900">{{ $position->title }}</h3>
@@ -48,7 +48,7 @@
                                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                                                 {{ $position->location }}
                                             </span>
-                                            <span class="inline-flex items-center px-2 py-0.5 text-[11px] font-medium rounded-full bg-[#B76E79]/10 text-[#B76E79]">
+                                            <span class="inline-flex items-center px-2 py-0.5 text-[11px] font-medium rounded-full bg-[#202a40]/10 text-[#202a40]">
                                                 {{ $position->type }}
                                             </span>
                                         </div>
@@ -56,8 +56,8 @@
                                             <p class="text-[13px] text-neutral-600 mt-2 leading-relaxed">{{ $position->description }}</p>
                                         @endif
                                     </div>
-                                    <a href="mailto:{{ \App\Models\Setting::get('careers_email', 'careers@musco.com') }}?subject=Application: {{ $position->title }}"
-                                       class="shrink-0 inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-[#B76E79] border border-[#B76E79]/30 rounded-lg hover:bg-[#c29958]/5 transition-colors">
+                                    <a href="mailto:{{ \App\Models\Setting::get('careers_email', 'careers@trendymus.com') }}?subject=Application: {{ $position->title }}"
+                                       class="shrink-0 inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-[#202a40] border border-[#202a40]/30 rounded-lg hover:bg-[#506282]/5 transition-colors">
                                         Apply
                                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                                     </a>
@@ -68,8 +68,8 @@
                 @else
                     <!-- No Openings Card -->
                     <div class="bg-white rounded-xl border border-neutral-100 p-8 sm:p-12">
-                        <div class="w-16 h-16 mx-auto rounded-full bg-[#B76E79]/10 flex items-center justify-center mb-5">
-                            <svg class="w-8 h-8 text-[#B76E79]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div class="w-16 h-16 mx-auto rounded-full bg-[#202a40]/10 flex items-center justify-center mb-5">
+                            <svg class="w-8 h-8 text-[#202a40]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
                             </svg>
                         </div>
@@ -80,7 +80,7 @@
                             <svg class="w-4 h-4 text-neutral-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
                             </svg>
-                            <a href="mailto:{{ \App\Models\Setting::get('careers_email', 'careers@musco.com') }}" class="text-sm font-medium text-[#B76E79] hover:underline">{{ \App\Models\Setting::get('careers_email', 'careers@musco.com') }}</a>
+                            <a href="mailto:{{ \App\Models\Setting::get('careers_email', 'careers@trendymus.com') }}" class="text-sm font-medium text-[#202a40] hover:underline">{{ \App\Models\Setting::get('careers_email', 'careers@trendymus.com') }}</a>
                         </div>
                     </div>
                 @endif
@@ -88,8 +88,8 @@
                 <!-- Why Join Us -->
                 <div class="mt-10 grid grid-cols-1 sm:grid-cols-3 gap-6 text-left">
                     <div class="bg-white rounded-xl border border-neutral-100 p-5">
-                        <div class="w-9 h-9 rounded-lg bg-[#B76E79]/10 flex items-center justify-center mb-3">
-                            <svg class="w-4.5 h-4.5 text-[#B76E79]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div class="w-9 h-9 rounded-lg bg-[#202a40]/10 flex items-center justify-center mb-3">
+                            <svg class="w-4.5 h-4.5 text-[#202a40]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z"/>
                             </svg>
                         </div>
@@ -97,8 +97,8 @@
                         <p class="text-xs text-neutral-600 leading-relaxed">{{ \App\Models\Setting::get('careers_perk_1_desc', 'Be part of a rapidly growing e-commerce brand with big ambitions.') }}</p>
                     </div>
                     <div class="bg-white rounded-xl border border-neutral-100 p-5">
-                        <div class="w-9 h-9 rounded-lg bg-[#B76E79]/10 flex items-center justify-center mb-3">
-                            <svg class="w-4.5 h-4.5 text-[#B76E79]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div class="w-9 h-9 rounded-lg bg-[#202a40]/10 flex items-center justify-center mb-3">
+                            <svg class="w-4.5 h-4.5 text-[#202a40]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
                             </svg>
                         </div>
@@ -106,8 +106,8 @@
                         <p class="text-xs text-neutral-600 leading-relaxed">{{ \App\Models\Setting::get('careers_perk_2_desc', 'Work alongside passionate people who love what they do.') }}</p>
                     </div>
                     <div class="bg-white rounded-xl border border-neutral-100 p-5">
-                        <div class="w-9 h-9 rounded-lg bg-[#B76E79]/10 flex items-center justify-center mb-3">
-                            <svg class="w-4.5 h-4.5 text-[#B76E79]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div class="w-9 h-9 rounded-lg bg-[#202a40]/10 flex items-center justify-center mb-3">
+                            <svg class="w-4.5 h-4.5 text-[#202a40]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
                             </svg>
                         </div>

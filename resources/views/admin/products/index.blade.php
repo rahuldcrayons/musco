@@ -31,7 +31,7 @@
             ['label' => 'Total products', 'value' => number_format($stats['total'] ?? 0), 'sparkline' => '2,12 10,10 18,8 26,10 34,6 42,8 50,5 58,3', 'color' => '#5c6ac4'],
             ['label' => 'Active', 'value' => number_format($stats['active'] ?? 0), 'sparkline' => '2,14 10,12 18,10 26,8 34,10 42,6 50,8 58,4', 'color' => '#50b83c'],
             ['label' => 'Out of stock', 'value' => number_format($stats['out_of_stock'] ?? 0), 'sparkline' => '2,10 10,10 18,10 26,10 34,10 42,10 50,10 58,10', 'color' => '#de3618'],
-            ['label' => 'Inventory value', 'value' => '₹' . number_format(($stats['total'] ?? 0) * 500), 'sparkline' => '2,16 10,14 18,12 26,10 34,8 42,6 50,4 58,2', 'color' => '#47c1bf'],
+            ['label' => 'Inventory value', 'value' => '£' . number_format($stats['inventory_value'] ?? 0), 'sparkline' => '2,16 10,14 18,12 26,10 34,8 42,6 50,4 58,2', 'color' => '#47c1bf'],
         ]])
     </x-slot>
 

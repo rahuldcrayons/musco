@@ -1,5 +1,5 @@
 {{--
-    MusCo AI Shopping Assistant Widget
+    Trendymus AI Shopping Assistant Widget
     Floating chatbot in the bottom-right corner.
     Z-index z-[75] — above quick-view modal (z-70).
     Alpine.js: chatbotWidget() — defined in <script> below.
@@ -34,7 +34,7 @@
         aria-label="Shopping Assistant"
     >
         {{-- ── Header ──────────────────────────────────────────────────── --}}
-        <div class="px-4 py-3 flex items-center justify-between shrink-0" style="background: linear-gradient(to right, #E91E63, #C2185B);">
+        <div class="px-4 py-3 flex items-center justify-between shrink-0" style="background: #202a40;">
             <div class="flex items-center gap-2.5">
                 <div class="w-9 h-9 rounded-full flex items-center justify-center shrink-0 shadow-sm" style="background: white;">
                     <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none">
@@ -98,7 +98,7 @@
                         <template x-for="chip in quickChips" :key="chip.label">
                             <button
                                 @click="sendQuickChip(chip.message)"
-                                class="text-[11px] px-3 py-1 rounded-full text-[#B76E79] bg-[#B76E79]/5 hover:bg-[#c29958]/10 transition-colors font-medium whitespace-nowrap"
+                                class="text-[11px] px-3 py-1 rounded-full text-[#202a40] bg-[#202a40]/5 hover:bg-[#506282]/10 transition-colors font-medium whitespace-nowrap"
                                 x-text="chip.label"
                             ></button>
                         </template>
@@ -142,7 +142,7 @@
                                         <template x-for="product in msg.products" :key="product.id">
                                             <a
                                                 :href="product.url"
-                                                class="shrink-0 w-[108px] bg-white rounded-xl border border-neutral-100 overflow-hidden hover:shadow-md hover:border-[#c29958]/30 transition-all block"
+                                                class="shrink-0 w-[108px] bg-white rounded-xl border border-neutral-100 overflow-hidden hover:shadow-md hover:border-[#506282]/30 transition-all block"
                                             >
                                                 <div class="relative w-full aspect-square bg-neutral-50 overflow-hidden">
                                                     <img
@@ -167,7 +167,7 @@
                                                     <template x-if="product.has_discount">
                                                         <p class="text-[9px] text-neutral-600 line-through" x-text="product.mrp"></p>
                                                     </template>
-                                                    <div class="mt-1.5 text-center text-[9px] font-semibold text-[#B76E79] bg-[#B76E79]/5 rounded-md py-0.5 hover:bg-[#c29958] hover:text-white transition-colors">
+                                                    <div class="mt-1.5 text-center text-[9px] font-semibold text-[#202a40] bg-[#202a40]/5 rounded-md py-0.5 hover:bg-[#506282] hover:text-white transition-colors">
                                                         View →
                                                     </div>
                                                 </div>
@@ -206,7 +206,7 @@
                 <template x-for="chip in quickChips" :key="chip.label">
                     <button
                         @click="sendQuickChip(chip.message)"
-                        class="shrink-0 text-[10px] px-2.5 py-1 rounded-full border border-neutral-200 text-neutral-600 bg-neutral-50 hover:bg-[#c29958]/10 hover:border-[#c29958]/40 hover:text-[#c29958] transition-colors whitespace-nowrap"
+                        class="shrink-0 text-[10px] px-2.5 py-1 rounded-full border border-neutral-200 text-neutral-600 bg-neutral-50 hover:bg-[#506282]/10 hover:border-[#506282]/40 hover:text-[#506282] transition-colors whitespace-nowrap"
                         x-text="chip.label"
                     ></button>
                 </template>
@@ -258,7 +258,7 @@
         <button
             @click="toggle()"
             class="w-14 h-14 rounded-full text-white shadow-lg hover:shadow-xl flex flex-col items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 relative z-10"
-            :style="isOpen ? 'background:#525252' : 'background:linear-gradient(135deg, #E91E63, #C2185B)'"
+            :style="isOpen ? 'background:#525252' : 'background:#202a40'"
             :aria-label="isOpen ? 'Close shopping assistant' : 'Open shopping assistant'"
             :aria-expanded="isOpen.toString()"
         >

@@ -81,11 +81,11 @@
                             @enderror
                         </div>
                         <div>
-                            <label for="sort_order" class="form-label">Sort Order</label>
-                            <input type="number" name="sort_order" id="sort_order" value="{{ old('sort_order', $category->sort_order) }}" min="0"
-                                   class="form-input w-full @error('sort_order') form-input-error @enderror">
+                            <label for="position" class="form-label">Sort Order</label>
+                            <input type="number" name="position" id="position" value="{{ old('position', $category->position) }}" min="0"
+                                   class="form-input w-full @error('position') form-input-error @enderror">
                             <p class="form-help">Lower numbers appear first</p>
-                            @error('sort_order')
+                            @error('position')
                                 <p class="form-error">{{ $message }}</p>
                             @enderror
                         </div>
@@ -102,6 +102,8 @@
                                 <template x-if="!preview && !removing">
                                     @if($category->image_url)
                                         <img src="{{ asset('storage/' . $category->image_url) }}" class="w-full h-full object-cover rounded-lg">
+                                    @elseif($fallbackImageUrl)
+                                        <img src="{{ $fallbackImageUrl }}" class="w-full h-full object-cover rounded-lg opacity-60" title="Auto-preview from product">
                                     @else
                                         <svg class="w-8 h-8 text-neutral-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>

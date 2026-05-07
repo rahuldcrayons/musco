@@ -27,7 +27,7 @@
                     </svg>
                 </div>
                 @if(isset($stat['change']))
-                <p class="text-xs mt-0.5 {{ str_starts_with($stat['change'], '+') || str_starts_with($stat['change'], '↑') ? 'text-[#B76E79]' : (str_starts_with($stat['change'], '-') || str_starts_with($stat['change'], '↓') ? 'text-[#CC0C39]' : 'text-neutral-400') }}">
+                <p class="text-xs mt-0.5 {{ str_starts_with($stat['change'], '+') || str_starts_with($stat['change'], '↑') ? 'text-[#202a40]' : (str_starts_with($stat['change'], '-') || str_starts_with($stat['change'], '↓') ? 'text-[#CC0C39]' : 'text-neutral-400') }}">
                     {{ $stat['change'] }}
                 </p>
                 @endif

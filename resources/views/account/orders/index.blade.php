@@ -1,18 +1,18 @@
 <x-layouts.app>
     <x-slot name="title">My Orders</x-slot>
 
-    <div class="bg-neutral-50 min-h-screen">
-        <div class="container mx-auto px-4 py-8">
-            <x-breadcrumb :items="[['label' => 'Account', 'url' => route('account.dashboard')], ['label' => 'My Orders']]" />
-            <div class="flex flex-col lg:flex-row gap-8 mt-4">
-                @include('account.partials.sidebar')
-
-                <div class="flex-1">
-                    <div class="flex items-center justify-between mb-5">
+    @include('account.partials.sidebar')
+<div class="flex items-center justify-between mb-5">
                         <div>
                             <h1 class="text-xl font-bold text-neutral-900">My Orders</h1>
                             <p class="text-sm text-neutral-600 mt-0.5">{{ $orders->total() }} {{ Str::plural('order', $orders->total()) }}</p>
                         </div>
+                        <a href="{{ route('products.index') }}"
+                           class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold text-white transition-colors"
+                           style="background:#202a40;">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z"/></svg>
+                            Continue Shopping
+                        </a>
                     </div>
 
                     {{-- Status Filter Tabs --}}
@@ -33,7 +33,7 @@
                         @foreach($statuses as $value => $label)
                             <a href="{{ route('account.orders.index', $value ? ['status' => $value] : []) }}"
                                class="shrink-0 px-3.5 py-1.5 rounded-full text-xs font-semibold transition-colors
-                                      {{ $currentStatus === $value ? 'bg-[#B76E79] text-white' : 'bg-white border border-neutral-200 text-neutral-600 hover:border-neutral-300 hover:text-neutral-800' }}">
+                                      {{ $currentStatus === $value ? 'bg-[#202a40] text-white' : 'bg-white border border-neutral-200 text-neutral-600 hover:border-neutral-300 hover:text-neutral-800' }}">
                                 {{ $label }}
                             </a>
                         @endforeach
@@ -43,14 +43,14 @@
                     @forelse($orders as $order)
                         @php
                             $statusColors = [
-                                'pending' => 'bg-[#c29958]/10 text-[#c29958] border-[#c29958]/30',
-                                'confirmed' => 'bg-[#B76E79]/5 text-[#222222] border-[#B76E79]/30',
-                                'processing' => 'bg-[#B76E79]/5 text-[#222222] border-[#B76E79]/30',
-                                'packed' => 'bg-[#B76E79]/10 text-[#222222] border-[#B76E79]/30',
-                                'shipped' => 'bg-[#B76E79]/15 text-[#15383c] border-[#B76E79]/40',
-                                'out_for_delivery' => 'bg-[#B76E79]/5 text-[#222222] border-[#B76E79]/30',
-                                'delivered' => 'bg-[#B76E79]/10 text-[#B76E79] border-[#B76E79]/30',
-                                'completed' => 'bg-[#B76E79]/10 text-[#B76E79] border-[#B76E79]/30',
+                                'pending' => 'bg-[#506282]/10 text-[#506282] border-[#506282]/30',
+                                'confirmed' => 'bg-[#202a40]/5 text-[#222222] border-[#202a40]/30',
+                                'processing' => 'bg-[#202a40]/5 text-[#222222] border-[#202a40]/30',
+                                'packed' => 'bg-[#202a40]/10 text-[#222222] border-[#202a40]/30',
+                                'shipped' => 'bg-[#202a40]/15 text-[#15383c] border-[#202a40]/40',
+                                'out_for_delivery' => 'bg-[#202a40]/5 text-[#222222] border-[#202a40]/30',
+                                'delivered' => 'bg-[#202a40]/10 text-[#202a40] border-[#202a40]/30',
+                                'completed' => 'bg-[#202a40]/10 text-[#202a40] border-[#202a40]/30',
                                 'cancelled' => 'bg-[#CC0C39]/10 text-[#CC0C39] border-[#CC0C39]/30',
                                 'returned' => 'bg-neutral-100 text-neutral-600 border-neutral-200',
                             ];
@@ -60,7 +60,7 @@
                             {{-- Header --}}
                             <div class="px-4 py-3 flex flex-wrap items-center justify-between gap-3 border-b border-neutral-100">
                                 <div class="flex items-center gap-3">
-                                    <a href="{{ route('account.orders.show', $order) }}" class="text-sm font-bold text-neutral-900 hover:text-[#c29958] transition-colors">
+                                    <a href="{{ route('account.orders.show', $order) }}" class="text-sm font-bold text-neutral-900 hover:text-[#506282] transition-colors">
                                         {{ $order->order_number }}
                                     </a>
                                     <span class="text-[11px] font-semibold px-2 py-0.5 rounded-full border {{ $color }}">
@@ -109,7 +109,7 @@
                             {{-- Footer --}}
                             <div class="px-4 py-2.5 bg-neutral-50 border-t border-neutral-100 flex flex-wrap items-center justify-between gap-2">
                                 <div class="flex items-center gap-3">
-                                    <a href="{{ route('account.orders.show', $order) }}" class="text-xs font-semibold text-[#B76E79] hover:text-[#222222] inline-flex items-center gap-1">
+                                    <a href="{{ route('account.orders.show', $order) }}" class="text-xs font-semibold text-[#202a40] hover:text-[#222222] inline-flex items-center gap-1">
                                         View Details
                                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                                     </a>
@@ -140,19 +140,48 @@
                             </div>
                             <h3 class="text-base font-semibold text-neutral-900 mb-1">No orders yet</h3>
                             <p class="text-sm text-neutral-600 mb-5">Start shopping to see your orders here.</p>
-                            <a href="{{ route('products.index') }}" class="inline-flex items-center gap-2 bg-[#B76E79] hover:bg-[#222222] text-white text-sm font-semibold px-3 py-1.5 rounded-lg transition-colors">
+                            <a href="{{ url('/account/products') }}" class="inline-flex items-center gap-2 bg-[#202a40] text-white text-sm font-semibold px-3 py-1.5 rounded-lg transition-colors">
                                 Browse Products
                             </a>
                         </div>
                     @endforelse
 
                     @if($orders->hasPages())
-                        <div class="mt-6">
-                            {{ $orders->links() }}
-                        </div>
+                    <div class="mt-5 flex items-center justify-between gap-3">
+                        {{-- Prev --}}
+                        @if($orders->onFirstPage())
+                            <span class="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium text-neutral-300 bg-white border border-neutral-200 cursor-not-allowed select-none">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+                                Prev
+                            </span>
+                        @else
+                            <a href="{{ $orders->previousPageUrl() }}"
+                               class="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold text-neutral-700 bg-white border border-neutral-200 hover:border-[#202a40] hover:text-[#202a40] transition-colors">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+                                Prev
+                            </a>
+                        @endif
+
+                        {{-- Page indicator --}}
+                        <span class="text-xs text-neutral-500">
+                            Page {{ $orders->currentPage() }} of {{ $orders->lastPage() }}
+                            &nbsp;·&nbsp; {{ $orders->total() }} {{ Str::plural('order', $orders->total()) }}
+                        </span>
+
+                        {{-- Next --}}
+                        @if($orders->hasMorePages())
+                            <a href="{{ $orders->nextPageUrl() }}"
+                               class="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold text-neutral-700 bg-white border border-neutral-200 hover:border-[#202a40] hover:text-[#202a40] transition-colors">
+                                Next
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                            </a>
+                        @else
+                            <span class="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium text-neutral-300 bg-white border border-neutral-200 cursor-not-allowed select-none">
+                                Next
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                            </span>
+                        @endif
+                    </div>
                     @endif
-                </div>
-            </div>
-        </div>
-    </div>
+                @include('account.partials.sidebar-end')
 </x-layouts.app>

@@ -15,7 +15,12 @@
 
     {{ $styles ?? '' }}
     @stack('styles')
+    <style>
+        #nprogress-bar{position:fixed;top:0;left:0;width:0;height:2px;background:linear-gradient(90deg,#202a40,#506282);z-index:99999;transition:width 0.2s ease,opacity 0.4s ease;pointer-events:none;opacity:0}
+        #nprogress-bar.active{opacity:1}
+    </style>
 </head>
+<div id="nprogress-bar"></div>
 <body class="antialiased layout-admin" x-data="{ sidebarOpen: false }" style="background:#f1f1f1;font-family:'Inter',system-ui,-apple-system,sans-serif">
     <div class="flex h-screen overflow-hidden">
         <!-- Sidebar -->
@@ -74,6 +79,41 @@
         @if(session('info'))
             toastr.info(@json(session('info')));
         @endif
+
+        @if($errors->any())
+            @foreach($errors->all() as $error)
+                toastr.error(@json($error));
+            @endforeach
+        @endif
+    </script>
+    <script>
+    (function(){
+        var bar = document.getElementById('nprogress-bar');
+        var timer, width = 0, raf;
+        function start() {
+            clearTimeout(timer); cancelAnimationFrame(raf);
+            width = 0; bar.style.width = '0%'; bar.classList.add('active'); grow();
+        }
+        function grow() {
+            var t = width < 50 ? width+8 : width < 80 ? width+3 : width < 95 ? width+0.5 : width;
+            if (t > 95) t = 95; width = t; bar.style.width = width+'%';
+            if (width < 95) raf = requestAnimationFrame(function(){ timer = setTimeout(grow, 100); });
+        }
+        function done() {
+            cancelAnimationFrame(raf); clearTimeout(timer); width = 100; bar.style.width = '100%';
+            setTimeout(function(){ bar.classList.remove('active'); bar.style.width = '0%'; }, 400);
+        }
+        document.addEventListener('click', function(e) {
+            var a = e.target.closest('a[href]');
+            if (!a) return;
+            var href = a.getAttribute('href');
+            if (!href || href.startsWith('#') || href.startsWith('javascript') || a.target === '_blank') return;
+            try { var url = new URL(href, location.href); if (url.origin !== location.origin) return; if (url.pathname === location.pathname && url.search === location.search) return; } catch(e) { return; }
+            start();
+        });
+        document.addEventListener('submit', function(e) { if (e.target.method && e.target.method.toLowerCase() !== 'get') start(); });
+        window.addEventListener('pageshow', done);
+    })();
     </script>
 </body>
 </html>

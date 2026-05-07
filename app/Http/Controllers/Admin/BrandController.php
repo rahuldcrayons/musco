@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Brand;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 
@@ -63,6 +64,10 @@ class BrandController extends Controller
         $validated['slug'] = Str::slug($validated['name']);
 
         if ($request->hasFile('logo')) {
+            // Delete old logo file
+            if ($brand->logo_url) {
+                Storage::disk('public')->delete($brand->logo_url);
+            }
             $validated['logo_url'] = $request->file('logo')->store('brands', 'public');
         }
 

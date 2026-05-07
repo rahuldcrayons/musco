@@ -54,7 +54,7 @@ class DynamicContentSeeder extends Seeder
                 'slug' => 'about-us',
                 'is_published' => true,
                 'published_at' => now(),
-                'content' => '<p>Founded with a passion for fine craftsmanship and timeless design, MusCo started with a simple mission — to bring exquisite, certified jewellery to every doorstep across India.</p><p>Today, we\'ve grown into a trusted destination for thousands of customers. We partner directly with master artisans and certified manufacturers to ensure every piece meets the highest standards of purity and craftsmanship.</p><p>From everyday gold essentials to stunning diamond collections, our curated range spans rings, necklaces, earrings, bangles and more — all BIS hallmarked, competitively priced, and delivered with an authenticity guarantee.</p>',
+                'content' => '<p>Founded with a passion for fine craftsmanship and timeless design, Trendimus started with a simple mission — to bring exquisite, certified jewellery to every doorstep across India.</p><p>Today, we\'ve grown into a trusted destination for thousands of customers. We partner directly with master artisans and certified manufacturers to ensure every piece meets the highest standards of purity and craftsmanship.</p><p>From everyday gold essentials to stunning diamond collections, our curated range spans rings, necklaces, earrings, bangles and more — all BIS hallmarked, competitively priced, and delivered with an authenticity guarantee.</p>',
             ],
             [
                 'title' => 'Returns Policy',
@@ -183,7 +183,7 @@ HTML,
             [
                 'name' => 'Rahul K.',
                 'title' => 'Verified Buyer',
-                'content' => 'I was skeptical at first, but MusCo exceeded my expectations. The packaging was secure, quality was amazing, and arrived within 3 days. Highly recommend!',
+                'content' => 'I was skeptical at first, but Trendimus exceeded my expectations. The packaging was secure, quality was amazing, and arrived within 3 days. Highly recommend!',
                 'rating' => 5,
                 'position' => 3,
                 'is_active' => true,

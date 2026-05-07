@@ -54,8 +54,14 @@ return Application::configure(basePath: dirname(__DIR__))
             'pos.shift' => \App\Http\Middleware\PosShiftRequired::class,
             'cache.response' => \App\Http\Middleware\CacheResponse::class,
             'admin.audit' => \App\Http\Middleware\AdminAuditLog::class,
+            'nocache' => \App\Http\Middleware\NoCache::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        //
+        // On CSRF token mismatch, redirect back with an error message instead of showing 419 page
+        $exceptions->render(function (\Illuminate\Session\TokenMismatchException $e, \Illuminate\Http\Request $request) {
+            return redirect()->back()
+                ->withInput($request->except(['_token', 'password', 'password_confirmation']))
+                ->with('error', 'Your session expired. Please review your details and submit again.');
+        });
     })->create();

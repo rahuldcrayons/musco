@@ -170,7 +170,7 @@
                                 @if($index > 0 && $dropoff > 0)
                                     <span class="text-xs font-medium text-[#CC0C39] bg-[#CC0C39]/10 px-1.5 py-0.5 rounded">-{{ $dropoff }}%</span>
                                 @elseif($index > 0 && $dropoff === 0)
-                                    <span class="text-xs font-medium text-[#B76E79] bg-[#B76E79]/5 px-1.5 py-0.5 rounded">0%</span>
+                                    <span class="text-xs font-medium text-[#202a40] bg-[#202a40]/5 px-1.5 py-0.5 rounded">0%</span>
                                 @endif
                             </div>
                         </div>

@@ -47,17 +47,19 @@ class AppServiceProvider extends ServiceProvider
             return "<?php echo \App\Models\Setting::get({$expression}); ?>";
         });
 
-        // @currency — output currency symbol (e.g. ₹)
+        // @currency — output currency symbol (e.g. £)
         Blade::directive('currency', function () {
             return "<?php echo currency_symbol(); ?>";
         });
 
         View::composer('partials.mobile-nav', function ($view) {
-            $view->with('navCategories', Category::whereNull('parent_id')
-                ->where('is_active', true)
-                ->with(['children' => fn ($q) => $q->where('is_active', true)->orderBy('position')])
-                ->orderBy('position')
-                ->get());
+            $view->with('navCategories', cache()->remember('nav.mobile.categories', 600, fn () =>
+                Category::whereNull('parent_id')
+                    ->where('is_active', true)
+                    ->with(['children' => fn ($q) => $q->where('is_active', true)->orderBy('position')])
+                    ->orderBy('position')
+                    ->get()
+            ));
         });
     }
 }

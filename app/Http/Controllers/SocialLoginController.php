@@ -75,7 +75,7 @@ class SocialLoginController extends Controller
 
         Auth::login($user);
 
-        return redirect()->route('account.dashboard')->with('success', 'Welcome to MusCo!');
+        return redirect()->route('account.dashboard')->with('success', 'Welcome to Trendymus!');
     }
 
     private function validateProvider(string $provider): void

@@ -24,13 +24,13 @@
 
         {{-- Header --}}
         <div class="text-center mb-8">
-            <div class="w-12 h-12 mx-auto rounded-full bg-[#B76E79]/10 flex items-center justify-center mb-3">
-                <svg class="w-6 h-6 text-[#B76E79]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="w-12 h-12 mx-auto rounded-full bg-[#202a40]/10 flex items-center justify-center mb-3">
+                <svg class="w-6 h-6 text-[#202a40]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/>
                 </svg>
             </div>
             <h1 class="text-xl sm:text-2xl font-bold text-neutral-900">Our Blog</h1>
-            <p class="text-[13px] text-neutral-600 mt-2 max-w-md mx-auto">Shopping tips, product guides, and the latest trends — straight from our experts.</p>
+            <p class="text-[13px] text-neutral-600 mt-2 max-w-md mx-auto">Shopping tips, product guides, and the latest trends &mdash; straight from our experts.</p>
         </div>
 
         {{-- Search & Filters --}}
@@ -42,24 +42,28 @@
                     </svg>
                     <input type="text" name="search" value="{{ request('search') }}"
                            placeholder="Search posts..."
-                           class="w-full pl-9 pr-4 py-2 border border-neutral-200 rounded-full text-[13px] focus:outline-none focus:border-[#B76E79] focus:ring-2 focus:ring-[#B76E79]/10 bg-white">
+                           class="w-full pl-9 pr-4 py-2 border border-neutral-200 rounded-full text-[13px] focus:outline-none focus:border-[#202a40] focus:ring-2 focus:ring-[#202a40]/10 bg-white">
                 </div>
+                <button type="submit" class="px-4 py-2 bg-[#202a40] text-white text-[13px] font-medium rounded-full hover:bg-[#506282] transition-colors">
+                    Search
+                </button>
                 @if(request('search'))
-                    <button type="submit" class="px-3 py-1.5 bg-[#B76E79] text-white text-[13px] font-medium rounded-full hover:bg-[#c29958] transition-colors">
-                        Search
-                    </button>
+                    <a href="{{ route('blog', request()->except('search', 'page')) }}"
+                       class="px-4 py-2 border border-neutral-200 text-neutral-600 text-[13px] font-medium rounded-full hover:border-neutral-300 transition-colors">
+                        Clear
+                    </a>
                 @endif
             </div>
 
             @if($categories->count())
                 <div class="flex flex-wrap justify-center gap-2 mb-8">
                     <a href="{{ route('blog') }}"
-                       class="px-4 py-1.5 rounded-full text-[13px] font-medium transition-colors {{ !request('category') ? 'bg-[#B76E79] text-white shadow-sm' : 'bg-white border border-neutral-200 text-neutral-600 hover:border-[#B76E79]/30 hover:text-[#B76E79]' }}">
+                       class="px-4 py-1.5 rounded-full text-[13px] font-medium transition-colors {{ !request('category') ? 'bg-[#202a40] text-white shadow-sm' : 'bg-white border border-neutral-200 text-neutral-600 hover:border-[#202a40]/30 hover:text-[#202a40]' }}">
                         All Posts
                     </a>
                     @foreach($categories as $cat)
                         <a href="{{ route('blog', ['category' => $cat]) }}"
-                           class="px-4 py-1.5 rounded-full text-[13px] font-medium transition-colors {{ request('category') === $cat ? 'bg-[#B76E79] text-white shadow-sm' : 'bg-white border border-neutral-200 text-neutral-600 hover:border-[#B76E79]/30 hover:text-[#B76E79]' }}">
+                           class="px-4 py-1.5 rounded-full text-[13px] font-medium transition-colors {{ request('category') === $cat ? 'bg-[#202a40] text-white shadow-sm' : 'bg-white border border-neutral-200 text-neutral-600 hover:border-[#202a40]/30 hover:text-[#202a40]' }}">
                             {{ $cat }}
                         </a>
                     @endforeach
@@ -80,7 +84,7 @@
                             @else
                                 @php
                                     $gradients = [
-                                        'from-[#B76E79] to-[#0F2D30]',
+                                        'from-[#202a40] to-[#0F2D30]',
                                         'from-[#1a3a5c] to-[#0d1f33]',
                                         'from-[#4a2c5e] to-[#2a1835]',
                                         'from-[#2d4a3e] to-[#1a2d25]',
@@ -106,13 +110,13 @@
                         <div class="p-4 flex flex-col flex-1">
                             <div class="flex items-center gap-2 mb-2">
                                 @if($post->category)
-                                    <span class="text-[11px] font-bold text-[#B76E79] uppercase tracking-wide">{{ $post->category }}</span>
+                                    <span class="text-[11px] font-bold text-[#202a40] uppercase tracking-wide">{{ $post->category }}</span>
                                     <span class="text-neutral-300">·</span>
                                 @endif
                                 <span class="text-[11px] text-neutral-600">{{ $post->reading_time }} min read</span>
                             </div>
 
-                            <h2 class="font-bold text-neutral-900 mb-2 line-clamp-2 group-hover:text-[#c29958] transition-colors text-[15px] leading-snug flex-1">
+                            <h2 class="font-bold text-neutral-900 mb-2 line-clamp-2 group-hover:text-[#506282] transition-colors text-[15px] leading-snug flex-1">
                                 <a href="{{ route('blog.show', $post->slug) }}">{{ $post->title }}</a>
                             </h2>
 
@@ -125,7 +129,7 @@
                                     {{ $post->published_at ? $post->published_at->format('M d, Y') : '' }}
                                 </span>
                                 <a href="{{ route('blog.show', $post->slug) }}"
-                                   class="text-[13px] font-semibold text-[#B76E79] hover:text-[#c29958] inline-flex items-center gap-1">
+                                   class="text-[13px] font-semibold text-[#202a40] hover:text-[#506282] inline-flex items-center gap-1">
                                     Read more
                                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                                 </a>
@@ -153,7 +157,7 @@
                 <h3 class="text-[15px] font-semibold text-neutral-700 mb-1">No posts found</h3>
                 <p class="text-[13px] text-neutral-600">
                     @if(request('search') || request('category'))
-                        No posts match your search. <a href="{{ route('blog') }}" class="text-[#B76E79] hover:text-[#c29958] font-medium">Clear filters</a>
+                        No posts match your search. <a href="{{ route('blog') }}" class="text-[#202a40] hover:text-[#506282] font-medium">Clear filters</a>
                     @else
                         Check back soon for our latest articles.
                     @endif

@@ -102,7 +102,7 @@ class ChatbotController extends Controller
 
     private function buildSystemPrompt(array $products, array $orders, array $coupons): string
     {
-        $storeName = Setting::get('site_name', config('app.name', 'MusCo'));
+        $storeName = Setting::get('site_name', config('app.name', 'Trendymus'));
 
         $prompt  = "You are the official AI Shopping Assistant for {$storeName}, a multi-product e-commerce store in India.\n\n";
 
@@ -114,9 +114,9 @@ class ChatbotController extends Controller
         $prompt .= "- If you're unsure about something, say so honestly and suggest the customer contact support.\n\n";
 
         $prompt .= "## Store Policies\n";
-        $prompt .= "- **Shipping**: Free on orders above ₹499. Standard delivery in 3–7 business days. Express delivery available at checkout for select cities.\n";
+        $prompt .= "- **Shipping**: Free on orders above £30. Standard delivery in 3–7 business days. Express delivery available at checkout for select cities.\n";
         $prompt .= "- **Returns**: 7-day return window from delivery. Items must be unused with original tags. Initiate via Account → Returns on the website.\n";
-        $prompt .= "- **Payments**: UPI, credit/debit cards, net banking, digital wallets, and Cash on Delivery (COD up to ₹5,000).\n";
+        $prompt .= "- **Payments**: PayPal, credit/debit cards.\n";
         $prompt .= "- **Size Guide**: Available at /size-guide. We stock sizes from newborn (0–3 months) up to age 15.\n";
         $prompt .= "- **Order Tracking**: Available at Account → Orders, or use the Track Order page with your order number.\n\n";
 

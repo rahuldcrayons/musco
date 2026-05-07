@@ -8,28 +8,29 @@
     <title>{{ $title ?? config('app.name', 'Laravel') }}</title>
 
     <!-- PWA Meta Tags -->
-    <meta name="theme-color" content="#B76E79">
+    <meta name="theme-color" content="#202a40">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="MusCo">
-    <meta name="application-name" content="MusCo">
-    <meta name="msapplication-TileColor" content="#B76E79">
+    <meta name="apple-mobile-web-app-title" content="Trendymus">
+    <meta name="application-name" content="Trendymus">
+    <meta name="msapplication-TileColor" content="#202a40">
     <meta name="format-detection" content="telephone=no">
     <link rel="manifest" href="/manifest.json">
-    <link rel="icon" type="image/png" href="/images/icons/favicon.png?v=2">
-    <link rel="shortcut icon" href="/favicon.ico?v=2">
-    <link rel="apple-touch-icon" sizes="180x180" href="/images/icons/icon-192x192.svg">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 
     <!-- SEO Meta Tags -->
     @stack('meta')
 
     <!-- Default OG fallbacks -->
     @unless(View::hasSection('meta'))
-        <meta name="description" content="{{ config('app.name') }} - Shop certified gold, diamond & silver jewellery online. Hallmarked collections for every occasion.">
+        <meta name="description" content="{{ config('app.name') }} - Shop affordable luxury jewellery online at Trendymus. Rings, necklaces, earrings, bracelets and more with free UK delivery.">
         <meta property="og:site_name" content="{{ config('app.name') }}">
         <meta property="og:title" content="@yield('title', config('app.name'))">
-        <meta property="og:description" content="Shop certified gold, diamond & silver jewellery online at {{ config('app.name') }}. Hallmarked, exquisite designs.">
+        <meta property="og:description" content="Shop certified gold, diamond & silver jewellery online at {{ config('app.name') }}. Beautiful rings, necklaces, earrings & bracelets with free UK delivery.">
         <meta property="og:type" content="website">
         <meta property="og:url" content="{{ url()->current() }}">
         <meta property="og:image" content="{{ asset('images/og-default.png') }}">
@@ -37,18 +38,22 @@
         <meta property="og:image:height" content="630">
         <meta name="twitter:card" content="summary_large_image">
         <meta name="twitter:title" content="@yield('title', config('app.name'))">
-        <meta name="twitter:description" content="Shop certified gold, diamond & silver jewellery online at {{ config('app.name') }}. Hallmarked, exquisite designs.">
+        <meta name="twitter:description" content="Shop certified gold, diamond & silver jewellery online at {{ config('app.name') }}. Beautiful rings, necklaces, earrings & bracelets with free UK delivery.">
         <meta name="twitter:image" content="{{ asset('images/og-default.png') }}">
     @endunless
 
     {{-- Canonical is set by each page via @push('meta'). No layout fallback to avoid duplicates. --}}
 
+    <!-- Language/Region -->
+    <link rel="alternate" hreflang="en-GB" href="{{ url()->current() }}">
+    <link rel="alternate" hreflang="x-default" href="{{ url()->current() }}">
+
     <!-- Performance: DNS prefetch + preconnect -->
     <link rel="dns-prefetch" href="https://fonts.bunny.net">
     <link rel="preconnect" href="https://fonts.bunny.net" crossorigin>
 
-    <!-- Fonts (display=swap for fast first paint) -->
-    <link href="https://fonts.bunny.net/css?family=playfair-display:400,600,700|outfit:300,400,500,600,700|poppins:300,400,500,600,700|inter:400,500,600&display=swap" rel="stylesheet" />
+    <!-- Fonts -->
+    <link href="https://fonts.bunny.net/css?family=playfair-display:400,600,700|outfit:400,500,600,700&display=swap" rel="stylesheet" />
 
     <!-- Critical CSS first to prevent flash -->
     @vite(['resources/css/critical.css'])
@@ -58,7 +63,7 @@
 
     @stack('styles')
 </head>
-<body class="font-sans antialiased bg-white text-[#1D2128]" style="font-family: 'DM Sans', sans-serif;" x-data>
+<body class="font-sans antialiased bg-white text-[#1D2128]" x-data>
     <!-- Toast Notifications -->
     <div class="fixed top-4 right-4 z-50 flex flex-col gap-2 max-w-[calc(100vw-2rem)]">
         <template x-for="toast in $store.toast.items" :key="toast.id">
@@ -118,13 +123,13 @@
          x-transition:leave-end="opacity-0 translate-y-full"
          class="fixed bottom-20 lg:bottom-4 left-4 right-4 z-50 bg-white rounded-2xl shadow-2xl border border-neutral-100 p-4 mx-auto max-w-sm">
         <div class="flex items-start gap-3">
-            <div class="w-11 h-11 rounded-xl bg-[#B76E79] flex items-center justify-center shrink-0">
+            <div class="w-11 h-11 rounded-xl bg-[#202a40] flex items-center justify-center shrink-0">
                 <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
                 </svg>
             </div>
             <div class="flex-1 min-w-0">
-                <p class="text-sm font-semibold text-neutral-900">Add MusCo to Home Screen</p>
+                <p class="text-sm font-semibold text-neutral-900">Add Trendymus to Home Screen</p>
                 <p class="text-xs text-neutral-500 mt-0.5">Fast access, works offline</p>
             </div>
             <button @click="dismiss()" class="shrink-0 p-1 text-neutral-400 hover:text-neutral-600" aria-label="Dismiss">
@@ -135,7 +140,7 @@
         </div>
         <div class="flex gap-2 mt-3">
             <button @click="dismiss()" class="flex-1 py-2 text-xs font-medium text-neutral-600 bg-neutral-100 rounded-xl hover:bg-neutral-200 transition-colors">Later</button>
-            <button @click="install()" class="flex-1 py-2 text-xs font-medium text-white bg-[#B76E79] rounded-xl hover:bg-[#222222] transition-colors">Install App</button>
+            <button @click="install()" class="flex-1 py-2 text-xs font-medium text-white bg-[#202a40] rounded-xl transition-colors">Install App</button>
         </div>
     </div>
 

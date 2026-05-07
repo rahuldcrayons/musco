@@ -27,8 +27,10 @@ class RecommendationService
             $query->where('session_id', $sessionId);
         }
 
-        $productIds = $query->orderByDesc('created_at')
-            ->distinct('product_id')
+        $productIds = $query->select('product_id')
+            ->selectRaw('MAX(created_at) as last_viewed')
+            ->groupBy('product_id')
+            ->orderByDesc('last_viewed')
             ->limit($limit)
             ->pluck('product_id');
 
@@ -39,7 +41,8 @@ class RecommendationService
         return Product::whereIn('id', $productIds)
             ->where('is_active', true)
             ->whereNull('deleted_at')
-            ->with(['images' => fn ($q) => $q->orderBy('position')->limit(1)])
+            ->whereHas('primaryImage')
+            ->with('primaryImage')
             ->get()
             ->sortBy(fn ($p) => $productIds->search($p->id))
             ->values();
@@ -50,9 +53,10 @@ class RecommendationService
         return Cache::remember('recommendations.popular', 900, function () use ($limit) {
             return Product::where('is_active', true)
                 ->whereNull('deleted_at')
+                ->whereHas('primaryImage')
                 ->orderByDesc('sales_count')
                 ->orderByDesc('rating')
-                ->with(['images' => fn ($q) => $q->orderBy('position')->limit(1)])
+                ->with('primaryImage')
                 ->limit($limit)
                 ->get();
         });
@@ -70,6 +74,7 @@ class RecommendationService
             return Product::where('is_active', true)
                 ->whereNull('deleted_at')
                 ->where('id', '!=', $productId)
+                ->whereHas('primaryImage')
                 ->where(function ($q) use ($product) {
                     $q->where('category_id', $product->category_id)
                       ->orWhere('brand_id', $product->brand_id);
@@ -78,7 +83,7 @@ class RecommendationService
                     $product->category_id, $product->brand_id, $product->category_id,
                 ])
                 ->orderByDesc('sales_count')
-                ->with(['images' => fn ($q) => $q->orderBy('position')->limit(1)])
+                ->with('primaryImage')
                 ->limit($limit)
                 ->get();
         });
@@ -106,7 +111,8 @@ class RecommendationService
             return Product::whereIn('id', $coProductIds)
                 ->where('is_active', true)
                 ->whereNull('deleted_at')
-                ->with(['images' => fn ($q) => $q->orderBy('position')->limit(1)])
+                ->whereHas('primaryImage')
+                ->with('primaryImage')
                 ->get();
         });
     }
@@ -130,8 +136,9 @@ class RecommendationService
                 ->where('is_active', true)
                 ->whereNull('deleted_at')
                 ->whereNotIn('id', $excludeIds)
+                ->whereHas('primaryImage')
                 ->orderByDesc('sales_count')
-                ->with(['images' => fn ($q) => $q->orderBy('position')->limit(1)])
+                ->with('primaryImage')
                 ->limit(4)
                 ->get();
         }

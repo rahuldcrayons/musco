@@ -38,7 +38,7 @@ class AnalyticsService
             'content_category' => $product->category?->name ?? '',
             'content_type' => 'product',
             'value' => (float) $product->price,
-            'currency' => 'INR',
+            'currency' => 'GBP',
         ], $request, auth()->user(), $eventId);
     }
 
@@ -51,7 +51,7 @@ class AnalyticsService
             'content_name' => $product->name,
             'content_type' => 'product',
             'value' => (float) $product->price * $quantity,
-            'currency' => 'INR',
+            'currency' => 'GBP',
             'num_items' => $quantity,
         ], $request, auth()->user(), $eventId);
     }
@@ -64,7 +64,7 @@ class AnalyticsService
             'content_ids' => $contentIds,
             'content_type' => 'product',
             'value' => $value,
-            'currency' => 'INR',
+            'currency' => 'GBP',
             'num_items' => $numItems,
         ], $request, auth()->user(), $eventId);
     }
@@ -75,7 +75,7 @@ class AnalyticsService
     {
         $this->sendFBCAPIEvent('AddPaymentInfo', [
             'value' => $value,
-            'currency' => 'INR',
+            'currency' => 'GBP',
             'content_category' => $paymentMethod,
         ], $request, auth()->user(), $eventId);
     }
@@ -100,7 +100,7 @@ class AnalyticsService
             'content_name' => $product->name,
             'content_type' => 'product',
             'value' => (float) $product->price,
-            'currency' => 'INR',
+            'currency' => 'GBP',
         ], $request, auth()->user(), $eventId);
     }
 
@@ -226,7 +226,7 @@ class AnalyticsService
             'event_source_url' => $request?->fullUrl() ?? config('app.url'),
             'user_data' => $userData,
             'custom_data' => [
-                'currency' => 'INR',
+                'currency' => 'GBP',
                 'value' => (float) $order->total,
                 'content_type' => 'product',
                 'contents' => $contents,
@@ -329,7 +329,7 @@ class AnalyticsService
                 'params' => [
                     'transaction_id' => $order->order_number,
                     'value' => (float) $order->total,
-                    'currency' => 'INR',
+                    'currency' => 'GBP',
                     'tax' => (float) $order->tax,
                     'shipping' => (float) $order->shipping_cost,
                     'items' => $items,

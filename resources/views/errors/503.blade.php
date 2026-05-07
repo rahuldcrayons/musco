@@ -31,7 +31,7 @@
             width: 6rem;
             height: 6rem;
             margin: 0 auto 1.5rem;
-            background: linear-gradient(135deg, #B76E79 0%, #222222 100%);
+            background: linear-gradient(135deg, #202a40 0%, #222222 100%);
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -51,7 +51,7 @@
             text-decoration: none;
             border-radius: 0.75rem;
             transition: all 0.2s;
-            background: linear-gradient(to right, #B76E79, #222222);
+            background: linear-gradient(to right, #202a40, #222222);
             color: #fff;
         }
         .btn:hover { transform: translateY(-1px); }
@@ -60,7 +60,7 @@
 </head>
 <body>
     <div class="header">
-        <span style="font-family:'Outfit',sans-serif; color:#B76E79; font-size:32px; font-weight:700; letter-spacing:-0.02em;">Mus<span style="color:#2b2b2b;">Co</span></span>
+        <span style="font-family:'Outfit',sans-serif; color:#202a40; font-size:32px; font-weight:700; letter-spacing:-0.02em;">Mus<span style="color:#2b2b2b;">Co</span></span>
     </div>
     <div class="content">
         <div class="card">

@@ -1,14 +1,8 @@
 <x-layouts.app>
     <x-slot name="title">My Returns</x-slot>
 
-    <div class="bg-neutral-50 min-h-screen">
-        <div class="container mx-auto px-4 py-8">
-            <x-breadcrumb :items="[['label' => 'Account', 'url' => route('account.dashboard')], ['label' => 'Returns']]" />
-            <div class="flex flex-col lg:flex-row gap-8 mt-4">
-                @include('account.partials.sidebar')
-
-                <div class="flex-1">
-                    <div class="flex items-center justify-between mb-6">
+    @include('account.partials.sidebar')
+<div class="flex items-center justify-between mb-6">
                         <div>
                             <h1 class="text-xl font-bold text-neutral-900">My Returns</h1>
                             <p class="text-sm text-neutral-600 mt-0.5">{{ $returns->total() }} {{ Str::plural('request', $returns->total()) }}</p>
@@ -20,19 +14,19 @@
                             {{-- Header --}}
                             <div class="px-4 py-3 flex flex-wrap items-center justify-between gap-3 border-b border-neutral-100">
                                 <div class="flex items-center gap-3">
-                                    <a href="{{ route('account.returns.show', $return) }}" class="text-sm font-bold text-neutral-900 hover:text-[#c29958] transition-colors">
+                                    <a href="{{ route('account.returns.show', $return) }}" class="text-sm font-bold text-neutral-900 hover:text-[#506282] transition-colors">
                                         {{ $return->return_number }}
                                     </a>
                                     @php
                                         $statusColors = [
-                                            'requested' => 'bg-[#c29958]/10 text-[#c29958] border-[#c29958]/20',
-                                            'approved' => 'bg-[#B76E79]/5 text-[#B76E79] border-[#B76E79]/20',
+                                            'requested' => 'bg-[#506282]/10 text-[#506282] border-[#506282]/20',
+                                            'approved' => 'bg-[#202a40]/5 text-[#202a40] border-[#202a40]/20',
                                             'rejected' => 'bg-neutral-100 text-neutral-700 border-neutral-200',
-                                            'pickup_scheduled' => 'bg-[#B76E79]/5 text-[#222222] border-[#B76E79]/30',
-                                            'picked_up' => 'bg-[#B76E79]/15 text-[#15383c] border-[#B76E79]/40',
-                                            'received' => 'bg-[#B76E79]/5 text-[#222222] border-[#B76E79]/30',
+                                            'pickup_scheduled' => 'bg-[#202a40]/5 text-[#222222] border-[#202a40]/30',
+                                            'picked_up' => 'bg-[#202a40]/15 text-[#15383c] border-[#202a40]/40',
+                                            'received' => 'bg-[#202a40]/5 text-[#222222] border-[#202a40]/30',
                                             'processed' => 'bg-neutral-50 text-neutral-700 border-neutral-200',
-                                            'completed' => 'bg-[#B76E79]/5 text-[#B76E79] border-[#B76E79]/20',
+                                            'completed' => 'bg-[#202a40]/5 text-[#202a40] border-[#202a40]/20',
                                         ];
                                         $color = $statusColors[$return->status] ?? 'bg-neutral-50 text-neutral-600 border-neutral-200';
                                     @endphp
@@ -58,7 +52,7 @@
                             <div class="px-4 py-3">
                                 <div class="flex items-center gap-2 mb-2">
                                     <span class="text-xs text-neutral-600">Order</span>
-                                    <a href="{{ route('account.orders.show', $return->order) }}" class="text-xs font-medium text-[#B76E79] hover:text-[#222222]">
+                                    <a href="{{ route('account.orders.show', $return->order) }}" class="text-xs font-medium text-[#202a40] hover:text-[#222222]">
                                         {{ $return->order->order_number }}
                                     </a>
                                 </div>
@@ -78,11 +72,11 @@
                             {{-- Footer --}}
                             <div class="px-4 py-2.5 bg-neutral-50 border-t border-neutral-100 flex items-center justify-between">
                                 @if($return->refund_amount)
-                                    <span class="text-xs text-neutral-600">Refund: <span class="font-semibold text-[#B76E79]">{{ format_price($return->refund_amount) }}</span></span>
+                                    <span class="text-xs text-neutral-600">Refund: <span class="font-semibold text-[#202a40]">{{ format_price($return->refund_amount) }}</span></span>
                                 @else
                                     <span></span>
                                 @endif
-                                <a href="{{ route('account.returns.show', $return) }}" class="text-xs font-semibold text-[#B76E79] hover:text-[#222222] inline-flex items-center gap-1">
+                                <a href="{{ route('account.returns.show', $return) }}" class="text-xs font-semibold text-[#202a40] hover:text-[#222222] inline-flex items-center gap-1">
                                     View Details
                                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                                 </a>
@@ -97,7 +91,7 @@
                             </div>
                             <h3 class="text-base font-semibold text-neutral-900 mb-1">No returns yet</h3>
                             <p class="text-sm text-neutral-600 mb-5">You haven't submitted any return requests.</p>
-                            <a href="{{ route('account.orders.index') }}" class="inline-flex items-center gap-2 bg-[#B76E79] hover:bg-[#222222] text-white text-sm font-semibold px-3 py-1.5 rounded-lg transition-colors">
+                            <a href="{{ route('account.orders.index') }}" class="inline-flex items-center gap-2 bg-[#202a40] text-white text-sm font-semibold px-3 py-1.5 rounded-lg transition-colors">
                                 View Orders
                             </a>
                         </div>
@@ -108,8 +102,5 @@
                             {{ $returns->links() }}
                         </div>
                     @endif
-                </div>
-            </div>
-        </div>
-    </div>
+                @include('account.partials.sidebar-end')
 </x-layouts.app>

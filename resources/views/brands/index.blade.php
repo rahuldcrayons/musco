@@ -1,6 +1,17 @@
 <x-layouts.app>
     <x-slot name="title">All Brands - {{ config('app.name') }}</x-slot>
 
+    @push('meta')
+        <meta name="description" content="Shop by brand at {{ config('app.name') }}. Browse our curated collection of trusted jewellery brands.">
+        <link rel="canonical" href="{{ url('/brands') }}">
+        <meta property="og:title" content="All Brands - {{ config('app.name') }}">
+        <meta property="og:description" content="Shop by brand at {{ config('app.name') }}. Browse our curated collection of trusted jewellery brands.">
+        <meta property="og:type" content="website">
+        <meta property="og:url" content="{{ url('/brands') }}">
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:title" content="All Brands - {{ config('app.name') }}">
+    @endpush
+
     <div class="bg-neutral-50 border-b border-neutral-100">
         <div class="container mx-auto px-4 py-3">
             <x-breadcrumb :items="[['label' => 'Brands', 'url' => null]]" />
@@ -13,14 +24,14 @@
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
             @foreach($brands as $brand)
                 <a href="{{ route('brands.show', $brand) }}" class="group card overflow-hidden">
-                    <div class="aspect-square bg-neutral-100 overflow-hidden flex items-center justify-center p-4">
+                    <div class="aspect-square bg-neutral-50 overflow-hidden flex items-center justify-center p-4">
                         @if($brand->logo_url)
-                            <img src="{{ $brand->logo_url }}"
+                            <img src="{{ asset('storage/' . $brand->logo_url) }}"
                                  alt="{{ $brand->name }}"
                                  class="max-w-full max-h-full object-contain group-hover:scale-105 transition-transform duration-300">
                         @else
                             <div class="w-full h-full flex items-center justify-center">
-                                <span class="text-2xl font-bold text-neutral-300">{{ substr($brand->name, 0, 2) }}</span>
+                                <span class="text-4xl font-bold text-[#202a40]" style="font-family:'Playfair Display',Georgia,serif;">{{ strtoupper(mb_substr($brand->name, 0, 2)) }}</span>
                             </div>
                         @endif
                     </div>

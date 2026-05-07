@@ -78,9 +78,15 @@ class SitemapController extends Controller
             $urls->push(['loc' => url('/cookie-policy'), 'changefreq' => 'monthly', 'priority' => '0.2']);
             $urls->push(['loc' => url('/gdpr'), 'changefreq' => 'monthly', 'priority' => '0.2']);
 
-            // Dynamic CMS pages
+            // Dynamic CMS pages (exclude those with dedicated static routes)
             if (class_exists(Page::class)) {
+                $excludeSlugs = [
+                    'contact-us', 'privacy-policy', 'terms-of-service',
+                    'shipping-policy', 'returns-policy', 'cookie-policy',
+                    'gdpr', 'help-center', 'size-guide',
+                ];
                 Page::where('is_published', true)
+                    ->whereNotIn('slug', $excludeSlugs)
                     ->select('slug', 'updated_at')
                     ->get()
                     ->each(function ($page) use ($urls) {

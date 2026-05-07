@@ -3,17 +3,22 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\Admin;
+use App\Models\Cart;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use App\Models\Cart;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
 class LoginController extends Controller
 {
-    public function showLoginForm(): View
+    public function showLoginForm(Request $request): View
     {
+        if ($request->has('redirect')) {
+            session()->put('url.intended', $request->query('redirect'));
+        }
+
         return view('auth.login');
     }
 
@@ -25,6 +30,22 @@ class LoginController extends Controller
         ]);
 
         if (Auth::attempt($credentials, $request->boolean('remember'))) {
+            $user = Auth::user();
+
+            // Block admin accounts from using the customer login
+            $isAdmin = Admin::where('user_id', $user->id)->where('is_active', true)->exists()
+                || $user->role === 'admin';
+
+            if ($isAdmin) {
+                Auth::logout();
+                $request->session()->invalidate();
+                $request->session()->regenerateToken();
+
+                return redirect()->route('login')
+                    ->with('toast_error', 'Admin accounts must use the Admin Portal.')
+                    ->withInput($request->only('email'));
+            }
+
             $this->mergeGuestCart($request);
             $request->session()->regenerate();
 
@@ -32,7 +53,7 @@ class LoginController extends Controller
                 return response()->json(['success' => true]);
             }
 
-            return redirect()->intended(route('account.dashboard'));
+            return redirect()->intended('/account');
         }
 
         if ($request->wantsJson()) {

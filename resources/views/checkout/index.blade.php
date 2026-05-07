@@ -54,7 +54,7 @@
                     content_ids: {!! json_encode($cart->items->pluck('product_id')->map('strval')->values()->toArray()) !!},
                     content_type: 'product',
                     value: {{ (float) ($cart->subtotal - $cart->discount) }},
-                    currency: 'INR',
+                    currency: 'GBP',
                     num_items: {{ $cart->items->sum('quantity') }}
                 }, {eventID: '{{ $fbEventId }}'});
             }
@@ -113,10 +113,10 @@
             @endif
 
             @php
-                $methodOrder = ['razorpay' => 'razorpay_enabled', 'cod' => 'cod_enabled'];
-                $firstMethod = 'cod';
+                $methodOrder = ['paypal' => 'paypal_enabled', 'stripe' => 'stripe_enabled'];
+                $firstMethod = 'stripe';
                 foreach ($methodOrder as $method => $key) {
-                    if (($paymentSettings[$key] ?? '1') === '1') { $firstMethod = $method; break; }
+                    if (($paymentSettings[$key] ?? '0') === '1') { $firstMethod = $method; break; }
                 }
             @endphp
 
@@ -147,7 +147,7 @@
                                     <div>
                                         <label class="block text-[10px] font-semibold text-[#555555] mb-0.5">Phone *</label>
                                         <input type="tel" name="guest_phone" id="guest_phone" value="{{ old('guest_phone') }}" required autocomplete="tel" autofocus
-                                               class="w-full text-sm border border-[#efefef] rounded px-2.5 py-2 focus:border-[#B76E79] focus:outline-none" placeholder="+91 98765 43210"
+                                               class="w-full text-sm border border-[#efefef] rounded px-2.5 py-2 focus:border-[#B76E79] focus:outline-none" placeholder="+44 7700 900000"
                                                @input="captureAbandoned(false)" @blur="captureAbandoned(true)">
                                         @error('guest_phone') <p class="text-[10px] text-[#CC0C39] mt-0.5">{{ $message }}</p> @enderror
                                     </div>
@@ -171,44 +171,34 @@
 
                                 <div class="border-t border-dashed border-[#efefef] my-2"></div>
 
-                                {{-- Shipping fields with PIN autocomplete --}}
-                                <div class="space-y-2" x-data="pinLookup()">
+                                {{-- Shipping fields --}}
+                                <div class="space-y-2">
                                     <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                                        <div>
-                                            <label class="block text-[10px] font-semibold text-[#555555] mb-0.5">PIN Code *</label>
-                                            <input type="text" name="shipping_postal_code" x-model="pin" @input="fetchPinData()" value="{{ old('shipping_postal_code') }}" required maxlength="6" autocomplete="postal-code"
-                                                   class="w-full text-sm border border-[#efefef] rounded px-2.5 py-2 focus:border-[#B76E79] focus:outline-none" placeholder="400001">
-                                            <p x-show="pinError" x-text="pinError" class="text-[10px] text-[#CC0C39] mt-0.5" x-cloak></p>
-                                            <p x-show="pinServiceable === true" class="text-[10px] text-[#555555] mt-0.5 flex items-center gap-0.5" x-cloak>
-                                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                                                Delivery available
-                                            </p>
-                                            @error('shipping_postal_code') <p class="text-[10px] text-[#CC0C39] mt-0.5">{{ $message }}</p> @enderror
-                                        </div>
-                                        <div>
-                                            <label class="block text-[10px] font-semibold text-[#555555] mb-0.5">City *</label>
-                                            <input type="text" name="shipping_city" x-model="city" value="{{ old('shipping_city') }}" required autocomplete="address-level2"
-                                                   class="w-full text-sm border border-[#efefef] rounded px-2.5 py-2 focus:border-[#B76E79] focus:outline-none" placeholder="City">
-                                            @error('shipping_city') <p class="text-[10px] text-[#CC0C39] mt-0.5">{{ $message }}</p> @enderror
-                                        </div>
-                                        <div>
-                                            <label class="block text-[10px] font-semibold text-[#555555] mb-0.5">State *</label>
-                                            <input type="text" name="shipping_state" x-model="state" value="{{ old('shipping_state') }}" required autocomplete="address-level1"
-                                                   class="w-full text-sm border border-[#efefef] rounded px-2.5 py-2 focus:border-[#B76E79] focus:outline-none" placeholder="State">
-                                            @error('shipping_state') <p class="text-[10px] text-[#CC0C39] mt-0.5">{{ $message }}</p> @enderror
-                                        </div>
                                         <div>
                                             <label class="block text-[10px] font-semibold text-[#555555] mb-0.5">Recipient Name *</label>
                                             <input type="text" name="shipping_name" value="{{ old('shipping_name') }}" required autocomplete="shipping name"
                                                    class="w-full text-sm border border-[#efefef] rounded px-2.5 py-2 focus:border-[#B76E79] focus:outline-none" placeholder="Recipient name">
                                             @error('shipping_name') <p class="text-[10px] text-[#CC0C39] mt-0.5">{{ $message }}</p> @enderror
                                         </div>
-                                    </div>
-                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
                                         <div>
-                                            <label class="block text-[10px] font-semibold text-[#555555] mb-0.5">Address Line 2</label>
-                                            <input type="text" name="shipping_address_line_2" value="{{ old('shipping_address_line_2') }}" autocomplete="address-line2"
-                                                   class="w-full text-sm border border-[#efefef] rounded px-2.5 py-2 focus:border-[#B76E79] focus:outline-none" placeholder="Area, Landmark (optional)">
+                                            <label class="block text-[10px] font-semibold text-[#555555] mb-0.5">City *</label>
+                                            <input type="text" name="shipping_city" value="{{ old('shipping_city') }}" required autocomplete="address-level2"
+                                                   class="w-full text-sm border border-[#efefef] rounded px-2.5 py-2 focus:border-[#B76E79] focus:outline-none" placeholder="City">
+                                            @error('shipping_city') <p class="text-[10px] text-[#CC0C39] mt-0.5">{{ $message }}</p> @enderror
+                                        </div>
+                                        <div>
+                                            <label class="block text-[10px] font-semibold text-[#555555] mb-0.5">Post Code *</label>
+                                            <input type="text" name="shipping_postal_code" value="{{ old('shipping_postal_code') }}" required maxlength="8" autocomplete="postal-code"
+                                                   class="w-full text-sm border border-[#efefef] rounded px-2.5 py-2 focus:border-[#B76E79] focus:outline-none" placeholder="SW1A 1AA">
+                                            @error('shipping_postal_code') <p class="text-[10px] text-[#CC0C39] mt-0.5">{{ $message }}</p> @enderror
+                                        </div>
+                                        <div>
+                                            <label class="block text-[10px] font-semibold text-[#555555] mb-0.5">Country *</label>
+                                            <select name="shipping_country" required autocomplete="country"
+                                                    class="w-full text-sm border border-[#efefef] rounded px-2.5 py-2 focus:border-[#B76E79] focus:outline-none">
+                                                <option value="GB" {{ old('shipping_country', 'GB') === 'GB' ? 'selected' : '' }}>United Kingdom</option>
+                                            </select>
+                                            @error('shipping_country') <p class="text-[10px] text-[#CC0C39] mt-0.5">{{ $message }}</p> @enderror
                                         </div>
                                     </div>
                                     <div>
@@ -216,6 +206,11 @@
                                         <input type="text" name="shipping_address_line_1" value="{{ old('shipping_address_line_1') }}" required autocomplete="address-line1"
                                                class="w-full text-sm border border-[#efefef] rounded px-2.5 py-2 focus:border-[#B76E79] focus:outline-none" placeholder="House no., Building, Street">
                                         @error('shipping_address_line_1') <p class="text-[10px] text-[#CC0C39] mt-0.5">{{ $message }}</p> @enderror
+                                    </div>
+                                    <div>
+                                        <label class="block text-[10px] font-semibold text-[#555555] mb-0.5">Address Line 2</label>
+                                        <input type="text" name="shipping_address_line_2" value="{{ old('shipping_address_line_2') }}" autocomplete="address-line2"
+                                               class="w-full text-sm border border-[#efefef] rounded px-2.5 py-2 focus:border-[#B76E79] focus:outline-none" placeholder="Flat, Suite, Area (optional)">
                                     </div>
                                 </div>
                                 <input type="hidden" name="same_billing_address" value="1">
@@ -238,7 +233,7 @@
                                                     </div>
                                                     <p class="text-[11px] text-[#555555] leading-relaxed">
                                                         {{ $address->address_line_1 }}{{ $address->address_line_2 ? ', ' . $address->address_line_2 : '' }},
-                                                        {{ $address->city }}, {{ $address->state }} {{ $address->postal_code }}
+                                                        {{ $address->city }}, {{ $address->postal_code }}
                                                         &middot; {{ $address->phone }}
                                                     </p>
                                                 </div>
@@ -260,8 +255,8 @@
                                     </div>
                                 @endif
 
-                                {{-- Inline Add Address Form with PIN autocomplete --}}
-                                <div x-show="showAddressForm" x-collapse x-cloak class="mt-2 p-3 bg-[#f7f7f7] rounded border border-[#efefef] space-y-2" x-data="pinLookup()">
+                                {{-- Inline Add Address Form --}}
+                                <div x-show="showAddressForm" x-collapse x-cloak class="mt-2 p-3 bg-[#f7f7f7] rounded border border-[#efefef] space-y-2">
                                     <h3 class="text-xs font-bold text-[#222222]">New Address</h3>
                                     <div class="grid grid-cols-2 gap-2">
                                         <div>
@@ -270,7 +265,7 @@
                                         </div>
                                         <div>
                                             <label class="block text-[10px] font-semibold text-[#555555] mb-0.5">Phone *</label>
-                                            <input type="tel" id="new_addr_phone" class="w-full text-xs border border-[#efefef] rounded px-2.5 py-2 focus:border-[#B76E79] focus:outline-none" placeholder="+91 98765 43210">
+                                            <input type="tel" id="new_addr_phone" class="w-full text-xs border border-[#efefef] rounded px-2.5 py-2 focus:border-[#B76E79] focus:outline-none" placeholder="+44 7700 900000">
                                         </div>
                                     </div>
                                     <div>
@@ -283,20 +278,20 @@
                                     </div>
                                     <div class="grid grid-cols-3 gap-2">
                                         <div>
-                                            <label class="block text-[10px] font-semibold text-[#555555] mb-0.5">PIN Code *</label>
-                                            <input type="text" id="new_addr_pincode" x-model="pin" @input="fetchPinData()" maxlength="6"
-                                                   class="w-full text-xs border border-[#efefef] rounded px-2.5 py-2 focus:border-[#B76E79] focus:outline-none" placeholder="400001">
-                                            <p x-show="pinError" x-text="pinError" class="text-[10px] text-[#CC0C39] mt-0.5" x-cloak></p>
-                                        </div>
-                                        <div>
                                             <label class="block text-[10px] font-semibold text-[#555555] mb-0.5">City *</label>
-                                            <input type="text" id="new_addr_city" x-model="city"
+                                            <input type="text" id="new_addr_city"
                                                    class="w-full text-xs border border-[#efefef] rounded px-2.5 py-2 focus:border-[#B76E79] focus:outline-none" placeholder="City">
                                         </div>
                                         <div>
-                                            <label class="block text-[10px] font-semibold text-[#555555] mb-0.5">State *</label>
-                                            <input type="text" id="new_addr_state" x-model="state"
-                                                   class="w-full text-xs border border-[#efefef] rounded px-2.5 py-2 focus:border-[#B76E79] focus:outline-none" placeholder="State">
+                                            <label class="block text-[10px] font-semibold text-[#555555] mb-0.5">Post Code *</label>
+                                            <input type="text" id="new_addr_postcode" maxlength="8"
+                                                   class="w-full text-xs border border-[#efefef] rounded px-2.5 py-2 focus:border-[#B76E79] focus:outline-none" placeholder="SW1A 1AA">
+                                        </div>
+                                        <div>
+                                            <label class="block text-[10px] font-semibold text-[#555555] mb-0.5">Country *</label>
+                                            <select id="new_addr_country" class="w-full text-xs border border-[#efefef] rounded px-2.5 py-2 focus:border-[#B76E79] focus:outline-none">
+                                                <option value="GB" selected>United Kingdom</option>
+                                            </select>
                                         </div>
                                     </div>
                                     <div id="new_addr_error" class="hidden text-[10px] text-[#CC0C39]"></div>
@@ -307,9 +302,11 @@
                                                     let phone = document.getElementById('new_addr_phone').value.trim();
                                                     let line1 = document.getElementById('new_addr_line1').value.trim();
                                                     let line2 = document.getElementById('new_addr_line2').value.trim();
-                                                    let pincode = pin;
+                                                    let city = document.getElementById('new_addr_city').value.trim();
+                                                    let postcode = document.getElementById('new_addr_postcode').value.trim();
+                                                    let country = document.getElementById('new_addr_country').value;
                                                     let errEl = document.getElementById('new_addr_error');
-                                                    if (!name || !phone || !line1 || !city || !state || !pincode) {
+                                                    if (!name || !phone || !line1 || !city || !postcode) {
                                                         errEl.textContent = 'Please fill all required fields.';
                                                         errEl.classList.remove('hidden');
                                                         return;
@@ -319,7 +316,7 @@
                                                     fetch('{{ route('account.addresses.store') }}', {
                                                         method: 'POST',
                                                         headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}', 'Accept': 'application/json' },
-                                                        body: JSON.stringify({ name, phone, address_line_1: line1, address_line_2: line2, city, state, postal_code: pincode })
+                                                        body: JSON.stringify({ name, phone, address_line_1: line1, address_line_2: line2, city, postal_code: postcode, country })
                                                     }).then(r => r.json().then(d => ({ok: r.ok, data: d}))).then(({ok, data}) => {
                                                         savingAddress = false;
                                                         if (ok) { location.reload(); }
@@ -367,7 +364,7 @@
                                                            class="mt-0.5 text-[#B76E79] focus:ring-[#B76E79]">
                                                     <div class="flex-1 min-w-0">
                                                         <span class="text-[11px] font-semibold text-[#222222]">{{ $address->name }}</span>
-                                                        <p class="text-[10px] text-[#555555]">{{ $address->address_line_1 }}, {{ $address->city }}, {{ $address->state }}</p>
+                                                        <p class="text-[10px] text-[#555555]">{{ $address->address_line_1 }}, {{ $address->city }}, {{ $address->postal_code }}</p>
                                                     </div>
                                                 </label>
                                             @endforeach
@@ -378,59 +375,57 @@
                         </div>
                         @endif
 
-                        {{-- ── Section 3: Payment Method (Razorpay + COD only) ── --}}
+                        {{-- ── Section 3: Payment Method ── --}}
                         <div class="bg-white rounded border border-[#efefef]">
                             <div class="flex items-center gap-2 px-3 py-2.5 border-b border-[#efefef] bg-[#f7f7f7]">
-                                <div class="w-5 h-5 rounded-full bg-[#B76E79] text-white text-[10px] font-bold flex items-center justify-center">{{ $isGuest ? '2' : '2' }}</div>
+                                <div class="w-5 h-5 rounded-full bg-[#B76E79] text-white text-[10px] font-bold flex items-center justify-center">2</div>
                                 <h2 class="text-xs font-bold text-[#222222] uppercase tracking-wide">Payment</h2>
                             </div>
                             <div class="p-3 space-y-2">
-                                {{-- Razorpay --}}
-                                @if(($paymentSettings['razorpay_enabled'] ?? '1') === '1')
-                                <div @click="paymentMethod = 'razorpay'"
-                                     :class="paymentMethod === 'razorpay' ? 'border-[#B76E79] bg-[#B76E79]/5 ring-1 ring-[#B76E79]/20' : 'border-[#efefef] hover:border-[#B76E79]'"
+                                {{-- PayPal --}}
+                                @if(($paymentSettings['paypal_enabled'] ?? '0') === '1')
+                                <div @click="paymentMethod = 'paypal'"
+                                     :class="paymentMethod === 'paypal' ? 'border-[#202a40] bg-[#202a40]/5 ring-1 ring-[#202a40]/20' : 'border-[#efefef] hover:border-[#202a40]'"
                                      class="border rounded cursor-pointer transition-all">
                                     <div class="flex items-center gap-2.5 p-2.5">
-                                        <input type="radio" name="payment_method" value="razorpay" x-model="paymentMethod"
-                                               class="text-[#B76E79] focus:ring-[#B76E79]">
+                                        <input type="radio" name="payment_method" value="paypal" x-model="paymentMethod"
+                                               class="text-[#202a40] focus:ring-[#202a40]">
                                         <div class="flex items-center gap-2 flex-1">
-                                            {{-- Razorpay Logo --}}
-                                            <img src="{{ asset('images/razorpay.png') }}" alt="Razorpay" class="h-5 w-auto shrink-0">
+                                            <div class="w-7 h-7 rounded flex items-center justify-center shrink-0 bg-[#003087]/10">
+                                                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none">
+                                                    <path d="M7.076 21.337H2.47a.641.641 0 01-.633-.74L4.944 3.72a.773.773 0 01.763-.658h6.263c2.075 0 3.753.468 4.796 1.524.973.986 1.337 2.406 1.064 4.169-.018.11-.04.224-.063.34-.687 3.537-3.05 5.34-6.68 5.34H9.043a.775.775 0 00-.764.659l-.816 5.162-.387 2.445a.412.412 0 01-.407.346z" fill="#003087"/>
+                                                    <path d="M20.603 8.108c-.028.165-.06.333-.095.507-.744 3.828-3.29 5.143-6.547 5.143h-1.656a.803.803 0 00-.793.68l-.848 5.373-.24 1.524a.423.423 0 00.418.49h2.934a.705.705 0 00.695-.594l.029-.148.55-3.49.035-.192a.705.705 0 01.696-.594h.438c2.836 0 5.055-1.152 5.704-4.486.271-1.392.13-2.555-.585-3.372a2.8 2.8 0 00-.735-.54z" fill="#0070E0"/>
+                                                </svg>
+                                            </div>
                                             <div>
-                                                <p class="text-[10px] text-[#555555]">Cards, UPI, Net Banking & more</p>
+                                                <span class="text-xs font-medium text-[#222222]">PayPal</span>
+                                                <p class="text-[10px] text-[#555555]">Pay securely with your PayPal account</p>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                                 @endif
 
-                                {{-- Partial Pay (₹100 advance + rest COD) - only for orders >= ₹199 --}}
-                                @if(($paymentSettings['cod_enabled'] ?? '1') === '1' && $cart->subtotal >= 199)
-                                <div @click="paymentMethod = 'cod'"
-                                     :class="paymentMethod === 'cod' ? 'border-[#B76E79] bg-[#B76E79]/5 ring-1 ring-[#B76E79]/20' : 'border-[#efefef] hover:border-[#B76E79]'"
+                                {{-- Stripe (Card Payment) --}}
+                                @if(($paymentSettings['stripe_enabled'] ?? '0') === '1')
+                                <div @click="paymentMethod = 'stripe'"
+                                     :class="paymentMethod === 'stripe' ? 'border-[#202a40] bg-[#202a40]/5 ring-1 ring-[#202a40]/20' : 'border-[#efefef] hover:border-[#202a40]'"
                                      class="border rounded cursor-pointer transition-all">
                                     <div class="flex items-center gap-2.5 p-2.5">
-                                        <input type="radio" name="payment_method" value="cod" x-model="paymentMethod"
-                                               class="text-[#B76E79] focus:ring-[#B76E79]">
+                                        <input type="radio" name="payment_method" value="stripe" x-model="paymentMethod"
+                                               class="text-[#202a40] focus:ring-[#202a40]">
                                         <div class="flex items-center gap-2 flex-1">
-                                            <div class="w-7 h-7 rounded flex items-center justify-center shrink-0"
-                                                 :class="paymentMethod === 'cod' ? 'bg-[#B76E79]/15 text-[#B76E79]' : 'bg-[#f7f7f7] text-[#555555]'">
-                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 003 15h-.75M15 10.5a3 3 0 11-6 0 3 3 0 016 0zm3 0h.008v.008H18V10.5zm-12 0h.008v.008H6V10.5z"/>
-                                                </svg>
+                                            <div class="w-7 h-7 rounded flex items-center justify-center shrink-0 bg-[#635BFF]/10">
+                                                <span class="text-[#635BFF] font-bold text-sm">S</span>
                                             </div>
                                             <div>
-                                                <span class="text-xs font-medium text-[#222222]">Partial Pay</span>
-                                                <p class="text-[10px] text-[#555555]">Pay {{ currency_symbol() }}{{ \App\Models\Setting::get('cod_advance_amount', 100) }} now, rest on delivery</p>
+                                                <span class="text-xs font-medium text-[#222222]">Card Payment</span>
+                                                <p class="text-[10px] text-[#555555]">Pay securely with credit or debit card</p>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div x-show="paymentMethod === 'cod'" x-collapse>
-                                        <div class="px-2.5 pb-2.5 pt-0">
-                                            <div class="flex items-center gap-1.5 p-2 bg-[#B76E79]/5 border border-[#B76E79]/15 rounded text-[10px] text-[#222222]">
-                                                <svg class="w-3.5 h-3.5 text-[#B76E79] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-                                                <span>Pay <strong class="text-[#B76E79]">@price(\App\Models\Setting::get('cod_advance_amount', 100))</strong> advance via Razorpay to confirm. <strong>@price($cart->total - \App\Models\Setting::get('cod_advance_amount', 100) > 0 ? $cart->total - \App\Models\Setting::get('cod_advance_amount', 100) : 0)</strong> on delivery.</span>
-                                            </div>
+                                        <div class="flex items-center gap-1 shrink-0">
+                                            <img src="{{ asset('images/visa.svg') }}" alt="Visa" class="h-5 w-auto" onerror="this.style.display='none'">
+                                            <img src="{{ asset('images/mastercard.svg') }}" alt="Mastercard" class="h-5 w-auto" onerror="this.style.display='none'">
                                         </div>
                                     </div>
                                 </div>
@@ -685,14 +680,9 @@
                             {{-- Place Order Button --}}
                             <div class="p-3 pt-0">
                                 <button type="submit" :disabled="processing"
-                                        class="block w-full py-2.5 bg-[#B76E79] hover:bg-[#956060] text-white text-xs font-bold text-center rounded transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed uppercase tracking-wide">
-                                    <span x-show="!processing">
-                                        <template x-if="paymentMethod === 'razorpay'">
-                                            <span>Pay Now &middot; @price($displayTotal)</span>
-                                        </template>
-                                        <template x-if="paymentMethod === 'cod'">
-                                            <span>Pay {{ currency_symbol() }}{{ \App\Models\Setting::get('cod_advance_amount', 100) }} & Place Order</span>
-                                        </template>
+                                        class="block w-full py-2.5 bg-[#B76E79] hover:bg-[#a25d67] text-white text-xs font-bold text-center rounded transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed uppercase tracking-wide">
+                                    <span x-show="!processing"
+                                          x-text="paymentMethod === 'paypal' ? 'Pay with PayPal · £{{ number_format($displayTotal, 2) }}' : 'Pay with Card · £{{ number_format($displayTotal, 2) }}'">
                                     </span>
                                     <span x-show="processing" x-cloak class="flex items-center justify-center gap-1.5">
                                         <svg class="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
@@ -739,10 +729,9 @@
     </div>
 
     <x-slot name="scripts">
-        <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-        {{-- Phone: simple +91 prefix for India-only store --}}
+        {{-- Checkout JS --}}
         <script>
-            // PIN code autocomplete using India Post API + Delhivery serviceability
+            // Address helper (UK)
             function pinLookup() {
                 return {
                     pin: '',
@@ -751,40 +740,7 @@
                     pinError: '',
                     pinServiceable: null,
                     pinTimeout: null,
-
-                    fetchPinData() {
-                        this.pinError = '';
-                        this.pinServiceable = null;
-                        clearTimeout(this.pinTimeout);
-                        if (this.pin.length !== 6) return;
-
-                        this.pinTimeout = setTimeout(() => {
-                            // India Post API for city/state autofill
-                            fetch('https://api.postalpincode.in/pincode/' + this.pin)
-                                .then(r => r.json())
-                                .then(data => {
-                                    if (data[0] && data[0].Status === 'Success' && data[0].PostOffice && data[0].PostOffice.length) {
-                                        const po = data[0].PostOffice[0];
-                                        this.city = po.District || po.Division || '';
-                                        this.state = po.State || '';
-                                    } else {
-                                        this.pinError = 'Invalid PIN code';
-                                    }
-                                })
-                                .catch(() => {});
-
-                            // Delhivery serviceability check
-                            fetch('/api/check-pincode/' + this.pin)
-                                .then(r => r.json())
-                                .then(data => {
-                                    this.pinServiceable = data.serviceable === true;
-                                    if (!data.serviceable) {
-                                        this.pinError = 'Delivery not available to this pincode';
-                                    }
-                                })
-                                .catch(() => {});
-                        }, 300);
-                    }
+                    fetchPinData() {}
                 };
             }
 
@@ -830,19 +786,21 @@
 
                     handleSubmit(e) {
                         this.error = '';
-                        // Both payment methods go through Razorpay
-                        // COD = partial pay (₹100 advance via Razorpay, rest on delivery)
-                        // Razorpay = full payment
-                        this.initiateRazorpay(e.target);
+                        if (this.paymentMethod === 'paypal') {
+                            this.initiatePayPal(e.target);
+                        } else if (this.paymentMethod === 'stripe') {
+                            this.initiateStripe(e.target);
+                        }
                     },
 
-                    async initiateRazorpay(form) {
+                    async initiatePayPal(form) {
                         this.processing = true;
                         const formData = new FormData(form);
                         const data = Object.fromEntries(formData.entries());
+                        data.payment_method = 'paypal';
 
                         try {
-                            const response = await fetch('{{ route("checkout.razorpay.create") }}', {
+                            const response = await fetch('{{ route("checkout.paypal.create") }}', {
                                 method: 'POST',
                                 headers: {
                                     'Content-Type': 'application/json',
@@ -860,75 +818,51 @@
                                 return;
                             }
 
-                            this.openRazorpayCheckout(result);
+                            if (result.approval_url) {
+                                window.location.href = result.approval_url;
+                            } else {
+                                this.error = 'Could not initiate PayPal payment.';
+                                this.processing = false;
+                            }
                         } catch (err) {
                             this.error = 'Network error. Please check your connection and try again.';
                             this.processing = false;
                         }
                     },
 
-                    openRazorpayCheckout(orderData) {
-                        const self = this;
+                    async initiateStripe(form) {
+                        this.processing = true;
+                        const formData = new FormData(form);
+                        const data = Object.fromEntries(formData.entries());
+                        data.payment_method = 'stripe';
 
-                        const options = {
-                            key: orderData.key,
-                            amount: orderData.amount,
-                            currency: orderData.currency,
-                            name: orderData.name,
-                            description: orderData.description,
-                            order_id: orderData.order_id,
-                            prefill: orderData.prefill,
-                            theme: {
-                                color: '#B76E79',
-                                backdrop_color: 'rgba(0, 0, 0, 0.5)',
-                            },
-                            modal: {
-                                ondismiss: function() {
-                                    self.processing = false;
-                                    self.error = 'Payment was cancelled. You can try again.';
-                                },
-                                confirm_close: true,
-                                escape: false,
-                            },
-                            handler: function(response) {
-                                self.verifyPayment(response);
-                            },
-                        };
-
-                        const rzp = new Razorpay(options);
-                        rzp.on('payment.failed', function(response) {
-                            self.processing = false;
-                            self.error = response.error.description || 'Payment failed. Please try again.';
-                        });
-                        rzp.open();
-                    },
-
-                    async verifyPayment(paymentResponse) {
                         try {
-                            const response = await fetch('{{ route("checkout.razorpay.verify") }}', {
+                            const response = await fetch('{{ route("checkout.stripe.create") }}', {
                                 method: 'POST',
                                 headers: {
                                     'Content-Type': 'application/json',
                                     'X-CSRF-TOKEN': '{{ csrf_token() }}',
                                     'Accept': 'application/json',
                                 },
-                                body: JSON.stringify({
-                                    razorpay_order_id: paymentResponse.razorpay_order_id,
-                                    razorpay_payment_id: paymentResponse.razorpay_payment_id,
-                                    razorpay_signature: paymentResponse.razorpay_signature,
-                                }),
+                                body: JSON.stringify(data),
                             });
 
                             const result = await response.json();
 
-                            if (result.success && result.redirect) {
-                                window.location.href = result.redirect;
+                            if (!response.ok) {
+                                this.error = result.error || result.message || 'Something went wrong. Please try again.';
+                                this.processing = false;
+                                return;
+                            }
+
+                            if (result.checkout_url) {
+                                window.location.href = result.checkout_url;
                             } else {
-                                this.error = result.error || 'Payment verification failed. Please contact support.';
+                                this.error = 'Could not initiate card payment.';
                                 this.processing = false;
                             }
                         } catch (err) {
-                            this.error = 'Verification failed. If amount was deducted, it will be refunded. Please contact support.';
+                            this.error = 'Network error. Please check your connection and try again.';
                             this.processing = false;
                         }
                     },
@@ -952,7 +886,7 @@
                 @endphp
                 var checkoutItems = {!! json_encode($ga4CheckoutItems, JSON_UNESCAPED_UNICODE) !!};
                 gtag('event', 'begin_checkout', {
-                    currency: 'INR',
+                    currency: 'GBP',
                     value: {{ (float) $cart->total }},
                     items: checkoutItems
                 });

@@ -4,19 +4,16 @@
     <x-slot name="header">
         <div class="flex items-center justify-between">
             <h1 class="text-xl font-semibold text-neutral-900">Orders</h1>
-            <div class="flex items-center gap-2">
-                <a href="{{ route('admin.orders.index', ['export' => 'csv']) }}" class="btn btn-secondary text-sm">Export</a>
-            </div>
         </div>
     </x-slot>
 
     {{-- Stats Bar --}}
     <x-slot name="statsBar">
         @include('admin.partials.stats-bar', ['stats' => [
-            ['label' => 'Orders', 'value' => number_format($stats['total'] ?? 0), 'sparkline' => '2,15 10,12 18,8 26,14 34,6 42,11 50,4 58,9', 'color' => '#5c6ac4'],
-            ['label' => 'Items ordered', 'value' => number_format(($stats['total'] ?? 0) * 2), 'sparkline' => '2,14 10,10 18,12 26,6 34,9 42,4 50,8 58,3', 'color' => '#47c1bf'],
-            ['label' => 'Returns', 'value' => '₹' . number_format($stats['cancelled'] ?? 0), 'sparkline' => '2,10 10,10 18,10 26,10 34,10 42,10 50,10 58,10', 'color' => '#9c6ade'],
-            ['label' => 'Orders fulfilled', 'value' => number_format($stats['completed'] ?? 0), 'sparkline' => '2,16 10,14 18,12 26,10 34,8 42,6 50,4 58,2', 'color' => '#5c6ac4'],
+            ['label' => 'Total Orders',     'value' => number_format($stats['total'] ?? 0),         'sparkline' => '2,15 10,12 18,8 26,14 34,6 42,11 50,4 58,9', 'color' => '#5c6ac4'],
+            ['label' => 'Items Ordered',    'value' => number_format($stats['items_ordered'] ?? 0), 'sparkline' => '2,14 10,10 18,12 26,6 34,9 42,4 50,8 58,3', 'color' => '#47c1bf'],
+            ['label' => 'Returns',          'value' => number_format($stats['returns'] ?? 0),       'sparkline' => '2,10 10,10 18,10 26,10 34,10 42,10 50,10 58,10', 'color' => '#9c6ade'],
+            ['label' => 'Fulfilled',        'value' => number_format($stats['completed'] ?? 0),     'sparkline' => '2,16 10,14 18,12 26,10 34,8 42,6 50,4 58,2', 'color' => '#47c1bf'],
         ]])
     </x-slot>
 
@@ -50,24 +47,61 @@
 
         {{-- Search + Filter Row --}}
         <div class="px-4 py-3" style="border-bottom:1px solid #e1e1e1">
-            <form action="{{ route('admin.orders.index') }}" method="GET" class="flex items-center gap-2">
+            <form id="orders-filter-form" action="{{ route('admin.orders.index') }}" method="GET" class="flex flex-wrap items-center gap-2">
                 @if($currentStatus)
                     <input type="hidden" name="status" value="{{ $currentStatus }}">
                 @endif
-                <div class="relative flex-1 max-w-sm">
+
+                {{-- Search --}}
+                <div class="relative flex-1 min-w-[180px] max-w-xs">
                     <svg class="w-4 h-4 text-neutral-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-                    <input type="text" name="search" value="{{ request('search') }}" placeholder="Filter orders" class="form-input w-full pl-9 text-sm" style="height:36px">
+                    <input type="text" name="search" value="{{ request('search') }}" placeholder="Order #, name, email, phone" class="form-input w-full pl-9 text-sm" style="height:36px">
                 </div>
+
+                {{-- Payment Status --}}
                 <select name="payment_status" class="form-input text-sm" style="height:36px;width:auto" onchange="this.form.submit()">
                     <option value="">Payment status</option>
-                    <option value="pending" {{ $currentPayment === 'pending' ? 'selected' : '' }}>Pending</option>
-                    <option value="paid" {{ $currentPayment === 'paid' ? 'selected' : '' }}>Paid</option>
-                    <option value="failed" {{ $currentPayment === 'failed' ? 'selected' : '' }}>Failed</option>
+                    <option value="pending"  {{ $currentPayment === 'pending'  ? 'selected' : '' }}>Pending</option>
+                    <option value="paid"     {{ $currentPayment === 'paid'     ? 'selected' : '' }}>Paid</option>
+                    <option value="failed"   {{ $currentPayment === 'failed'   ? 'selected' : '' }}>Failed</option>
                     <option value="refunded" {{ $currentPayment === 'refunded' ? 'selected' : '' }}>Refunded</option>
                 </select>
+
+                {{-- Date From --}}
+                <input type="date" name="date_from" value="{{ request('date_from') }}"
+                       class="form-input text-sm" style="height:36px;width:auto"
+                       placeholder="From" onchange="this.form.submit()">
+
+                {{-- Date To --}}
+                <input type="date" name="date_to" value="{{ request('date_to') }}"
+                       class="form-input text-sm" style="height:36px;width:auto"
+                       placeholder="To" onchange="this.form.submit()">
+
+                {{-- Submit --}}
+                <button type="submit" class="btn btn-secondary text-sm" style="height:36px">Filter</button>
+
                 @if(request()->hasAny(['search', 'payment_status', 'date_from', 'date_to']))
-                    <a href="{{ route('admin.orders.index', $currentStatus ? ['status' => $currentStatus] : []) }}" class="text-xs text-neutral-500 hover:text-neutral-700 shrink-0">Clear</a>
+                    <a href="{{ route('admin.orders.index', $currentStatus ? ['status' => $currentStatus] : []) }}"
+                       class="text-xs text-neutral-500 hover:text-neutral-700 shrink-0">Clear</a>
                 @endif
+
+                {{-- Export (preserves current filters) --}}
+                <a href="{{ route('admin.orders.index', array_merge(request()->all(), ['export' => 'csv'])) }}"
+                   class="btn btn-secondary text-sm ml-auto" style="height:36px">
+                    ↓ Export CSV
+                </a>
+            </form>
+        </div>
+
+        {{-- Bulk Action Bar --}}
+        <div id="bulk-bar" class="hidden px-4 py-2 bg-blue-50 border-b border-blue-100 flex items-center gap-3">
+            <span class="text-sm font-medium text-blue-700"><span id="bulk-count">0</span> selected</span>
+            <form id="bulk-form" action="{{ route('admin.orders.index') }}" method="POST">
+                @csrf
+                @method('DELETE')
+                <div id="bulk-ids"></div>
+                <span class="text-xs text-neutral-400 mx-1">|</span>
+                <span class="text-xs text-neutral-500">Bulk actions coming soon</span>
             </form>
         </div>
 
@@ -77,7 +111,7 @@
                 <thead>
                     <tr style="border-bottom:1px solid #e1e1e1">
                         <th class="px-4 py-3 text-left text-xs font-medium text-neutral-500 w-8">
-                            <input type="checkbox" class="form-checkbox rounded">
+                            <input type="checkbox" id="select-all" class="form-checkbox rounded">
                         </th>
                         <th class="px-4 py-3 text-left text-xs font-medium text-neutral-500">Order</th>
                         <th class="px-4 py-3 text-left text-xs font-medium text-neutral-500">Date</th>
@@ -92,7 +126,7 @@
                     @forelse($orders as $order)
                         <tr class="hover:bg-neutral-50 cursor-pointer" onclick="window.location='{{ route('admin.orders.show', $order) }}'" style="border-bottom:1px solid #f0f0f0">
                             <td class="px-4 py-3" onclick="event.stopPropagation()">
-                                <input type="checkbox" class="form-checkbox rounded" value="{{ $order->id }}">
+                                <input type="checkbox" class="form-checkbox rounded row-check" value="{{ $order->id }}">
                             </td>
                             <td class="px-4 py-3">
                                 <span class="text-sm font-medium" style="color:#005bd3">{{ $order->order_number }}</span>
@@ -181,4 +215,41 @@
             </div>
         @endif
     </div>
+
+<script>
+(function(){
+    const selectAll = document.getElementById('select-all');
+    const bulkBar   = document.getElementById('bulk-bar');
+    const bulkCount = document.getElementById('bulk-count');
+    const bulkIds   = document.getElementById('bulk-ids');
+
+    function updateBulkBar() {
+        const checked = document.querySelectorAll('.row-check:checked');
+        bulkIds.innerHTML = '';
+        checked.forEach(cb => {
+            const inp = document.createElement('input');
+            inp.type = 'hidden'; inp.name = 'ids[]'; inp.value = cb.value;
+            bulkIds.appendChild(inp);
+        });
+        bulkCount.textContent = checked.length;
+        bulkBar.classList.toggle('hidden', checked.length === 0);
+    }
+
+    if (selectAll) {
+        selectAll.addEventListener('change', function() {
+            document.querySelectorAll('.row-check').forEach(cb => cb.checked = this.checked);
+            updateBulkBar();
+        });
+    }
+
+    document.querySelectorAll('.row-check').forEach(cb => {
+        cb.addEventListener('change', function() {
+            const all = document.querySelectorAll('.row-check');
+            selectAll.checked = [...all].every(c => c.checked);
+            selectAll.indeterminate = [...all].some(c => c.checked) && !selectAll.checked;
+            updateBulkBar();
+        });
+    });
+})();
+</script>
 </x-layouts.admin>

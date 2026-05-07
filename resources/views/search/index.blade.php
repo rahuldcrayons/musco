@@ -6,7 +6,28 @@
         <meta name="description" content="Search results for '{{ e($query ?? '') }}' at {{ config('app.name') }}.">
     @endpush
 
-    <div class="container mx-auto px-4 py-8">
+    <div class="container mx-auto px-4 py-8"
+         x-data="{
+             liveTotal: {{ $products->total() }},
+             liveLoading: false,
+             liveQuery: '{{ addslashes($query ?? '') }}',
+             async doLiveSearch(q) {
+                 if (!q || q.length < 2) return;
+                 this.liveLoading = true;
+                 try {
+                     const url = new URL('{{ route('search') }}', window.location.origin);
+                     url.searchParams.set('q', q);
+                     history.replaceState({}, '', url);
+                     const res = await fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } });
+                     const data = await res.json();
+                     const grid = document.getElementById('live-results-grid');
+                     if (grid) grid.innerHTML = data.html || '';
+                     this.liveTotal = data.total || 0;
+                     this.liveQuery = data.query || q;
+                 } catch(e) {}
+                 this.liveLoading = false;
+             }
+         }">
         {{-- Search input with autocomplete dropdown --}}
         <div class="relative max-w-xl mb-6"
              x-data="searchBar()"
@@ -20,12 +41,12 @@
                        name="q"
                        x-ref="searchInput"
                        x-model="query"
-                       @input.debounce.300ms="fetchSuggestions()"
+                       @input.debounce.200ms="fetchSuggestions(); $dispatch('live-search', { q: query })"
                        @focus="showResults = true; stopTypewriter()"
                        @blur="if(!query) startTypewriter()"
                        @keydown.escape="showResults = false; $refs.searchInput.blur()"
                        :placeholder="currentPlaceholder"
-                       class="w-full pl-10 pr-20 py-3 text-base bg-white border border-neutral-200 rounded-lg focus:outline-none focus:border-[#B76E79] focus:ring-1 focus:ring-[#B76E79]"
+                       class="w-full pl-10 pr-20 py-3 text-base bg-white border border-neutral-200 rounded-lg focus:outline-none focus:border-[#202a40] focus:ring-1 focus:ring-[#202a40]"
                        style="font-size:16px;"
                        autocomplete="off"
                        autofocus>
@@ -35,7 +56,7 @@
                         type="button"
                         @click.prevent="toggleMic()"
                         class="absolute right-12 p-1.5 transition-colors z-10"
-                        :class="listening ? 'text-[#CC0C39] animate-pulse' : 'text-neutral-600 hover:text-[#c29958]'"
+                        :class="listening ? 'text-[#CC0C39] animate-pulse' : 'text-neutral-600 hover:text-[#506282]'"
                         :title="listening ? 'Stop listening' : 'Voice search'"
                         aria-label="Voice search">
                     <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -45,7 +66,7 @@
                 </button>
 
                 {{-- Submit button --}}
-                <button type="submit" class="absolute right-3 p-1.5 text-neutral-600 hover:text-[#c29958] transition-colors" aria-label="Search">
+                <button type="submit" class="absolute right-3 p-1.5 text-neutral-600 hover:text-[#506282] transition-colors" aria-label="Search">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
                     </svg>
@@ -82,15 +103,24 @@
             </div>
         </div>
 
-        @if($query)
-            <p class="text-sm text-neutral-600 mb-6">
-                @if($products->total() > 0)
-                    {{ number_format($products->total()) }} results for <span class="font-semibold text-neutral-800">"{{ $query }}"</span>
-                @else
-                    No results found for <span class="font-semibold text-neutral-800">"{{ $query }}"</span>
-                @endif
-            </p>
-        @endif
+        {{-- Live search listener —— updates grid without page reload --}}
+        <div @live-search.window="doLiveSearch($event.detail.q)"></div>
+
+        {{-- Results count: reactive --}}
+        <div class="mb-6 flex items-center gap-3 min-h-[1.5rem]">
+            <template x-if="liveLoading">
+                <span class="flex items-center gap-2 text-sm text-neutral-500">
+                    <svg class="animate-spin w-4 h-4 text-[#202a40]" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
+                    Searching…
+                </span>
+            </template>
+            <template x-if="!liveLoading && liveQuery">
+                <p class="text-sm text-neutral-600">
+                    <span x-text="liveTotal > 0 ? liveTotal.toLocaleString() + ' results for' : 'No results for'"></span>
+                    &nbsp;<span class="font-semibold text-neutral-800" x-text="'&quot;' + liveQuery + '&quot;'"></span>
+                </p>
+            </template>
+        </div>
 
         @if($query)
             <div class="flex flex-col lg:flex-row gap-8">
@@ -199,21 +229,21 @@
                                 fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
                                     .then(r => r.json())
                                     .then(data => {
-                                        this.$refs.grid.insertAdjacentHTML('beforeend', data.html);
+                                        document.getElementById('live-results-grid').insertAdjacentHTML('beforeend', data.html);
                                         this.hasMore = data.hasMore;
                                         this.loading = false;
                                     })
                                     .catch(() => { this.loading = false; });
                             }
                         }" x-init="new IntersectionObserver((e) => { if (e[0].isIntersecting) loadMore(); }, { rootMargin: '200px' }).observe($refs.sentinel)">
-                            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4" x-ref="grid">
+                            <div id="live-results-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                                 @foreach($products as $product)
                                     <x-product-card :product="$product" />
                                 @endforeach
                             </div>
                             <div x-ref="sentinel" class="h-4"></div>
                             <div x-show="loading" x-cloak class="flex justify-center py-8">
-                                <svg class="animate-spin h-6 w-6 text-[#B76E79]" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
+                                <svg class="animate-spin h-6 w-6 text-[#202a40]" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
                             </div>
                         </div>
                     @else
@@ -250,7 +280,7 @@
                         <h3 class="text-sm font-medium text-neutral-700 mb-4">Popular Categories</h3>
                         <div class="flex flex-wrap justify-center gap-2">
                             @foreach($categories as $category)
-                                <a href="{{ route('category.show', $category) }}" class="btn-outline text-sm">
+                                <a href="{{ route('categories.show', $category) }}" class="btn-outline text-sm">
                                     {{ $category->name }}
                                 </a>
                             @endforeach
@@ -259,7 +289,7 @@
                 @endif
             </div>
         @endif
-    </div>
+    </div>{{-- end container / outer x-data --}}
 
     {{-- Facebook Pixel: Search --}}
     @if(!empty($query) && !empty($fbEventId) && config('services.facebook.pixel_id'))

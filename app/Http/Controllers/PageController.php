@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Banner;
 use App\Models\BlogPost;
 use App\Models\Brand;
 use App\Models\Enquiry;
@@ -28,13 +29,16 @@ class PageController extends Controller
 
         $page = Page::where('slug', 'about-us')->first();
         $testimonials = Testimonial::active()->ordered()->get();
+        $heroBanner = Banner::active()->ordered()->first();
 
-        return view('pages.about', compact('brands', 'page', 'testimonials'));
+        return view('pages.about', compact('brands', 'page', 'testimonials', 'heroBanner'));
     }
 
     public function contact(): View
     {
-        return view('pages.contact');
+        $page = Page::where('slug', 'contact-us')->first();
+
+        return view('pages.contact', compact('page'));
     }
 
     public function sendContact(Request $request): RedirectResponse
@@ -133,6 +137,12 @@ class PageController extends Controller
 
     public function help(): View
     {
+        $page = Page::where('slug', 'help-center')->first();
+
+        if ($page) {
+            return view('pages.legal-page', compact('page'));
+        }
+
         return view('pages.help');
     }
 
@@ -160,6 +170,12 @@ class PageController extends Controller
 
     public function sizeGuide(): View
     {
+        $page = Page::where('slug', 'size-guide')->first();
+
+        if ($page) {
+            return view('pages.legal-page', compact('page'));
+        }
+
         return view('pages.size-guide');
     }
 
@@ -191,8 +207,26 @@ class PageController extends Controller
         return view('pages.legal-page', compact('page'));
     }
 
-    public function show(Page $page): View
+    // Map CMS slugs to their dedicated static routes
+    private array $staticRouteMap = [
+        'contact-us' => '/contact',
+        'privacy-policy' => '/privacy-policy',
+        'terms-of-service' => '/terms-of-service',
+        'shipping-policy' => '/shipping',
+        'returns-policy' => '/returns-policy',
+        'cookie-policy' => '/cookie-policy',
+        'gdpr' => '/gdpr',
+        'help-center' => '/help',
+        'size-guide' => '/size-guide',
+    ];
+
+    public function show(Page $page): View|\Illuminate\Http\RedirectResponse
     {
+        // Redirect CMS pages that have dedicated static routes (301 for SEO)
+        if (isset($this->staticRouteMap[$page->slug])) {
+            return redirect($this->staticRouteMap[$page->slug], 301);
+        }
+
         abort_unless($page->is_published, 404);
 
         return view('pages.legal-page', compact('page'));

@@ -231,15 +231,38 @@
                         @method('PUT')
                         <div>
                             <label class="form-label">New Status</label>
+                            @php
+                                $statusTransitions = [
+                                    'pending'          => ['confirmed', 'cancelled'],
+                                    'confirmed'        => ['processing', 'cancelled'],
+                                    'processing'       => ['packed', 'cancelled'],
+                                    'packed'           => ['shipped', 'cancelled'],
+                                    'shipped'          => ['out_for_delivery', 'returned'],
+                                    'out_for_delivery' => ['delivered', 'returned'],
+                                    'delivered'        => ['returned'],
+                                    'cancelled'        => [],
+                                    'returned'         => [],
+                                ];
+                                $statusLabels = [
+                                    'confirmed'        => 'Confirmed',
+                                    'processing'       => 'Processing',
+                                    'packed'           => 'Packed',
+                                    'shipped'          => 'Shipped',
+                                    'out_for_delivery' => 'Out for Delivery',
+                                    'delivered'        => 'Delivered',
+                                    'cancelled'        => 'Cancelled',
+                                    'returned'         => 'Returned',
+                                ];
+                                $nextStatuses = $statusTransitions[$order->status] ?? [];
+                            @endphp
                             <select name="status" x-model="status" class="form-select w-full">
-                                <option value="confirmed">Confirmed</option>
-                                <option value="processing">Processing</option>
-                                <option value="packed">Packed</option>
-                                <option value="shipped">Shipped</option>
-                                <option value="out_for_delivery">Out for Delivery</option>
-                                <option value="delivered">Delivered</option>
-                                <option value="cancelled">Cancelled</option>
-                                <option value="returned">Returned</option>
+                                <option value="">— Select next status —</option>
+                                @foreach($nextStatuses as $s)
+                                    <option value="{{ $s }}">{{ $statusLabels[$s] ?? ucfirst(str_replace('_', ' ', $s)) }}</option>
+                                @endforeach
+                                @if(empty($nextStatuses))
+                                    <option value="" disabled>No further transitions allowed</option>
+                                @endif
                             </select>
                         </div>
 
@@ -287,8 +310,8 @@
                     <div class="p-5">
                         @if($order->tracking_number && $order->carrier === 'Delhivery')
                             <div class="flex items-center gap-3 mb-3">
-                                <div class="w-8 h-8 bg-[#B76E79]/10 rounded-full flex items-center justify-center">
-                                    <svg class="w-4 h-4 text-[#B76E79]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                <div class="w-8 h-8 bg-[#202a40]/10 rounded-full flex items-center justify-center">
+                                    <svg class="w-4 h-4 text-[#202a40]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
                                 </div>
                                 <div>
                                     <p class="text-sm font-medium text-neutral-900">Shipment Booked</p>
@@ -444,6 +467,43 @@
                         <div class="flex justify-between items-center">
                             <span class="text-neutral-600">Collected At</span>
                             <span class="font-medium text-neutral-700">{{ $order->payment_collected_at->format('M d, Y h:i A') }}</span>
+                        </div>
+                    @endif
+                    @if($order->payment_method === 'paypal')
+                        <div class="flex justify-between items-center">
+                            <span class="text-neutral-600">Payment Method</span>
+                            <span class="font-medium text-neutral-700 flex items-center gap-1.5">
+                                <span class="inline-block w-5 h-5 rounded bg-[#003087] text-white text-[8px] font-bold flex items-center justify-center leading-none" style="display:inline-flex;align-items:center;justify-content:center;">PP</span>
+                                PayPal
+                            </span>
+                        </div>
+                        @if($order->paypal_order_id)
+                            <div class="flex justify-between items-center">
+                                <span class="text-neutral-600">PayPal Order ID</span>
+                                <span class="font-mono text-xs text-neutral-700">{{ $order->paypal_order_id }}</span>
+                            </div>
+                        @endif
+                        @php $ppPayment = $order->payments()->where('gateway', 'paypal')->latest()->first(); @endphp
+                        @if($ppPayment)
+                            <div class="flex justify-between items-center">
+                                <span class="text-neutral-600">Transaction ID</span>
+                                <span class="font-mono text-xs text-neutral-700">{{ $ppPayment->gateway_transaction_id }}</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-neutral-600">Amount Captured</span>
+                                <span class="font-semibold text-success-600">@price($ppPayment->amount)</span>
+                            </div>
+                            @if($ppPayment->captured_at)
+                                <div class="flex justify-between items-center">
+                                    <span class="text-neutral-600">Captured At</span>
+                                    <span class="font-medium text-neutral-700">{{ $ppPayment->captured_at->format('M d, Y h:i A') }}</span>
+                                </div>
+                            @endif
+                        @endif
+                    @elseif($order->payment_method)
+                        <div class="flex justify-between items-center">
+                            <span class="text-neutral-600">Payment Method</span>
+                            <span class="font-medium text-neutral-700">{{ ucfirst($order->payment_method) }}</span>
                         </div>
                     @endif
                     @if($latestShipment)

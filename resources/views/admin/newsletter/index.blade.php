@@ -14,7 +14,7 @@
     </div>
 
     @if(session('success'))
-        <div class="mb-4 px-4 py-3 bg-[#B76E79]/5 border border-[#B76E79]/20 text-[#B76E79] text-sm rounded-lg">
+        <div class="mb-4 px-4 py-3 bg-[#202a40]/5 border border-[#202a40]/20 text-[#202a40] text-sm rounded-lg">
             {{ session('success') }}
         </div>
     @endif
@@ -119,7 +119,7 @@
                             </td>
                             <td class="px-4 py-3">
                                 @if($subscriber->is_active)
-                                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-[#B76E79]/10 text-[#B76E79]">Subscribed</span>
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-[#202a40]/10 text-[#202a40]">Subscribed</span>
                                 @else
                                     <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">Unsubscribed</span>
                                 @endif
@@ -140,7 +140,7 @@
                                 </p>
                                 @if(request()->hasAny(['search', 'status']))
                                     <a href="{{ route('admin.newsletter.index') }}"
-                                       class="inline-block mt-2 text-sm text-[#B76E79] hover:text-[#956060] font-medium">Clear filters</a>
+                                       class="inline-block mt-2 text-sm text-[#202a40] hover:text-[#956060] font-medium">Clear filters</a>
                                 @endif
                             </td>
                         </tr>

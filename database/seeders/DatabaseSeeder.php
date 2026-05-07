@@ -15,7 +15,7 @@ class DatabaseSeeder extends Seeder
             AdminSeeder::class,
             UserSeeder::class,
             JewelleryCategorySeeder::class,
-            MusCoBrandSeeder::class,
+            TrendimusBrandSeeder::class,
             SellerSeeder::class,
             BannerSeeder::class,
             CouponSeeder::class,

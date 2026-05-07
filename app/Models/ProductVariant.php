@@ -47,12 +47,12 @@ class ProductVariant extends Model
 
     public function getEffectivePriceAttribute(): float
     {
-        return $this->price ?? $this->product->price;
+        return $this->price ?? $this->product?->price ?? 0;
     }
 
     public function getEffectiveMrpAttribute(): float
     {
-        return $this->mrp ?? $this->product->mrp;
+        return $this->mrp ?? $this->product?->mrp ?? 0;
     }
 
     public function isInStock(): bool

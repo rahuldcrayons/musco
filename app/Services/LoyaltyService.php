@@ -15,12 +15,12 @@ class LoyaltyService
      */
     public function getEarnRate(): int
     {
-        return (int) Setting::get('loyalty_earn_rate', 1); // 1 point per ₹1 spent
+        return (int) Setting::get('loyalty_earn_rate', 1); // 1 point per £1 spent
     }
 
     public function getRedeemRate(): float
     {
-        return (float) Setting::get('loyalty_redeem_rate', 0.25); // 1 point = ₹0.25
+        return (float) Setting::get('loyalty_redeem_rate', 0.25); // 1 point = £0.25
     }
 
     public function isEnabled(): bool

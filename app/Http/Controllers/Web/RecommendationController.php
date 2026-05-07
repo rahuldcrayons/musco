@@ -29,7 +29,7 @@ class RecommendationController extends Controller
                 'slug' => $p->slug,
                 'price' => (float) $p->price,
                 'mrp' => (float) $p->mrp,
-                'image' => $p->images->first()?->image_path,
+                'image' => $p->primary_image_url,
                 'rating' => (float) $p->rating,
             ]),
         ]);
@@ -47,7 +47,7 @@ class RecommendationController extends Controller
                 'slug' => $p->slug,
                 'price' => (float) $p->price,
                 'mrp' => (float) $p->mrp,
-                'image' => $p->images->first()?->image_path,
+                'image' => $p->primary_image_url,
                 'rating' => (float) $p->rating,
             ]),
         ]);
@@ -65,7 +65,7 @@ class RecommendationController extends Controller
                 'slug' => $p->slug,
                 'price' => (float) $p->price,
                 'mrp' => (float) $p->mrp,
-                'image' => $p->images->first()?->image_path,
+                'image' => $p->primary_image_url,
             ]),
         ]);
     }
@@ -86,7 +86,7 @@ class RecommendationController extends Controller
                 'slug' => $p->slug,
                 'price' => (float) $p->price,
                 'mrp' => (float) $p->mrp,
-                'image' => $p->images->first()?->image_path,
+                'image' => $p->primary_image_url,
                 'rating' => (float) $p->rating,
             ]),
         ]);

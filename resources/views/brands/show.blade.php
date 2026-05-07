@@ -3,6 +3,13 @@
 
     @push('meta')
         <meta name="description" content="{{ $brand->meta_description ?? $brand->description }}">
+        <link rel="canonical" href="{{ route('brands.show', $brand) }}">
+        <meta property="og:title" content="{{ $brand->name }} - {{ config('app.name') }}">
+        <meta property="og:description" content="{{ Str::limit(strip_tags($brand->meta_description ?? $brand->description ?? ''), 160) }}">
+        <meta property="og:type" content="website">
+        <meta property="og:url" content="{{ route('brands.show', $brand) }}">
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:title" content="{{ $brand->name }} - {{ config('app.name') }}">
     @endpush
 
     <!-- Brand Header -->
@@ -16,11 +23,13 @@
 
         <div class="container mx-auto px-4 py-6">
             <div class="flex items-center gap-6">
-                @if($brand->logo_url)
-                    <div class="w-24 h-24 bg-neutral-100 rounded-lg p-4 flex items-center justify-center">
-                        <img src="{{ $brand->logo_url }}" alt="{{ $brand->name }}" class="max-w-full max-h-full object-contain">
-                    </div>
-                @endif
+                <div class="w-24 h-24 bg-white rounded-2xl flex items-center justify-center shrink-0 border border-neutral-200 shadow-sm overflow-hidden">
+                    @if($brand->logo_url)
+                        <img src="{{ asset('storage/' . $brand->logo_url) }}" alt="{{ $brand->name }}" class="w-full h-full object-contain p-3">
+                    @else
+                        <span class="text-3xl font-bold text-[#202a40]" style="font-family:'Playfair Display',Georgia,serif;">{{ strtoupper(mb_substr($brand->name, 0, 2)) }}</span>
+                    @endif
+                </div>
                 <div>
                     <h1 class="text-2xl md:text-3xl font-bold text-neutral-900">{{ $brand->name }}</h1>
                     @if($brand->description)
@@ -74,7 +83,7 @@
                 </div>
                 <div x-ref="sentinel" class="h-4"></div>
                 <div x-show="loading" x-cloak class="flex justify-center py-8">
-                    <svg class="animate-spin h-6 w-6 text-[#B76E79]" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
+                    <svg class="animate-spin h-6 w-6 text-[#202a40]" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
                 </div>
             </div>
         @else

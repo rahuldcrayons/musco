@@ -1,11 +1,11 @@
 @component('mail::message')
-# Welcome to {{ \App\Models\Setting::get('site_name', 'MusCo') }}!
+# Welcome to {{ \App\Models\Setting::get('site_name', 'Trendymus') }}!
 
 Hi {{ $user->first_name }},
 
-We are thrilled to have you join the {{ \App\Models\Setting::get('site_name', 'MusCo') }} family! Thank you for creating your account with us.
+We are thrilled to have you join the {{ \App\Models\Setting::get('site_name', 'Trendymus') }} family! Thank you for creating your account with us.
 
-{{ \App\Models\Setting::get('welcome_email_intro', 'At ' . \App\Models\Setting::get('site_name', 'MusCo') . ', we are passionate about crafting exquisite jewellery for every occasion. From everyday gold essentials to stunning diamond collections, we have something special for every moment.') }}
+{{ \App\Models\Setting::get('welcome_email_intro', 'At ' . \App\Models\Setting::get('site_name', 'Trendymus') . ', we are passionate about crafting exquisite jewellery for every occasion. From everyday gold essentials to stunning diamond collections, we have something special for every moment.') }}
 
 ---
 
@@ -38,5 +38,5 @@ If you have any questions or need assistance, our friendly support team is alway
 We cannot wait to help you find the perfect jewellery for your special moments!
 
 Warm regards,
-**{{ \App\Models\Setting::get('site_name', 'MusCo') }}**
+**{{ \App\Models\Setting::get('site_name', 'Trendymus') }}**
 @endcomponent

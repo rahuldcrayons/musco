@@ -11,12 +11,12 @@ class SettingSeeder extends Seeder
     {
         $settings = [
             // General Settings
-            ['group' => 'general', 'key' => 'site_name', 'value' => 'MusCo', 'type' => 'string'],
+            ['group' => 'general', 'key' => 'site_name', 'value' => 'Trendimus', 'type' => 'string'],
             ['group' => 'general', 'key' => 'site_tagline', 'value' => 'Exquisite Jewellery for Every Occasion', 'type' => 'string'],
-            ['group' => 'general', 'key' => 'site_email', 'value' => 'support@musco.com', 'type' => 'string'],
+            ['group' => 'general', 'key' => 'site_email', 'value' => 'support@trendimus.com', 'type' => 'string'],
             ['group' => 'general', 'key' => 'site_phone', 'value' => '+91 98765 43210', 'type' => 'string'],
             ['group' => 'general', 'key' => 'site_address', 'value' => 'Mumbai, Maharashtra, India', 'type' => 'string'],
-            ['group' => 'general', 'key' => 'timezone', 'value' => 'Europe/London', 'type' => 'string'],
+            ['group' => 'general', 'key' => 'timezone', 'value' => 'Asia/Kolkata', 'type' => 'string'],
             ['group' => 'general', 'key' => 'date_format', 'value' => 'M d, Y', 'type' => 'string'],
             ['group' => 'general', 'key' => 'currency', 'value' => 'INR', 'type' => 'string'],
             ['group' => 'general', 'key' => 'currency_symbol', 'value' => '₹', 'type' => 'string'],
@@ -47,12 +47,12 @@ class SettingSeeder extends Seeder
 
             // Email Settings
             ['group' => 'email', 'key' => 'mail_driver', 'value' => 'smtp', 'type' => 'string'],
-            ['group' => 'email', 'key' => 'mail_from_address', 'value' => 'noreply@musco.com', 'type' => 'string'],
-            ['group' => 'email', 'key' => 'mail_from_name', 'value' => 'MusCo', 'type' => 'string'],
+            ['group' => 'email', 'key' => 'mail_from_address', 'value' => 'noreply@trendimus.com', 'type' => 'string'],
+            ['group' => 'email', 'key' => 'mail_from_name', 'value' => 'Trendimus', 'type' => 'string'],
 
             // SEO Settings
-            ['group' => 'seo', 'key' => 'meta_title', 'value' => 'MusCo - Exquisite Jewellery for Every Occasion', 'type' => 'string'],
-            ['group' => 'seo', 'key' => 'meta_description', 'value' => 'Shop certified gold, diamond & silver jewellery at MusCo. Rings, necklaces, earrings, bangles & more. BIS hallmarked with free shipping across India.', 'type' => 'string'],
+            ['group' => 'seo', 'key' => 'meta_title', 'value' => 'Trendimus - Exquisite Jewellery for Every Occasion', 'type' => 'string'],
+            ['group' => 'seo', 'key' => 'meta_description', 'value' => 'Shop certified gold, diamond & silver jewellery at Trendimus. Rings, necklaces, earrings, bangles & more. BIS hallmarked with free shipping across India.', 'type' => 'string'],
             ['group' => 'seo', 'key' => 'meta_keywords', 'value' => 'gold jewellery, diamond rings, silver jewellery, necklaces, earrings, bangles, engagement rings, wedding jewellery, hallmarked, India', 'type' => 'string'],
 
             // Social
@@ -64,7 +64,7 @@ class SettingSeeder extends Seeder
             // Business Hours & WhatsApp
             ['group' => 'general', 'key' => 'business_hours', 'value' => 'Mon - Sat: 10AM - 7PM', 'type' => 'string'],
             ['group' => 'general', 'key' => 'whatsapp_number', 'value' => '919354567705', 'type' => 'string'],
-            ['group' => 'general', 'key' => 'whatsapp_message', 'value' => 'Hi MusCo! I have a question about your products.', 'type' => 'string'],
+            ['group' => 'general', 'key' => 'whatsapp_message', 'value' => 'Hi Trendimus! I have a question about your products.', 'type' => 'string'],
             ['group' => 'general', 'key' => 'whatsapp_status_text', 'value' => 'Typically replies instantly', 'type' => 'string'],
 
             // Trust Badges

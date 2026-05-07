@@ -34,7 +34,7 @@
 
                     <!-- Amount -->
                     <div>
-                        <label for="amount" class="block text-sm font-medium text-neutral-700 mb-1">Amount (INR)</label>
+                        <label for="amount" class="block text-sm font-medium text-neutral-700 mb-1">Amount (GBP)</label>
                         <input type="number" name="amount" id="amount" value="{{ old('amount', $affiliate->available_balance) }}"
                                min="{{ $minimumRedemption }}" max="{{ $affiliate->available_balance }}" step="0.01" required
                                class="form-input w-full @error('amount') border-error-300 @enderror">
@@ -54,15 +54,15 @@
                                 {{ empty($affiliate->bank_details) ? 'disabled' : '' }}>
                                 Bank Transfer {{ empty($affiliate->bank_details) ? '(Not configured)' : '' }}
                             </option>
-                            <option value="upi" {{ old('payout_method', $affiliate->payout_method) === 'upi' ? 'selected' : '' }}
-                                {{ empty($affiliate->upi_id) ? 'disabled' : '' }}>
-                                UPI {{ empty($affiliate->upi_id) ? '(Not configured)' : '' }}
+                            <option value="paypal" {{ old('payout_method', $affiliate->payout_method) === 'paypal' ? 'selected' : '' }}
+                                {{ empty($affiliate->paypal_id) ? 'disabled' : '' }}>
+                                PayPal {{ empty($affiliate->paypal_id) ? '(Not configured)' : '' }}
                             </option>
                         </select>
                         @error('payout_method')
                             <p class="mt-1 text-sm text-error-600">{{ $message }}</p>
                         @enderror
-                        @if(empty($affiliate->bank_details) && empty($affiliate->upi_id))
+                        @if(empty($affiliate->bank_details) && empty($affiliate->paypal_id))
                             <p class="mt-1 text-sm text-warning-600">
                                 Please <a href="{{ route('affiliate.settings.index') }}" class="underline">add your payout details</a> in Settings first.
                             </p>

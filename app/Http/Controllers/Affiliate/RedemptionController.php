@@ -62,7 +62,7 @@ class RedemptionController extends Controller
 
         $validated = $request->validate([
             'amount' => ['required', 'numeric', "min:{$minimumRedemption}", "max:{$affiliate->available_balance}"],
-            'payout_method' => ['required', 'string', 'in:bank_transfer,upi'],
+            'payout_method' => ['required', 'string', 'in:bank_transfer,paypal'],
         ]);
 
         // Verify payout details exist
@@ -70,13 +70,13 @@ class RedemptionController extends Controller
             return back()->withErrors(['payout_method' => 'Please add your bank details in Settings first.']);
         }
 
-        if ($validated['payout_method'] === 'upi' && empty($affiliate->upi_id)) {
-            return back()->withErrors(['payout_method' => 'Please add your UPI ID in Settings first.']);
+        if ($validated['payout_method'] === 'paypal' && empty($affiliate->paypal_email)) {
+            return back()->withErrors(['payout_method' => 'Please add your PayPal email in Settings first.']);
         }
 
         $payoutDetails = $validated['payout_method'] === 'bank_transfer'
             ? $affiliate->bank_details
-            : ['upi_id' => $affiliate->upi_id];
+            : ['paypal_email' => $affiliate->paypal_email];
 
         DB::transaction(function () use ($affiliate, $validated, $payoutDetails) {
             AffiliateRedemption::create([
@@ -91,6 +91,6 @@ class RedemptionController extends Controller
         });
 
         return redirect()->route('affiliate.redemptions.index')
-            ->with('success', "Redemption of ₹{$validated['amount']} submitted! It will be processed within 2 working days.");
+            ->with('success', "Redemption of £{$validated['amount']} submitted! It will be processed within 2 working days.");
     }
 }

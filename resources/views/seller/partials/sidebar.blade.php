@@ -30,7 +30,7 @@
                 @endif
             </div>
             <div>
-                <div class="font-medium text-neutral-900 text-sm">{{ auth()->user()->seller?->business_name ?? 'MusCo' }}</div>
+                <div class="font-medium text-neutral-900 text-sm">{{ auth()->user()->seller?->business_name ?? 'Trendymus' }}</div>
                 <div class="text-xs {{ auth()->user()->seller?->is_verified ? 'text-success-600' : 'text-warning-600' }}">
                     {{ auth()->user()->seller?->is_verified ? 'Verified Seller' : 'Pending Verification' }}
                 </div>

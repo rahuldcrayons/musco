@@ -8,9 +8,11 @@
         <meta property="og:description" content="Get in touch with {{ config('app.name') }}. We're here to help with orders, returns, and any questions about your orders.">
         <meta property="og:type" content="website">
         <meta property="og:url" content="{{ url('/contact') }}">
-        <meta name="twitter:card" content="summary">
+        <meta name="twitter:card" content="summary_large_image">
         <meta name="twitter:title" content="Contact Us - {{ config('app.name') }}">
         <meta name="twitter:description" content="Get in touch with {{ config('app.name') }}. We're here to help with orders, returns, and any questions.">
+        <meta property="og:image" content="{{ asset('images/og-default.png') }}">
+        <meta name="twitter:image" content="{{ asset('images/og-default.png') }}">
     @endpush
 
     <!-- Breadcrumb -->
@@ -75,7 +77,7 @@
                                 <label for="phone" class="block text-sm font-medium text-neutral-700 mb-1.5">Phone Number</label>
                                 <input type="tel" name="phone" id="phone" value="{{ old('phone') }}"
                                        class="w-full px-4 py-2.5 bg-neutral-50 border border-neutral-200 rounded-xl text-sm text-neutral-900 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-[#B76E79]/20 focus:border-[#B76E79] transition-all @error('phone') border-[#CC0C39]/30 bg-[#CC0C39]/5 @enderror"
-                                       placeholder="+91 98765 43210">
+                                       placeholder="+44 7700 900000">
                                 @error('phone')
                                     <p class="mt-1.5 text-xs text-[#CC0C39]">{{ $message }}</p>
                                 @enderror
@@ -142,7 +144,7 @@
                                 </div>
                                 <div>
                                     <p class="text-sm font-medium text-neutral-900">{{ __('ui.phone') }}</p>
-                                    <a href="https://wa.me/{{ \App\Models\Setting::get('contact_whatsapp', '919354567705') }}" target="_blank" class="text-[13px] text-[#B76E79] hover:text-[#222222] transition-colors">{{ \App\Models\Setting::get('contact_phone', '+91 93545 67705') }} (WhatsApp)</a>
+                                    <a href="https://wa.me/{{ \App\Models\Setting::get('contact_whatsapp', '447459914080') }}" target="_blank" class="text-[13px] text-[#B76E79] hover:text-[#222222] transition-colors">{{ \App\Models\Setting::get('contact_phone', '+44 7459914080') }} (WhatsApp)</a>
                                 </div>
                             </div>
 
@@ -155,7 +157,7 @@
                                 </div>
                                 <div>
                                     <p class="text-sm font-medium text-neutral-900">{{ __('ui.email') }}</p>
-                                    <a href="mailto:{{ \App\Models\Setting::get('contact_email', 'support@musco.com') }}" class="text-[13px] text-[#B76E79] hover:text-[#222222] transition-colors">{{ \App\Models\Setting::get('contact_email', 'support@musco.com') }}</a>
+                                    <a href="mailto:{{ \App\Models\Setting::get('contact_email', 'info@trendymus.co.uk') }}" class="text-[13px] text-[#B76E79] hover:text-[#222222] transition-colors">{{ \App\Models\Setting::get('contact_email', 'info@trendymus.co.uk') }}</a>
                                 </div>
                             </div>
 

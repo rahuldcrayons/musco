@@ -66,7 +66,7 @@ class RazorpayWebhookController extends Controller
                 'gateway_transaction_id' => $razorpayPaymentId,
                 'method' => $entity['method'] ?? 'unknown',
                 'amount' => ($entity['amount'] ?? 0) / 100, // Razorpay sends in paise
-                'currency' => $entity['currency'] ?? 'INR',
+                'currency' => $entity['currency'] ?? 'GBP',
                 'status' => 'authorized',
                 'gateway_response' => $entity,
                 'ip_address' => $entity['ip'] ?? null,
@@ -108,7 +108,7 @@ class RazorpayWebhookController extends Controller
                 'gateway_transaction_id' => $razorpayPaymentId,
                 'method' => $entity['method'] ?? 'unknown',
                 'amount' => ($entity['amount'] ?? 0) / 100,
-                'currency' => $entity['currency'] ?? 'INR',
+                'currency' => $entity['currency'] ?? 'GBP',
                 'status' => 'captured',
                 'gateway_response' => $entity,
                 'captured_at' => now(),
@@ -153,7 +153,7 @@ class RazorpayWebhookController extends Controller
                 'gateway_transaction_id' => $razorpayPaymentId,
                 'method' => $entity['method'] ?? 'unknown',
                 'amount' => ($entity['amount'] ?? 0) / 100,
-                'currency' => $entity['currency'] ?? 'INR',
+                'currency' => $entity['currency'] ?? 'GBP',
                 'status' => 'failed',
                 'failure_reason' => $errorDescription,
                 'gateway_response' => $entity,
@@ -320,8 +320,8 @@ class RazorpayWebhookController extends Controller
         }
 
         $message = match ($status) {
-            'authorized', 'captured' => "Hi {$name}! ✅ Payment of ₹{$payment->amount} received for your MusCo order #{$order->order_number}. Thank you for shopping with us! Track your order at: " . url("/orders/{$order->id}"),
-            'failed' => "Hi {$name}, ❌ Payment for your MusCo order #{$order->order_number} failed. Please retry at: " . url("/orders/{$order->id}") . " or contact our support team for help.",
+            'authorized', 'captured' => "Hi {$name}! ✅ Payment of £{$payment->amount} received for your Trendymus order #{$order->order_number}. Thank you for shopping with us! Track your order at: " . url("/orders/{$order->id}"),
+            'failed' => "Hi {$name}, ❌ Payment for your Trendymus order #{$order->order_number} failed. Please retry at: " . url("/orders/{$order->id}") . " or contact our support team for help.",
             default => null,
         };
 

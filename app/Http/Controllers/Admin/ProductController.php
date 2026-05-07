@@ -63,10 +63,11 @@ class ProductController extends Controller
 
         // Stats
         $stats = [
-            'total' => Product::count(),
-            'active' => Product::where('is_active', true)->count(),
-            'inactive' => Product::where('is_active', false)->count(),
-            'out_of_stock' => Product::where('stock_quantity', '<=', 0)->count(),
+            'total'           => Product::count(),
+            'active'          => Product::where('is_active', true)->count(),
+            'inactive'        => Product::where('is_active', false)->count(),
+            'out_of_stock'    => Product::where('stock_quantity', '<=', 0)->count(),
+            'inventory_value' => (int) Product::selectRaw('SUM(stock_quantity * price)')->value('SUM(stock_quantity * price)'),
         ];
 
         return view('admin.products.index', compact('products', 'categories', 'sellers', 'stats'));
@@ -120,7 +121,7 @@ class ProductController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'slug' => 'nullable|string|max:255|unique:products',
-            'description' => 'required|string',
+            'description' => 'nullable|string',
             'short_description' => 'nullable|string|max:500',
             'sku' => 'required|string|max:100|unique:products',
             'price' => 'required|numeric|min:0',
@@ -142,6 +143,7 @@ class ProductController extends Controller
         ]);
 
         $validated['slug'] = $validated['slug'] ?? Str::slug($validated['name']);
+        $validated['mrp'] = $validated['mrp'] ?? $validated['price'];
         $validated['is_active'] = $request->boolean('is_active');
         $validated['is_featured'] = $request->boolean('is_featured');
         $validated['seller_id'] = $validated['seller_id'] ?: null;
@@ -162,7 +164,7 @@ class ProductController extends Controller
             $path = $request->file('main_image')->store('products', 'public');
             ProductImage::create([
                 'product_id' => $product->id,
-                'url' => '/storage/' . $path,
+                'url' => $path,
                 'is_primary' => true,
                 'position' => 0,
             ]);
@@ -175,7 +177,7 @@ class ProductController extends Controller
                 $path = $file->store('products', 'public');
                 ProductImage::create([
                     'product_id' => $product->id,
-                    'url' => '/storage/' . $path,
+                    'url' => $path,
                     'is_primary' => false,
                     'position' => $startPosition + $index + 1,
                 ]);
@@ -209,7 +211,7 @@ class ProductController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'slug' => 'nullable|string|max:255|unique:products,slug,' . $product->id,
-            'description' => 'required|string',
+            'description' => 'nullable|string',
             'short_description' => 'nullable|string|max:500',
             'sku' => 'required|string|max:100|unique:products,sku,' . $product->id,
             'price' => 'required|numeric|min:0',
@@ -233,6 +235,7 @@ class ProductController extends Controller
         ]);
 
         $validated['slug'] = $validated['slug'] ?? Str::slug($validated['name']);
+        $validated['mrp'] = $validated['mrp'] ?? $validated['price'];
         $validated['is_active'] = $request->boolean('is_active');
         $validated['is_featured'] = $request->boolean('is_featured');
         $validated['seller_id'] = $validated['seller_id'] ?: null;
@@ -255,7 +258,7 @@ class ProductController extends Controller
                 ->get();
 
             foreach ($imagesToDelete as $image) {
-                $storagePath = str_replace('/storage/', '', $image->url);
+                $storagePath = preg_replace('#^/?storage/#', '', $image->url);
                 Storage::disk('public')->delete($storagePath);
                 $image->delete();
             }
@@ -266,7 +269,7 @@ class ProductController extends Controller
             // Delete old primary image
             $oldPrimary = $product->images()->where('is_primary', true)->first();
             if ($oldPrimary) {
-                $storagePath = str_replace('/storage/', '', $oldPrimary->url);
+                $storagePath = preg_replace('#^/?storage/#', '', $oldPrimary->url);
                 Storage::disk('public')->delete($storagePath);
                 $oldPrimary->delete();
             }
@@ -274,7 +277,7 @@ class ProductController extends Controller
             $path = $request->file('main_image')->store('products', 'public');
             ProductImage::create([
                 'product_id' => $product->id,
-                'url' => '/storage/' . $path,
+                'url' => $path,
                 'is_primary' => true,
                 'position' => 0,
             ]);
@@ -287,7 +290,7 @@ class ProductController extends Controller
                 $path = $file->store('products', 'public');
                 ProductImage::create([
                     'product_id' => $product->id,
-                    'url' => '/storage/' . $path,
+                    'url' => $path,
                     'is_primary' => false,
                     'position' => $maxPosition + $index + 1,
                 ]);
@@ -324,6 +327,29 @@ class ProductController extends Controller
         return back()->with('success', "Product {$status}.");
     }
 
+    public function duplicate(Product $product): RedirectResponse
+    {
+        $newProduct = $product->replicate();
+        $newProduct->name = $product->name . ' (Copy)';
+        $newProduct->slug = null; // Let Sluggable auto-generate
+        $newProduct->sku = $product->sku . '-copy-' . time();
+        $newProduct->is_active = false;
+        $newProduct->sales_count = 0;
+        $newProduct->save();
+
+        // Duplicate images
+        foreach ($product->images as $image) {
+            $newProduct->images()->create([
+                'url' => $image->url,
+                'is_primary' => $image->is_primary,
+                'position' => $image->position,
+            ]);
+        }
+
+        return redirect()->route('admin.products.edit', $newProduct)
+            ->with('success', 'Product duplicated successfully. Review and update the copy.');
+    }
+
     public function export(Request $request): StreamedResponse
     {
         $query = Product::with(['category', 'seller', 'images']);
@@ -356,7 +382,7 @@ class ProductController extends Controller
             $handle = fopen('php://output', 'w');
 
             fputcsv($handle, [
-                'name', 'sku', 'slug', 'category', 'seller', 'price', 'sale_price',
+                'name', 'sku', 'slug', 'category', 'seller', 'price', 'mrp',
                 'cost_price', 'stock_quantity', 'short_description', 'description',
                 'is_active', 'is_featured', 'image_url', 'meta_title', 'meta_description',
             ]);
@@ -366,10 +392,10 @@ class ProductController extends Controller
                     $product->name,
                     $product->sku,
                     $product->slug,
-                    $product->category->name ?? '',
-                    $product->seller->store_name ?? '',
+                    $product->category?->name ?? '',
+                    $product->seller?->store_name ?? '',
                     $product->price,
-                    $product->sale_price,
+                    $product->mrp,
                     $product->cost_price,
                     $product->stock_quantity,
                     $product->short_description,
@@ -475,7 +501,7 @@ class ProductController extends Controller
                 'sku' => $sku,
                 'slug' => !empty($record['slug']) ? trim($record['slug']) : Str::slug($name),
                 'price' => (float) $price,
-                'sale_price' => is_numeric($record['sale_price'] ?? null) ? (float) $record['sale_price'] : null,
+                'mrp' => is_numeric($record['mrp'] ?? $record['sale_price'] ?? null) ? (float) ($record['mrp'] ?? $record['sale_price']) : null,
                 'cost_price' => is_numeric($record['cost_price'] ?? null) ? (float) $record['cost_price'] : null,
                 'stock_quantity' => (int) ($record['stock_quantity'] ?? 0),
                 'category_id' => $categoryId,
@@ -501,13 +527,13 @@ class ProductController extends Controller
 
                         ProductImage::create([
                             'product_id' => $product->id,
-                            'url' => asset('storage/' . $path),
+                            'url' => $path,
                             'is_primary' => true,
                             'position' => 0,
                         ]);
                     }
                 } catch (\Exception $e) {
-                    // Image download failed, skip silently
+                    \Log::warning("Product import: image download failed for row", ['error' => $e->getMessage()]);
                 }
             }
 

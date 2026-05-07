@@ -124,7 +124,7 @@
                     <span class="text-sm font-bold text-error-600" x-text="currentStock"></span>
                 </div>
             </div>
-            <form method="POST" x-bind:action="'/admin/inventory/' + productId + '/stock'">
+            <form method="POST" x-bind:action="'/admin/inventory/' + productId + '/stock'" @submit="if(!productId){ $event.preventDefault(); alert('Please select a product first'); }">
                 @csrf
                 @method('PUT')
                 <div class="p-6 space-y-4">

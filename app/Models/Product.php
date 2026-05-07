@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Laravel\Scout\Searchable;
 use Spatie\Sluggable\HasSlug;
@@ -164,9 +165,9 @@ class Product extends Model
         return $this->hasMany(ProductImage::class)->orderBy('position');
     }
 
-    public function primaryImage(): HasMany
+    public function primaryImage(): HasOne
     {
-        return $this->hasMany(ProductImage::class)->where('is_primary', true);
+        return $this->hasOne(ProductImage::class)->where('is_primary', true);
     }
 
     public function variants(): HasMany
@@ -263,20 +264,42 @@ class Product extends Model
         return $this->price < $this->mrp;
     }
 
+    public function getSpecificationsAttribute($value): array
+    {
+        $specs = is_string($value) ? (json_decode($value, true) ?? []) : ($value ?? []);
+        unset($specs['supplier_code'], $specs['supplier code'], $specs['Supplier Code'], $specs['Supplier_Code']);
+        return $specs;
+    }
+
     public function getPrimaryImageUrlAttribute(): string
     {
-        $url = $this->images->firstWhere('is_primary', true)?->url
-            ?? $this->images->first()?->url;
-
-        if ($url) {
-            // If it's a relative path (stored in storage), prefix with /storage/
-            if ($url && !str_starts_with($url, 'http') && !str_starts_with($url, '/')) {
-                return asset('storage/' . $url);
-            }
-            return $url;
+        // Use already-loaded primaryImage relation if available (avoids N+1 when images not eager-loaded)
+        $url = null;
+        if ($this->relationLoaded('primaryImage') && $this->primaryImage) {
+            $url = $this->primaryImage->url;
+        } elseif ($this->relationLoaded('images')) {
+            $url = $this->images->firstWhere('is_primary', true)?->url
+                ?? $this->images->first()?->url;
+        } else {
+            // Fallback: lazy load primaryImage only
+            $url = $this->primaryImage?->url;
         }
 
-        return asset('images/no-product-image.svg');
+        if ($url) {
+            if (str_starts_with($url, 'http')) {
+                return $url;
+            }
+            // Public-path images (e.g. /images/...) served directly, not from storage
+            if (str_starts_with($url, '/images/') || str_starts_with($url, 'images/')) {
+                return asset(ltrim($url, '/'));
+            }
+            // Normalize: strip leading slash and redundant "storage/" prefix
+            $path = ltrim($url, '/');
+            $path = preg_replace('#^storage/#', '', $path);
+            return asset('storage/' . $path);
+        }
+
+        return asset('images/placeholder-product.svg');
     }
 
     // Helper methods

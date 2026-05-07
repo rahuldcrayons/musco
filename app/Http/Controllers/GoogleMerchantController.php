@@ -18,7 +18,7 @@ class GoogleMerchantController extends Controller
                 ->get();
 
             $appUrl = rtrim(config('app.url'), '/');
-            $appName = config('app.name', 'MusCo');
+            $appName = config('app.name', 'Trendymus');
 
             $xml = '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
             $xml .= '<rss xmlns:g="http://base.google.com/ns/1.0" version="2.0">' . "\n";
@@ -82,7 +82,7 @@ class GoogleMerchantController extends Controller
         }
 
         // Brand (required by Google)
-        $brandName = $product->brand?->name ?: config('app.name', 'MusCo');
+        $brandName = $product->brand?->name ?: config('app.name', 'Trendymus');
         $item .= "    <g:brand>{$this->esc($brandName)}</g:brand>\n";
 
         // Identifiers
@@ -108,7 +108,7 @@ class GoogleMerchantController extends Controller
         $item .= "    <g:shipping>\n";
         $item .= "      <g:country>IN</g:country>\n";
         $item .= "      <g:service>Standard</g:service>\n";
-        $item .= "      <g:price>" . ($product->price >= 499 ? '0.00 INR' : '49.00 INR') . "</g:price>\n";
+        $item .= "      <g:price>" . ($product->price >= 30 ? '0.00 GBP' : '0.00 GBP') . "</g:price>\n";
         $item .= "    </g:shipping>\n";
 
         // Return policy
@@ -119,7 +119,7 @@ class GoogleMerchantController extends Controller
 
     private function fmtPrice(float $price): string
     {
-        return number_format($price, 2, '.', '') . ' INR';
+        return number_format($price, 2, '.', '') . ' GBP';
     }
 
     private function absUrl(?string $url, string $appUrl): string

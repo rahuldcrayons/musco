@@ -10,11 +10,11 @@
                 </div>
                 <h3 x-text="product.name" class="text-sm font-medium text-neutral-900 truncate"></h3>
                 <div class="flex items-center gap-2 mt-1">
-                    <span x-text="'₹' + product.price" class="text-sm font-bold text-primary-600"></span>
-                    <span x-show="product.mrp > product.price" x-text="'₹' + product.mrp" class="text-xs text-neutral-400 line-through"></span>
+                    <span x-text="window.__currencySymbol + product.price" class="text-sm font-bold text-primary-600"></span>
+                    <span x-show="product.mrp > product.price" x-text="window.__currencySymbol + product.mrp" class="text-xs text-neutral-400 line-through"></span>
                 </div>
                 <div x-show="product.rating > 0" class="flex items-center gap-1 mt-1">
-                    <span class="text-[#c29958] text-xs">★</span>
+                    <span class="text-[#506282] text-xs">★</span>
                     <span x-text="product.rating.toFixed(1)" class="text-xs text-neutral-600"></span>
                 </div>
             </a>

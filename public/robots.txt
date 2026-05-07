@@ -6,5 +6,15 @@ Disallow: /cart
 Disallow: /checkout
 Disallow: /account/
 Disallow: /api/
+Disallow: /login
+Disallow: /register
+Disallow: /password/
+Disallow: /wishlist
+Disallow: /email/
+Disallow: /otp/
+Disallow: /quick-buy
+Disallow: /checkout-login
+Disallow: /csrf-token
+Disallow: /webhook/
 
-Sitemap: https://musxco.com/sitemap.xml
+Sitemap: https://trendymus.com/sitemap.xml

@@ -13,8 +13,8 @@ class SellerSeeder extends Seeder
     {
         $sellers = [
             [
-                'store_name' => 'MusCo Store',
-                'business_name' => 'MusCo',
+                'store_name' => 'Trendimus Store',
+                'business_name' => 'Trendimus',
                 'email' => 'seller1@example.com',
                 'description' => 'Your trusted destination for certified gold, diamond & silver jewellery.',
             ],

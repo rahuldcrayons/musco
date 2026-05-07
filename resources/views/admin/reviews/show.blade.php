@@ -14,57 +14,90 @@
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div class="lg:col-span-2 space-y-6">
             <div class="card">
-                <div class="p-4 border-b border-neutral-200">
+                <div class="p-4 border-b border-neutral-200 flex items-center justify-between">
                     <h2 class="font-semibold text-neutral-900">Review Content</h2>
+                    @if(session('success'))
+                        <span class="text-xs text-green-600 font-medium">{{ session('success') }}</span>
+                    @endif
                 </div>
-                <div class="p-4 space-y-4">
-                    <div class="flex items-center gap-3">
-                        <div class="flex items-center gap-0.5">
-                            @for($i = 1; $i <= 5; $i++)
-                                <svg class="w-5 h-5 {{ $i <= $review->rating ? 'text-[#c29958]' : 'text-neutral-200' }}" fill="currentColor" viewBox="0 0 20 20">
-                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
-                                </svg>
-                            @endfor
-                        </div>
-                        <span class="text-lg font-semibold text-neutral-900">{{ $review->rating }}/5</span>
-                    </div>
 
-                    @if($review->title)
+                <form action="{{ route('admin.reviews.update', $review) }}" method="POST">
+                    @csrf
+                    @method('PUT')
+                    <div class="p-4 space-y-4">
+
+                        {{-- Interactive star rating --}}
+                        <div>
+                            <label class="block text-sm font-medium text-neutral-600 mb-2">Rating</label>
+                            <div x-data="{ rating: {{ $review->rating }}, hover: 0 }" class="flex items-center gap-1">
+                                @for($i = 1; $i <= 5; $i++)
+                                    <button type="button"
+                                            @click="rating = {{ $i }}"
+                                            @mouseenter="hover = {{ $i }}"
+                                            @mouseleave="hover = 0"
+                                            class="focus:outline-none">
+                                        <svg class="w-7 h-7 transition-colors cursor-pointer"
+                                             :fill="(hover || rating) >= {{ $i }} ? '#f5a623' : '#e5e7eb'"
+                                             viewBox="0 0 20 20">
+                                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                                        </svg>
+                                    </button>
+                                @endfor
+                                <input type="hidden" name="rating" :value="rating">
+                                <span class="ml-2 text-sm font-semibold text-neutral-700" x-text="rating + '/5'"></span>
+                                <span class="ml-1 text-xs text-neutral-400" x-text="['','Poor','Fair','Good','Very Good','Excellent'][rating]"></span>
+                            </div>
+                            @error('rating')<p class="mt-1 text-xs text-red-500">{{ $message }}</p>@enderror
+                        </div>
+
+                        {{-- Title --}}
                         <div>
                             <label class="block text-sm font-medium text-neutral-600 mb-1">Title</label>
-                            <p class="text-neutral-900 font-medium">{{ $review->title }}</p>
+                            <input type="text" name="title" value="{{ old('title', $review->title) }}"
+                                   placeholder="Review title"
+                                   class="w-full px-3 py-2 text-sm border border-neutral-200 rounded-lg bg-neutral-50 text-neutral-700 placeholder-neutral-400 focus:outline-none focus:border-[#202a40] focus:bg-white transition-colors">
+                            @error('title')<p class="mt-1 text-xs text-red-500">{{ $message }}</p>@enderror
                         </div>
-                    @endif
 
-                    @if($review->content)
+                        {{-- Content --}}
                         <div>
-                            <label class="block text-sm font-medium text-neutral-600 mb-1">Content</label>
-                            <p class="text-neutral-700">{{ $review->content }}</p>
+                            <label class="block text-sm font-medium text-neutral-600 mb-1">Review</label>
+                            <textarea name="content" rows="4"
+                                      placeholder="Review content"
+                                      class="w-full px-3 py-2 text-sm border border-neutral-200 rounded-lg bg-neutral-50 text-neutral-700 placeholder-neutral-400 focus:outline-none focus:border-[#202a40] focus:bg-white transition-colors resize-none">{{ old('content', $review->content) }}</textarea>
+                            @error('content')<p class="mt-1 text-xs text-red-500">{{ $message }}</p>@enderror
                         </div>
-                    @endif
 
-                    @if($review->pros && count($review->pros))
-                        <div>
-                            <label class="block text-sm font-medium text-neutral-600 mb-1">Pros</label>
-                            <ul class="list-disc list-inside text-sm text-neutral-700 space-y-1">
-                                @foreach($review->pros as $pro)
-                                    <li>{{ $pro }}</li>
-                                @endforeach
-                            </ul>
-                        </div>
-                    @endif
+                        @if($review->pros && count($review->pros))
+                            <div>
+                                <label class="block text-sm font-medium text-neutral-600 mb-1">Pros</label>
+                                <ul class="list-disc list-inside text-sm text-neutral-700 space-y-1">
+                                    @foreach($review->pros as $pro)
+                                        <li>{{ $pro }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
 
-                    @if($review->cons && count($review->cons))
-                        <div>
-                            <label class="block text-sm font-medium text-neutral-600 mb-1">Cons</label>
-                            <ul class="list-disc list-inside text-sm text-neutral-700 space-y-1">
-                                @foreach($review->cons as $con)
-                                    <li>{{ $con }}</li>
-                                @endforeach
-                            </ul>
+                        @if($review->cons && count($review->cons))
+                            <div>
+                                <label class="block text-sm font-medium text-neutral-600 mb-1">Cons</label>
+                                <ul class="list-disc list-inside text-sm text-neutral-700 space-y-1">
+                                    @foreach($review->cons as $con)
+                                        <li>{{ $con }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
+
+                        <div class="pt-2 border-t border-neutral-100">
+                            <button type="submit"
+                                    class="px-4 py-2 bg-[#202a40] hover:bg-[#2d3a55] text-white text-sm font-semibold rounded-lg transition-colors">
+                                Save Changes
+                            </button>
                         </div>
-                    @endif
-                </div>
+                    </div>
+                </form>
             </div>
 
             <div class="card">

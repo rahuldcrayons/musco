@@ -73,12 +73,18 @@ Route::post('/products/{product}/ask-question', [App\Http\Controllers\ProductCon
 // Categories
 Route::prefix('categories')->name('categories.')->group(function () {
     Route::get('/', [App\Http\Controllers\CategoryController::class, 'index'])->name('index')->middleware('cache.response:5');
-    Route::get('/{category:slug}', [App\Http\Controllers\CategoryController::class, 'show'])->name('show')->middleware('cache.response:5');
+    Route::get('/{category:slug}', [App\Http\Controllers\CategoryController::class, 'show'])->name('show')->middleware('cache.response:5')
+        ->missing(fn () => redirect()->route('categories.index', [], 301));
 });
 
 // Alias: /category/slug → 301 redirect to /categories/slug (avoid duplicate content)
 Route::get('/category/{slug}', function (string $slug) {
-    return redirect()->route('categories.show', $slug, 301);
+    $category = \App\Models\Category::where('slug', $slug)
+        ->when(is_numeric($slug), fn ($q) => $q->orWhere('id', $slug))
+        ->first();
+    return $category
+        ? redirect()->route('categories.show', $category, 301)
+        : redirect()->route('categories.index', [], 301);
 })->name('category.show');
 
 // Brands
@@ -148,8 +154,12 @@ Route::post('/api/abandoned-capture', [App\Http\Controllers\CheckoutController::
 Route::prefix('checkout')->name('checkout.')->group(function () {
     Route::get('/', [App\Http\Controllers\CheckoutController::class, 'index'])->name('index');
     Route::post('/process', [App\Http\Controllers\CheckoutController::class, 'process'])->middleware('throttle:10,1')->name('process');
-    Route::post('/razorpay/create-order', [App\Http\Controllers\CheckoutController::class, 'createRazorpayOrder'])->middleware('throttle:10,1')->name('razorpay.create');
-    Route::post('/razorpay/verify', [App\Http\Controllers\CheckoutController::class, 'verifyRazorpayPayment'])->middleware('throttle:10,1')->name('razorpay.verify');
+    // PayPal
+    Route::post('/paypal/create', [App\Http\Controllers\CheckoutController::class, 'createPaypalOrder'])->middleware('throttle:10,1')->name('paypal.create');
+    Route::get('/paypal/success', [App\Http\Controllers\CheckoutController::class, 'paypalReturn'])->name('paypal.success');
+    // Stripe
+    Route::post('/stripe/create', [App\Http\Controllers\CheckoutController::class, 'createStripeSession'])->middleware('throttle:10,1')->name('stripe.create');
+    Route::get('/stripe/success', [App\Http\Controllers\CheckoutController::class, 'stripeSuccess'])->name('stripe.success');
     Route::get('/success/{order}', [App\Http\Controllers\CheckoutController::class, 'success'])->name('success');
     Route::get('/failed', [App\Http\Controllers\CheckoutController::class, 'failed'])->name('failed');
 });
@@ -169,6 +179,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/profile', [App\Http\Controllers\Account\ProfileController::class, 'edit'])->name('profile');
         Route::put('/profile', [App\Http\Controllers\Account\ProfileController::class, 'update'])->name('profile.update');
         Route::put('/password', [App\Http\Controllers\Account\ProfileController::class, 'updatePassword'])->name('password.update');
+        Route::post('/avatar', [App\Http\Controllers\Account\ProfileController::class, 'updateAvatar'])->name('avatar.update');
 
         // Addresses
         Route::resource('addresses', App\Http\Controllers\Account\AddressController::class);

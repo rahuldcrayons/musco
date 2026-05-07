@@ -209,7 +209,7 @@
                     plugins: { legend: { position: 'top', align: 'end', labels: { usePointStyle: true, pointStyle: 'circle', padding: 16, font: { size: 11, family: fontFamily } } } },
                     scales: {
                         x: { grid: { display: false }, ticks: { font: { size: 11, family: fontFamily }, color: '#999' } },
-                        y: { position: 'left', grid: { color: '#f5f5f5' }, ticks: { font: { size: 11, family: fontFamily }, color: '#999', callback: v => '₹'+v.toLocaleString() } },
+                        y: { position: 'left', grid: { color: '#f5f5f5' }, ticks: { font: { size: 11, family: fontFamily }, color: '#999', callback: v => '£'+v.toLocaleString() } },
                         y1: { position: 'right', grid: { drawOnChartArea: false }, ticks: { font: { size: 11, family: fontFamily }, color: '#999', stepSize: 1 } }
                     }
                 }
@@ -231,7 +231,7 @@
                     labels: @json($monthLabels),
                     datasets: [{ label: 'Revenue', data: @json($monthData), backgroundColor: 'rgba(92,106,196,.15)', hoverBackgroundColor: 'rgba(92,106,196,.3)', borderColor: '#5c6ac4', borderWidth: 1, borderRadius: 6, borderSkipped: false }]
                 },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false }, ticks: { font: { size: 11, family: fontFamily }, color: '#999' } }, y: { grid: { color: '#f5f5f5' }, ticks: { font: { size: 11, family: fontFamily }, color: '#999', callback: v => '₹'+v.toLocaleString() } } } }
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false }, ticks: { font: { size: 11, family: fontFamily }, color: '#999' } }, y: { grid: { color: '#f5f5f5' }, ticks: { font: { size: 11, family: fontFamily }, color: '#999', callback: v => '£'+v.toLocaleString() } } } }
             });
         });
     </script>

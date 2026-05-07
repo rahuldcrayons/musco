@@ -70,8 +70,9 @@
 
                             <div>
                                 <label for="description" class="form-label form-label-required">Description</label>
-                                <textarea name="description" id="description" rows="6" required
-                                          class="form-input w-full @error('description') form-input-error @enderror">{{ old('description') }}</textarea>
+                                <textarea name="description" id="description" rows="6"
+                                          class="form-input w-full @error('description') form-input-error @enderror"
+                                          placeholder="Enter product description...">{{ old('description') }}</textarea>
                                 @error('description')
                                     <p class="form-error">{{ $message }}</p>
                                 @enderror
@@ -105,7 +106,7 @@
                                     {{-- Upload zone --}}
                                     <div class="flex-1 border-2 border-dashed border-neutral-300 rounded-lg p-4 text-center hover:border-neutral-400 transition-colors cursor-pointer"
                                          @click="$refs.mainFileInput.click()"
-                                         :class="{ 'border-[#B76E79]/20 bg-[#B76E79]/5': mainDragOver }"
+                                         :class="{ 'border-[#202a40]/20 bg-[#202a40]/5': mainDragOver }"
                                          @dragover.prevent="mainDragOver = true"
                                          @dragleave.prevent="mainDragOver = false"
                                          @drop.prevent="mainDragOver = false; handleMainImage($event.dataTransfer.files[0])">
@@ -137,7 +138,7 @@
                                      @dragover.prevent="galleryDragOver = true"
                                      @dragleave.prevent="galleryDragOver = false"
                                      @drop.prevent="galleryDragOver = false; handleGalleryFiles($event.dataTransfer.files)"
-                                     :class="{ 'border-[#B76E79]/20 bg-[#B76E79]/5': galleryDragOver }">
+                                     :class="{ 'border-[#202a40]/20 bg-[#202a40]/5': galleryDragOver }">
                                     <input type="file" name="images[]" multiple accept="image/jpeg,image/jpg,image/png,image/webp,image/gif"
                                            x-ref="galleryInput" class="hidden" @change="handleGalleryFiles($event.target.files)">
                                     <div class="flex flex-col items-center py-1">
@@ -308,7 +309,7 @@
                     <div class="card overflow-hidden">
                         <div class="px-5 py-4 flex items-center justify-between">
                             <h2 class="text-sm font-semibold text-neutral-900">Search engine listing</h2>
-                            <button type="button" @click="autoFillSeo()" class="text-xs font-medium text-[#B76E79] hover:text-[#B76E79]/80 transition-colors">
+                            <button type="button" @click="autoFillSeo()" class="text-xs font-medium text-[#202a40] hover:text-[#202a40]/80 transition-colors">
                                 Auto-generate
                             </button>
                         </div>
@@ -317,8 +318,8 @@
                             <div class="border border-neutral-200 rounded-lg p-4 bg-neutral-50">
                                 <p class="text-xs text-neutral-500 mb-2 font-medium">Search engine preview</p>
                                 <div>
-                                    <p class="text-[#B76E79] text-base font-medium truncate" style="font-family: Arial, sans-serif;" x-text="seoTitle || 'Page title'"></p>
-                                    <p class="text-[#B76E79] text-xs truncate mt-0.5" style="font-family: Arial, sans-serif;">{{ url('/') }}/product/<span x-text="slug || 'product-slug'"></span></p>
+                                    <p class="text-[#202a40] text-base font-medium truncate" style="font-family: Arial, sans-serif;" x-text="seoTitle || 'Page title'"></p>
+                                    <p class="text-[#202a40] text-xs truncate mt-0.5" style="font-family: Arial, sans-serif;">{{ url('/') }}/product/<span x-text="slug || 'product-slug'"></span></p>
                                     <p class="text-neutral-600 text-xs mt-1 line-clamp-2" style="font-family: Arial, sans-serif;" x-text="seoDescription || 'Page description'"></p>
                                 </div>
                             </div>

@@ -21,6 +21,7 @@ class Order extends Model
         'affiliate_referral_code',
         'status',
         'payment_status',
+        'payment_method',
         'subtotal',
         'discount',
         'tax',
@@ -37,6 +38,9 @@ class Order extends Model
         'admin_notes',
         'ip_address',
         'user_agent',
+        'paypal_order_id',
+        'stripe_session_id',
+        'stripe_payment_intent',
         'source',
         'metadata',
         'confirmed_at',
@@ -132,6 +136,11 @@ class Order extends Model
     public function items(): HasMany
     {
         return $this->hasMany(OrderItem::class);
+    }
+
+    public function getItemsCountAttribute(): int
+    {
+        return $this->items->count();
     }
 
     public function payments(): HasMany

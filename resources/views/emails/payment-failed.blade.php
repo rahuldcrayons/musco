@@ -6,7 +6,7 @@ Hi {{ $order->user?->first_name ?? $order->guest_name ?? 'Customer' }},
 Unfortunately, the payment for your order could not be processed.
 
 **Order Number:** #{{ $order->order_number }}
-**Amount:** ₹{{ number_format($payment->amount, 2) }}
+**Amount:** {{ format_price($payment->amount) }}
 **Reason:** {{ $payment->failure_reason ?? 'Payment was declined' }}
 
 Don't worry — your order is still reserved. You can retry the payment using the button below:
@@ -18,5 +18,5 @@ Retry Payment
 If you continue to face issues, please contact our support team and we'll be happy to help.
 
 Warm regards,
-**MusCo**
+**Trendymus**
 @endcomponent

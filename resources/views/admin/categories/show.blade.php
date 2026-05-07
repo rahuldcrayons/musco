@@ -19,7 +19,7 @@
                 </div>
             </div>
             <div class="flex items-center gap-2">
-                <a href="{{ route('category.show', $category) }}" target="_blank" class="btn btn-secondary">
+                <a href="{{ route('categories.show', $category) }}" target="_blank" class="btn btn-secondary">
                     <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
                     </svg>
@@ -71,8 +71,8 @@
             </div>
         </div>
         <div class="card p-4 flex items-center gap-3">
-            <div class="w-10 h-10 rounded-lg bg-[#B76E79]/5 flex items-center justify-center shrink-0">
-                <svg class="w-5 h-5 text-[#B76E79]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="w-10 h-10 rounded-lg bg-[#202a40]/5 flex items-center justify-center shrink-0">
+                <svg class="w-5 h-5 text-[#202a40]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                 </svg>
             </div>

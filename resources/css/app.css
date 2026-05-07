@@ -24,16 +24,16 @@
 
     /* ============================
        Purple Override → Rose Gold (Luxury Jewelry)
-       Primary: #B76E79, Accent/Hover: #c29958
+       Primary: #202a40, Accent/Hover: #506282
        ============================ */
     --color-purple-50:  #FDF2F3;
     --color-purple-100: #F9E0E3;
     --color-purple-200: #F0BFC5;
     --color-purple-300: #D99BA3;
     --color-purple-400: #C8848E;
-    --color-purple-500: #B76E79;
+    --color-purple-500: #202a40;
     --color-purple-600: #A35E67;
-    --color-purple-700: #8B4F57;
+    --color-purple-700: #151e30;
     --color-purple-800: #734148;
     --color-purple-900: #5C3439;
     --color-purple-950: #3D2226;
@@ -44,9 +44,9 @@
     --color-primary-200: #F0BFC5;
     --color-primary-300: #D99BA3;
     --color-primary-400: #C8848E;
-    --color-primary-500: #B76E79;
+    --color-primary-500: #202a40;
     --color-primary-600: #A35E67;
-    --color-primary-700: #8B4F57;
+    --color-primary-700: #151e30;
     --color-primary-800: #734148;
     --color-primary-900: #5C3439;
     --color-primary-950: #3D2226;
@@ -267,13 +267,102 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* ========================================
+   Page Transition Curtain (GSAP)
+   ======================================== */
+#page-curtain {
+    position: fixed;
+    inset: 0;
+    background: linear-gradient(135deg, #202a40 0%, #151e30 100%);
+    z-index: 999999;
+    transform: scaleY(0);
+    transform-origin: top center;
+    pointer-events: none;
+    will-change: transform;
+}
+
+/* ========================================
+   Sticky Header Scroll State
+   ======================================== */
+#main-header {
+    transition: box-shadow 0.3s ease, background-color 0.3s ease, backdrop-filter 0.3s ease;
+}
+
+#main-header.header-scrolled {
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08);
+    background-color: rgba(255, 255, 255, 0.97) !important;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+/* ========================================
+   Image Hover Zoom  (product images)
+   ======================================== */
+.product-img-wrap {
+    overflow: hidden;
+}
+.product-img-wrap img {
+    transition: transform 0.55s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    will-change: transform;
+}
+.product-img-wrap:hover img {
+    transform: scale(1.08);
+}
+
+/* ========================================
+   Skeleton Loading
+   ======================================== */
+@keyframes skeleton-pulse {
+    0%   { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+.skeleton {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e4e4e4 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: skeleton-pulse 1.6s ease-in-out infinite;
+    border-radius: 6px;
+}
+
+.skeleton-card {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.skeleton-card .sk-img {
+    aspect-ratio: 1 / 1;
+    border-radius: 8px;
+}
+
+.skeleton-card .sk-title {
+    height: 13px;
+    width: 75%;
+}
+
+.skeleton-card .sk-sub {
+    height: 11px;
+    width: 45%;
+}
+
+.skeleton-card .sk-price {
+    height: 16px;
+    width: 40%;
+}
+
+.skeleton-card .sk-btn {
+    height: 36px;
+    border-radius: 9999px;
+    margin-top: 6px;
+}
+
+/* ========================================
    Base Styles
    ======================================== */
 
 html {
     scroll-behavior: smooth;
     -webkit-tap-highlight-color: transparent;
-    overflow-x: hidden;
+    overflow-x: clip;
     max-width: 100%;
     /* Prevent layout shifts from scrollbar */
     scrollbar-gutter: stable;
@@ -285,16 +374,70 @@ body {
     background-color: white;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    overflow-x: hidden;
+    overflow-x: clip;
     max-width: 100%;
     /* Improve text rendering on mobile */
     text-rendering: optimizeSpeed;
     -webkit-text-size-adjust: 100%;
 }
 
-/* GPU-accelerate fixed/sticky elements for smooth scrolling */
-.fixed, [style*="position: fixed"], [style*="position:fixed"] {
-    will-change: transform;
+/* ===== MARQUEE ANNOUNCEMENT BAR ===== */
+.marquee-track {
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+}
+.marquee-content {
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+    animation: marqueeScroll 30s linear infinite;
+    width: max-content;
+}
+.marquee-item {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0 8px;
+}
+.marquee-separator {
+    font-size: 8px;
+    opacity: 0.4;
+    margin: 0 12px;
+}
+@keyframes marqueeScroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+}
+@media (max-width: 767px) {
+    .marquee-item { font-size: 10px; }
+    .marquee-separator { margin: 0 8px; }
+}
+
+/* ===== Header Nav Links ===== */
+.nav-link {
+    position: relative;
+    letter-spacing: 0.02em;
+}
+.nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background: #202a40;
+    transition: all 0.3s ease;
+    transform: translateX(-50%);
+}
+.nav-link:hover::after,
+.nav-link--active::after {
+    width: 60%;
+}
+
+/* GPU-accelerate only the header for smooth hide/show animation */
+#main-header {
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
 }
@@ -455,9 +598,9 @@ a[class*="btn"] {
 }
 
 .form-input:focus {
-    outline: 1px solid var(--color-primary-500);
+    outline: 1px solid #202a40;
     outline-offset: -1px;
-    border-color: var(--color-primary-500);
+    border-color: #202a40;
 }
 
 .form-input:disabled {
@@ -813,14 +956,17 @@ a[class*="btn"] {
 }
 
 .card-product {
-    background-color: white;
-    border-radius: 0.375rem;
+    background: #fff;
+    border-radius: 16px;
     overflow: hidden;
-    transition: box-shadow 0.3s ease, transform 0.3s ease;
+    border: 1px solid #f2eeeb;
+    transition: box-shadow 0.35s ease, transform 0.35s ease;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.06);
+    position: relative;
 }
 
 .card-product:hover {
-    box-shadow: 0 8px 24px rgba(183, 110, 121, 0.12);
+    box-shadow: 0 16px 40px rgba(183,110,121,0.15);
     transform: translateY(-4px);
 }
 
@@ -1370,6 +1516,18 @@ a[class*="btn"] {
     display: none;
 }
 
+/* Cart drawer full-height fix for mobile browsers */
+.cart-drawer-height {
+    height: 100vh;
+    height: 100dvh;
+    height: -webkit-fill-available;
+}
+
+/* iOS safe-area bottom padding */
+.safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
 /* ========================================
    Overlay Utilities
    ======================================== */
@@ -1498,10 +1656,10 @@ img:not([src]), img[src=""] {
    ======================================== */
 
 :root {
-    --primary: #B76E79;
+    --primary: #202a40;
     --primary-light: rgba(183,110,121,.08);
     --primary-dark: #956060;
-    --accent: #c29958;
+    --accent: #506282;
     --accent-dark: #222222;
     --text-dark: #222222;
     --text-body: #555555;
@@ -1636,4 +1794,179 @@ img:not([src]), img[src=""] {
     background: var(--primary);
     border-color: var(--primary);
     color: #fff;
+}
+
+/* ========================================
+   Glassmorphism Product Card (.pc-glass-card)
+   ======================================== */
+.pc-glass-card {
+    background: rgba(255, 255, 255, 0.82);
+    backdrop-filter: blur(14px) saturate(1.5);
+    -webkit-backdrop-filter: blur(14px) saturate(1.5);
+    border: 1px solid rgba(255, 255, 255, 0.72);
+    border-radius: 14px;
+    box-shadow: none;
+    overflow: hidden;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.pc-glass-card:hover {
+    transform: none;
+    box-shadow: none;
+}
+/* Product card Add to Cart button */
+.pc-cart-btn {
+    background: #202a40;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+.pc-cart-btn::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to right, transparent, rgba(255,255,255,0.1), transparent);
+    transform: translateX(-100%);
+    transition: transform 0.4s ease;
+}
+.pc-cart-btn:hover {
+    background: #506282;
+}
+.pc-cart-btn:hover::after {
+    transform: translateX(100%);
+}
+.pc-cart-btn:active {
+    transform: scale(0.98);
+}
+.pc-badge {
+    display: inline-block;
+    font-size: 9.5px;
+    font-weight: 700;
+    padding: 3px 7px;
+    border-radius: 4px;
+    letter-spacing: 0.03em;
+    line-height: 1.4;
+    width: fit-content;
+}
+.pc-icon-btn {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(255,255,255,0.88);
+    backdrop-filter: blur(8px);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: background 0.2s, transform 0.15s;
+    border: none; cursor: pointer;
+}
+.pc-icon-btn:hover { background: #fff; transform: scale(1.1); }
+
+/* ─── Desktop: 4-col grid for product rows ──────────────── */
+/* ─── Desktop + Tablet + Mobile: all horizontal scroll ──── */
+.pc-glass-grid {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    gap: 18px;
+    padding-bottom: 6px;
+    scrollbar-width: none;
+}
+.pc-glass-grid::-webkit-scrollbar { display: none; }
+
+/* Desktop >1024px — 5-card peek */
+.pc-glass-grid > * {
+    flex: 0 0 calc(20% - 15px);
+    scroll-snap-align: start;
+}
+
+/* Tablet 640px–1024px — 2-card peek */
+@media (max-width: 1024px) {
+    .pc-glass-grid {
+        gap: 14px;
+    }
+    .pc-glass-grid > * {
+        flex: 0 0 calc(50% - 7px);
+    }
+}
+
+/* Mobile <640px — 2-card peek, tighter gap */
+@media (max-width: 640px) {
+    .pc-glass-grid {
+        gap: 12px;
+    }
+    .pc-glass-grid > * {
+        flex: 0 0 calc(50% - 6px);
+    }
+}
+
+/* ─── Anti-Tarnish section: 3-col desktop, scroll on mobile ── */
+.pc-quality-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+}
+@media (max-width: 1024px) {
+    .pc-quality-grid {
+        display: flex;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+        gap: 12px;
+        padding-bottom: 4px;
+        scrollbar-width: none;
+    }
+    .pc-quality-grid::-webkit-scrollbar { display: none; }
+    .pc-quality-grid > * {
+        flex: 0 0 calc(50% - 6px);
+        scroll-snap-align: start;
+    }
+}
+
+/* ─── Footer bottom padding — clears mobile bottom nav ─── */
+@media (max-width: 1023px) {
+    .pb-safe-footer {
+        padding-bottom: calc(72px + env(safe-area-inset-bottom, 0px)) !important;
+    }
+}
+
+/* ─── Section header with nav arrows ───────────────────── */
+.pc-section-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+.pc-nav-arrows {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+    padding-bottom: 4px;
+}
+@media (max-width: 480px) {
+    .pc-nav-arrows { display: none; }
+}
+.pc-nav-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: 1.5px solid #d0d8e4;
+    background: #fff;
+    color: #202a40;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s, color 0.2s, transform 0.15s;
+}
+.pc-nav-btn:hover {
+    background: #202a40;
+    border-color: #202a40;
+    color: #fff;
+    transform: scale(1.08);
+}
+.pc-nav-btn:active {
+    transform: scale(0.94);
 }

@@ -80,7 +80,7 @@ class SeedBulkReviews extends Command
                         'product_id' => $product->id,
                         'user_id' => null,
                         'guest_name' => $generator->randomIndianName(),
-                        'guest_email' => 'review' . mt_rand(10000, 99999) . '@customer.musco.com',
+                        'guest_email' => 'review' . mt_rand(10000, 99999) . '@customer.trendymus.com',
                         'rating' => $rating,
                         'title' => $generator->generateTitle($product, $rating),
                         'content' => $generator->generateContent($product, $rating),

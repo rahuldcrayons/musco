@@ -11,7 +11,7 @@
     </div>
 
     @if(session('success'))
-        <div class="mb-4 px-4 py-3 bg-[#B76E79]/5 border border-[#B76E79]/20 text-[#B76E79] text-sm rounded-lg">
+        <div class="mb-4 px-4 py-3 bg-[#202a40]/5 border border-[#202a40]/20 text-[#202a40] text-sm rounded-lg">
             {{ session('success') }}
         </div>
     @endif
@@ -81,6 +81,7 @@
                         <th class="px-4 py-3">Usage</th>
                         <th class="px-4 py-3">Status</th>
                         <th class="px-4 py-3">Expires</th>
+                        <th class="px-4 py-3 text-right">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -113,7 +114,7 @@
                             </td>
                             <td class="px-4 py-3">
                                 @if($coupon->isValid())
-                                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-[#B76E79]/10 text-[#B76E79]">Active</span>
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-[#202a40]/10 text-[#202a40]">Active</span>
                                 @elseif($coupon->expires_at?->isPast())
                                     <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-[#CC0C39]/10 text-[#CC0C39]">Expired</span>
                                 @else
@@ -127,10 +128,20 @@
                                     --
                                 @endif
                             </td>
+                            <td class="px-4 py-3 text-right" onclick="event.stopPropagation()">
+                                <div class="flex items-center justify-end gap-2">
+                                    <a href="{{ route('admin.coupons.edit', $coupon) }}" class="text-[#506282] hover:text-[#202a40] text-sm font-medium">Edit</a>
+                                    <form action="{{ route('admin.coupons.destroy', $coupon) }}" method="POST" onsubmit="return confirm('Delete coupon {{ $coupon->code }}?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="text-red-600 hover:text-red-800 text-sm font-medium">Delete</button>
+                                    </form>
+                                </div>
+                            </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="px-4 py-12 text-center">
+                            <td colspan="8" class="px-4 py-12 text-center">
                                 <p class="text-gray-500 text-sm">No discounts found</p>
                                 <a href="{{ route('admin.coupons.create') }}"
                                    class="inline-flex items-center mt-3 px-4 py-2 bg-gray-900 text-white text-sm font-medium rounded-lg hover:bg-gray-800 transition-colors">

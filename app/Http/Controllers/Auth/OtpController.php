@@ -39,7 +39,7 @@ class OtpController extends Controller
                 'first_name' => 'User',
                 'last_name' => '',
                 'phone' => $phone10,
-                'email' => $phone10 . '@phone.musco.com',
+                'email' => $phone10 . '@phone.trendymus.com',
                 'password' => bcrypt(Str::random(16)),
             ]);
         }
@@ -94,49 +94,44 @@ class OtpController extends Controller
     }
 
     /**
-     * Send OTP for password reset.
+     * Send OTP for password reset (email only).
      */
     public function sendResetOtp(Request $request): JsonResponse
     {
         $request->validate([
-            'identifier' => 'required|string|min:5',
+            'identifier' => 'required|email',
         ]);
 
-        $identifier = $request->input('identifier');
-        $user = $this->findUser($identifier);
+        $identifier = strtolower(trim($request->input('identifier')));
+        $user = User::where('email', $identifier)->first();
 
         if (!$user) {
-            return response()->json(['success' => false, 'message' => 'No account found.'], 404);
+            return response()->json(['success' => false, 'message' => 'No account found with this email address.'], 404);
         }
 
-        $phone = $user->phone ?? $identifier;
-        $result = $this->otpService->send($phone, 'reset_password');
+        $result = $this->otpService->send($user->email, 'reset_password', false, true);
 
         return response()->json($result, $result['success'] ? 200 : 429);
     }
 
     /**
-     * Verify OTP and show reset password form.
+     * Verify OTP for password reset (email only).
      */
     public function verifyResetOtp(Request $request): JsonResponse
     {
         $request->validate([
-            'identifier' => 'required|string',
+            'identifier' => 'required|email',
             'otp' => 'required|string|size:6',
         ]);
 
-        $identifier = $request->input('identifier');
-        $user = $this->findUser($identifier);
+        $identifier = strtolower(trim($request->input('identifier')));
+        $user = User::where('email', $identifier)->first();
 
         if (!$user) {
             return response()->json(['success' => false, 'message' => 'Account not found.'], 404);
         }
 
-        $phone = $user->phone ?? $identifier;
-        $email = $user->email ?? $identifier;
-        $checkIdentifier = is_numeric(preg_replace('/\D/', '', $identifier)) ? $phone : $email;
-
-        if (!$this->otpService->verify($checkIdentifier, $request->input('otp'), 'reset_password')) {
+        if (!$this->otpService->verify($user->email, $request->input('otp'), 'reset_password')) {
             return response()->json(['success' => false, 'message' => 'Invalid or expired OTP.'], 422);
         }
 

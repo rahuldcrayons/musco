@@ -27,7 +27,7 @@
                     @if($latestShipment && $latestShipment->tracking_number)
                         <div class="sm:text-right">
                             <p class="text-xs text-neutral-600">Tracking ID</p>
-                            <p class="font-mono font-bold text-primary-600 text-sm">{{ $latestShipment->tracking_number }}</p>
+                            <p class="font-mono font-bold text-[#202a40] text-sm">{{ $latestShipment->tracking_number }}</p>
                             @if($latestShipment->carrier)
                                 <p class="text-xs text-neutral-600 mt-0.5">via {{ $latestShipment->carrier }}</p>
                             @endif
@@ -91,7 +91,7 @@
                                                 <div class="flex flex-col items-center">
                                                     {{-- Step Circle --}}
                                                     <div class="w-10 h-10 rounded-full flex items-center justify-center z-10 relative transition-all
-                                                        {{ $step['completed'] ? 'bg-success-500 text-white' : ($step['current'] ? 'bg-primary-500 text-white ring-4 ring-primary-100 animate-pulse' : 'bg-neutral-100 text-neutral-600') }}">
+                                                        {{ $step['completed'] ? 'bg-success-500 text-white' : ($step['current'] ? 'bg-[#202a40] text-white ring-4 ring-[#202a40]/10 animate-pulse' : 'bg-neutral-100 text-neutral-600') }}">
                                                         @if($step['completed'] && !$step['current'])
                                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
@@ -155,7 +155,7 @@
                                             <div class="flex gap-3.5 relative">
                                                 {{-- Step Circle --}}
                                                 <div class="w-10 h-10 rounded-full flex items-center justify-center z-10 flex-shrink-0 transition-all
-                                                    {{ $step['completed'] ? 'bg-success-500 text-white' : ($step['current'] ? 'bg-primary-500 text-white ring-4 ring-primary-100' : 'bg-neutral-100 text-neutral-600') }}">
+                                                    {{ $step['completed'] ? 'bg-success-500 text-white' : ($step['current'] ? 'bg-[#202a40] text-white ring-4 ring-[#202a40]/10' : 'bg-neutral-100 text-neutral-600') }}">
                                                     @if($step['completed'] && !$step['current'])
                                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
@@ -194,7 +194,7 @@
                                                             {{ $step['timestamp']->format('M d, Y \a\t h:i A') }}
                                                         </p>
                                                     @elseif($step['current'])
-                                                        <p class="text-xs text-primary-500 mt-0.5">In progress...</p>
+                                                        <p class="text-xs text-[#202a40] mt-0.5">In progress...</p>
                                                     @endif
                                                 </div>
                                             </div>
@@ -214,8 +214,8 @@
                         </div>
                         <div class="p-5">
                             <div class="flex items-center gap-4">
-                                <div class="w-12 h-12 bg-[#B76E79]/10 rounded-full flex items-center justify-center shrink-0">
-                                    <svg class="w-6 h-6 text-[#B76E79]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <div class="w-12 h-12 bg-[#202a40]/10 rounded-full flex items-center justify-center shrink-0">
+                                    <svg class="w-6 h-6 text-[#202a40]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0"/>
                                     </svg>
                                 </div>
@@ -226,7 +226,7 @@
                                     @endif
                                 </div>
                                 @if($order->deliveryPartner->phone)
-                                    <a href="tel:{{ $order->deliveryPartner->phone }}" class="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-[#B76E79] bg-[#B76E79]/5 hover:bg-[#B76E79]/10 rounded-lg transition-colors shrink-0">
+                                    <a href="tel:{{ $order->deliveryPartner->phone }}" class="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-[#202a40] bg-[#202a40]/5 hover:bg-[#202a40]/10 rounded-lg transition-colors shrink-0">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
                                         {{ $order->deliveryPartner->phone }}
                                     </a>
@@ -263,7 +263,7 @@
 
                 {{-- Back to Order --}}
                 <div class="mt-4">
-                    <a href="{{ route('account.orders.show', $order) }}" class="text-[13px] text-primary-600 hover:text-primary-700 font-medium inline-flex items-center gap-1.5">
+                    <a href="{{ route('account.orders.show', $order) }}" class="text-[13px] text-[#202a40] hover:text-[#2d3a55] font-medium inline-flex items-center gap-1.5">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
                         </svg>

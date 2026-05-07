@@ -1,14 +1,8 @@
 <x-layouts.app>
     <x-slot name="title">My Reviews</x-slot>
 
-    <div class="bg-neutral-50 min-h-screen">
-        <div class="container mx-auto px-4 py-8">
-            <x-breadcrumb :items="[['label' => 'Account', 'url' => route('account.dashboard')], ['label' => 'My Reviews']]" />
-            <div class="flex flex-col lg:flex-row gap-8 mt-4">
-                @include('account.partials.sidebar')
-
-                <div class="flex-1">
-                    <div class="flex items-center justify-between mb-6">
+    @include('account.partials.sidebar')
+<div class="flex items-center justify-between mb-6">
                         <div>
                             <h1 class="text-xl font-bold text-neutral-900">My Reviews</h1>
                             <p class="text-sm text-neutral-600 mt-0.5">{{ $reviews->total() }} {{ Str::plural('review', $reviews->total()) }}</p>
@@ -16,7 +10,7 @@
                     </div>
 
                     @if(session('success'))
-                        <div class="mb-4 p-3 bg-[#B76E79]/5 border border-[#B76E79]/20 rounded-lg text-[#B76E79] text-sm flex items-center gap-2">
+                        <div class="mb-4 p-3 bg-[#202a40]/5 border border-[#202a40]/20 rounded-lg text-[#202a40] text-sm flex items-center gap-2">
                             <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
                             {{ session('success') }}
                         </div>
@@ -37,13 +31,13 @@
                                     <div class="flex-1 min-w-0">
                                         {{-- Top row: product name + status --}}
                                         <div class="flex items-start justify-between gap-2 mb-1.5">
-                                            <a href="{{ route('product.show', $review->product) }}" class="text-sm font-semibold text-neutral-900 hover:text-[#c29958] transition-colors line-clamp-1">
+                                            <a href="{{ route('product.show', $review->product) }}" class="text-sm font-semibold text-neutral-900 hover:text-[#506282] transition-colors line-clamp-1">
                                                 {{ $review->product->name }}
                                             </a>
                                             @php
                                                 $statusColors = [
-                                                    'approved' => 'bg-[#B76E79]/5 text-[#B76E79] border-[#B76E79]/20',
-                                                    'pending' => 'bg-[#c29958]/10 text-[#c29958] border-[#c29958]/20',
+                                                    'approved' => 'bg-[#202a40]/5 text-[#202a40] border-[#202a40]/20',
+                                                    'pending' => 'bg-[#506282]/10 text-[#506282] border-[#506282]/20',
                                                     'rejected' => 'bg-neutral-100 text-neutral-700 border-neutral-200',
                                                 ];
                                                 $color = $statusColors[$review->status] ?? 'bg-neutral-50 text-neutral-600 border-neutral-200';
@@ -57,14 +51,14 @@
                                         <div class="flex items-center gap-2 mb-2">
                                             <div class="flex items-center gap-0.5">
                                                 @for($i = 1; $i <= 5; $i++)
-                                                    <svg class="w-3.5 h-3.5 {{ $i <= $review->rating ? 'text-[#c29958]' : 'text-neutral-200' }}" fill="currentColor" viewBox="0 0 20 20">
+                                                    <svg class="w-3.5 h-3.5 {{ $i <= $review->rating ? 'text-[#f5a623]' : 'text-neutral-200' }}" fill="currentColor" viewBox="0 0 20 20">
                                                         <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
                                                     </svg>
                                                 @endfor
                                             </div>
                                             <span class="text-xs text-neutral-600">{{ $review->created_at->format('M d, Y') }}</span>
                                             @if($review->is_verified_purchase)
-                                                <span class="text-[10px] font-semibold text-[#B76E79] bg-[#B76E79]/5 px-1.5 py-0.5 rounded">Verified</span>
+                                                <span class="text-[10px] font-semibold text-[#202a40] bg-[#202a40]/5 px-1.5 py-0.5 rounded">Verified</span>
                                             @endif
                                         </div>
 
@@ -81,7 +75,7 @@
                                             <div class="flex flex-wrap gap-3 mt-2">
                                                 @if(is_array($review->pros) && count($review->pros))
                                                     <div class="flex items-start gap-1">
-                                                        <svg class="w-3.5 h-3.5 text-[#B76E79] mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21H4.5A1.5 1.5 0 013 19.5V12a1.5 1.5 0 011.5-1.5h1.09A2 2 0 007.382 9.2L10 3.5"/></svg>
+                                                        <svg class="w-3.5 h-3.5 text-[#202a40] mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21H4.5A1.5 1.5 0 013 19.5V12a1.5 1.5 0 011.5-1.5h1.09A2 2 0 007.382 9.2L10 3.5"/></svg>
                                                         <span class="text-xs text-neutral-600">{{ implode(', ', $review->pros) }}</span>
                                                     </div>
                                                 @endif
@@ -106,7 +100,7 @@
                             </div>
                             <h3 class="text-base font-semibold text-neutral-900 mb-1">No reviews yet</h3>
                             <p class="text-sm text-neutral-600 mb-5">Share your experience with products you've purchased.</p>
-                            <a href="{{ route('account.orders.index') }}" class="inline-flex items-center gap-2 bg-[#B76E79] hover:bg-[#222222] text-white text-sm font-semibold px-3 py-1.5 rounded-lg transition-colors">
+                            <a href="{{ route('account.orders.index') }}" class="inline-flex items-center gap-2 bg-[#202a40] text-white text-sm font-semibold px-3 py-1.5 rounded-lg transition-colors">
                                 View Orders
                             </a>
                         </div>
@@ -117,8 +111,5 @@
                             {{ $reviews->links() }}
                         </div>
                     @endif
-                </div>
-            </div>
-        </div>
-    </div>
+                @include('account.partials.sidebar-end')
 </x-layouts.app>

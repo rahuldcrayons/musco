@@ -10,7 +10,7 @@
     </div>
 
     @if(session('success'))
-        <div class="mb-4 px-4 py-3 bg-[#B76E79]/5 border border-[#B76E79]/20 text-[#B76E79] text-sm rounded-lg">{{ session('success') }}</div>
+        <div class="mb-4 px-4 py-3 bg-[#202a40]/5 border border-[#202a40]/20 text-[#202a40] text-sm rounded-lg">{{ session('success') }}</div>
     @endif
     @if(session('error'))
         <div class="mb-4 px-4 py-3 bg-[#CC0C39]/10 border border-[#CC0C39]/20 text-[#CC0C39] text-sm rounded-lg">{{ session('error') }}</div>
@@ -89,7 +89,7 @@
                             <div class="flex gap-1 flex-wrap">
                                 @foreach($post->platforms as $p)
                                     <span class="inline-flex items-center px-1.5 py-0.5 text-[10px] font-medium rounded
-                                        {{ str_starts_with($p, 'ig_') ? 'bg-[#B76E79]/10 text-[#B76E79]' : 'bg-[#B76E79]/10 text-[#B76E79]' }}">
+                                        {{ str_starts_with($p, 'ig_') ? 'bg-[#202a40]/10 text-[#202a40]' : 'bg-[#202a40]/10 text-[#202a40]' }}">
                                         {{ \App\Models\SocialMediaPost::PLATFORMS[$p] ?? $p }}
                                     </span>
                                 @endforeach
@@ -101,11 +101,11 @@
                         <td class="px-4 py-3">
                             <span class="inline-flex items-center px-2 py-0.5 text-xs font-medium rounded-full
                                 {{ match($post->status) {
-                                    'published' => 'bg-[#B76E79]/10 text-[#B76E79]',
-                                    'scheduled' => 'bg-[#B76E79]/5 text-[#B76E79]',
+                                    'published' => 'bg-[#202a40]/10 text-[#202a40]',
+                                    'scheduled' => 'bg-[#202a40]/5 text-[#202a40]',
                                     'draft' => 'bg-gray-100 text-gray-600',
                                     'failed','partially_failed' => 'bg-[#CC0C39]/10 text-[#CC0C39]',
-                                    'publishing' => 'bg-[#c29958]/10 text-[#c29958]',
+                                    'publishing' => 'bg-[#506282]/10 text-[#506282]',
                                     default => 'bg-gray-100 text-gray-600',
                                 } }}">
                                 {{ ucfirst($post->status) }}
@@ -121,7 +121,7 @@
                                 @if(in_array($post->status, ['draft', 'scheduled']))
                                     <form action="{{ route('admin.social-calendar.publish-now', $post) }}" method="POST" class="inline">
                                         @csrf
-                                        <button type="submit" class="text-[#B76E79] hover:text-[#B76E79]/80" title="Publish Now">
+                                        <button type="submit" class="text-[#202a40] hover:text-[#202a40]/80" title="Publish Now">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5"/></svg>
                                         </button>
                                     </form>

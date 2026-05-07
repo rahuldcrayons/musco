@@ -26,9 +26,6 @@ Schedule::command('cart:remind-abandoned')->everyTenMinutes();
 // Sync Delhivery tracking status every 30 minutes
 Schedule::command('delhivery:sync-tracking')->everyThirtyMinutes();
 
-// Refresh Instagram reels cache every 2 hours
-Schedule::command('instagram:refresh-reels')->everyTwoHours();
-
 // Refresh Instagram access token every 50 days (token lasts 60 days)
 Schedule::command('instagram:refresh-token')->dailyAt('03:00')->when(function () {
     $lastRefresh = \App\Models\Setting::get('instagram_token_last_refresh');

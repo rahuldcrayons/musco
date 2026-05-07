@@ -32,6 +32,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         // AJAX search endpoints (used by multiple features)
         Route::get('/search/products', [App\Http\Controllers\Admin\SearchController::class, 'products'])->name('search.products');
+        Route::get('/search/orders', [App\Http\Controllers\Admin\SearchController::class, 'orders'])->name('search.orders');
+        Route::get('/search/customers', [App\Http\Controllers\Admin\SearchController::class, 'customers'])->name('search.customers');
 
         // Orders
         Route::middleware('admin.section:orders')->group(function () {
@@ -77,7 +79,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
                                 \Illuminate\Support\Facades\Log::error('Abandoned email failed: ' . $e->getMessage());
                             }
                         }
-                        if ($ac->phone) {
+                        if ($ac->phone && class_exists(\App\Services\WhatsAppService::class)) {
                             try {
                                 app(\App\Services\WhatsAppService::class)->sendAbandonedCartReminder($ac->phone, $ac->name ?: 'there', $ac->cart_total);
                                 $sent++;
@@ -115,6 +117,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
                 Route::post('/pickup', [App\Http\Controllers\Admin\DeliveryController::class, 'requestPickup'])->name('pickup');
                 Route::get('/check-pincode', [App\Http\Controllers\Admin\DeliveryController::class, 'checkPincode'])->name('check-pincode');
                 Route::get('/calculate-cost', [App\Http\Controllers\Admin\DeliveryController::class, 'calculateCost'])->name('calculate-cost');
+                Route::get('/warehouses', [App\Http\Controllers\Admin\DeliveryController::class, 'warehouses'])->name('warehouses');
             });
 
             // Returns
@@ -161,7 +164,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
                 Route::get('/', [App\Http\Controllers\Admin\InventoryController::class, 'index'])->name('index');
                 Route::get('/low-stock', [App\Http\Controllers\Admin\InventoryController::class, 'lowStock'])->name('low-stock');
                 Route::get('/out-of-stock', [App\Http\Controllers\Admin\InventoryController::class, 'outOfStock'])->name('out-of-stock');
-                Route::put('/{product}/stock', [App\Http\Controllers\Admin\InventoryController::class, 'updateStock'])->name('update-stock');
+                Route::put('/{product_id}/stock', [App\Http\Controllers\Admin\InventoryController::class, 'updateStock'])->name('update-stock');
                 Route::get('/movements', [App\Http\Controllers\Admin\InventoryController::class, 'movements'])->name('movements');
                 Route::resource('locations', App\Http\Controllers\Admin\InventoryLocationController::class);
             });
@@ -260,6 +263,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
                 Route::get('/', [App\Http\Controllers\Admin\ReviewController::class, 'index'])->name('index');
                 Route::get('/pending', [App\Http\Controllers\Admin\ReviewController::class, 'pending'])->name('pending');
                 Route::get('/{review}', [App\Http\Controllers\Admin\ReviewController::class, 'show'])->name('show');
+                Route::put('/{review}', [App\Http\Controllers\Admin\ReviewController::class, 'update'])->name('update');
                 Route::post('/{review}/approve', [App\Http\Controllers\Admin\ReviewController::class, 'approve'])->name('approve');
                 Route::post('/{review}/reject', [App\Http\Controllers\Admin\ReviewController::class, 'reject'])->name('reject');
                 Route::delete('/{review}', [App\Http\Controllers\Admin\ReviewController::class, 'destroy'])->name('destroy');
@@ -328,6 +332,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
                 Route::get('/product-card', [App\Http\Controllers\Admin\SettingController::class, 'productCard'])->name('product-card');
                 Route::put('/product-card', [App\Http\Controllers\Admin\SettingController::class, 'updateProductCard'])->name('product-card.update');
+
+                Route::post('/import', [App\Http\Controllers\Admin\SettingController::class, 'import'])->name('import');
+                Route::get('/import/template', [App\Http\Controllers\Admin\SettingController::class, 'importTemplate'])->name('import.template');
+                Route::post('/email/test', [App\Http\Controllers\Admin\SettingController::class, 'testEmail'])->name('email.test');
 
                 // Tax Rates
                 Route::resource('tax-rates', App\Http\Controllers\Admin\TaxRateController::class);

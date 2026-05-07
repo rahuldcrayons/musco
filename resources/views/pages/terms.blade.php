@@ -30,7 +30,7 @@
             <div class="bg-white border border-neutral-100 rounded-xl p-5 sm:p-6 mb-4">
                 <h2 class="text-[15px] font-bold text-neutral-900 mb-2">Acceptance of Terms</h2>
                 <p class="text-[13px] text-neutral-600 leading-relaxed">
-                    By accessing or using the {{ \App\Models\Setting::get('site_name', 'MusCo') }} website or placing an order, you confirm that you have read, understood, and agree to be bound by these Terms of Service and our Privacy Policy. If you do not agree, please do not use our services.
+                    By accessing or using the {{ \App\Models\Setting::get('site_name', 'Trendymus') }} website or placing an order, you confirm that you have read, understood, and agree to be bound by these Terms of Service and our Privacy Policy. If you do not agree, please do not use our services.
                 </p>
             </div>
 
@@ -98,7 +98,7 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                 <div class="bg-white border border-neutral-100 rounded-xl p-5 sm:p-6">
                     <h2 class="text-[15px] font-bold text-neutral-900 mb-2">Intellectual Property</h2>
-                    <p class="text-[13px] text-neutral-600 leading-relaxed">All content on this website — including text, images, logos, and design — is the property of {{ \App\Models\Setting::get('site_name', 'MusCo') }} and is protected by copyright and trademark laws. Unauthorised use is strictly prohibited.</p>
+                    <p class="text-[13px] text-neutral-600 leading-relaxed">All content on this website &mdash; including text, images, logos, and design &mdash; is the property of {{ \App\Models\Setting::get('site_name', 'Trendymus') }} and is protected by copyright and trademark laws. Unauthorised use is strictly prohibited.</p>
                 </div>
                 <div class="bg-white border border-neutral-100 rounded-xl p-5 sm:p-6">
                     <h2 class="text-[15px] font-bold text-neutral-900 mb-2">Product Information</h2>
@@ -124,14 +124,14 @@
             {{-- Limitation of Liability --}}
             <div class="bg-white border border-neutral-100 rounded-xl p-5 sm:p-6 mb-4">
                 <h2 class="text-[15px] font-bold text-neutral-900 mb-2">Limitation of Liability</h2>
-                <p class="text-[13px] text-neutral-600 leading-relaxed">To the maximum extent permitted by law, {{ \App\Models\Setting::get('site_name', 'MusCo') }} shall not be liable for any indirect, incidental, special, consequential, or punitive damages arising from your use of our website or services. Our total liability shall not exceed the amount paid by you for the specific product or service giving rise to the claim.</p>
+                <p class="text-[13px] text-neutral-600 leading-relaxed">To the maximum extent permitted by law, {{ \App\Models\Setting::get('site_name', 'Trendymus') }} shall not be liable for any indirect, incidental, special, consequential, or punitive damages arising from your use of our website or services. Our total liability shall not exceed the amount paid by you for the specific product or service giving rise to the claim.</p>
             </div>
 
             {{-- Governing Law + Changes side by side --}}
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                 <div class="bg-white border border-neutral-100 rounded-xl p-5 sm:p-6">
                     <h2 class="text-[15px] font-bold text-neutral-900 mb-2">Governing Law</h2>
-                    <p class="text-[13px] text-neutral-600 leading-relaxed">These Terms shall be governed by and construed in accordance with applicable law. Any disputes shall be resolved through the courts of the applicable jurisdiction, unless otherwise agreed.</p>
+                    <p class="text-[13px] text-neutral-600 leading-relaxed">These Terms shall be governed by and construed in accordance with the laws of England and Wales. Any disputes shall be subject to the exclusive jurisdiction of the courts of England and Wales. Nothing in these terms affects your statutory rights under the Consumer Rights Act 2015.</p>
                 </div>
                 <div class="bg-white border border-neutral-100 rounded-xl p-5 sm:p-6">
                     <h2 class="text-[15px] font-bold text-neutral-900 mb-2">Changes to Terms</h2>

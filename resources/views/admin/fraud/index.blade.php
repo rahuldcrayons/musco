@@ -107,13 +107,13 @@
                                         High ({{ $score }})
                                     </span>
                                 @elseif($score >= 50)
-                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-[#c29958]/10 text-[#c29958]">
-                                        <span class="w-1.5 h-1.5 rounded-full bg-[#c29958]"></span>
+                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-[#506282]/10 text-[#506282]">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-[#506282]"></span>
                                         Medium ({{ $score }})
                                     </span>
                                 @else
-                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-[#B76E79]/5 text-[#B76E79]">
-                                        <span class="w-1.5 h-1.5 rounded-full bg-[#B76E79]"></span>
+                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-[#202a40]/5 text-[#202a40]">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-[#202a40]"></span>
                                         Low ({{ $score }})
                                     </span>
                                 @endif
@@ -123,13 +123,13 @@
                             </td>
                             <td class="px-4 py-3">
                                 @if($log->reviewed_at)
-                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-[#B76E79]/5 text-[#B76E79]">
-                                        <span class="w-1.5 h-1.5 rounded-full bg-[#B76E79]"></span>
+                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-[#202a40]/5 text-[#202a40]">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-[#202a40]"></span>
                                         Reviewed
                                     </span>
                                 @else
-                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-[#c29958]/10 text-[#c29958]">
-                                        <span class="w-1.5 h-1.5 rounded-full bg-[#c29958]"></span>
+                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-[#506282]/10 text-[#506282]">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-[#506282]"></span>
                                         Pending
                                     </span>
                                 @endif

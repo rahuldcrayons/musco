@@ -22,7 +22,7 @@ class RedirectIfAuthenticated
                     'admin' => $user->role === 'admin' || $user->role === 'staff' ? route('admin.dashboard') : null,
                     'delivery' => $user->role === 'delivery_partner' ? route('delivery.dashboard') : null,
                     'seller' => $user->role === 'seller' ? route('seller.dashboard') : null,
-                    default => '/',
+                    default => route('account.dashboard'),
                 };
 
                 if ($redirect) {

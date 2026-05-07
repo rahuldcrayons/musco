@@ -13,20 +13,66 @@
     </div>
 
     @if(session('success'))
-        <div class="mb-4 px-4 py-3 bg-[#B76E79]/5 border border-[#B76E79]/20 text-[#B76E79] text-sm rounded-lg">{{ session('success') }}</div>
+        <div class="mb-4 px-4 py-3 bg-[#202a40]/5 border border-[#202a40]/20 text-[#202a40] text-sm rounded-lg flex items-start gap-2">
+            <svg class="w-4 h-4 mt-0.5 shrink-0 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            {{ session('success') }}
+        </div>
     @endif
     @if(session('error'))
-        <div class="mb-4 px-4 py-3 bg-[#CC0C39]/10 border border-[#CC0C39]/20 text-[#CC0C39] text-sm rounded-lg">{{ session('error') }}</div>
+        <div class="mb-4 px-4 py-3 bg-red-50 border border-red-200 text-red-800 text-sm rounded-lg">
+            <div class="flex items-start gap-2">
+                <svg class="w-4 h-4 mt-0.5 shrink-0 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                <div class="flex-1">
+                    <p class="font-semibold text-red-700">{{ session('error') }}</p>
+                    @if(str_contains(session('error', ''), 'not found') || str_contains(session('error', ''), 'Pickup location'))
+                        <div class="mt-2 flex items-center gap-2">
+                            <a href="{{ route('admin.settings.general') }}" class="text-xs font-semibold px-3 py-1.5 bg-[#202a40] text-white rounded-lg hover:bg-[#2d3a55] transition-colors">Fix in Settings</a>
+                            <button type="button" onclick="fetchWarehouses()" class="text-xs font-semibold px-3 py-1.5 bg-red-100 hover:bg-red-200 text-red-700 rounded-lg transition-colors">View Warehouses</button>
+                        </div>
+                        <div id="warehouse-list" class="mt-2 hidden text-xs bg-white border border-red-200 rounded-lg p-3"></div>
+                    @endif
+                </div>
+            </div>
+        </div>
     @endif
+
+    @push('scripts')
+    <script>
+    function fetchWarehouses() {
+        const el = document.getElementById('warehouse-list');
+        el.classList.remove('hidden');
+        el.innerHTML = '<span class="text-gray-500">Fetching from Delhivery…</span>';
+        fetch('{{ route('admin.delivery.warehouses') }}')
+            .then(r => r.json())
+            .then(data => {
+                if (!data.warehouses || data.warehouses.length === 0) {
+                    el.innerHTML = '<span class="text-red-600">No warehouses found. Check your Delhivery API token in settings.</span>';
+                    return;
+                }
+                const match = data.match
+                    ? `<p class="text-green-700 font-semibold mb-1">✓ "${data.configured}" matches a registered warehouse.</p>`
+                    : `<p class="text-red-700 font-semibold mb-1">✗ "${data.configured}" does NOT match any warehouse. Use one of the names below:</p>`;
+                const rows = data.warehouses.map(w =>
+                    `<div class="flex items-center justify-between py-1 border-b border-gray-100 last:border-0">
+                        <span class="font-mono font-bold text-gray-900">${w.name}</span>
+                        <span class="text-gray-500">${w.city} ${w.postcode}</span>
+                     </div>`
+                ).join('');
+                el.innerHTML = match + rows;
+            })
+            .catch(() => { el.innerHTML = '<span class="text-red-600">Failed to fetch warehouses.</span>'; });
+    }
+    </script>
+    @endpush
 
     {{-- Stats --}}
     <div class="grid grid-cols-2 md:grid-cols-5 gap-3 mb-6">
         <div class="bg-white rounded-xl border border-gray-200 p-4 text-center">
-            <div class="text-2xl font-bold text-[#c29958]">{{ $stats['pending'] }}</div>
+            <div class="text-2xl font-bold text-[#506282]">{{ $stats['pending'] }}</div>
             <div class="text-xs text-gray-600">Pending Booking</div>
         </div>
         <div class="bg-white rounded-xl border border-gray-200 p-4 text-center">
-            <div class="text-2xl font-bold text-[#B76E79]">{{ $stats['shipped'] }}</div>
+            <div class="text-2xl font-bold text-[#202a40]">{{ $stats['shipped'] }}</div>
             <div class="text-xs text-gray-600">In Transit</div>
         </div>
         <div class="bg-white rounded-xl border border-gray-200 p-4 text-center">
@@ -34,7 +80,7 @@
             <div class="text-xs text-gray-600">Out for Delivery</div>
         </div>
         <div class="bg-white rounded-xl border border-gray-200 p-4 text-center">
-            <div class="text-2xl font-bold text-[#B76E79]">{{ $stats['delivered'] }}</div>
+            <div class="text-2xl font-bold text-[#202a40]">{{ $stats['delivered'] }}</div>
             <div class="text-xs text-gray-600">Delivered (7d)</div>
         </div>
         <div class="bg-white rounded-xl border border-gray-200 p-4 text-center">
@@ -52,11 +98,11 @@
         </div>
         <div class="bg-white rounded-xl border border-gray-200 p-4">
             <div class="text-xs text-gray-500 mb-1">Delivery Rate</div>
-            <div class="text-xl font-bold {{ $analytics['delivery_rate'] >= 90 ? 'text-[#B76E79]' : ($analytics['delivery_rate'] >= 75 ? 'text-[#c29958]' : 'text-[#CC0C39]') }}">{{ $analytics['delivery_rate'] }}%</div>
+            <div class="text-xl font-bold {{ $analytics['delivery_rate'] >= 90 ? 'text-[#202a40]' : ($analytics['delivery_rate'] >= 75 ? 'text-[#506282]' : 'text-[#CC0C39]') }}">{{ $analytics['delivery_rate'] }}%</div>
         </div>
         <div class="bg-white rounded-xl border border-gray-200 p-4">
             <div class="text-xs text-gray-500 mb-1">RTO Rate</div>
-            <div class="text-xl font-bold {{ $analytics['rto_rate'] <= 5 ? 'text-[#B76E79]' : ($analytics['rto_rate'] <= 15 ? 'text-[#c29958]' : 'text-[#CC0C39]') }}">{{ $analytics['rto_rate'] }}%</div>
+            <div class="text-xl font-bold {{ $analytics['rto_rate'] <= 5 ? 'text-[#202a40]' : ($analytics['rto_rate'] <= 15 ? 'text-[#506282]' : 'text-[#CC0C39]') }}">{{ $analytics['rto_rate'] }}%</div>
         </div>
         <div class="bg-white rounded-xl border border-gray-200 p-4">
             <div class="text-xs text-gray-500 mb-1">Avg Delivery Days</div>
@@ -64,50 +110,6 @@
         </div>
     </div>
     @endif
-
-    {{-- Pincode Checker --}}
-    <div class="bg-white rounded-xl border border-gray-200 p-4 mb-6" x-data="pincodeChecker()">
-        <h2 class="font-semibold text-gray-900 mb-3">Pincode Serviceability & Cost Calculator</h2>
-        <div class="flex gap-3 items-end">
-            <div>
-                <label class="text-xs font-medium text-gray-600">Delivery Pincode</label>
-                <input type="text" x-model="pincode" maxlength="6" class="form-input w-40" placeholder="110001" @keyup.enter="check()">
-            </div>
-            <div>
-                <label class="text-xs font-medium text-gray-600">Weight (grams)</label>
-                <input type="number" x-model="weight" class="form-input w-28" value="500">
-            </div>
-            <div>
-                <label class="text-xs font-medium text-gray-600">Payment</label>
-                <select x-model="paymentType" class="form-select w-32">
-                    <option value="Pre-paid">Prepaid</option>
-                    <option value="COD">COD</option>
-                </select>
-            </div>
-            <button @click="check()" class="btn btn-primary text-sm" :disabled="loading">
-                <span x-show="!loading">Check</span>
-                <span x-show="loading">Checking...</span>
-            </button>
-        </div>
-
-        <div x-show="result" x-cloak class="mt-3 p-3 rounded-lg" :class="result?.serviceable ? 'bg-[#B76E79]/5 border border-[#B76E79]/20' : 'bg-[#CC0C39]/10 border border-[#CC0C39]/20'">
-            <template x-if="result?.serviceable">
-                <div class="text-sm">
-                    <p class="font-medium text-[#B76E79]">Serviceable - <span x-text="result.city"></span>, <span x-text="result.state_code"></span></p>
-                    <div class="flex gap-4 mt-1 text-xs text-gray-600">
-                        <span>COD: <span x-text="result.cod ? 'Yes' : 'No'" :class="result.cod ? 'text-[#B76E79] font-medium' : 'text-[#CC0C39]'"></span></span>
-                        <span>Prepaid: <span x-text="result.prepaid ? 'Yes' : 'No'" :class="result.prepaid ? 'text-[#B76E79] font-medium' : 'text-[#CC0C39]'"></span></span>
-                        <span x-show="result.zone">Zone: <span x-text="result.zone" class="font-medium"></span></span>
-                        <span x-show="result.estimated_cost">Est. Cost: <span x-text="'₹' + result.estimated_cost" class="font-bold text-gray-900"></span></span>
-                    </div>
-                </div>
-            </template>
-            <template x-if="result && !result.serviceable">
-                <p class="text-sm text-[#CC0C39]" x-text="result.message || 'Not serviceable'"></p>
-            </template>
-        </div>
-    </div>
-
     {{-- Pending Orders — Ready to Ship --}}
     <div class="bg-white rounded-xl shadow-sm border border-gray-200 mb-6">
         <div class="px-4 py-3 border-b border-gray-200">
@@ -136,15 +138,15 @@
                         <td class="px-4 py-2 text-gray-600">{{ $order->items->count() }} item(s)</td>
                         <td class="px-4 py-2 font-medium">@price($order->total)</td>
                         <td class="px-4 py-2">
-                            <span class="px-2 py-0.5 text-[10px] font-medium rounded-full {{ $order->payment_method === 'cod' ? 'bg-[#c29958]/10 text-[#c29958]' : 'bg-[#B76E79]/10 text-[#B76E79]' }}">
+                            <span class="px-2 py-0.5 text-[10px] font-medium rounded-full {{ $order->payment_method === 'cod' ? 'bg-[#506282]/10 text-[#506282]' : 'bg-[#202a40]/10 text-[#202a40]' }}">
                                 {{ strtoupper($order->payment_method) }}
                             </span>
                         </td>
                         <td class="px-4 py-2 text-gray-500 text-xs">{{ $order->created_at->format('M d, h:i A') }}</td>
                         <td class="px-4 py-2 text-right">
-                            <form action="{{ route('admin.delivery.book', $order) }}" method="POST" class="inline" onsubmit="return confirm('Book Delhivery shipment for {{ $order->order_number }}?')">
+                            <form action="{{ route('admin.delivery.book', $order) }}" method="POST" class="inline" onsubmit="return confirm('Book delivery for {{ $order->order_number }}?')">
                                 @csrf
-                                <button type="submit" class="inline-flex items-center gap-1 px-3 py-1.5 bg-[#B76E79] text-white text-xs font-medium rounded-lg hover:bg-[#B76E79]/90">
+                                <button type="submit" class="inline-flex items-center gap-1 px-3 py-1.5 bg-[#202a40] text-white text-xs font-medium rounded-lg hover:bg-[#202a40]/90">
                                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25"/></svg>
                                     Book Delivery
                                 </button>
@@ -185,7 +187,7 @@
                         <td class="px-4 py-2 font-mono text-xs text-gray-700">{{ $order->tracking_number }}</td>
                         <td class="px-4 py-2 text-gray-700">{{ $order->customer_name ?? $order->user?->full_name ?? 'Guest' }}</td>
                         <td class="px-4 py-2">
-                            <span class="px-2 py-0.5 text-[10px] font-medium rounded-full {{ $order->status === 'shipped' ? 'bg-[#B76E79]/10 text-[#B76E79]' : 'bg-neutral-100 text-neutral-700' }}">
+                            <span class="px-2 py-0.5 text-[10px] font-medium rounded-full {{ $order->status === 'shipped' ? 'bg-[#202a40]/10 text-[#202a40]' : 'bg-neutral-100 text-neutral-700' }}">
                                 {{ ucfirst(str_replace('_', ' ', $order->status)) }}
                             </span>
                         </td>
@@ -193,7 +195,7 @@
                         <td class="px-4 py-2 text-right">
                             <div class="flex items-center justify-end gap-2">
                                 <button @click="fetch('{{ route('admin.delivery.track', $order) }}').then(r=>r.json()).then(d=>{tracking=d;showTracking=true})"
-                                        class="text-xs text-[#B76E79] hover:underline">Track</button>
+                                        class="text-xs text-[#202a40] hover:underline">Track</button>
                                 <a href="{{ route('admin.delivery.label', $order) }}" class="text-xs text-gray-600 hover:underline">Label</a>
                                 <form action="{{ route('admin.delivery.cancel', $order) }}" method="POST" class="inline" onsubmit="return confirm('Cancel this shipment?')">
                                     @csrf

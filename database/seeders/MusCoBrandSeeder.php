@@ -6,7 +6,7 @@ use App\Models\Brand;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 
-class MusCoBrandSeeder extends Seeder
+class TrendimusBrandSeeder extends Seeder
 {
     public function run(): void
     {

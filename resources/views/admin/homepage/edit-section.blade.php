@@ -93,8 +93,8 @@
                         <div>
                             <label class="form-label">Background Color</label>
                             <div class="flex items-center gap-2">
-                                <input type="color" name="background_color" value="{{ $section->background_color ?? '#B76E79' }}" class="w-10 h-10 rounded border border-neutral-200 cursor-pointer">
-                                <input type="text" value="{{ $section->background_color ?? '#B76E79' }}" class="form-input flex-1" readonly>
+                                <input type="color" name="background_color" value="{{ $section->background_color ?? '#202a40' }}" class="w-10 h-10 rounded border border-neutral-200 cursor-pointer">
+                                <input type="text" value="{{ $section->background_color ?? '#202a40' }}" class="form-input flex-1" readonly>
                             </div>
                             <p class="form-help">Used when no background image is set</p>
                         </div>

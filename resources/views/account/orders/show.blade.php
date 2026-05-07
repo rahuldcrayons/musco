@@ -4,7 +4,7 @@
     <div class="bg-neutral-50 min-h-screen">
         <div class="container mx-auto px-4 py-8">
             <x-breadcrumb :items="[['label' => 'Account', 'url' => route('account.dashboard')], ['label' => 'Orders', 'url' => route('account.orders.index')], ['label' => $order->order_number]]" />
-            <div class="flex flex-col lg:flex-row gap-8 mt-4">
+            <div class="flex flex-col lg:flex-row gap-8 lg:items-start mt-4">
                 <!-- Sidebar -->
                 @include('account.partials.sidebar')
 
@@ -14,8 +14,8 @@
                     <!-- Header -->
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
                         <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-xl bg-primary-100 flex items-center justify-center">
-                                <svg class="w-5 h-5 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <div class="w-10 h-10 rounded-xl bg-[#202a40]/10 flex items-center justify-center">
+                                <svg class="w-5 h-5 text-[#202a40]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
                                 </svg>
                             </div>
@@ -26,12 +26,12 @@
                         </div>
                         @php
                             $statusColors = [
-                                'confirmed' => 'bg-[#B76E79]/5 text-[#222222] border-[#B76E79]/30',
-                                'processing' => 'bg-[#B76E79]/5 text-[#222222] border-[#B76E79]/30',
-                                'packed' => 'bg-[#B76E79]/10 text-[#222222] border-[#B76E79]/30',
-                                'shipped' => 'bg-[#B76E79]/15 text-[#15383c] border-[#B76E79]/40',
-                                'out_for_delivery' => 'bg-[#B76E79]/5 text-[#222222] border-[#B76E79]/30',
-                                'delivered' => 'bg-[#B76E79]/5 text-[#B76E79] border-[#B76E79]/20',
+                                'confirmed' => 'bg-[#202a40]/5 text-[#222222] border-[#202a40]/30',
+                                'processing' => 'bg-[#202a40]/5 text-[#222222] border-[#202a40]/30',
+                                'packed' => 'bg-[#202a40]/10 text-[#222222] border-[#202a40]/30',
+                                'shipped' => 'bg-[#202a40]/15 text-[#15383c] border-[#202a40]/40',
+                                'out_for_delivery' => 'bg-[#202a40]/5 text-[#222222] border-[#202a40]/30',
+                                'delivered' => 'bg-[#202a40]/5 text-[#202a40] border-[#202a40]/20',
                                 'cancelled' => 'bg-neutral-100 text-neutral-700 border-neutral-200',
                                 'returned' => 'bg-neutral-100 text-neutral-700 border-neutral-200',
                             ];
@@ -52,15 +52,15 @@
 
                     {{-- Delivered Confirmation Banner --}}
                     @if($order->status === 'delivered')
-                        <div class="bg-[#B76E79]/5 border border-[#B76E79]/20 rounded-xl p-4 mb-4 flex items-start gap-3">
-                            <div class="w-10 h-10 rounded-full bg-[#B76E79]/10 flex items-center justify-center shrink-0">
-                                <svg class="w-5 h-5 text-[#B76E79]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div class="bg-[#202a40]/5 border border-[#202a40]/20 rounded-xl p-4 mb-4 flex items-start gap-3">
+                            <div class="w-10 h-10 rounded-full bg-[#202a40]/10 flex items-center justify-center shrink-0">
+                                <svg class="w-5 h-5 text-[#202a40]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
                                 </svg>
                             </div>
                             <div>
-                                <h3 class="text-[14px] font-semibold text-[#B76E79]">Your order has been delivered!</h3>
-                                <p class="text-[13px] text-[#B76E79] mt-0.5">
+                                <h3 class="text-[14px] font-semibold text-[#202a40]">Your order has been delivered!</h3>
+                                <p class="text-[13px] text-[#202a40] mt-0.5">
                                     Delivered on {{ $order->delivered_at ? $order->delivered_at->format('d M Y, h:i A') : 'N/A' }}
                                     @if($order->payment_collected && ($order->metadata['payment_method'] ?? 'cod') === 'cod')
                                         &mdash; Payment collected successfully
@@ -121,13 +121,13 @@
                                     </div>
                                     @if($order->discount > 0)
                                         <div class="flex justify-between text-[13px]">
-                                            <span class="text-[#B76E79] flex items-center gap-1">
+                                            <span class="text-[#202a40] flex items-center gap-1">
                                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/>
                                                 </svg>
                                                 Discount{{ $order->coupon ? ' ('.$order->coupon->code.')' : '' }}
                                             </span>
-                                            <span class="text-[#B76E79] font-medium">-@price($order->discount)</span>
+                                            <span class="text-[#202a40] font-medium">-@price($order->discount)</span>
                                         </div>
                                     @endif
                                     @if($order->tax > 0)
@@ -142,7 +142,7 @@
                                             @if($order->shipping_cost > 0)
                                                 @price($order->shipping_cost)
                                             @else
-                                                <span class="text-[#B76E79]">Free</span>
+                                                <span class="text-[#202a40]">Free</span>
                                             @endif
                                         </span>
                                     </div>
@@ -231,9 +231,9 @@
                                         <dd class="font-medium text-neutral-700">
                                             @php $paymentMethod = $order->metadata['payment_method'] ?? 'cod'; @endphp
                                             @switch($paymentMethod)
-                                                @case('cod') Cash on Delivery @break
+                                                @case('cod') Pending Payment @break
                                                 @case('card') Credit/Debit Card @break
-                                                @case('upi') UPI @break
+                                                @case('paypal') PayPal @break
                                                 @case('paypal') PayPal @break
                                                 @default {{ ucfirst($paymentMethod) }}
                                             @endswitch
@@ -243,8 +243,8 @@
                                         <dt class="text-neutral-600">Payment Status</dt>
                                         <dd>
                                             <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium
-                                                {{ $order->payment_status === 'paid' ? 'bg-[#B76E79]/5 text-[#B76E79]' : ($order->payment_status === 'failed' ? 'bg-neutral-100 text-neutral-700' : 'bg-[#c29958]/10 text-[#c29958]') }}">
-                                                <span class="w-1.5 h-1.5 rounded-full {{ $order->payment_status === 'paid' ? 'bg-[#B76E79]' : ($order->payment_status === 'failed' ? 'bg-neutral-500' : 'bg-[#c29958]') }}"></span>
+                                                {{ $order->payment_status === 'paid' ? 'bg-[#202a40]/5 text-[#202a40]' : ($order->payment_status === 'failed' ? 'bg-neutral-100 text-neutral-700' : 'bg-[#506282]/10 text-[#506282]') }}">
+                                                <span class="w-1.5 h-1.5 rounded-full {{ $order->payment_status === 'paid' ? 'bg-[#202a40]' : ($order->payment_status === 'failed' ? 'bg-neutral-500' : 'bg-[#506282]') }}"></span>
                                                 {{ ucfirst($order->payment_status) }}
                                             </span>
                                         </dd>
@@ -307,8 +307,8 @@
                                     </div>
                                     <div class="space-y-2">
                                         <div class="flex items-center gap-2.5">
-                                            <div class="w-8 h-8 rounded-full bg-[#B76E79]/10 flex items-center justify-center">
-                                                <svg class="w-4 h-4 text-[#B76E79]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <div class="w-8 h-8 rounded-full bg-[#202a40]/10 flex items-center justify-center">
+                                                <svg class="w-4 h-4 text-[#202a40]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
                                                 </svg>
                                             </div>
@@ -320,7 +320,7 @@
                                             </div>
                                         </div>
                                         @if($order->deliveryPartner->phone)
-                                            <a href="tel:{{ $order->deliveryPartner->phone }}" class="flex items-center gap-1.5 text-[12px] text-primary-600 hover:text-primary-700 font-medium">
+                                            <a href="tel:{{ $order->deliveryPartner->phone }}" class="flex items-center gap-1.5 text-[12px] text-[#202a40] hover:text-[#2d3a55] font-medium">
                                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
                                                 </svg>
@@ -333,15 +333,15 @@
 
                             {{-- Payment Collected (COD) --}}
                             @if($order->payment_collected && ($order->metadata['payment_method'] ?? 'cod') === 'cod')
-                                <div class="bg-[#B76E79]/5 rounded-xl border border-[#B76E79]/20 p-4">
+                                <div class="bg-[#202a40]/5 rounded-xl border border-[#202a40]/20 p-4">
                                     <div class="flex items-center gap-2">
-                                        <svg class="w-4 h-4 text-[#B76E79]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <svg class="w-4 h-4 text-[#202a40]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                                         </svg>
-                                        <h3 class="text-[13px] font-semibold text-[#B76E79]">Payment Collected</h3>
+                                        <h3 class="text-[13px] font-semibold text-[#202a40]">Payment Collected</h3>
                                     </div>
-                                    <p class="text-[12px] text-[#B76E79] mt-1">
-                                        Cash on Delivery payment of @price($order->total) has been collected.
+                                    <p class="text-[12px] text-[#202a40] mt-1">
+                                        Payment of @price($order->total) is pending.
                                         @if($order->payment_collected_at)
                                             <br>{{ $order->payment_collected_at->format('d M Y, h:i A') }}
                                         @endif
@@ -353,7 +353,7 @@
                             <div class="bg-white rounded-xl border border-neutral-100 p-4 space-y-2.5">
                                 @if(!in_array($order->status, ['cancelled', 'returned']))
                                     <a href="{{ route('account.orders.track', $order) }}"
-                                       class="flex items-center justify-center gap-2 w-full px-4 py-2.5 bg-primary-600 text-white text-[13px] font-semibold rounded-lg hover:bg-primary-700 transition-colors">
+                                       class="flex items-center justify-center gap-2 w-full px-4 py-2.5 bg-[#202a40] text-white text-[13px] font-semibold rounded-lg">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/>
                                         </svg>
@@ -407,7 +407,7 @@
                                                 @endif
                                                 <!-- Dot -->
                                                 <div class="w-3.75 h-3.75 rounded-full border-2 shrink-0 mt-0.5
-                                                    {{ $loop->first ? 'bg-primary-600 border-primary-600' : 'bg-white border-neutral-300' }}"></div>
+                                                    {{ $loop->first ? 'bg-[#202a40] border-[#202a40]' : 'bg-white border-neutral-300' }}"></div>
                                                 <div class="flex-1 min-w-0">
                                                     <p class="text-[13px] font-medium text-neutral-800">{{ str_replace('_', ' ', ucfirst($history->status)) }}</p>
                                                     @if($history->comment)
@@ -435,8 +435,5 @@
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
-    </div>
+                @include('account.partials.sidebar-end')
 </x-layouts.app>

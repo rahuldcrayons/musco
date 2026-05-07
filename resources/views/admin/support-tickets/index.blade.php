@@ -103,7 +103,7 @@
                                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-[#CC0C39]/10 text-[#CC0C39]">High</span>
                                         @break
                                     @case('normal')
-                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-[#B76E79]/5 text-[#B76E79]">Normal</span>
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-[#202a40]/5 text-[#202a40]">Normal</span>
                                         @break
                                     @case('low')
                                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600">Low</span>
@@ -113,14 +113,14 @@
                             <td class="px-4 py-3">
                                 @switch($ticket->status)
                                     @case('open')
-                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-[#c29958]/10 text-[#c29958]">
-                                            <span class="w-1.5 h-1.5 rounded-full bg-[#c29958]"></span>
+                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-[#506282]/10 text-[#506282]">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-[#506282]"></span>
                                             Open
                                         </span>
                                         @break
                                     @case('answered')
-                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-[#B76E79]/5 text-[#B76E79]">
-                                            <span class="w-1.5 h-1.5 rounded-full bg-[#B76E79]"></span>
+                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-[#202a40]/5 text-[#202a40]">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-[#202a40]"></span>
                                             In Progress
                                         </span>
                                         @break

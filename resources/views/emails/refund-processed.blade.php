@@ -34,7 +34,7 @@ We are pleased to inform you that your refund for return **#{{ $orderReturn->ret
 Depending on your payment method, please allow the following timeframes for the refund to appear:
 
 - **Credit/Debit Card:** 5-10 business days
-- **UPI/Net Banking:** 3-5 business days
+- **Bank Transfer:** 3-5 business days
 - **Store Credit:** Immediately available in your account
 
 @component('mail::button', ['url' => url('/orders/' . $orderReturn->order_id)])
@@ -46,5 +46,5 @@ If you do not see the refund within the expected timeframe, please contact our s
 Thank you for your patience, and we hope to see you shopping with us again soon!
 
 Warm regards,
-**MusCo**
+**Trendymus**
 @endcomponent

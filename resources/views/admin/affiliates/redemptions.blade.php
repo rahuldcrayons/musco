@@ -51,7 +51,7 @@
                                 <div class="text-xs text-neutral-500">{{ $redemption->affiliate->referral_code }}</div>
                             </td>
                             <td class="px-6 py-4 text-sm text-neutral-600">{{ $redemption->created_at->format('d M Y') }}</td>
-                            <td class="px-6 py-4 text-sm">{{ $redemption->payout_method === 'bank_transfer' ? 'Bank' : 'UPI' }}</td>
+                            <td class="px-6 py-4 text-sm">{{ $redemption->payout_method === 'bank_transfer' ? 'Bank' : 'PayPal' }}</td>
                             <td class="px-6 py-4 text-sm font-medium text-right">@price($redemption->amount)</td>
                             <td class="px-6 py-4 text-center">
                                 @php

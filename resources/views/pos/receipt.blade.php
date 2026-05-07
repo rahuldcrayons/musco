@@ -60,8 +60,8 @@
     <div class="item-row">
         <div class="item-name">{{ $item->product_name }}</div>
         <div class="row item-detail">
-            <span>{{ $item->quantity }} × ₹{{ number_format($item->price, 2) }}</span>
-            <span>₹{{ number_format($item->total, 2) }}</span>
+            <span>{{ $item->quantity }} × £{{ number_format($item->price, 2) }}</span>
+            <span>£{{ number_format($item->total, 2) }}</span>
         </div>
         @if($item->hsn_code)
         <div class="item-detail">HSN: {{ $item->hsn_code }} | GST: {{ $item->tax_rate }}%</div>
@@ -72,23 +72,23 @@
     <div class="divider"></div>
 
     {{-- Totals --}}
-    <div class="row"><span>Subtotal</span><span>₹{{ number_format($sale->subtotal, 2) }}</span></div>
+    <div class="row"><span>Subtotal</span><span>£{{ number_format($sale->subtotal, 2) }}</span></div>
     @if($sale->discount > 0)
-    <div class="row"><span>Discount</span><span>-₹{{ number_format($sale->discount, 2) }}</span></div>
+    <div class="row"><span>Discount</span><span>-£{{ number_format($sale->discount, 2) }}</span></div>
     @endif
     @if($sale->tax > 0)
-    <div class="row"><span>GST</span><span>₹{{ number_format($sale->tax, 2) }}</span></div>
+    <div class="row"><span>GST</span><span>£{{ number_format($sale->tax, 2) }}</span></div>
     @endif
 
     <div class="divider"></div>
-    <div class="row total-row"><span>TOTAL</span><span>₹{{ number_format($sale->total, 2) }}</span></div>
+    <div class="row total-row"><span>TOTAL</span><span>£{{ number_format($sale->total, 2) }}</span></div>
     <div class="divider"></div>
 
     {{-- Payment --}}
     <div class="row"><span>Payment</span><span>{{ strtoupper($sale->payment_method) }}</span></div>
-    <div class="row"><span>Paid</span><span>₹{{ number_format($sale->paid_amount, 2) }}</span></div>
+    <div class="row"><span>Paid</span><span>£{{ number_format($sale->paid_amount, 2) }}</span></div>
     @if($sale->change_amount > 0)
-    <div class="row bold"><span>Change</span><span>₹{{ number_format($sale->change_amount, 2) }}</span></div>
+    <div class="row bold"><span>Change</span><span>£{{ number_format($sale->change_amount, 2) }}</span></div>
     @endif
 
     {{-- GST Summary --}}
@@ -101,7 +101,7 @@
     @foreach($gstItems->groupBy('tax_rate') as $rate => $items)
     <div class="row" style="font-size: 10px;">
         <span>GST @ {{ $rate }}%</span>
-        <span>CGST ₹{{ number_format($items->sum('cgst'), 2) }} + SGST ₹{{ number_format($items->sum('sgst'), 2) }}</span>
+        <span>CGST £{{ number_format($items->sum('cgst'), 2) }} + SGST £{{ number_format($items->sum('sgst'), 2) }}</span>
     </div>
     @endforeach
     @endif
@@ -117,7 +117,7 @@
 
     {{-- Print Button (screen only) --}}
     <div class="center no-print" style="margin-top: 20px;">
-        <button onclick="window.print()" style="padding: 8px 24px; font-size: 14px; cursor: pointer; background: #B76E79; color: white; border: none; border-radius: 6px;">
+        <button onclick="window.print()" style="padding: 8px 24px; font-size: 14px; cursor: pointer; background: #202a40; color: white; border: none; border-radius: 6px;">
             Print Receipt
         </button>
         <button onclick="window.close()" style="padding: 8px 24px; font-size: 14px; cursor: pointer; background: #E2E8F0; color: #333; border: none; border-radius: 6px; margin-left: 8px;">

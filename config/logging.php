@@ -65,6 +65,20 @@ return [
             'replace_placeholders' => true,
         ],
 
+        'stripe' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/stripe.log'),
+            'level' => 'debug',
+            'days' => 30,
+        ],
+
+        'paypal' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/paypal.log'),
+            'level' => 'debug',
+            'days' => 30,
+        ],
+
         'daily' => [
             'driver' => 'daily',
             'path' => storage_path('logs/laravel.log'),

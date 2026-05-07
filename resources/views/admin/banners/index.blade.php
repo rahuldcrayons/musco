@@ -11,7 +11,7 @@
     </div>
 
     @if(session('success'))
-        <div class="mb-4 px-4 py-3 bg-[#B76E79]/5 border border-[#B76E79]/20 text-[#B76E79] text-sm rounded-lg">
+        <div class="mb-4 px-4 py-3 bg-[#202a40]/5 border border-[#202a40]/20 text-[#202a40] text-sm rounded-lg">
             {{ session('success') }}
         </div>
     @endif
@@ -112,7 +112,7 @@
                             </td>
                             <td class="px-4 py-3">
                                 @if($banner->isActive())
-                                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-[#B76E79]/10 text-[#B76E79]">Active</span>
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-[#202a40]/10 text-[#202a40]">Active</span>
                                 @else
                                     <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">Inactive</span>
                                 @endif
@@ -123,7 +123,7 @@
                             <td class="px-4 py-3 text-right" onclick="event.stopPropagation()">
                                 <div class="flex items-center justify-end gap-2">
                                     <a href="{{ route('admin.banners.edit', $banner) }}"
-                                       class="text-sm text-[#B76E79] hover:text-[#B76E79]/80 font-medium">Edit</a>
+                                       class="text-sm text-[#202a40] hover:text-[#202a40]/80 font-medium">Edit</a>
                                     <form action="{{ route('admin.banners.destroy', $banner) }}" method="POST"
                                           onsubmit="return confirm('Delete this banner?')">
                                         @csrf

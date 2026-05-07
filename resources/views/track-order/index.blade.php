@@ -37,11 +37,11 @@
             @endif
 
             @auth
-                <div class="bg-[#B76E79]/5 border border-[#B76E79]/20 rounded-xl p-3 mb-4 flex items-center gap-2">
-                    <svg class="w-4 h-4 text-[#B76E79] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="bg-[#202a40]/5 border border-[#202a40]/20 rounded-xl p-3 mb-4 flex items-center gap-2">
+                    <svg class="w-4 h-4 text-[#202a40] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                     </svg>
-                    <p class="text-[13px] text-[#B76E79]">Signed in as <span class="font-semibold">{{ auth()->user()->email }}</span> — just enter your order number.</p>
+                    <p class="text-[13px] text-[#202a40]">Signed in as <span class="font-semibold">{{ auth()->user()->email }}</span> — just enter your order number.</p>
                 </div>
             @endauth
 
@@ -70,7 +70,7 @@
                         </div>
                     @endguest
 
-                    <button type="submit" class="w-full px-3 py-1.5 text-sm font-semibold text-white bg-primary-600 hover:bg-primary-700 rounded-lg transition-colors">
+                    <button type="submit" class="w-full px-3 py-1.5 text-sm font-semibold text-white bg-[#202a40] rounded-lg">
                         Track Order
                     </button>
                 </form>

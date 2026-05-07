@@ -74,8 +74,10 @@ class InventoryController extends Controller
         return view('admin.inventory.out-of-stock', compact('products'));
     }
 
-    public function updateStock(Request $request, Product $product): RedirectResponse
+    public function updateStock(Request $request, $product_id): RedirectResponse
     {
+        $product = Product::findOrFail($product_id);
+
         $validated = $request->validate([
             'quantity' => 'required|integer',
             'type' => 'required|in:add,remove,set',
@@ -118,7 +120,7 @@ class InventoryController extends Controller
             'created_by' => auth()->id(),
         ]);
 
-        return back()->with('success', 'Stock updated successfully');
+        return redirect()->route('admin.inventory.index')->with('success', 'Stock updated successfully');
     }
 
     public function movements(Request $request): View

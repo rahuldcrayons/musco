@@ -13,13 +13,19 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Password;
+use Illuminate\View\View;
 
 
 class RegisterController extends Controller
 {
-    public function showRegistrationForm(): RedirectResponse
+    public function showRegistrationForm(Request $request): View|RedirectResponse
     {
-        return redirect()->route('login', ['mode' => 'register']);
+        if (auth()->check()) {
+            return redirect()->route('account.dashboard');
+        }
+        // Use the unified login view in register mode
+        $request->merge(['mode' => 'register']);
+        return view('auth.login');
     }
 
     public function register(Request $request): RedirectResponse|JsonResponse

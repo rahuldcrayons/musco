@@ -134,7 +134,7 @@ class CartController extends Controller
                     'content_name' => $product->name,
                     'content_type' => 'product',
                     'value' => (float) $product->price * $validated['quantity'],
-                    'currency' => 'INR',
+                    'currency' => 'GBP',
                 ],
                 'ga4_item' => [
                     'item_id' => $product->sku ?? (string) $product->id,
@@ -269,13 +269,11 @@ class CartController extends Controller
         $cart = $this->getOrCreateCart();
         $cart->load(['items.product', 'coupon']);
 
-        // Prevent stacking — if a coupon is already applied, reject
+        // Auto-remove existing coupon to allow swapping
         if ($cart->coupon_id) {
-            $message = 'A coupon is already applied. Remove it first to apply a different one.';
-            if ($request->wantsJson()) {
-                return response()->json(['error' => $message], 422);
-            }
-            return back()->with('error', $message);
+            $cart->update(['coupon_id' => null, 'discount' => 0]);
+            $cart->refresh();
+            $cart->load(['items.product', 'coupon']);
         }
 
         $coupon = Coupon::where('code', strtoupper($validated['code']))

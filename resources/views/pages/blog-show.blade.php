@@ -39,15 +39,15 @@
             'dateModified' => $post->updated_at->toIso8601String(),
             'author' => [
                 '@type' => 'Organization',
-                'name' => config('app.name', 'MusCo'),
+                'name' => config('app.name', 'Trendymus'),
                 'url' => url('/'),
             ],
             'publisher' => [
                 '@type' => 'Organization',
-                'name' => config('app.name', 'MusCo'),
+                'name' => config('app.name', 'Trendymus'),
                 'logo' => [
                     '@type' => 'ImageObject',
-                    'url' => asset('images/musco-logo.png'),
+                    'url' => asset('images/mus-removebg-preview.png'),
                 ],
             ],
             'mainEntityOfPage' => [
@@ -83,7 +83,7 @@
                     <div class="flex items-center gap-2 mb-4 flex-wrap">
                         @if($post->category)
                             <a href="{{ route('blog', ['category' => $post->category]) }}"
-                               class="inline-flex px-3 py-1 text-[11px] font-bold text-[#B76E79] bg-[#B76E79]/10 rounded-full hover:bg-[#B76E79]/15 transition-colors uppercase tracking-wide">
+                               class="inline-flex px-3 py-1 text-[11px] font-bold text-[#202a40] bg-[#202a40]/10 rounded-full hover:bg-[#202a40]/15 transition-colors uppercase tracking-wide">
                                 {{ $post->category }}
                             </a>
                             <span class="text-neutral-300">·</span>
@@ -102,7 +102,7 @@
 
                     {{-- Excerpt --}}
                     @if($post->excerpt)
-                        <p class="text-[15px] text-neutral-600 mb-6 leading-relaxed border-l-4 border-[#B76E79]/30 pl-4">{{ $post->excerpt }}</p>
+                        <p class="text-[15px] text-neutral-600 mb-6 leading-relaxed border-l-4 border-[#202a40]/30 pl-4">{{ $post->excerpt }}</p>
                     @endif
 
                     {{-- Featured Image or Generated Cover --}}
@@ -114,7 +114,7 @@
                     @else
                         @php
                             $gradients = [
-                                'from-[#B76E79] to-[#0F2D30]',
+                                'from-[#202a40] to-[#0F2D30]',
                                 'from-[#1a3a5c] to-[#0d1f33]',
                                 'from-[#4a2c5e] to-[#2a1835]',
                                 'from-[#2d4a3e] to-[#1a2d25]',
@@ -143,13 +143,13 @@
                                         prose-h2:text-xl prose-h2:mt-8 prose-h2:mb-3 prose-h2:pb-2 prose-h2:border-b prose-h2:border-neutral-100
                                         prose-h3:text-lg prose-h3:mt-6 prose-h3:mb-2
                                         prose-p:text-[15px] prose-p:leading-[1.8] prose-p:mb-4
-                                        prose-a:text-[#B76E79] prose-a:font-medium prose-a:no-underline hover:prose-a:underline
+                                        prose-a:text-[#202a40] prose-a:font-medium prose-a:no-underline hover:prose-a:underline
                                         prose-img:rounded-xl prose-img:shadow-sm
                                         prose-ul:my-4 prose-ul:space-y-1 prose-li:text-[15px] prose-li:leading-[1.7]
                                         prose-ol:my-4 prose-ol:space-y-1
-                                        prose-blockquote:border-l-4 prose-blockquote:border-[#B76E79]/30 prose-blockquote:bg-[#B76E79]/5 prose-blockquote:rounded-r-lg prose-blockquote:py-3 prose-blockquote:px-5 prose-blockquote:not-italic prose-blockquote:text-neutral-700
+                                        prose-blockquote:border-l-4 prose-blockquote:border-[#202a40]/30 prose-blockquote:bg-[#202a40]/5 prose-blockquote:rounded-r-lg prose-blockquote:py-3 prose-blockquote:px-5 prose-blockquote:not-italic prose-blockquote:text-neutral-700
                                         prose-strong:text-neutral-900
-                                        prose-code:text-[#B76E79] prose-code:bg-[#B76E79]/10 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-sm">
+                                        prose-code:text-[#202a40] prose-code:bg-[#202a40]/10 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-sm">
                                 {!! $post->content !!}
                             </div>
                         @else
@@ -208,7 +208,7 @@
                                         </div>
                                     @endif
                                 </div>
-                                <p class="text-[12px] font-medium text-neutral-800 line-clamp-2 leading-snug group-hover:text-[#c29958] transition-colors">{{ $rProduct->name }}</p>
+                                <p class="text-[12px] font-medium text-neutral-800 line-clamp-2 leading-snug group-hover:text-[#506282] transition-colors">{{ $rProduct->name }}</p>
                                 <div class="flex items-center gap-1.5 mt-1">
                                     <span class="text-[13px] font-bold text-neutral-900">@price($rProduct->price)</span>
                                     @if($rProduct->compare_at_price && $rProduct->compare_at_price > $rProduct->price)
@@ -222,7 +222,7 @@
                     @endif
 
                     {{-- Back link --}}
-                    <a href="{{ route('blog') }}" class="inline-flex items-center gap-2 text-[13px] font-medium text-[#B76E79] hover:text-[#c29958] transition-colors">
+                    <a href="{{ route('blog') }}" class="inline-flex items-center gap-2 text-[13px] font-medium text-[#202a40] hover:text-[#506282] transition-colors">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
                         </svg>
@@ -238,7 +238,7 @@
                         <div class="bg-white border border-neutral-100 rounded-xl overflow-hidden">
                             <div class="px-4 py-3 border-b border-neutral-100 flex items-center justify-between">
                                 <h2 class="text-[14px] font-bold text-neutral-900">More Articles</h2>
-                                <a href="{{ route('blog') }}" class="text-[12px] text-[#B76E79] hover:text-[#c29958] font-medium">View all</a>
+                                <a href="{{ route('blog') }}" class="text-[12px] text-[#202a40] hover:text-[#506282] font-medium">View all</a>
                             </div>
 
                             @if($related->count())
@@ -261,12 +261,12 @@
                                             </div>
                                             {{-- Info --}}
                                             <div class="min-w-0 flex-1">
-                                                <p class="text-[13px] font-semibold text-neutral-900 line-clamp-2 group-hover:text-[#c29958] transition-colors leading-snug">
+                                                <p class="text-[13px] font-semibold text-neutral-900 line-clamp-2 group-hover:text-[#506282] transition-colors leading-snug">
                                                     {{ $rPost->title }}
                                                 </p>
                                                 <div class="flex items-center gap-1.5 mt-1">
                                                     @if($rPost->category)
-                                                        <span class="text-[11px] text-[#B76E79] font-medium">{{ $rPost->category }}</span>
+                                                        <span class="text-[11px] text-[#202a40] font-medium">{{ $rPost->category }}</span>
                                                         <span class="text-neutral-300">·</span>
                                                     @endif
                                                     <span class="text-[11px] text-neutral-600">{{ $rPost->published_at?->format('M d, Y') }}</span>
@@ -297,7 +297,7 @@
                                 <div class="p-3 flex flex-wrap gap-2">
                                     @foreach($sidebarCategories as $cat)
                                         <a href="{{ route('blog', ['category' => $cat]) }}"
-                                           class="px-3 py-1.5 rounded-full text-[12px] font-medium bg-neutral-100 text-neutral-600 hover:bg-[#B76E79]/10 hover:text-[#B76E79] transition-colors">
+                                           class="px-3 py-1.5 rounded-full text-[12px] font-medium bg-neutral-100 text-neutral-600 hover:bg-[#202a40]/10 hover:text-[#202a40] transition-colors">
                                             {{ $cat }}
                                         </a>
                                     @endforeach

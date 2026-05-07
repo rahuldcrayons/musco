@@ -28,6 +28,8 @@ class Message extends Model
     {
         static::created(function ($message) {
             $conversation = $message->conversation;
+            if (!$conversation) return;
+
             $conversation->update(['last_message_at' => now()]);
 
             if ($message->sender_type === 'user') {

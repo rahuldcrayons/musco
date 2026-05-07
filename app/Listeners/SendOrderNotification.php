@@ -8,6 +8,7 @@ use App\Events\OrderShipped;
 use App\Events\OrderStatusChanged;
 use App\Events\RefundProcessed;
 use App\Events\ReturnRequested;
+use App\Mail\AdminNewOrder;
 use App\Mail\OrderConfirmation;
 use App\Mail\OrderDelivered as OrderDeliveredMail;
 use App\Mail\OrderShipped as OrderShippedMail;
@@ -18,6 +19,7 @@ use App\Models\Setting;
 use App\Services\NotificationService;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 class SendOrderNotification
 {
@@ -37,6 +39,16 @@ class SendOrderNotification
                 'content' => "Your order #{$order->order_number} has been confirmed.",
                 'order_id' => $order->id,
             ], new OrderConfirmation($order));
+        } else {
+            // Guest order — send confirmation email directly
+            $guestEmail = $order->guest_email;
+            if ($guestEmail) {
+                try {
+                    Mail::to($guestEmail)->queue(new OrderConfirmation($order));
+                } catch (\Exception $e) {
+                    Log::error('Failed to send guest order email', ['email' => $guestEmail, 'error' => $e->getMessage()]);
+                }
+            }
         }
 
         // WhatsApp to customer
@@ -45,18 +57,18 @@ class SendOrderNotification
         if ($customerPhone) {
             $this->sendWhatsApp(
                 $customerPhone,
-                "Hi {$customerName}! 🎉 Your MusCo order #{$order->order_number} is confirmed!\n\n"
-                . "Order Total: ₹" . number_format($order->total, 0) . "\n"
-                . "Payment: " . ($order->payment_status === 'paid' ? '✅ Paid' : '💵 Cash on Delivery') . "\n\n"
+                "Hi {$customerName}! 🎉 Your Trendymus order #{$order->order_number} is confirmed!\n\n"
+                . "Order Total: £" . number_format($order->total, 2) . "\n"
+                . "Payment: " . ($order->payment_status === 'paid' ? '✅ Paid' : '⏳ Pending') . "\n\n"
                 . "Track your order: " . url("/track-order") . "\n\n"
-                . "Thank you for shopping with MusCo! 🛍️"
+                . "Thank you for shopping with Trendymus! 🛍️"
             );
         }
 
-        // WhatsApp to admin (Rahul)
-        $adminPhone = Setting::get('admin_whatsapp_phone', '919354567705');
+        // WhatsApp to admin
+        $adminPhone = Setting::get('admin_whatsapp_phone', '447354567705');
         if ($adminPhone) {
-            $itemsSummary = $order->items->map(fn($item) => "• {$item->product_name} x{$item->quantity} — ₹" . number_format($item->total, 0))->implode("\n");
+            $itemsSummary = $order->items->map(fn($item) => "• {$item->product_name} x{$item->quantity} — £" . number_format($item->total, 2))->implode("\n");
             $address = $order->shipping_address_snapshot ?? [];
             $addressLine = ($address['address_line_1'] ?? '') . ', ' . ($address['city'] ?? '') . ' ' . ($address['postal_code'] ?? '');
 
@@ -65,12 +77,22 @@ class SendOrderNotification
                 "🔔 *NEW ORDER* #{$order->order_number}\n\n"
                 . "Customer: {$customerName}\n"
                 . "Phone: {$customerPhone}\n"
-                . "Payment: " . ($order->payment_status === 'paid' ? 'Prepaid ✅' : 'COD 💵') . "\n\n"
+                . "Payment: " . ($order->payment_status === 'paid' ? 'Prepaid ✅' : 'Pending ⏳') . "\n\n"
                 . "Items:\n{$itemsSummary}\n\n"
-                . "Total: *₹" . number_format($order->total, 0) . "*\n"
+                . "Total: *£" . number_format($order->total, 2) . "*\n"
                 . "Ship to: {$addressLine}\n\n"
                 . "Manage: " . url("/admin/orders/{$order->id}")
             );
+        }
+
+        // Email to admin
+        $adminEmail = Setting::get('admin_email', 'info@trendymus.co.uk');
+        if ($adminEmail) {
+            try {
+                Mail::to($adminEmail)->queue(new AdminNewOrder($order));
+            } catch (\Exception $e) {
+                Log::error('Failed to send admin order email', ['error' => $e->getMessage()]);
+            }
         }
     }
 
@@ -95,9 +117,9 @@ class SendOrderNotification
             $trackingInfo = $event->trackingNumber ? "\nTracking: {$event->trackingNumber}" : '';
             $this->sendWhatsApp(
                 $customerPhone,
-                "Hi {$customerName}! 📦 Your MusCo order #{$order->order_number} has been shipped!{$trackingInfo}\n\n"
+                "Hi {$customerName}! 📦 Your Trendymus order #{$order->order_number} has been shipped!{$trackingInfo}\n\n"
                 . "Track: " . url("/track-order") . "\n\n"
-                . "Thank you for shopping with MusCo!"
+                . "Thank you for shopping with Trendymus!"
             );
         }
     }
@@ -121,9 +143,9 @@ class SendOrderNotification
         if ($customerPhone) {
             $this->sendWhatsApp(
                 $customerPhone,
-                "Hi {$customerName}! ✅ Your MusCo order #{$order->order_number} has been delivered!\n\n"
+                "Hi {$customerName}! ✅ Your Trendymus order #{$order->order_number} has been delivered!\n\n"
                 . "We hope you love your purchase. If you need any help, reply here or visit " . url("/track-order") . "\n\n"
-                . "Thank you for choosing MusCo! 💚"
+                . "Thank you for choosing Trendymus! 💚"
             );
         }
     }
@@ -196,10 +218,10 @@ class SendOrderNotification
             return;
         }
 
-        // Clean phone: ensure 91 prefix for Indian numbers
+        // Clean phone: ensure 44 prefix for UK numbers
         $cleanPhone = preg_replace('/\D/', '', $phone);
-        if (!str_starts_with($cleanPhone, '91') && strlen($cleanPhone) === 10) {
-            $cleanPhone = '91' . $cleanPhone;
+        if (!str_starts_with($cleanPhone, '44') && strlen($cleanPhone) >= 10 && strlen($cleanPhone) <= 11) {
+            $cleanPhone = '44' . ltrim($cleanPhone, '0');
         }
 
         try {
